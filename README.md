@@ -210,3 +210,4 @@ OPENAI_API_KEY=
 ---
 
 **Protection-First Approach**: Every feature designed to help homeowners stay informed and protected during their renovation projects.
+# Force deployment after env var changes
