@@ -24,11 +24,19 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async session({ session, user }) {
-      if (session?.user) {
-        session.user.id = user.id;
+    async session({ session, token }) {
+      // For JWT sessions, get user ID from token
+      if (token && session?.user) {
+        session.user.id = token.sub!;
       }
       return session;
+    },
+    async jwt({ token, user, account }) {
+      // On first sign in, get user ID from database
+      if (user) {
+        token.sub = user.id;
+      }
+      return token;
     },
   },
   pages: {
@@ -36,9 +44,23 @@ export const authOptions: NextAuthOptions = {
     error: "/auth/error",
   },
   session: {
-    strategy: "database",
+    strategy: "jwt", // Use JWT for better serverless compatibility
+    maxAge: 30 * 24 * 60 * 60, // 30 days
+  },
+  cookies: {
+    sessionToken: {
+      name: `next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production'
+      }
+    },
   },
   debug: process.env.NODE_ENV === "development",
+  // Ensure proper URL is set for production
+  url: process.env.NEXTAUTH_URL,
 }
 
 const handler = NextAuth(authOptions)
