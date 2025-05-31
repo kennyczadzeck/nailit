@@ -177,3 +177,4 @@ const nextConfig = {
 - [ ] Database is private again
 - [ ] All debug endpoints removed
 - [ ] Security monitoring enabled # Trigger redeploy to load environment variables
+# Force refresh with Neon database
