@@ -3,6 +3,9 @@ frontend:
   phases:
     preBuild:
       commands:
+        - echo "Environment variables loading test..."
+        - echo "DATABASE_URL exists:" $DATABASE_URL
+        - echo "NEXTAUTH_URL exists:" $NEXTAUTH_URL
         - npm install --legacy-peer-deps
         - npx prisma generate
     build:
