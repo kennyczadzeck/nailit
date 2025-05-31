@@ -1,9 +1,3 @@
-// Temporarily disabled NextAuth for debugging
-// TODO: Re-enable after fixing database connectivity
-
-import { NextResponse } from 'next/server';
-
-/*
 import { NextAuthOptions } from "next-auth"
 import NextAuth from "next-auth/next"
 import GoogleProvider from "next-auth/providers/google"
@@ -49,20 +43,4 @@ export const authOptions: NextAuthOptions = {
 
 const handler = NextAuth(authOptions)
 
-export { handler as GET, handler as POST }
-*/
-
-// Temporary placeholder endpoints
-export async function GET() {
-  return NextResponse.json({ 
-    message: "NextAuth temporarily disabled for debugging",
-    timestamp: new Date().toISOString()
-  });
-}
-
-export async function POST() {
-  return NextResponse.json({ 
-    message: "NextAuth temporarily disabled for debugging",
-    timestamp: new Date().toISOString()
-  });
-} 
+export { handler as GET, handler as POST } 
