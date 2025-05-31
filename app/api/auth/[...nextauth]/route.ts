@@ -59,8 +59,6 @@ export const authOptions: NextAuthOptions = {
     },
   },
   debug: process.env.NODE_ENV === "development",
-  // Ensure proper URL is set for production
-  url: process.env.NEXTAUTH_URL,
 }
 
 const handler = NextAuth(authOptions)
