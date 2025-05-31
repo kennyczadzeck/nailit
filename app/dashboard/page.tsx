@@ -234,6 +234,13 @@ export default function DashboardPage() {
     fetchProjects();
   }, [session, status, router]);
 
+  // Redirect to project creation if no projects exist
+  useEffect(() => {
+    if (!loading && projects.length === 0) {
+      router.push('/projects/create');
+    }
+  }, [loading, projects.length, router]);
+
   // Re-enable session check now that OAuth is configured
   if (!session) {
     return null;
