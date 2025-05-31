@@ -6,7 +6,7 @@ const globalForPrisma = globalThis as unknown as {
 
 // Create Prisma client with explicit datasource URL to bypass schema env() issues
 const createPrismaClient = () => {
-  const databaseUrl = process.env.DATABASE_URL;
+  const databaseUrl = process.env.DATABASE_URL?.trim();
   
   if (!databaseUrl) {
     console.error('DATABASE_URL environment variable is not set');
