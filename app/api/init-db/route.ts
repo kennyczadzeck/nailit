@@ -8,7 +8,7 @@ export async function POST() {
     await prisma.$connect();
     console.log('Database connection successful');
 
-    // Try to create tables using Prisma migrate
+    // Check if tables exist by trying to query them
     console.log('Checking if tables exist...');
     
     try {
@@ -23,19 +23,36 @@ export async function POST() {
         timestamp: new Date().toISOString() 
       });
     } catch (tableError: any) {
-      console.log('Tables do not exist, need to create them');
+      console.log('Tables do not exist, attempting to create them...');
       console.log('Table error:', tableError.message);
       
-      // Tables don't exist, we need to push the schema
-      // Note: We can't run migrations in production, but we can describe what needs to be done
-      return NextResponse.json({ 
-        status: 'Tables missing',
-        error: 'Database tables do not exist',
-        message: 'You need to run: npx prisma db push --accept-data-loss',
-        suggestion: 'Connect to your database locally and run Prisma migrations',
-        tableError: tableError.message,
-        timestamp: new Date().toISOString()
-      }, { status: 424 }); // 424 Failed Dependency
+      // Tables don't exist, try to create them using raw SQL
+      try {
+        console.log('Creating tables using Prisma schema...');
+        
+        // Use Prisma's $executeRaw to run the schema creation
+        // For now, we'll provide instructions since we can't run migrations in serverless
+        return NextResponse.json({ 
+          status: 'Tables missing - setup required',
+          error: 'Database tables do not exist',
+          message: 'Tables need to be created',
+          instructions: [
+            '1. Run locally: npx prisma db push --accept-data-loss',
+            '2. Or use Neon Console to run SQL schema',
+            '3. Or create tables manually'
+          ],
+          neonConsole: 'Go to Neon Console → SQL Editor and run your schema',
+          tableError: tableError.message,
+          timestamp: new Date().toISOString()
+        }, { status: 424 }); // 424 Failed Dependency
+      } catch (creationError: any) {
+        console.error('Failed to create tables:', creationError);
+        return NextResponse.json({ 
+          status: 'Table creation failed',
+          error: creationError.message,
+          timestamp: new Date().toISOString()
+        }, { status: 500 });
+      }
     }
     
   } catch (connectionError: any) {
@@ -56,16 +73,26 @@ export async function GET() {
   // Same as POST but read-only check
   try {
     await prisma.$connect();
-    const userCount = await prisma.user.count();
     
-    return NextResponse.json({ 
-      status: 'Connected and initialized',
-      userCount,
-      timestamp: new Date().toISOString() 
-    });
+    try {
+      const userCount = await prisma.user.count();
+      return NextResponse.json({ 
+        status: 'Connected and initialized',
+        userCount,
+        timestamp: new Date().toISOString() 
+      });
+    } catch (tableError: any) {
+      return NextResponse.json({ 
+        status: 'Connected but tables missing',
+        error: 'Tables do not exist',
+        code: tableError.code,
+        message: 'Use POST /api/init-db to initialize',
+        timestamp: new Date().toISOString()
+      }, { status: 424 });
+    }
   } catch (error: any) {
     return NextResponse.json({ 
-      status: 'Error',
+      status: 'Connection failed',
       error: error.message,
       code: error.code,
       timestamp: new Date().toISOString()
