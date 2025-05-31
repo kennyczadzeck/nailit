@@ -1,5 +1,9 @@
 import { withAuth } from "next-auth/middleware"
 
+// Temporarily disabled middleware for database debugging
+// TODO: Re-enable after database connectivity is fixed
+
+/*
 export default withAuth(
   function middleware(req) {
     // Middleware logic here if needed
@@ -36,4 +40,5 @@ export const config = {
   matcher: [
     '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
-} 
+}
+*/ 
