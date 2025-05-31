@@ -2,26 +2,49 @@
   "name": "nailit",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=18.18.0",
+    "npm": ">=8.0.0"
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db:seed": "tsx prisma/seed.ts",
+    "db:reset": "npx prisma db push --force-reset && npm run db:seed",
+    "db:studio": "npx prisma studio"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@auth/prisma-adapter": "^2.9.1",
+    "@heroicons/react": "^2.2.0",
+    "@prisma/client": "^6.8.2",
+    "@supabase/supabase-js": "^2.39.0",
+    "@types/pg": "^8.15.2",
+    "clsx": "^2.0.0",
+    "date-fns": "^3.0.0",
+    "next": "15.4.0-canary.51",
+    "next-auth": "^4.24.11",
+    "pg": "^8.16.0",
+    "prisma": "^6.8.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "next": "15.4.0-canary.51"
+    "tailwind-merge": "^2.2.0"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@eslint/eslintrc": "^3",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
+    "autoprefixer": "^10.4.16",
     "eslint": "^9",
     "eslint-config-next": "15.4.0-canary.51",
-    "@eslint/eslintrc": "^3"
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.4.0",
+    "tsx": "^4.19.4",
+    "typescript": "^5"
   }
 }

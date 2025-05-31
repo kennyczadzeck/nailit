@@ -1,0 +1,278 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = env("DATABASE_PROVIDER")
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  image     String?
+  emailVerified DateTime?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  projects Project[]
+  accounts Account[]
+  sessions Session[]
+  
+  @@map("users")
+}
+
+model Project {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  status      ProjectStatus @default(ACTIVE)
+  startDate   DateTime
+  endDate     DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Project details
+  contractor  String?
+  budget      Float?
+  address     String?
+  addressPlaceId String? // Google Places ID for future reference
+  addressLat  Float? // Latitude for potential mapping features
+  addressLng  Float? // Longitude for potential mapping features
+
+  // Relations
+  userId      String
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  flaggedItems FlaggedItem[]
+  timelineEntries TimelineEntry[]
+  emailSettings EmailSettings?
+  teamMembers TeamMember[]
+  
+  @@map("projects")
+}
+
+model FlaggedItem {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  impact      String
+  category    FlaggedItemCategory
+  
+  // Email details
+  emailFrom   String
+  emailSubject String?
+  emailDate   DateTime
+  originalEmail String? // Full email content
+  
+  // AI Analysis
+  aiConfidence Float @default(0.0) // 0-1 confidence score
+  detectedChanges Json? // Array of detected changes
+  
+  // Status tracking
+  needsEmailResponse Boolean @default(false)
+  status      FlaggedItemStatus @default(PENDING)
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  reviewedAt  DateTime?
+  
+  // ML feedback
+  mlFeedback  MLFeedbackType?
+  userNotes   String?
+  
+  // Relations
+  projectId   String
+  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  timelineEntry TimelineEntry? // If confirmed, links to timeline entry
+  
+  @@map("flagged_items")
+}
+
+model TimelineEntry {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  category    TimelineCategory
+  date        DateTime
+  impact      String?
+  
+  // Entry details
+  cost        Float?
+  scheduleImpact String?
+  scopeDetails String?
+  
+  // Status
+  verified    Boolean @default(false)
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  projectId   String
+  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  flaggedItemId String? @unique
+  flaggedItem FlaggedItem? @relation(fields: [flaggedItemId], references: [id])
+  
+  @@map("timeline_entries")
+}
+
+model EmailSettings {
+  id          String   @id @default(cuid())
+  
+  // Gmail integration
+  gmailConnected Boolean @default(false)
+  gmailRefreshToken String?
+  gmailAccessToken String?
+  gmailTokenExpiry DateTime?
+  
+  // Monitoring settings
+  monitoringEnabled Boolean @default(true)
+  emailFilters Json? // Array of email filters/rules
+  
+  // Notification preferences
+  notificationsEnabled Boolean @default(true)
+  weeklyReports Boolean @default(true)
+  highPriorityAlerts Boolean @default(true)
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  projectId   String @unique
+  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  @@map("email_settings")
+}
+
+model MLFeedback {
+  id          String   @id @default(cuid())
+  
+  // Feedback details
+  feedbackType MLFeedbackType
+  confidence  Float? // Original AI confidence
+  userAction  String // confirm, ignore, reclassify
+  
+  // Context
+  emailContent String?
+  detectedPatterns Json? // Patterns that triggered the flag
+  correctCategory FlaggedItemCategory?
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  
+  // Relations - can link to flagged item for reference
+  flaggedItemId String?
+  projectId   String
+  
+  @@map("ml_feedback")
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model TeamMember {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  role        TeamMemberRole
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  projectId   String
+  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  @@map("team_members")
+}
+
+// Enums
+enum ProjectStatus {
+  ACTIVE
+  ARCHIVED
+  COMPLETED
+  ON_HOLD
+  CANCELLED
+}
+
+enum FlaggedItemCategory {
+  COST
+  SCHEDULE
+  SCOPE
+  UNCLASSIFIED
+}
+
+enum FlaggedItemStatus {
+  PENDING
+  REVIEWED
+  CONFIRMED
+  IGNORED
+  EMAIL_SENT
+}
+
+enum TimelineCategory {
+  COST
+  SCHEDULE
+  SCOPE
+  ISSUE
+  UPDATE
+}
+
+enum MLFeedbackType {
+  POSITIVE    // Correct detection and classification
+  NEGATIVE    // False positive
+  RECLASSIFY  // Wrong category but valid detection
+  CLASSIFY    // User classified unclassified item
+}
+
+enum TeamMemberRole {
+  GENERAL_CONTRACTOR
+  ARCHITECT_DESIGNER
+  PROJECT_MANAGER
+}
