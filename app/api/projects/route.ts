@@ -12,6 +12,19 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    // First check if user has any projects
+    const projectCount = await prisma.project.count({
+      where: {
+        userId: session.user.id
+      }
+    });
+
+    // If no projects, return empty array immediately
+    if (projectCount === 0) {
+      return NextResponse.json([]);
+    }
+
+    // If projects exist, fetch with includes
     const projects = await prisma.project.findMany({
       where: {
         userId: session.user.id
