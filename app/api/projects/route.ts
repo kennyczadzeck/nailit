@@ -79,7 +79,6 @@ export async function POST(request: NextRequest) {
       description,
       teamMembers,
       address,
-      addressPlaceId,
       addressLat,
       addressLng,
       budget,
@@ -139,7 +138,6 @@ export async function POST(request: NextRequest) {
         description: description || null,
         contractor: generalContractor?.name || null, // Keep for backward compatibility
         address: address || null,
-        addressPlaceId: addressPlaceId || null,
         addressLat: addressLat || null,
         addressLng: addressLng || null,
         budget: budget || null,
