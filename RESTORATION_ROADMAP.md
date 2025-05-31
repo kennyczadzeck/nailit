@@ -176,4 +176,4 @@ const nextConfig = {
 **Phase 5 Complete When:**
 - [ ] Database is private again
 - [ ] All debug endpoints removed
-- [ ] Security monitoring enabled 
+- [ ] Security monitoring enabled # Trigger redeploy to load environment variables
