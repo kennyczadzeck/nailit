@@ -10,6 +10,9 @@ const createPrismaClient = () => {
   
   if (!databaseUrl) {
     console.error('DATABASE_URL environment variable is not set');
+    console.error('Available env vars:', Object.keys(process.env).filter(key => 
+      key.includes('DATABASE') || key.includes('NEON')
+    ));
     throw new Error('DATABASE_URL environment variable is required');
   }
   
@@ -20,7 +23,8 @@ const createPrismaClient = () => {
       db: {
         url: databaseUrl
       }
-    }
+    },
+    log: ['error', 'warn'] // Add logging to debug issues
   });
 };
 
