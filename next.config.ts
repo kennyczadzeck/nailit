@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
   // Force environment variables to be available at runtime
   env: {
     DATABASE_URL: process.env.DATABASE_URL,
+    DATABASE_MIGRATION_URL: process.env.DATABASE_MIGRATION_URL,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
