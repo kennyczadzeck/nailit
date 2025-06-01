@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { Button } from '../../components/ui/Button';
@@ -28,10 +28,13 @@ interface AddressData {
   postalCode?: string;
 }
 
+const STORAGE_KEY = 'nailit_project_form_data';
+
 export default function CreateProject() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [hasSavedData, setHasSavedData] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -46,6 +49,40 @@ export default function CreateProject() {
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([
     { name: '', email: '', role: 'GENERAL_CONTRACTOR' }
   ]);
+
+  // Load saved form data on mount
+  useEffect(() => {
+    const savedData = localStorage.getItem(STORAGE_KEY);
+    if (savedData) {
+      setHasSavedData(true);
+      try {
+        const parsedData = JSON.parse(savedData);
+        setFormData(parsedData.formData || formData);
+        setTeamMembers(parsedData.teamMembers || teamMembers);
+      } catch (error) {
+        console.error('Error loading saved form data:', error);
+        localStorage.removeItem(STORAGE_KEY);
+        setHasSavedData(false);
+      }
+    }
+  }, []);
+
+  // Save form data to localStorage whenever it changes
+  useEffect(() => {
+    const dataToSave = {
+      formData,
+      teamMembers,
+      timestamp: new Date().toISOString()
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+    setHasSavedData(true);
+  }, [formData, teamMembers]);
+
+  // Clear saved data when component unmounts or project is created
+  const clearSavedData = () => {
+    localStorage.removeItem(STORAGE_KEY);
+    setHasSavedData(false);
+  };
 
   // Google Maps API key - you'll need to set this in your environment
   const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
@@ -163,6 +200,7 @@ export default function CreateProject() {
       })
 
       if (response.ok) {
+        clearSavedData() // Clear saved form data on success
         router.push('/projects')
       } else {
         const errorData = await response.json()
@@ -198,6 +236,19 @@ export default function CreateProject() {
           <p className="mt-2 text-sm sm:text-base text-gray-600">
             Set up your renovation project to start monitoring communications
           </p>
+          {hasSavedData && (
+            <div className="mt-2 flex items-center justify-center gap-2">
+              <div className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded">
+                ✅ Form data auto-saved
+              </div>
+              <button
+                onClick={clearSavedData}
+                className="text-xs text-gray-500 hover:text-gray-700 underline"
+              >
+                Clear saved data
+              </button>
+            </div>
+          )}
         </div>
 
         <Card>

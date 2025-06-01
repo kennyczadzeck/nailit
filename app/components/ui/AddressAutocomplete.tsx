@@ -42,7 +42,7 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<any>(null);
   const [isGoogleMapsLoaded, setIsGoogleMapsLoaded] = useState(false);
-  const [isManualInput, setIsManualInput] = useState(true);
+  const [lastSelectedAddress, setLastSelectedAddress] = useState('');
 
   // Load Google Maps API with duplicate prevention
   useEffect(() => {
@@ -133,7 +133,7 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
       const addressData = parseAddressComponents(place);
       
       // Mark as autocomplete selection (not manual input)
-      setIsManualInput(false);
+      setLastSelectedAddress(place.formatted_address || '');
       
       // Update form with selected address
       onChange(place.formatted_address || '', addressData);
@@ -174,13 +174,13 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
 
   // Handle manual input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsManualInput(true);
-    onChange(e.target.value);
+    const newValue = e.target.value;
+    onChange(newValue);
   };
 
-  // Handle input focus to allow editing of autocomplete selection
+  // Handle input focus - no special handling needed
   const handleFocus = () => {
-    setIsManualInput(true);
+    // No special handling needed - let user edit freely
   };
 
   return (
@@ -189,9 +189,9 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
       type="text"
       value={value}
       onChange={handleInputChange}
-      placeholder={placeholder}
-      className={`w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${className}`}
       onFocus={handleFocus}
+      placeholder={placeholder}
+      className={`w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base sm:text-sm ${className}`}
     />
   );
 }; 
