@@ -43,6 +43,10 @@ export async function GET() {
       url: secretInfo(dbUrl),
       migrationUrl: secretInfo(process.env.DATABASE_MIGRATION_URL),
       bothSet: !!(process.env.DATABASE_URL && process.env.DATABASE_MIGRATION_URL),
+      
+      // Diagnostic tests
+      testMigrationUrl: secretInfo(process.env.TEST_MIGRATION_URL),
+      shortMigrationUrl: secretInfo(process.env.DATABASE_MIGRATION_URL_SHORT),
     },
     
     // Google OAuth (when you set it up)
