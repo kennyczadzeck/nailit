@@ -3,6 +3,13 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '../auth/[...nextauth]/route'
 import { prisma } from '../../lib/prisma'
 
+export async function GET() {
+  return NextResponse.json({
+    message: "Test endpoint is working",
+    timestamp: new Date().toISOString()
+  })
+}
+
 export async function POST() {
   try {
     const session = await getServerSession(authOptions)
