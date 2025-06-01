@@ -67,15 +67,19 @@ export default function CreateProject() {
     }
   }, []);
 
-  // Save form data to localStorage whenever it changes
+  // Save form data to localStorage whenever it changes (debounced)
   useEffect(() => {
-    const dataToSave = {
-      formData,
-      teamMembers,
-      timestamp: new Date().toISOString()
-    };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
-    setHasSavedData(true);
+    const timeoutId = setTimeout(() => {
+      const dataToSave = {
+        formData,
+        teamMembers,
+        timestamp: new Date().toISOString()
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+      setHasSavedData(true);
+    }, 500); // Debounce by 500ms to avoid interference with autocomplete
+
+    return () => clearTimeout(timeoutId);
   }, [formData, teamMembers]);
 
   // Clear saved data when component unmounts or project is created

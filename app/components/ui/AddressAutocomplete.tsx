@@ -132,11 +132,14 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
       // Parse address components
       const addressData = parseAddressComponents(place);
       
-      // Mark as autocomplete selection (not manual input)
-      setLastSelectedAddress(place.formatted_address || '');
+      // Mark as autocomplete selection and preserve the formatted address
+      const selectedAddress = place.formatted_address || '';
+      setLastSelectedAddress(selectedAddress);
       
-      // Update form with selected address
-      onChange(place.formatted_address || '', addressData);
+      // Use setTimeout to ensure this happens after any pending state updates
+      setTimeout(() => {
+        onChange(selectedAddress, addressData);
+      }, 0);
     });
 
     // Cleanup function
