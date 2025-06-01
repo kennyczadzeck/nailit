@@ -7,12 +7,6 @@ frontend:
         - echo "DATABASE_URL exists:" $DATABASE_URL
         - echo "DATABASE_MIGRATION_URL exists:" $DATABASE_MIGRATION_URL
         - echo "NEXTAUTH_URL exists:" $NEXTAUTH_URL
-        - echo "Legacy DIRECT vars (should be empty):"
-        - echo "  DIRECT_URL:" $DIRECT_URL
-        - echo "  DATABASE_DIRECT_URL:" $DATABASE_DIRECT_URL
-        - echo "Diagnostic tests:"
-        - echo "  TEST_MIGRATION_URL:" $TEST_MIGRATION_URL
-        - echo "  DATABASE_MIGRATION_URL_SHORT:" $DATABASE_MIGRATION_URL_SHORT
         - |
           if [[ "$DATABASE_URL" == *"misty-frog"* ]]; then
             echo "🚀 PRODUCTION ENVIRONMENT - Formal migration workflow"
