@@ -221,7 +221,7 @@ export default function CreateProject() {
 
       if (response.ok) {
         clearSavedData() // Clear saved form data on success
-        router.push('/projects')
+        router.push('/dashboard')
       } else {
         const errorData = await response.json()
         console.error('Error creating project:', errorData)
