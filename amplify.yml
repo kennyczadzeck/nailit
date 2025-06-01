@@ -7,7 +7,10 @@ frontend:
         - echo "DATABASE_URL exists:" $DATABASE_URL
         - echo "NEXTAUTH_URL exists:" $NEXTAUTH_URL
         - npm install --legacy-peer-deps
+        - echo "Generating Prisma client..."
         - npx prisma generate
+        - echo "Verifying Prisma client generation..."
+        - node -e "const { prisma } = require('./app/lib/prisma'); console.log('Available models:', Object.keys(prisma).filter(k => !k.startsWith('_') && !k.startsWith('$')));"
     build:
       commands:
         - npm run build -- --no-lint
