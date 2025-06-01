@@ -133,41 +133,23 @@ export default function CreateProject() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!session?.user?.id) return;
+    e.preventDefault()
+    setLoading(true)
 
     // Validate required fields
-    if (!formData.name.trim()) {
-      alert('Project name is required');
-      return;
+    if (!formData.name || !formData.description || !formData.address || !formData.startDate || !formData.endDate || !formData.budget) {
+      alert('Please fill in all required fields')
+      setLoading(false)
+      return
     }
 
-    if (!formData.startDate) {
-      alert('Start date is required');
-      return;
+    // Validate General Contractor
+    if (!teamMembers[0]?.name || !teamMembers[0]?.email) {
+      alert('General Contractor name and email are required')
+      setLoading(false)
+      return
     }
 
-    // Validate that first team member (General Contractor) has required info
-    if (!teamMembers[0].name.trim() || !teamMembers[0].email.trim()) {
-      alert('General Contractor name and email are required');
-      return;
-    }
-
-    // Ensure first team member is always GENERAL_CONTRACTOR (failsafe)
-    const correctedTeamMembers = [...teamMembers];
-    correctedTeamMembers[0].role = 'GENERAL_CONTRACTOR';
-
-    // Validate team members (filter out empty additional members)
-    const validTeamMembers = correctedTeamMembers.filter(member => 
-      member.name.trim() && member.email.trim()
-    );
-
-    if (validTeamMembers.length === 0) {
-      alert('At least one team member is required');
-      return;
-    }
-
-    setLoading(true);
     try {
       const response = await fetch('/api/projects', {
         method: 'POST',
@@ -175,47 +157,25 @@ export default function CreateProject() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: formData.name,
-          description: formData.description,
-          address: formData.address,
-          addressPlaceId: formData.addressData?.placeId,
-          addressLat: formData.addressData?.lat,
-          addressLng: formData.addressData?.lng,
-          budget: formData.budgetNumeric || null,
-          startDate: formData.startDate,
-          endDate: formData.endDate || null,
-          teamMembers: validTeamMembers,
-          userId: session.user.id,
+          ...formData,
+          teamMembers,
         }),
-      });
+      })
 
       if (response.ok) {
-        router.push('/dashboard');
+        router.push('/projects')
       } else {
-        const error = await response.json();
-        console.error('API Error:', error);
-        console.error('Request data was:', {
-          name: formData.name,
-          description: formData.description,
-          address: formData.address,
-          addressPlaceId: formData.addressData?.placeId,
-          addressLat: formData.addressData?.lat,
-          addressLng: formData.addressData?.lng,
-          budget: formData.budgetNumeric || null,
-          startDate: formData.startDate,
-          endDate: formData.endDate || null,
-          teamMembers: validTeamMembers,
-          userId: session.user.id,
-        });
-        alert(error.message || 'Failed to create project');
+        const errorData = await response.json()
+        console.error('Error creating project:', errorData)
+        alert(`Error creating project: ${errorData.error || 'Unknown error'}`)
       }
     } catch (error) {
-      console.error('Error creating project:', error);
-      alert('Failed to create project');
+      console.error('Error submitting form:', error)
+      alert('Error creating project. Please try again.')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   if (status === 'loading') {
     return (
@@ -265,11 +225,12 @@ export default function CreateProject() {
 
               <div>
                 <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-                  Description
+                  Description *
                 </label>
                 <textarea
                   id="description"
                   name="description"
+                  required
                   value={formData.description}
                   onChange={handleInputChange}
                   rows={3}
@@ -280,7 +241,7 @@ export default function CreateProject() {
 
               <div>
                 <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
-                  Project Address
+                  Project Address *
                 </label>
                 {GOOGLE_MAPS_API_KEY ? (
                   <AddressAutocomplete
@@ -295,6 +256,7 @@ export default function CreateProject() {
                       type="text"
                       id="address"
                       name="address"
+                      required
                       value={formData.address}
                       onChange={handleInputChange}
                       className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base sm:text-sm"
@@ -420,12 +382,13 @@ export default function CreateProject() {
 
                 <div>
                   <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 mb-1">
-                    End Date (Estimated)
+                    End Date (Estimated) *
                   </label>
                   <input
                     type="date"
                     id="endDate"
                     name="endDate"
+                    required
                     value={formData.endDate}
                     onChange={handleInputChange}
                     className="w-full px-3 py-3 sm:py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base sm:text-sm"
@@ -434,7 +397,7 @@ export default function CreateProject() {
 
                 <div className="sm:col-span-2">
                   <label htmlFor="budget" className="block text-sm font-medium text-gray-700 mb-1">
-                    Budget (Optional)
+                    Budget *
                   </label>
                   <CurrencyInput
                     value={formData.budget}

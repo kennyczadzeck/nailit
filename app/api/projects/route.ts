@@ -87,10 +87,17 @@ export async function POST(request: NextRequest) {
     } = body
 
     // Validate required fields
-    if (!name || !startDate) {
-      console.log('Missing required fields:', { name: !!name, startDate: !!startDate })
+    if (!name || !startDate || !address || !endDate || !budget || !description) {
+      console.log('Missing required fields:', { 
+        name: !!name, 
+        startDate: !!startDate, 
+        address: !!address,
+        endDate: !!endDate,
+        budget: !!budget,
+        description: !!description
+      })
       return NextResponse.json(
-        { error: 'Missing required fields: name, startDate' },
+        { error: 'Missing required fields: name, startDate, address, endDate, budget, description' },
         { status: 400 }
       )
     }
@@ -137,8 +144,6 @@ export async function POST(request: NextRequest) {
       description: description || null,
       contractor: generalContractor?.name || null,
       address: address || null,
-      addressLat: addressLat || null,
-      addressLng: addressLng || null,
       budget: budget || null,
       startDate: new Date(startDate),
       endDate: endDate ? new Date(endDate) : null,
@@ -150,19 +155,19 @@ export async function POST(request: NextRequest) {
     const project = await prisma.project.create({
       data: {
         name,
-        description: description || null,
+        description: description,
         contractor: generalContractor?.name || null,
-        address: address || null,
-        budget: budget || null,
+        address: address,
+        budget: budget,
         startDate: new Date(startDate),
-        endDate: endDate ? new Date(endDate) : null,
+        endDate: new Date(endDate),
         userId: session.user.id
       }
     });
 
     console.log('Project created:', project);
 
-    // Create team members separately
+    // Create team members separately using correct model name
     for (const member of teamMembers) {
       console.log('Creating team member:', member);
       await prisma.teamMember.create({
