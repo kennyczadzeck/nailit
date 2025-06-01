@@ -42,7 +42,8 @@ export async function GET() {
     database: {
       url: secretInfo(dbUrl),
       directUrl: secretInfo(process.env.DIRECT_URL),
-      bothSet: !!(process.env.DATABASE_URL && process.env.DIRECT_URL),
+      directUrlAlt: secretInfo(process.env.DATABASE_DIRECT_URL),
+      bothSet: !!(process.env.DATABASE_URL && (process.env.DIRECT_URL || process.env.DATABASE_DIRECT_URL)),
     },
     
     // Google OAuth (when you set it up)
@@ -55,7 +56,7 @@ export async function GET() {
     // Quick Health Check
     healthCheck: {
       allNextAuthVarsSet: !!(process.env.NEXTAUTH_URL && process.env.NEXTAUTH_SECRET),
-      allDatabaseVarsSet: !!(process.env.DATABASE_URL && process.env.DIRECT_URL),
+      allDatabaseVarsSet: !!(process.env.DATABASE_URL && (process.env.DIRECT_URL || process.env.DATABASE_DIRECT_URL)),
       urlConfigCorrect: checkUrlMatch(process.env.NEXTAUTH_URL, detectedEnvironment),
       readyForAuth: !!(process.env.NEXTAUTH_URL && process.env.NEXTAUTH_SECRET && checkUrlMatch(process.env.NEXTAUTH_URL, detectedEnvironment)),
     },
