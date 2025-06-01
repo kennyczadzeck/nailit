@@ -192,15 +192,31 @@ export default function CreateProject() {
     }
 
     try {
+      console.log('=== FORM SUBMISSION DEBUG ===');
+      console.log('Form data being sent:', {
+        ...formData,
+        teamMembers,
+      });
+
+      const requestData = {
+        name: formData.name,
+        description: formData.description,
+        address: formData.address,
+        addressData: formData.addressData,
+        budget: formData.budgetNumeric || parseFloat(formData.budget.replace(/[,$]/g, '')) || 0,
+        startDate: formData.startDate,
+        endDate: formData.endDate,
+        teamMembers,
+      };
+
+      console.log('Processed request data:', requestData);
+
       const response = await fetch('/api/projects', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ...formData,
-          teamMembers,
-        }),
+        body: JSON.stringify(requestData),
       })
 
       if (response.ok) {
