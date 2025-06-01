@@ -3,13 +3,32 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "PRODUCTION ENVIRONMENT - Formal migration workflow"
         - echo "Environment variables check..."
         - echo "DATABASE_URL exists:" $DATABASE_URL
         - echo "NEXTAUTH_URL exists:" $NEXTAUTH_URL
+        - |
+          if [[ "$DATABASE_URL" == *"misty-frog"* ]]; then
+            echo "🚀 PRODUCTION ENVIRONMENT - Formal migration workflow"
+            export ENVIRONMENT="production"
+          elif [[ "$DATABASE_URL" == *"raspy-sound"* ]]; then
+            echo "🧪 STAGING ENVIRONMENT - Formal migration workflow"
+            export ENVIRONMENT="staging"
+          elif [[ "$DATABASE_URL" == *"still-paper"* ]]; then
+            echo "🛠️ DEVELOPMENT ENVIRONMENT - Rapid iteration workflow"
+            export ENVIRONMENT="development"
+          else
+            echo "❓ UNKNOWN ENVIRONMENT - Defaulting to production workflow"
+            export ENVIRONMENT="production"
+          fi
         - npm install --legacy-peer-deps
-        - echo "Running Prisma migrations (production)..."
-        - npx prisma migrate deploy
+        - |
+          if [[ "$ENVIRONMENT" == "development" ]]; then
+            echo "Pushing schema changes to development database..."
+            npx prisma db push --accept-data-loss
+          else
+            echo "Running Prisma migrations ($ENVIRONMENT)..."
+            npx prisma migrate deploy
+          fi
         - echo "Generating Prisma client..."
         - npx prisma generate
     build:
