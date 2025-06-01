@@ -218,6 +218,12 @@ export async function POST(request: NextRequest) {
 
     console.log('Project created successfully:', project.id);
 
+    // For now, let's just return the project without creating team members or email settings
+    // to isolate where the failure is happening
+    console.log('Returning project without creating related records for debugging...');
+    return NextResponse.json(project, { status: 201 })
+
+    /* TEMPORARILY COMMENTED OUT FOR DEBUGGING
     // Create team members separately using correct model name
     for (const member of teamMembers) {
       console.log('Creating team member:', member);
@@ -263,6 +269,7 @@ export async function POST(request: NextRequest) {
     console.log('Project creation completed successfully');
 
     return NextResponse.json(project, { status: 201 })
+    */
   } catch (error) {
     console.error('Error creating project:', error)
     return NextResponse.json(
