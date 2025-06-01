@@ -1,0 +1,21 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - echo "🔧 STAGING ENVIRONMENT DEPLOYMENT"
+        - echo "Environment variables loading test..."
+        - echo "DATABASE_URL exists:" $DATABASE_URL
+        - echo "NEXTAUTH_URL exists:" $NEXTAUTH_URL
+        - npm install --legacy-peer-deps
+        - echo "Applying database migrations to staging..."
+        - npx prisma migrate deploy
+        - echo "Generating Prisma client..."
+        - npx prisma generate
+    build:
+      commands:
+        - npm run build -- --no-lint
+  artifacts:
+    baseDirectory: .next
+    files:
+      - '**/*' 
