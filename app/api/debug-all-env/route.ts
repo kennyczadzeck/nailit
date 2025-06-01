@@ -29,9 +29,11 @@ export async function GET() {
       DATABASE_URL_exists: !!process.env.DATABASE_URL,
       DIRECT_URL_exists: !!process.env.DIRECT_URL,
       DATABASE_DIRECT_URL_exists: !!process.env.DATABASE_DIRECT_URL,
+      NEON_CONNECTION_URL_exists: !!process.env.NEON_CONNECTION_URL,
       DATABASE_URL_length: process.env.DATABASE_URL?.length || 0,
       DIRECT_URL_length: process.env.DIRECT_URL?.length || 0,
       DATABASE_DIRECT_URL_length: process.env.DATABASE_DIRECT_URL?.length || 0,
+      NEON_CONNECTION_URL_length: process.env.NEON_CONNECTION_URL?.length || 0,
     },
     timestamp: new Date().toISOString(),
   }, {

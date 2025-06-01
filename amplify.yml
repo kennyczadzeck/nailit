@@ -7,6 +7,7 @@ frontend:
         - echo "DATABASE_URL exists:" $DATABASE_URL
         - echo "DIRECT_URL exists:" $DIRECT_URL
         - echo "DATABASE_DIRECT_URL exists:" $DATABASE_DIRECT_URL
+        - echo "NEON_CONNECTION_URL exists:" $NEON_CONNECTION_URL
         - echo "NEXTAUTH_URL exists:" $NEXTAUTH_URL
         - |
           if [[ "$DATABASE_URL" == *"misty-frog"* ]]; then
