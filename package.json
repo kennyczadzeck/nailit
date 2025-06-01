@@ -13,7 +13,8 @@
     "lint": "next lint",
     "db:seed": "tsx prisma/seed.ts",
     "db:reset": "npx prisma db push --force-reset && npm run db:seed",
-    "db:studio": "npx prisma studio"
+    "db:studio": "npx prisma studio",
+    "postinstall": "prisma generate"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
