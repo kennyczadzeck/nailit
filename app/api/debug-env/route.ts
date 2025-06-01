@@ -41,11 +41,12 @@ export async function GET() {
     // Database Configuration
     database: {
       url: secretInfo(dbUrl),
+      migrationUrl: secretInfo(process.env.DATABASE_MIGRATION_URL),
+      bothSet: !!(process.env.DATABASE_URL && process.env.DATABASE_MIGRATION_URL),
+      // Legacy checks (can remove after testing)
       directUrl: secretInfo(process.env.DIRECT_URL),
       directUrlAlt: secretInfo(process.env.DATABASE_DIRECT_URL),
       neonConnectionUrl: secretInfo(process.env.NEON_CONNECTION_URL),
-      anyDirectUrlSet: !!(process.env.DIRECT_URL || process.env.DATABASE_DIRECT_URL || process.env.NEON_CONNECTION_URL),
-      bothSet: !!(process.env.DATABASE_URL && process.env.NEON_CONNECTION_URL),
     },
     
     // Google OAuth (when you set it up)
@@ -58,7 +59,7 @@ export async function GET() {
     // Quick Health Check
     healthCheck: {
       allNextAuthVarsSet: !!(process.env.NEXTAUTH_URL && process.env.NEXTAUTH_SECRET),
-      allDatabaseVarsSet: !!(process.env.DATABASE_URL && process.env.NEON_CONNECTION_URL),
+      allDatabaseVarsSet: !!(process.env.DATABASE_URL && process.env.DATABASE_MIGRATION_URL),
       urlConfigCorrect: checkUrlMatch(process.env.NEXTAUTH_URL, detectedEnvironment),
       readyForAuth: !!(process.env.NEXTAUTH_URL && process.env.NEXTAUTH_SECRET && checkUrlMatch(process.env.NEXTAUTH_URL, detectedEnvironment)),
     },
