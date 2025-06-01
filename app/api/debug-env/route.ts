@@ -43,10 +43,6 @@ export async function GET() {
       url: secretInfo(dbUrl),
       migrationUrl: secretInfo(process.env.DATABASE_MIGRATION_URL),
       bothSet: !!(process.env.DATABASE_URL && process.env.DATABASE_MIGRATION_URL),
-      // Legacy checks (can remove after testing)
-      directUrl: secretInfo(process.env.DIRECT_URL),
-      directUrlAlt: secretInfo(process.env.DATABASE_DIRECT_URL),
-      neonConnectionUrl: secretInfo(process.env.NEON_CONNECTION_URL),
     },
     
     // Google OAuth (when you set it up)
