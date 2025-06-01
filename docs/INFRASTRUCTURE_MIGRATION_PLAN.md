@@ -170,82 +170,317 @@ Set branch-specific build configs:
 - **staging branch**: Use `amplify-staging.yml` (formal migrations)
 - **develop branch**: Use `amplify-develop.yml` (db push)
 
-### **Phase 2: Legacy Cleanup (Next Week)**
+### **Phase 2: Core Email Monitoring Implementation (Weeks 2-4)**
 
-#### **Option A: Keep CDK for Future Services**
-```bash
-# Move CDK to "future services" folder
-mkdir infrastructure/future-services
-mv infrastructure/lib/* infrastructure/future-services/
+#### **🚨 CRITICAL: Missing Core Functionality**
+
+The current simplified architecture is missing **NailIt's core value proposition**:
+
+```
+❌ MISSING COMPONENTS FOR EMAIL MONITORING:
+┌─────────────────────────────────────────────────────────────────┐
+│ 📧 Email Ingestion (Gmail/Outlook APIs)                        │
+├─────────────────────────────────────────────────────────────────┤
+│ 🗄️ Email Storage (S3 for content + attachments)               │
+├─────────────────────────────────────────────────────────────────┤
+│ 🤖 AI Analysis Pipeline (Bedrock/OpenAI)                       │
+├─────────────────────────────────────────────────────────────────┤
+│ 📊 Content Classification & Entity Extraction                  │
+├─────────────────────────────────────────────────────────────────┤
+│ 🔔 Smart Notifications & Alerts                                │
+├─────────────────────────────────────────────────────────────────┤
+│ 📱 SMS Integration (Twilio)                                    │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-#### **Option B: Complete Removal**
-```bash
-# If you want to completely remove CDK
-rm -rf infrastructure/
+#### **✅ SERVERLESS EMAIL MONITORING ARCHITECTURE**
+
+**Replace Complex Lambda Infrastructure With:**
+
+```
+✅ SIMPLIFIED EMAIL PIPELINE:
+┌─────────────────────────────────────────────────────────────────┐
+│ AWS Amplify (Frontend + Next.js API Routes)                    │
+├─────────────────────────────────────────────────────────────────┤
+│ Neon PostgreSQL (Email metadata + analysis results)            │
+├─────────────────────────────────────────────────────────────────┤
+│ Vercel Edge Functions (Email processing + AI analysis)         │
+├─────────────────────────────────────────────────────────────────┤
+│ AWS S3 (Email content + attachments storage)                   │
+├─────────────────────────────────────────────────────────────────┤
+│ Gmail/Outlook APIs (Direct integration)                        │
+├─────────────────────────────────────────────────────────────────┤
+│ OpenAI API (AI analysis + classification)                      │
+├─────────────────────────────────────────────────────────────────┤
+│ Twilio (SMS integration)                                        │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
-#### **Option C: Selective Cleanup**
-Keep useful parts, remove complex ones:
-```typescript
-// Keep: S3, SNS, CloudWatch
-// Remove: VPC, RDS, Lambda, API Gateway, Redis
-```
+#### **Step 1: Add Missing Database Tables**
 
-### **Phase 3: Future Services Strategy**
-
-When you need additional AWS services, add them incrementally:
-
-```typescript
-// infrastructure/services/file-upload-stack.ts
-export class FileUploadStack extends cdk.Stack {
-  // S3 bucket for file uploads
-  // Lambda for file processing
-  // CloudFront for CDN
+**Add to Prisma Schema:**
+```sql
+-- Email integration tables
+model EmailSettings {
+  // Already exists in schema ✅
 }
 
-// infrastructure/services/notification-stack.ts  
-export class NotificationStack extends cdk.Stack {
-  // SNS for push notifications
-  // SES for email sending
-  // EventBridge for webhooks
+model EmailMessage {
+  id              String   @id @default(cuid())
+  
+  // Email metadata
+  messageId       String   @unique
+  threadId        String?
+  subject         String?
+  sender          String
+  recipients      String[]
+  sentAt          DateTime
+  receivedAt      DateTime
+  
+  // Content storage
+  bodyText        String?
+  bodyHtml        String?
+  s3ContentPath   String?  // S3 path for full content
+  attachmentPaths String[] // S3 paths for attachments
+  
+  // AI analysis results
+  relevanceScore  Float?
+  aiSummary       String?
+  classification  Json?    // Categories, entities, etc.
+  actionItems     Json?    // Extracted action items
+  urgencyLevel    String?  // low, normal, high, urgent
+  
+  // Processing status
+  status          String   @default("pending") // pending, processed, archived, error
+  processedAt     DateTime?
+  
+  // Relations
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  projectId       String?
+  project         Project? @relation(fields: [projectId], references: [id])
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@map("email_messages")
+}
+
+model SmsMessage {
+  id              String   @id @default(cuid())
+  
+  // SMS metadata
+  twilioSid       String   @unique
+  fromNumber      String
+  toNumber        String
+  body            String
+  direction       String   // inbound, outbound
+  
+  // AI analysis (similar to email)
+  relevanceScore  Float?
+  aiSummary       String?
+  classification  Json?
+  urgencyLevel    String?
+  
+  // Relations
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  projectId       String?
+  project         Project? @relation(fields: [projectId], references: [id])
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
+  @@map("sms_messages")
 }
 ```
 
-## 🎯 **Decision Required**
+#### **Step 2: Add Core Email Processing Routes**
 
-### **Immediate Choice: How to Handle Current CDK Stack?**
-
-**Option 1: Archive (Recommended)**
-```bash
-mkdir archive/
-mv infrastructure/ archive/legacy-infrastructure/
-# Document why it's archived in README
+**New API Routes Needed:**
+```
+app/api/
+├── email/
+│   ├── webhook/gmail/route.ts        # Gmail push notifications
+│   ├── webhook/outlook/route.ts      # Outlook Graph webhooks
+│   ├── oauth/gmail/route.ts          # Gmail OAuth flow
+│   ├── oauth/outlook/route.ts        # Outlook OAuth flow
+│   ├── sync/route.ts                 # Manual email sync
+│   └── process/route.ts              # Email processing endpoint
+├── sms/
+│   ├── webhook/route.ts              # Twilio SMS webhooks
+│   └── send/route.ts                 # Send SMS endpoint
+├── ai/
+│   ├── analyze-email/route.ts        # AI email analysis
+│   ├── analyze-sms/route.ts          # AI SMS analysis
+│   └── classify-content/route.ts     # Content classification
+└── storage/
+    ├── upload/route.ts               # S3 upload for attachments
+    └── download/route.ts             # S3 download with auth
 ```
 
-**Option 2: Selective Keep**
+#### **Step 3: Required Environment Variables**
+
+**Add to all environments:**
 ```bash
-# Keep only S3 and SNS components
-# Remove VPC, RDS, Lambda complexity
+# Email Integration
+GMAIL_CLIENT_ID=your_gmail_client_id
+GMAIL_CLIENT_SECRET=your_gmail_client_secret
+OUTLOOK_CLIENT_ID=your_outlook_client_id
+OUTLOOK_CLIENT_SECRET=your_outlook_client_secret
+
+# AI Processing
+OPENAI_API_KEY=your_openai_api_key
+
+# Storage
+AWS_ACCESS_KEY_ID=your_aws_access_key
+AWS_SECRET_ACCESS_KEY=your_aws_secret_key
+AWS_S3_BUCKET_NAME=nailit-email-storage
+AWS_S3_REGION=us-east-1
+
+# SMS Integration
+TWILIO_ACCOUNT_SID=your_twilio_account_sid
+TWILIO_AUTH_TOKEN=your_twilio_auth_token
+TWILIO_PHONE_NUMBER=+1234567890
+
+# Webhooks
+WEBHOOK_SECRET=your_webhook_verification_secret
 ```
 
-**Option 3: Complete Removal**
-```bash
-rm -rf infrastructure/
-# Start fresh when you need AWS services
+#### **Step 4: Email Processing Implementation**
+
+**Core Email Processing Flow:**
+```typescript
+// app/api/email/webhook/gmail/route.ts
+export async function POST(request: Request) {
+  // 1. Verify webhook authenticity
+  // 2. Extract message ID from Gmail push notification
+  // 3. Fetch full email content via Gmail API
+  // 4. Store email content in S3
+  // 5. Store metadata in Neon database
+  // 6. Queue for AI analysis
+  // 7. Process AI analysis
+  // 8. Update database with results
+  // 9. Send notifications if urgent
+}
+
+// app/api/ai/analyze-email/route.ts
+export async function POST(request: Request) {
+  // 1. Retrieve email content from S3
+  // 2. Call OpenAI for analysis:
+  //    - Relevance scoring (construction project related?)
+  //    - Content classification (quote, invoice, schedule, etc.)
+  //    - Entity extraction (dates, amounts, contacts)
+  //    - Action item detection
+  //    - Urgency assessment
+  // 3. Store analysis results in database
+  // 4. Trigger notifications if needed
+}
 ```
 
-## 📊 **Cost & Complexity Comparison**
+#### **Step 5: Required AWS Services (Minimal)**
 
-### **Legacy CDK Architecture**
-- **Monthly Cost**: ~$50-100 (VPC, RDS, Redis, NAT Gateway)
-- **Complexity**: High (VPC management, security groups, etc.)
-- **Maintenance**: Significant (updates, monitoring, scaling)
+**S3 Bucket Configuration:**
+```bash
+# Create S3 bucket for email storage
+aws s3 mb s3://nailit-email-storage-production
+aws s3 mb s3://nailit-email-storage-staging  
+aws s3 mb s3://nailit-email-storage-development
 
-### **New Serverless Architecture**
-- **Monthly Cost**: ~$5-20 (Amplify + Neon free tier)
-- **Complexity**: Low (managed services only)
-- **Maintenance**: Minimal (platform updates handled automatically)
+# Set up bucket policies for security
+# Configure lifecycle policies for cost optimization
+```
+
+**IAM Role for S3 Access:**
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject"
+      ],
+      "Resource": [
+        "arn:aws:s3:::nailit-email-storage-*/*"
+      ]
+    }
+  ]
+}
+```
+
+### **Phase 3: SMS & Advanced Features (Weeks 5-6)**
+
+#### **SMS Integration Implementation**
+- Twilio webhook endpoint for incoming SMS
+- SMS processing and AI analysis pipeline  
+- Project phone number management
+- Two-way SMS communication
+
+#### **Advanced Email Features**
+- Email thread management and conversation tracking
+- Attachment processing and OCR
+- Advanced project association algorithms
+- Email search and filtering capabilities
+
+### **Phase 4: AI Enhancement & Optimization (Weeks 7-8)**
+
+#### **Advanced AI Features**
+- Fine-tuned models for construction domain
+- Multi-modal analysis (text + images)
+- Predictive analytics for project issues
+- Custom classification categories per user
+
+#### **Performance Optimization**
+- Email processing performance optimization
+- Caching strategies for AI results
+- Background processing for large email volumes
+- Real-time vs batch processing strategies
+
+## 💰 **Updated Cost Analysis With Core Features**
+
+### **Complete Serverless Architecture Cost:**
+- **AWS Amplify**: $5-15/month (hosting + build minutes)
+- **Neon PostgreSQL**: $0-25/month (free tier → pro)
+- **AWS S3**: $10-50/month (email content storage)
+- **OpenAI API**: $50-200/month (email analysis volume)
+- **Twilio**: $1-10/month (SMS volume)
+- **Gmail/Outlook APIs**: Free (within reasonable limits)
+
+**Total: $66-300/month** (vs. $600-1500 with complex infrastructure)
+
+### **Scaling Strategy:**
+- **0-100 users**: Stay within free tiers (~$66/month)
+- **100-1000 users**: Scale gradually (~$150/month)
+- **1000+ users**: Add dedicated infrastructure as needed
+
+### **Phase 3: Legacy Cleanup (Next Week)**
+
+**✅ DECISION: Archive Legacy Infrastructure**
+
+The original CDK infrastructure was designed for a different architecture pattern. With our successful serverless approach that provides all the same functionality at 80% cost reduction, we should:
+
+1. **Archive legacy CDK code** to `archive/legacy-infrastructure/`
+2. **Document the decision** in the archive README
+3. **Focus on implementing email monitoring features** (see `docs/EMAIL_MONITORING_IMPLEMENTATION.md`)
+
+### **Phase 4: Advanced Features Implementation (Weeks 9-12)**
+
+**📧 Email Monitoring System Implementation**
+
+Detailed implementation guide: **`docs/EMAIL_MONITORING_IMPLEMENTATION.md`**
+
+**Core Components to Implement:**
+- Gmail/Outlook OAuth integration and webhooks
+- AI-powered email analysis via OpenAI
+- S3 storage for email content and attachments
+- Advanced project association algorithms
+- SMS integration via Twilio
+- Real-time dashboard updates
+
+**Estimated Development Time:** 8 weeks for full email monitoring system
 
 ## ✅ **Recommended Next Actions**
 
