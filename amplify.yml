@@ -3,12 +3,13 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "Environment variables loading test..."
+        - echo "PRODUCTION ENVIRONMENT - Formal migration workflow"
+        - echo "Environment variables check..."
         - echo "DATABASE_URL exists:" $DATABASE_URL
         - echo "NEXTAUTH_URL exists:" $NEXTAUTH_URL
         - npm install --legacy-peer-deps
-        - echo "Pushing Prisma schema to database..."
-        - npx prisma db push --accept-data-loss
+        - echo "Running Prisma migrations (production)..."
+        - npx prisma migrate deploy
         - echo "Generating Prisma client..."
         - npx prisma generate
     build:

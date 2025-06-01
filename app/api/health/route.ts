@@ -2,6 +2,17 @@ import { NextResponse } from 'next/server';
 import { prisma } from '../../lib/prisma';
 
 export async function GET() {
+  // Determine environment based on DATABASE_URL
+  const databaseUrl = process.env.DATABASE_URL || '';
+  const environment = databaseUrl.includes('misty-frog') ? 'production' :
+                     databaseUrl.includes('raspy-sound') ? 'staging' : 
+                     databaseUrl.includes('still-paper') ? 'development' : 'unknown';
+
+  // Determine Neon branch ID
+  const branchId = databaseUrl.includes('misty-frog') ? 'br-yellow-mouse-a5c2gnvp' :
+                   databaseUrl.includes('raspy-sound') ? 'br-lively-brook-a5wck55u' :
+                   databaseUrl.includes('still-paper') ? 'br-late-wildflower-a5s97ll8' : 'unknown';
+
   try {
     const healthChecks = await Promise.allSettled([
       // Basic database connectivity
@@ -31,9 +42,22 @@ export async function GET() {
 
     return NextResponse.json({
       status: allHealthy ? 'healthy' : 'degraded',
+      environment: environment,
+      nodeEnv: process.env.NODE_ENV,
+      database: {
+        environment: environment,
+        branchId: branchId,
+        connected: !!process.env.DATABASE_URL,
+        hasDirectUrl: !!process.env.DIRECT_URL
+      },
+      auth: {
+        nextauthUrl: process.env.NEXTAUTH_URL,
+        hasSecret: !!process.env.NEXTAUTH_SECRET,
+        hasGoogleClient: !!process.env.GOOGLE_CLIENT_ID
+      },
       timestamp: new Date().toISOString(),
-      checks: results,
-      environment: process.env.NODE_ENV || 'unknown'
+      version: process.env.npm_package_version || 'unknown',
+      checks: results
     }, { 
       status: allHealthy ? 200 : 503 
     })
@@ -42,9 +66,22 @@ export async function GET() {
     console.error('Health check failed:', error)
     return NextResponse.json({
       status: 'unhealthy',
+      environment: environment,
+      nodeEnv: process.env.NODE_ENV,
+      database: {
+        environment: environment,
+        branchId: branchId,
+        connected: !!process.env.DATABASE_URL,
+        hasDirectUrl: !!process.env.DIRECT_URL
+      },
+      auth: {
+        nextauthUrl: process.env.NEXTAUTH_URL,
+        hasSecret: !!process.env.NEXTAUTH_SECRET,
+        hasGoogleClient: !!process.env.GOOGLE_CLIENT_ID
+      },
       timestamp: new Date().toISOString(),
-      error: error instanceof Error ? error.message : 'Unknown error',
-      environment: process.env.NODE_ENV || 'unknown'
+      version: process.env.npm_package_version || 'unknown',
+      error: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 503 })
   }
 } 

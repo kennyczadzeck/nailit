@@ -3,8 +3,8 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "🚀 DEVELOPMENT ENVIRONMENT DEPLOYMENT"
-        - echo "Environment variables loading test..."
+        - echo "DEVELOPMENT ENVIRONMENT - Rapid iteration workflow"
+        - echo "Environment variables check..."
         - echo "DATABASE_URL exists:" $DATABASE_URL
         - echo "NEXTAUTH_URL exists:" $NEXTAUTH_URL
         - npm install --legacy-peer-deps
