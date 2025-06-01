@@ -65,16 +65,29 @@ export async function GET() {
 
 // POST /api/projects - Create a new project
 export async function POST(request: NextRequest) {
+  console.log('=== PROJECT ENDPOINT HIT ===');
+  
   try {
+    console.log('Step 1: Getting session...');
     const session = await getServerSession(authOptions)
+    console.log('Session result:', session ? 'Found' : 'Not found', session?.user?.id);
     
     if (!session?.user?.id) {
+      console.log('Session validation failed');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const body = await request.json()
-    console.log('Received project creation request:', body)
+    console.log('Step 2: Parsing request body...');
+    let body;
+    try {
+      body = await request.json()
+      console.log('Body parsed successfully');
+    } catch (parseError) {
+      console.error('Body parsing failed:', parseError);
+      return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+    }
     
+    console.log('Step 3: Extracting fields...');
     const {
       name,
       description,
@@ -87,6 +100,8 @@ export async function POST(request: NextRequest) {
       endDate,
     } = body
 
+    console.log('Received project creation request:', body)
+    
     // Validate required fields
     if (!name || !startDate || !address || !endDate || !budget || !description) {
       console.log('Missing required fields:', { 
