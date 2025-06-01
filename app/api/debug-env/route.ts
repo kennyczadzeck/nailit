@@ -44,6 +44,11 @@ export async function GET() {
       migrationUrl: secretInfo(process.env.DATABASE_MIGRATION_URL),
       bothSet: !!(process.env.DATABASE_URL && process.env.DATABASE_MIGRATION_URL),
       
+      // Non-database-related name tests
+      backupConnection: secretInfo(process.env.BACKUP_CONNECTION_STRING),
+      secondaryApp: secretInfo(process.env.SECONDARY_APP_URL),
+      prismaConfig: secretInfo(process.env.PRISMA_CONFIG_URL),
+      
       // Diagnostic tests
       testMigrationUrl: secretInfo(process.env.TEST_MIGRATION_URL),
       shortMigrationUrl: secretInfo(process.env.DATABASE_MIGRATION_URL_SHORT),
