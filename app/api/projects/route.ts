@@ -132,48 +132,67 @@ export async function POST(request: NextRequest) {
     const generalContractor = teamMembers.find(member => member.role === 'GENERAL_CONTRACTOR');
 
     // Create the project with team members and enhanced address data
+    console.log('Creating project with data:', {
+      name,
+      description: description || null,
+      contractor: generalContractor?.name || null,
+      address: address || null,
+      addressLat: addressLat || null,
+      addressLng: addressLng || null,
+      budget: budget || null,
+      startDate: new Date(startDate),
+      endDate: endDate ? new Date(endDate) : null,
+      userId: session.user.id,
+      teamMembersData: teamMembers
+    });
+
+    // Create project first without nested creates
     const project = await prisma.project.create({
       data: {
         name,
         description: description || null,
-        contractor: generalContractor?.name || null, // Keep for backward compatibility
+        contractor: generalContractor?.name || null,
         address: address || null,
-        addressLat: addressLat || null,
-        addressLng: addressLng || null,
         budget: budget || null,
         startDate: new Date(startDate),
         endDate: endDate ? new Date(endDate) : null,
-        userId: session.user.id,
-        // Create team members
-        teamMembers: {
-          create: teamMembers.map(member => ({
-            name: member.name,
-            email: member.email,
-            role: member.role
-          }))
-        },
-        // Auto-create email settings with monitoring enabled
-        emailSettings: {
-          create: {
-            monitoringEnabled: true,
-            gmailConnected: true, // Assume connected since we have Google OAuth
-            emailFilters: {
-              // Store emails to monitor from all team members
-              contractorEmail: generalContractor?.email,
-              teamEmails: teamMembers.map(member => member.email),
-            },
-            notificationsEnabled: true,
-            weeklyReports: true,
-            highPriorityAlerts: true,
-          }
-        }
-      },
-      include: {
-        emailSettings: true,
-        teamMembers: true,
-        user: true,
+        userId: session.user.id
       }
-    })
+    });
+
+    console.log('Project created:', project);
+
+    // Create team members separately
+    for (const member of teamMembers) {
+      console.log('Creating team member:', member);
+      await prisma.teamMember.create({
+        data: {
+          name: member.name,
+          email: member.email,
+          role: member.role,
+          projectId: project.id
+        }
+      });
+    }
+
+    // Create email settings separately
+    console.log('Creating email settings...');
+    await prisma.emailSettings.create({
+      data: {
+        projectId: project.id,
+        monitoringEnabled: true,
+        gmailConnected: true,
+        emailFilters: {
+          contractorEmail: generalContractor?.email,
+          teamEmails: teamMembers.map(member => member.email),
+        },
+        notificationsEnabled: true,
+        weeklyReports: true,
+        highPriorityAlerts: true,
+      }
+    });
+
+    console.log('Project creation completed successfully');
 
     return NextResponse.json(project, { status: 201 })
   } catch (error) {
