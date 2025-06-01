@@ -20,6 +20,7 @@ export class NailItInfrastructureStack extends cdk.Stack {
     super(scope, id, props);
 
     const { environment, envConfig } = props;
+    const accountId = props.env?.account || this.account;
 
     // =================================
     // S3 STORAGE
@@ -27,7 +28,7 @@ export class NailItInfrastructureStack extends cdk.Stack {
 
     // Email Storage Bucket
     const emailBucket = new s3.Bucket(this, 'EmailStorageBucket', {
-      bucketName: `nailit-${envConfig.resourceSuffix}-emails-${props.env?.account || 'unknown'}`,
+      bucketName: `nailit-${envConfig.resourceSuffix}-emails-${accountId}`,
       versioned: true,
       lifecycleRules: [
         {
