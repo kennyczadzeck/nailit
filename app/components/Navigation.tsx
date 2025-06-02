@@ -7,18 +7,18 @@ import { useSession, signOut } from 'next-auth/react';
 import { cn } from '../lib/utils';
 import { useProject } from './ProjectContext';
 import { 
-  HomeIcon, 
-  ClockIcon, 
-  FlagIcon, 
+  HomeIcon,
+  ClockIcon,
+  FlagIcon,
   Cog6ToothIcon,
   UserCircleIcon,
   ChevronDownIcon,
   ArrowRightOnRectangleIcon,
   FolderIcon,
   ArchiveBoxIcon,
-  PlusIcon,
   Bars3Icon,
-  XMarkIcon
+  XMarkIcon,
+  ChartBarIcon,
 } from '@heroicons/react/24/outline';
 
 const navigation = [

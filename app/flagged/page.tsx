@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Navigation } from '../components/Navigation';
-import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
+import { Card, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { FlaggedItemModal } from '../components/FlaggedItemModal';
 import { 

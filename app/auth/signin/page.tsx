@@ -1,12 +1,11 @@
 'use client';
 
 import { signIn, useSession } from 'next-auth/react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useState, Suspense } from 'react';
 import { Button } from '../../components/ui/Button';
 
 function SignInContent() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session, status } = useSession();
   const [signing, setSigning] = useState(false);

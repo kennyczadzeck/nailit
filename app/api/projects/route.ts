@@ -91,8 +91,6 @@ export async function POST(request: NextRequest) {
       description,
       teamMembers,
       address,
-      addressLat,
-      addressLng,
       budget,
       startDate,
       endDate,

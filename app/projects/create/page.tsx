@@ -146,19 +146,6 @@ export default function CreateProject() {
     setTeamMembers(prev => prev.filter((_, i) => i !== index));
   };
 
-  const getRoleLabel = (role: string) => {
-    switch (role) {
-      case 'GENERAL_CONTRACTOR':
-        return 'General Contractor';
-      case 'ARCHITECT_DESIGNER':
-        return 'Architect/Designer';
-      case 'PROJECT_MANAGER':
-        return 'Project Manager';
-      default:
-        return role;
-    }
-  };
-
   // Get available roles for team member (excluding General Contractor for non-first members)
   const getAvailableRoles = (index: number) => {
     if (index === 0) {

@@ -31,7 +31,7 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
-    async jwt({ token, user, account }) {
+    async jwt({ token, user }) {
       // On first sign in, get user ID from database
       if (user) {
         token.sub = user.id;

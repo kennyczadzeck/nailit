@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '../../lib/prisma'
 
 // Simple classification function - replace with actual AI implementation
-async function classifyEmailContent(content: string, title: string) {
+async function classifyEmailContent(emailContent: string, emailSubject: string) {
   // Mock classification for now
   return {
     category: 'SCOPE' as const,
@@ -15,12 +15,12 @@ export async function POST(request: NextRequest) {
   try {
     const { 
       content,
-      subject: title,
+      subject,
       projectId,
       emailDate 
     } = await request.json()
 
-    if (!content || !title || !projectId) {
+    if (!content || !subject || !projectId) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -28,12 +28,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Classify the email content using AI
-    const classification = await classifyEmailContent(content, title)
+    const classification = await classifyEmailContent(content, subject)
 
     // Create flagged item from email content
     const flaggedItem = await prisma.flaggedItem.create({
       data: {
-        title,
+        title: subject,
         description: content,
         category: classification.category,
         impact: classification.suggestedImpact,

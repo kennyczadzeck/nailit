@@ -15,7 +15,7 @@ import {
   EnvelopeIcon,
   CogIcon,
   ExclamationTriangleIcon,
-  ClockIcon
+  TrashIcon
 } from '@heroicons/react/24/outline';
 
 interface AddressData {
@@ -25,7 +25,7 @@ interface AddressData {
 }
 
 export default function ProjectSettingsPage() {
-  const { data: session } = useSession();
+  const { data: sessionData, status } = useSession();
   const { currentProject: project, loading, refreshProjects } = useProject();
   const [archiving, setArchiving] = useState(false);
   const [deleting, setDeleting] = useState(false);
