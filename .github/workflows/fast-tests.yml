@@ -23,8 +23,21 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
 
+    - name: 🔍 Debug Environment
+      run: |
+        echo "Node version: $(node --version)"
+        echo "NPM version: $(npm --version)"
+        echo "Working directory: $(pwd)"
+        echo "Files in root: $(ls -la)"
+        echo "Package.json exists: $(test -f package.json && echo "Yes" || echo "No")"
+
     - name: 📥 Install dependencies
       run: npm ci --legacy-peer-deps
+
+    - name: 🔍 Post-install debug
+      run: |
+        echo "Node modules exists: $(test -d node_modules && echo "Yes" || echo "No")"
+        echo "Prisma client exists: $(test -d node_modules/@prisma/client && echo "Yes" || echo "No")"
 
     - name: 🔍 Type checking
       run: npm run type-check
