@@ -93,7 +93,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           DATABASE_MIGRATION_URL: ${{ secrets.DATABASE_MIGRATION_URL }}
-        run: npx prisma db execute --command "SELECT 1" --schema prisma/schema.prisma
+        run: echo "SELECT 1;" | npx prisma db execute --stdin --schema prisma/schema.prisma
 
   deployment-ready:
     runs-on: ubuntu-latest
