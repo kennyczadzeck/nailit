@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
       console.error('JSON parse error:', parseError);
       return NextResponse.json({ 
         error: 'Invalid JSON in request body',
-        parseError: parseError.message
+        parseError: (parseError as Error).message
       }, { status: 400 });
     }
 
@@ -58,22 +58,22 @@ export async function POST(request: NextRequest) {
         testProjectId: simpleProject.id
       });
       
-    } catch (createError: any) {
+    } catch (createError: unknown) {
       console.error('Project creation error:', createError);
       return NextResponse.json({
         error: 'Project creation failed',
-        message: createError.message,
-        code: createError.code,
-        stack: createError.stack
+        message: createError instanceof Error ? createError.message : 'Unknown error',
+        code: createError instanceof Error && 'code' in createError ? String((createError as Record<string, unknown>).code) : undefined,
+        stack: createError instanceof Error ? createError.stack : undefined
       }, { status: 500 });
     }
     
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Test project creation error:', error);
     return NextResponse.json({
-      error: error.message,
-      code: error.code,
-      stack: error.stack
+      error: error instanceof Error ? error.message : 'Unknown error',
+      code: error instanceof Error && 'code' in error ? String((error as Record<string, unknown>).code) : undefined,
+      stack: error instanceof Error ? error.stack : undefined
     }, { status: 500 });
   }
 } 

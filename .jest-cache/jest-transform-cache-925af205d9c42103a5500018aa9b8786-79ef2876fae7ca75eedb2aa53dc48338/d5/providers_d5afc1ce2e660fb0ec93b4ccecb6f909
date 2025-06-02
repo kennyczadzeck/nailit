@@ -1,0 +1,210 @@
+ba6585d8660edee7e993e28f21641cd9
+'use client';
+"use strict";
+
+/* istanbul ignore next */
+function cov_2g9aca8uz0() {
+  var path = "/Users/kennyc/code/personal/nailit/app/providers.tsx";
+  var hash = "afd35e9881579e4c43e0b078705456bf0e769116";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
+  var coverageData = {
+    path: "/Users/kennyc/code/personal/nailit/app/providers.tsx",
+    statementMap: {
+      "0": {
+        start: {
+          line: 3,
+          column: 0
+        },
+        end: {
+          line: 5,
+          column: 3
+        }
+      },
+      "1": {
+        start: {
+          line: 6,
+          column: 0
+        },
+        end: {
+          line: 11,
+          column: 3
+        }
+      },
+      "2": {
+        start: {
+          line: 9,
+          column: 8
+        },
+        end: {
+          line: 9,
+          column: 25
+        }
+      },
+      "3": {
+        start: {
+          line: 12,
+          column: 20
+        },
+        end: {
+          line: 12,
+          column: 48
+        }
+      },
+      "4": {
+        start: {
+          line: 13,
+          column: 15
+        },
+        end: {
+          line: 13,
+          column: 41
+        }
+      },
+      "5": {
+        start: {
+          line: 14,
+          column: 24
+        },
+        end: {
+          line: 14,
+          column: 62
+        }
+      },
+      "6": {
+        start: {
+          line: 16,
+          column: 4
+        },
+        end: {
+          line: 20,
+          column: 7
+        }
+      }
+    },
+    fnMap: {
+      "0": {
+        name: "(anonymous_0)",
+        decl: {
+          start: {
+            line: 8,
+            column: 9
+          },
+          end: {
+            line: 8,
+            column: 10
+          }
+        },
+        loc: {
+          start: {
+            line: 8,
+            column: 20
+          },
+          end: {
+            line: 10,
+            column: 5
+          }
+        },
+        line: 8
+      },
+      "1": {
+        name: "Providers",
+        decl: {
+          start: {
+            line: 15,
+            column: 9
+          },
+          end: {
+            line: 15,
+            column: 18
+          }
+        },
+        loc: {
+          start: {
+            line: 15,
+            column: 33
+          },
+          end: {
+            line: 21,
+            column: 1
+          }
+        },
+        line: 15
+      }
+    },
+    branchMap: {},
+    s: {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0
+    },
+    f: {
+      "0": 0,
+      "1": 0
+    },
+    b: {},
+    inputSourceMap: {
+      version: 3,
+      sources: ["/Users/kennyc/code/personal/nailit/app/providers.tsx"],
+      sourcesContent: ["'use client';\n\nimport { SessionProvider } from 'next-auth/react';\nimport { ReactNode } from 'react';\nimport { ProjectProvider } from './components/ProjectContext';\n\ninterface ProvidersProps {\n  children: ReactNode;\n}\n\nexport function Providers({ children }: ProvidersProps) {\n  return (\n    <SessionProvider>\n      <ProjectProvider>\n        {children}\n      </ProjectProvider>\n    </SessionProvider>\n  );\n} "],
+      names: ["Providers", "children", "SessionProvider", "ProjectProvider"],
+      mappings: "AAAA;;;;;+BAUgBA;;;eAAAA;;;;uBARgB;gCAEA;AAMzB,SAASA,UAAU,EAAEC,QAAQ,EAAkB;IACpD,qBACE,qBAACC,sBAAe;kBACd,cAAA,qBAACC,+BAAe;sBACbF;;;AAIT"
+    },
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "afd35e9881579e4c43e0b078705456bf0e769116"
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
+  }
+  var actualCoverage = coverage[path];
+  {
+    // @ts-ignore
+    cov_2g9aca8uz0 = function () {
+      return actualCoverage;
+    };
+  }
+  return actualCoverage;
+}
+cov_2g9aca8uz0();
+cov_2g9aca8uz0().s[0]++;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/* istanbul ignore next */
+cov_2g9aca8uz0().s[1]++;
+Object.defineProperty(exports, "Providers", {
+  enumerable: true,
+  get: function () {
+    /* istanbul ignore next */
+    cov_2g9aca8uz0().f[0]++;
+    cov_2g9aca8uz0().s[2]++;
+    return Providers;
+  }
+});
+const _jsxruntime =
+/* istanbul ignore next */
+(cov_2g9aca8uz0().s[3]++, require("react/jsx-runtime"));
+const _react =
+/* istanbul ignore next */
+(cov_2g9aca8uz0().s[4]++, require("next-auth/react"));
+const _ProjectContext =
+/* istanbul ignore next */
+(cov_2g9aca8uz0().s[5]++, require("./components/ProjectContext"));
+function Providers({
+  children
+}) {
+  /* istanbul ignore next */
+  cov_2g9aca8uz0().f[1]++;
+  cov_2g9aca8uz0().s[6]++;
+  return /*#__PURE__*/(0, _jsxruntime.jsx)(_react.SessionProvider, {
+    children: /*#__PURE__*/(0, _jsxruntime.jsx)(_ProjectContext.ProjectProvider, {
+      children: children
+    })
+  });
+}
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJjb3ZfMmc5YWNhOHV6MCIsImFjdHVhbENvdmVyYWdlIiwicyIsIlByb3ZpZGVycyIsImNoaWxkcmVuIiwiZiIsIl9qc3hydW50aW1lIiwianN4IiwiX3JlYWN0IiwiU2Vzc2lvblByb3ZpZGVyIiwiX1Byb2plY3RDb250ZXh0IiwiUHJvamVjdFByb3ZpZGVyIl0sInNvdXJjZXMiOlsiL1VzZXJzL2tlbm55Yy9jb2RlL3BlcnNvbmFsL25haWxpdC9hcHAvcHJvdmlkZXJzLnRzeCJdLCJzb3VyY2VzQ29udGVudCI6WyIndXNlIGNsaWVudCc7XG5cbmltcG9ydCB7IFNlc3Npb25Qcm92aWRlciB9IGZyb20gJ25leHQtYXV0aC9yZWFjdCc7XG5pbXBvcnQgeyBSZWFjdE5vZGUgfSBmcm9tICdyZWFjdCc7XG5pbXBvcnQgeyBQcm9qZWN0UHJvdmlkZXIgfSBmcm9tICcuL2NvbXBvbmVudHMvUHJvamVjdENvbnRleHQnO1xuXG5pbnRlcmZhY2UgUHJvdmlkZXJzUHJvcHMge1xuICBjaGlsZHJlbjogUmVhY3ROb2RlO1xufVxuXG5leHBvcnQgZnVuY3Rpb24gUHJvdmlkZXJzKHsgY2hpbGRyZW4gfTogUHJvdmlkZXJzUHJvcHMpIHtcbiAgcmV0dXJuIChcbiAgICA8U2Vzc2lvblByb3ZpZGVyPlxuICAgICAgPFByb2plY3RQcm92aWRlcj5cbiAgICAgICAge2NoaWxkcmVufVxuICAgICAgPC9Qcm9qZWN0UHJvdmlkZXI+XG4gICAgPC9TZXNzaW9uUHJvdmlkZXI+XG4gICk7XG59ICJdLCJtYXBwaW5ncyI6IkFBQUE7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0lBV0U7SUFBQUEsY0FBQSxZQUFBQSxDQUFBO01BQUEsT0FBQUMsY0FBQTtJQUFBO0VBQUE7RUFBQSxPQUFBQSxjQUFBO0FBQUE7QUFBQUQsY0FBQTtBQUFBQSxjQUFBLEdBQUFFLENBQUE7Ozs7OzsrQkFEYzs7Ozs7O1dBQUFDLFNBQUE7Ozs7Ozs7O2tDQVJnQjs7O2tDQUVBO0FBTXpCLFNBQVNBLFVBQVU7RUFBRUM7QUFBUSxDQUFrQjtFQUFBO0VBQUFKLGNBQUEsR0FBQUssQ0FBQTtFQUFBTCxjQUFBLEdBQUFFLENBQUE7RUFDcEQsb0JBQ0UsSUFBQUksV0FBQSxDQUFBQyxHQUFBLEVBQUNDLE1BQUEsQ0FBQUMsZUFBZTtjQUNkLGlCQUFBSCxXQUFBLENBQUFDLEdBQUEsRUFBQ0csZUFBQSxDQUFBQyxlQUFlO2dCQUNiUDs7O0FBSVQiLCJpZ25vcmVMaXN0IjpbXX0=

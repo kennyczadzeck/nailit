@@ -1,0 +1,759 @@
+d9f80fce173935e4e9a97bdad9cf7c67
+// AWS Configuration for NailIt
+// This file centralizes AWS configuration and environment variables
+"use strict";
+
+/* istanbul ignore next */
+function cov_r80vpylrr() {
+  var path = "/Users/kennyc/code/personal/nailit/app/lib/aws-config.ts";
+  var hash = "9b170b4299d2fbacc9db095632083b9eeabda572";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
+  var coverageData = {
+    path: "/Users/kennyc/code/personal/nailit/app/lib/aws-config.ts",
+    statementMap: {
+      "0": {
+        start: {
+          line: 4,
+          column: 0
+        },
+        end: {
+          line: 6,
+          column: 3
+        }
+      },
+      "1": {
+        start: {
+          line: 8,
+          column: 4
+        },
+        end: {
+          line: 11,
+          column: 7
+        }
+      },
+      "2": {
+        start: {
+          line: 8,
+          column: 24
+        },
+        end: {
+          line: 11,
+          column: 7
+        }
+      },
+      "3": {
+        start: {
+          line: 13,
+          column: 0
+        },
+        end: {
+          line: 23,
+          column: 3
+        }
+      },
+      "4": {
+        start: {
+          line: 15,
+          column: 8
+        },
+        end: {
+          line: 15,
+          column: 26
+        }
+      },
+      "5": {
+        start: {
+          line: 18,
+          column: 8
+        },
+        end: {
+          line: 18,
+          column: 25
+        }
+      },
+      "6": {
+        start: {
+          line: 21,
+          column: 8
+        },
+        end: {
+          line: 21,
+          column: 33
+        }
+      },
+      "7": {
+        start: {
+          line: 24,
+          column: 18
+        },
+        end: {
+          line: 44,
+          column: 1
+        }
+      },
+      "8": {
+        start: {
+          line: 46,
+          column: 21
+        },
+        end: {
+          line: 48,
+          column: 5
+        }
+      },
+      "9": {
+        start: {
+          line: 49,
+          column: 20
+        },
+        end: {
+          line: 49,
+          column: 61
+        }
+      },
+      "10": {
+        start: {
+          line: 49,
+          column: 43
+        },
+        end: {
+          line: 49,
+          column: 60
+        }
+      },
+      "11": {
+        start: {
+          line: 50,
+          column: 4
+        },
+        end: {
+          line: 52,
+          column: 5
+        }
+      },
+      "12": {
+        start: {
+          line: 51,
+          column: 8
+        },
+        end: {
+          line: 51,
+          column: 81
+        }
+      },
+      "13": {
+        start: {
+          line: 53,
+          column: 4
+        },
+        end: {
+          line: 53,
+          column: 32
+        }
+      },
+      "14": {
+        start: {
+          line: 55,
+          column: 19
+        },
+        end: {
+          line: 55,
+          column: 35
+        }
+      }
+    },
+    fnMap: {
+      "0": {
+        name: "_export",
+        decl: {
+          start: {
+            line: 7,
+            column: 9
+          },
+          end: {
+            line: 7,
+            column: 16
+          }
+        },
+        loc: {
+          start: {
+            line: 7,
+            column: 30
+          },
+          end: {
+            line: 12,
+            column: 1
+          }
+        },
+        line: 7
+      },
+      "1": {
+        name: "(anonymous_1)",
+        decl: {
+          start: {
+            line: 14,
+            column: 4
+          },
+          end: {
+            line: 14,
+            column: 5
+          }
+        },
+        loc: {
+          start: {
+            line: 14,
+            column: 22
+          },
+          end: {
+            line: 16,
+            column: 5
+          }
+        },
+        line: 14
+      },
+      "2": {
+        name: "(anonymous_2)",
+        decl: {
+          start: {
+            line: 17,
+            column: 4
+          },
+          end: {
+            line: 17,
+            column: 5
+          }
+        },
+        loc: {
+          start: {
+            line: 17,
+            column: 21
+          },
+          end: {
+            line: 19,
+            column: 5
+          }
+        },
+        line: 17
+      },
+      "3": {
+        name: "(anonymous_3)",
+        decl: {
+          start: {
+            line: 20,
+            column: 4
+          },
+          end: {
+            line: 20,
+            column: 5
+          }
+        },
+        loc: {
+          start: {
+            line: 20,
+            column: 29
+          },
+          end: {
+            line: 22,
+            column: 5
+          }
+        },
+        line: 20
+      },
+      "4": {
+        name: "validateAwsConfig",
+        decl: {
+          start: {
+            line: 45,
+            column: 9
+          },
+          end: {
+            line: 45,
+            column: 26
+          }
+        },
+        loc: {
+          start: {
+            line: 45,
+            column: 29
+          },
+          end: {
+            line: 54,
+            column: 1
+          }
+        },
+        line: 45
+      },
+      "5": {
+        name: "(anonymous_5)",
+        decl: {
+          start: {
+            line: 49,
+            column: 36
+          },
+          end: {
+            line: 49,
+            column: 37
+          }
+        },
+        loc: {
+          start: {
+            line: 49,
+            column: 43
+          },
+          end: {
+            line: 49,
+            column: 60
+          }
+        },
+        line: 49
+      }
+    },
+    branchMap: {
+      "0": {
+        loc: {
+          start: {
+            line: 25,
+            column: 12
+          },
+          end: {
+            line: 25,
+            column: 56
+          }
+        },
+        type: "binary-expr",
+        locations: [{
+          start: {
+            line: 25,
+            column: 12
+          },
+          end: {
+            line: 25,
+            column: 41
+          }
+        }, {
+          start: {
+            line: 25,
+            column: 45
+          },
+          end: {
+            line: 25,
+            column: 56
+          }
+        }],
+        line: 25
+      },
+      "1": {
+        loc: {
+          start: {
+            line: 28,
+            column: 20
+          },
+          end: {
+            line: 28,
+            column: 51
+          }
+        },
+        type: "binary-expr",
+        locations: [{
+          start: {
+            line: 28,
+            column: 20
+          },
+          end: {
+            line: 28,
+            column: 45
+          }
+        }, {
+          start: {
+            line: 28,
+            column: 49
+          },
+          end: {
+            line: 28,
+            column: 51
+          }
+        }],
+        line: 28
+      },
+      "2": {
+        loc: {
+          start: {
+            line: 32,
+            column: 23
+          },
+          end: {
+            line: 32,
+            column: 60
+          }
+        },
+        type: "binary-expr",
+        locations: [{
+          start: {
+            line: 32,
+            column: 23
+          },
+          end: {
+            line: 32,
+            column: 54
+          }
+        }, {
+          start: {
+            line: 32,
+            column: 58
+          },
+          end: {
+            line: 32,
+            column: 60
+          }
+        }],
+        line: 32
+      },
+      "3": {
+        loc: {
+          start: {
+            line: 33,
+            column: 20
+          },
+          end: {
+            line: 33,
+            column: 54
+          }
+        },
+        type: "binary-expr",
+        locations: [{
+          start: {
+            line: 33,
+            column: 20
+          },
+          end: {
+            line: 33,
+            column: 48
+          }
+        }, {
+          start: {
+            line: 33,
+            column: 52
+          },
+          end: {
+            line: 33,
+            column: 54
+          }
+        }],
+        line: 33
+      },
+      "4": {
+        loc: {
+          start: {
+            line: 37,
+            column: 18
+          },
+          end: {
+            line: 37,
+            column: 49
+          }
+        },
+        type: "binary-expr",
+        locations: [{
+          start: {
+            line: 37,
+            column: 18
+          },
+          end: {
+            line: 37,
+            column: 43
+          }
+        }, {
+          start: {
+            line: 37,
+            column: 47
+          },
+          end: {
+            line: 37,
+            column: 49
+          }
+        }],
+        line: 37
+      },
+      "5": {
+        loc: {
+          start: {
+            line: 41,
+            column: 19
+          },
+          end: {
+            line: 41,
+            column: 60
+          }
+        },
+        type: "binary-expr",
+        locations: [{
+          start: {
+            line: 41,
+            column: 19
+          },
+          end: {
+            line: 41,
+            column: 54
+          }
+        }, {
+          start: {
+            line: 41,
+            column: 58
+          },
+          end: {
+            line: 41,
+            column: 60
+          }
+        }],
+        line: 41
+      },
+      "6": {
+        loc: {
+          start: {
+            line: 42,
+            column: 18
+          },
+          end: {
+            line: 42,
+            column: 57
+          }
+        },
+        type: "binary-expr",
+        locations: [{
+          start: {
+            line: 42,
+            column: 18
+          },
+          end: {
+            line: 42,
+            column: 51
+          }
+        }, {
+          start: {
+            line: 42,
+            column: 55
+          },
+          end: {
+            line: 42,
+            column: 57
+          }
+        }],
+        line: 42
+      },
+      "7": {
+        loc: {
+          start: {
+            line: 50,
+            column: 4
+          },
+          end: {
+            line: 52,
+            column: 5
+          }
+        },
+        type: "if",
+        locations: [{
+          start: {
+            line: 50,
+            column: 4
+          },
+          end: {
+            line: 52,
+            column: 5
+          }
+        }, {
+          start: {
+            line: undefined,
+            column: undefined
+          },
+          end: {
+            line: undefined,
+            column: undefined
+          }
+        }],
+        line: 50
+      }
+    },
+    s: {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0,
+      "8": 0,
+      "9": 0,
+      "10": 0,
+      "11": 0,
+      "12": 0,
+      "13": 0,
+      "14": 0
+    },
+    f: {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0
+    },
+    b: {
+      "0": [0, 0],
+      "1": [0, 0],
+      "2": [0, 0],
+      "3": [0, 0],
+      "4": [0, 0],
+      "5": [0, 0],
+      "6": [0, 0],
+      "7": [0, 0]
+    },
+    inputSourceMap: {
+      version: 3,
+      sources: ["/Users/kennyc/code/personal/nailit/app/lib/aws-config.ts"],
+      sourcesContent: ["// AWS Configuration for NailIt\n// This file centralizes AWS configuration and environment variables\n\nexport const awsConfig = {\n  region: process.env.NAILIT_AWS_REGION || 'us-east-1',\n  \n  // S3 Configuration\n  s3: {\n    bucketName: process.env.AWS_S3_BUCKET || '',\n  },\n  \n  // SQS Configuration\n  sqs: {\n    emailQueueUrl: process.env.AWS_SQS_EMAIL_QUEUE || '',\n    aiQueueUrl: process.env.AWS_SQS_AI_QUEUE || '',\n  },\n  \n  // SNS Configuration\n  sns: {\n    topicArn: process.env.AWS_SNS_TOPIC || '',\n  },\n  \n  // Database Configuration\n  database: {\n    secretArn: process.env.AWS_DATABASE_SECRET_ARN || '',\n    endpoint: process.env.AWS_DATABASE_ENDPOINT || '',\n  },\n};\n\n// Helper function to validate required AWS configuration\nexport function validateAwsConfig() {\n  const required = [\n    'NAILIT_AWS_REGION',\n  ];\n  \n  const missing = required.filter(key => !process.env[key]);\n  \n  if (missing.length > 0) {\n    console.warn(`Missing AWS environment variables: ${missing.join(', ')}`);\n  }\n  \n  return missing.length === 0;\n}\n\n// Export region for direct use\nexport const AWS_REGION = awsConfig.region; "],
+      names: ["AWS_REGION", "awsConfig", "validateAwsConfig", "region", "process", "env", "NAILIT_AWS_REGION", "s3", "bucketName", "AWS_S3_BUCKET", "sqs", "emailQueueUrl", "AWS_SQS_EMAIL_QUEUE", "aiQueueUrl", "AWS_SQS_AI_QUEUE", "sns", "topicArn", "AWS_SNS_TOPIC", "database", "secretArn", "AWS_DATABASE_SECRET_ARN", "endpoint", "AWS_DATABASE_ENDPOINT", "required", "missing", "filter", "key", "length", "console", "warn", "join"],
+      mappings: "AAAA,+BAA+B;AAC/B,oEAAoE;;;;;;;;;;;;QA4CvDA;eAAAA;;QA1CAC;eAAAA;;QA2BGC;eAAAA;;;AA3BT,MAAMD,YAAY;IACvBE,QAAQC,QAAQC,GAAG,CAACC,iBAAiB,IAAI;IAEzC,mBAAmB;IACnBC,IAAI;QACFC,YAAYJ,QAAQC,GAAG,CAACI,aAAa,IAAI;IAC3C;IAEA,oBAAoB;IACpBC,KAAK;QACHC,eAAeP,QAAQC,GAAG,CAACO,mBAAmB,IAAI;QAClDC,YAAYT,QAAQC,GAAG,CAACS,gBAAgB,IAAI;IAC9C;IAEA,oBAAoB;IACpBC,KAAK;QACHC,UAAUZ,QAAQC,GAAG,CAACY,aAAa,IAAI;IACzC;IAEA,yBAAyB;IACzBC,UAAU;QACRC,WAAWf,QAAQC,GAAG,CAACe,uBAAuB,IAAI;QAClDC,UAAUjB,QAAQC,GAAG,CAACiB,qBAAqB,IAAI;IACjD;AACF;AAGO,SAASpB;IACd,MAAMqB,WAAW;QACf;KACD;IAED,MAAMC,UAAUD,SAASE,MAAM,CAACC,CAAAA,MAAO,CAACtB,QAAQC,GAAG,CAACqB,IAAI;IAExD,IAAIF,QAAQG,MAAM,GAAG,GAAG;QACtBC,QAAQC,IAAI,CAAC,CAAC,mCAAmC,EAAEL,QAAQM,IAAI,CAAC,OAAO;IACzE;IAEA,OAAON,QAAQG,MAAM,KAAK;AAC5B;AAGO,MAAM3B,aAAaC,UAAUE,MAAM"
+    },
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "9b170b4299d2fbacc9db095632083b9eeabda572"
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
+  }
+  var actualCoverage = coverage[path];
+  {
+    // @ts-ignore
+    cov_r80vpylrr = function () {
+      return actualCoverage;
+    };
+  }
+  return actualCoverage;
+}
+cov_r80vpylrr();
+cov_r80vpylrr().s[0]++;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+function _export(target, all) {
+  /* istanbul ignore next */
+  cov_r80vpylrr().f[0]++;
+  cov_r80vpylrr().s[1]++;
+  for (var name in all) {
+    /* istanbul ignore next */
+    cov_r80vpylrr().s[2]++;
+    Object.defineProperty(target, name, {
+      enumerable: true,
+      get: Object.getOwnPropertyDescriptor(all, name).get
+    });
+  }
+}
+/* istanbul ignore next */
+cov_r80vpylrr().s[3]++;
+_export(exports, {
+  get AWS_REGION() {
+    /* istanbul ignore next */
+    cov_r80vpylrr().f[1]++;
+    cov_r80vpylrr().s[4]++;
+    return AWS_REGION;
+  },
+  get awsConfig() {
+    /* istanbul ignore next */
+    cov_r80vpylrr().f[2]++;
+    cov_r80vpylrr().s[5]++;
+    return awsConfig;
+  },
+  get validateAwsConfig() {
+    /* istanbul ignore next */
+    cov_r80vpylrr().f[3]++;
+    cov_r80vpylrr().s[6]++;
+    return validateAwsConfig;
+  }
+});
+const awsConfig =
+/* istanbul ignore next */
+(cov_r80vpylrr().s[7]++, {
+  region:
+  /* istanbul ignore next */
+  (cov_r80vpylrr().b[0][0]++, process.env.NAILIT_AWS_REGION) ||
+  /* istanbul ignore next */
+  (cov_r80vpylrr().b[0][1]++, 'us-east-1'),
+  // S3 Configuration
+  s3: {
+    bucketName:
+    /* istanbul ignore next */
+    (cov_r80vpylrr().b[1][0]++, process.env.AWS_S3_BUCKET) ||
+    /* istanbul ignore next */
+    (cov_r80vpylrr().b[1][1]++, '')
+  },
+  // SQS Configuration
+  sqs: {
+    emailQueueUrl:
+    /* istanbul ignore next */
+    (cov_r80vpylrr().b[2][0]++, process.env.AWS_SQS_EMAIL_QUEUE) ||
+    /* istanbul ignore next */
+    (cov_r80vpylrr().b[2][1]++, ''),
+    aiQueueUrl:
+    /* istanbul ignore next */
+    (cov_r80vpylrr().b[3][0]++, process.env.AWS_SQS_AI_QUEUE) ||
+    /* istanbul ignore next */
+    (cov_r80vpylrr().b[3][1]++, '')
+  },
+  // SNS Configuration
+  sns: {
+    topicArn:
+    /* istanbul ignore next */
+    (cov_r80vpylrr().b[4][0]++, process.env.AWS_SNS_TOPIC) ||
+    /* istanbul ignore next */
+    (cov_r80vpylrr().b[4][1]++, '')
+  },
+  // Database Configuration
+  database: {
+    secretArn:
+    /* istanbul ignore next */
+    (cov_r80vpylrr().b[5][0]++, process.env.AWS_DATABASE_SECRET_ARN) ||
+    /* istanbul ignore next */
+    (cov_r80vpylrr().b[5][1]++, ''),
+    endpoint:
+    /* istanbul ignore next */
+    (cov_r80vpylrr().b[6][0]++, process.env.AWS_DATABASE_ENDPOINT) ||
+    /* istanbul ignore next */
+    (cov_r80vpylrr().b[6][1]++, '')
+  }
+});
+function validateAwsConfig() {
+  /* istanbul ignore next */
+  cov_r80vpylrr().f[4]++;
+  const required =
+  /* istanbul ignore next */
+  (cov_r80vpylrr().s[8]++, ['NAILIT_AWS_REGION']);
+  const missing =
+  /* istanbul ignore next */
+  (cov_r80vpylrr().s[9]++, required.filter(key => {
+    /* istanbul ignore next */
+    cov_r80vpylrr().f[5]++;
+    cov_r80vpylrr().s[10]++;
+    return !process.env[key];
+  }));
+  /* istanbul ignore next */
+  cov_r80vpylrr().s[11]++;
+  if (missing.length > 0) {
+    /* istanbul ignore next */
+    cov_r80vpylrr().b[7][0]++;
+    cov_r80vpylrr().s[12]++;
+    console.warn(`Missing AWS environment variables: ${missing.join(', ')}`);
+  } else
+  /* istanbul ignore next */
+  {
+    cov_r80vpylrr().b[7][1]++;
+  }
+  cov_r80vpylrr().s[13]++;
+  return missing.length === 0;
+}
+const AWS_REGION =
+/* istanbul ignore next */
+(cov_r80vpylrr().s[14]++, awsConfig.region);
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJBV1NfUkVHSU9OIiwiY292X3I4MHZweWxyciIsImYiLCJzIiwiYXdzQ29uZmlnIiwidmFsaWRhdGVBd3NDb25maWciLCJyZWdpb24iLCJiIiwicHJvY2VzcyIsImVudiIsIk5BSUxJVF9BV1NfUkVHSU9OIiwiczMiLCJidWNrZXROYW1lIiwiQVdTX1MzX0JVQ0tFVCIsInNxcyIsImVtYWlsUXVldWVVcmwiLCJBV1NfU1FTX0VNQUlMX1FVRVVFIiwiYWlRdWV1ZVVybCIsIkFXU19TUVNfQUlfUVVFVUUiLCJzbnMiLCJ0b3BpY0FybiIsIkFXU19TTlNfVE9QSUMiLCJkYXRhYmFzZSIsInNlY3JldEFybiIsIkFXU19EQVRBQkFTRV9TRUNSRVRfQVJOIiwiZW5kcG9pbnQiLCJBV1NfREFUQUJBU0VfRU5EUE9JTlQiLCJyZXF1aXJlZCIsIm1pc3NpbmciLCJmaWx0ZXIiLCJrZXkiLCJsZW5ndGgiLCJjb25zb2xlIiwid2FybiIsImpvaW4iXSwic291cmNlcyI6WyIvVXNlcnMva2VubnljL2NvZGUvcGVyc29uYWwvbmFpbGl0L2FwcC9saWIvYXdzLWNvbmZpZy50cyJdLCJzb3VyY2VzQ29udGVudCI6WyIvLyBBV1MgQ29uZmlndXJhdGlvbiBmb3IgTmFpbEl0XG4vLyBUaGlzIGZpbGUgY2VudHJhbGl6ZXMgQVdTIGNvbmZpZ3VyYXRpb24gYW5kIGVudmlyb25tZW50IHZhcmlhYmxlc1xuXG5leHBvcnQgY29uc3QgYXdzQ29uZmlnID0ge1xuICByZWdpb246IHByb2Nlc3MuZW52Lk5BSUxJVF9BV1NfUkVHSU9OIHx8ICd1cy1lYXN0LTEnLFxuICBcbiAgLy8gUzMgQ29uZmlndXJhdGlvblxuICBzMzoge1xuICAgIGJ1Y2tldE5hbWU6IHByb2Nlc3MuZW52LkFXU19TM19CVUNLRVQgfHwgJycsXG4gIH0sXG4gIFxuICAvLyBTUVMgQ29uZmlndXJhdGlvblxuICBzcXM6IHtcbiAgICBlbWFpbFF1ZXVlVXJsOiBwcm9jZXNzLmVudi5BV1NfU1FTX0VNQUlMX1FVRVVFIHx8ICcnLFxuICAgIGFpUXVldWVVcmw6IHByb2Nlc3MuZW52LkFXU19TUVNfQUlfUVVFVUUgfHwgJycsXG4gIH0sXG4gIFxuICAvLyBTTlMgQ29uZmlndXJhdGlvblxuICBzbnM6IHtcbiAgICB0b3BpY0FybjogcHJvY2Vzcy5lbnYuQVdTX1NOU19UT1BJQyB8fCAnJyxcbiAgfSxcbiAgXG4gIC8vIERhdGFiYXNlIENvbmZpZ3VyYXRpb25cbiAgZGF0YWJhc2U6IHtcbiAgICBzZWNyZXRBcm46IHByb2Nlc3MuZW52LkFXU19EQVRBQkFTRV9TRUNSRVRfQVJOIHx8ICcnLFxuICAgIGVuZHBvaW50OiBwcm9jZXNzLmVudi5BV1NfREFUQUJBU0VfRU5EUE9JTlQgfHwgJycsXG4gIH0sXG59O1xuXG4vLyBIZWxwZXIgZnVuY3Rpb24gdG8gdmFsaWRhdGUgcmVxdWlyZWQgQVdTIGNvbmZpZ3VyYXRpb25cbmV4cG9ydCBmdW5jdGlvbiB2YWxpZGF0ZUF3c0NvbmZpZygpIHtcbiAgY29uc3QgcmVxdWlyZWQgPSBbXG4gICAgJ05BSUxJVF9BV1NfUkVHSU9OJyxcbiAgXTtcbiAgXG4gIGNvbnN0IG1pc3NpbmcgPSByZXF1aXJlZC5maWx0ZXIoa2V5ID0+ICFwcm9jZXNzLmVudltrZXldKTtcbiAgXG4gIGlmIChtaXNzaW5nLmxlbmd0aCA+IDApIHtcbiAgICBjb25zb2xlLndhcm4oYE1pc3NpbmcgQVdTIGVudmlyb25tZW50IHZhcmlhYmxlczogJHttaXNzaW5nLmpvaW4oJywgJyl9YCk7XG4gIH1cbiAgXG4gIHJldHVybiBtaXNzaW5nLmxlbmd0aCA9PT0gMDtcbn1cblxuLy8gRXhwb3J0IHJlZ2lvbiBmb3IgZGlyZWN0IHVzZVxuZXhwb3J0IGNvbnN0IEFXU19SRUdJT04gPSBhd3NDb25maWcucmVnaW9uOyAiXSwibWFwcGluZ3MiOiJBQUFBO0FBQ0E7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7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

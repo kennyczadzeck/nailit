@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Navigation } from '../components/Navigation';
-import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
+import { Card, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { FlaggedItemModal } from '../components/FlaggedItemModal';
 import { 
@@ -37,7 +37,7 @@ export default function FlaggedItemsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
-  const [project, setProject] = useState<any>(null);
+  const [project, setProject] = useState<{ status?: string; id?: string } | null>(null);
 
   // Fetch flagged items from API
   useEffect(() => {
@@ -69,9 +69,9 @@ export default function FlaggedItemsPage() {
       
       const items = await response.json();
       setFlaggedItems(items);
-    } catch (err) {
-      console.error('Error fetching flagged items:', err);
-      setError('Failed to load flagged items');
+    } catch (error: unknown) {
+      console.error('Error fetching flagged items:', error)
+      setError(error instanceof Error ? error.message : 'Failed to fetch flagged items')
     } finally {
       setLoading(false);
     }

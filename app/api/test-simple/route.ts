@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]/route';
 import { prisma } from '../../lib/prisma';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     console.log('=== Simple Test Endpoint ===');
     
@@ -60,12 +60,10 @@ export async function GET(request: NextRequest) {
       timestamp: new Date().toISOString()
     });
     
-  } catch (error: any) {
-    console.error('Simple test error:', error);
+  } catch (error: unknown) {
+    console.error('Test error:', error);
     return NextResponse.json({
-      error: error.message,
-      code: error.code,
-      stack: error.stack,
+      error: error instanceof Error ? error.message : 'Unknown error',
       timestamp: new Date().toISOString()
     }, { status: 500 });
   } finally {

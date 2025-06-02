@@ -1,0 +1,449 @@
+25a67c06cf9f9cf0b974883bedb9249e
+"use strict";
+
+/* istanbul ignore next */
+function cov_19827odaet() {
+  var path = "/Users/kennyc/code/personal/nailit/app/api/projects-simple/route.ts";
+  var hash = "8f215f9daaec584b43ce9f21696a14f21b8bd590";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
+  var coverageData = {
+    path: "/Users/kennyc/code/personal/nailit/app/api/projects-simple/route.ts",
+    statementMap: {
+      "0": {
+        start: {
+          line: 2,
+          column: 0
+        },
+        end: {
+          line: 4,
+          column: 3
+        }
+      },
+      "1": {
+        start: {
+          line: 5,
+          column: 0
+        },
+        end: {
+          line: 10,
+          column: 3
+        }
+      },
+      "2": {
+        start: {
+          line: 8,
+          column: 8
+        },
+        end: {
+          line: 8,
+          column: 19
+        }
+      },
+      "3": {
+        start: {
+          line: 11,
+          column: 16
+        },
+        end: {
+          line: 11,
+          column: 38
+        }
+      },
+      "4": {
+        start: {
+          line: 12,
+          column: 18
+        },
+        end: {
+          line: 12,
+          column: 38
+        }
+      },
+      "5": {
+        start: {
+          line: 13,
+          column: 15
+        },
+        end: {
+          line: 13,
+          column: 53
+        }
+      },
+      "6": {
+        start: {
+          line: 14,
+          column: 16
+        },
+        end: {
+          line: 14,
+          column: 43
+        }
+      },
+      "7": {
+        start: {
+          line: 16,
+          column: 4
+        },
+        end: {
+          line: 52,
+          column: 5
+        }
+      },
+      "8": {
+        start: {
+          line: 17,
+          column: 8
+        },
+        end: {
+          line: 17,
+          column: 56
+        }
+      },
+      "9": {
+        start: {
+          line: 18,
+          column: 24
+        },
+        end: {
+          line: 18,
+          column: 81
+        }
+      },
+      "10": {
+        start: {
+          line: 19,
+          column: 8
+        },
+        end: {
+          line: 19,
+          column: 41
+        }
+      },
+      "11": {
+        start: {
+          line: 20,
+          column: 8
+        },
+        end: {
+          line: 27,
+          column: 9
+        }
+      },
+      "12": {
+        start: {
+          line: 21,
+          column: 12
+        },
+        end: {
+          line: 21,
+          column: 49
+        }
+      },
+      "13": {
+        start: {
+          line: 22,
+          column: 12
+        },
+        end: {
+          line: 26,
+          column: 15
+        }
+      },
+      "14": {
+        start: {
+          line: 28,
+          column: 8
+        },
+        end: {
+          line: 28,
+          column: 68
+        }
+      },
+      "15": {
+        start: {
+          line: 30,
+          column: 25
+        },
+        end: {
+          line: 34,
+          column: 10
+        }
+      },
+      "16": {
+        start: {
+          line: 35,
+          column: 8
+        },
+        end: {
+          line: 35,
+          column: 56
+        }
+      },
+      "17": {
+        start: {
+          line: 36,
+          column: 8
+        },
+        end: {
+          line: 41,
+          column: 11
+        }
+      },
+      "18": {
+        start: {
+          line: 43,
+          column: 8
+        },
+        end: {
+          line: 43,
+          column: 64
+        }
+      },
+      "19": {
+        start: {
+          line: 44,
+          column: 8
+        },
+        end: {
+          line: 51,
+          column: 11
+        }
+      }
+    },
+    fnMap: {
+      "0": {
+        name: "(anonymous_0)",
+        decl: {
+          start: {
+            line: 7,
+            column: 9
+          },
+          end: {
+            line: 7,
+            column: 10
+          }
+        },
+        loc: {
+          start: {
+            line: 7,
+            column: 20
+          },
+          end: {
+            line: 9,
+            column: 5
+          }
+        },
+        line: 7
+      },
+      "1": {
+        name: "GET",
+        decl: {
+          start: {
+            line: 15,
+            column: 15
+          },
+          end: {
+            line: 15,
+            column: 18
+          }
+        },
+        loc: {
+          start: {
+            line: 15,
+            column: 21
+          },
+          end: {
+            line: 53,
+            column: 1
+          }
+        },
+        line: 15
+      }
+    },
+    branchMap: {
+      "0": {
+        loc: {
+          start: {
+            line: 20,
+            column: 8
+          },
+          end: {
+            line: 27,
+            column: 9
+          }
+        },
+        type: "if",
+        locations: [{
+          start: {
+            line: 20,
+            column: 8
+          },
+          end: {
+            line: 27,
+            column: 9
+          }
+        }, {
+          start: {
+            line: undefined,
+            column: undefined
+          },
+          end: {
+            line: undefined,
+            column: undefined
+          }
+        }],
+        line: 20
+      }
+    },
+    s: {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0,
+      "8": 0,
+      "9": 0,
+      "10": 0,
+      "11": 0,
+      "12": 0,
+      "13": 0,
+      "14": 0,
+      "15": 0,
+      "16": 0,
+      "17": 0,
+      "18": 0,
+      "19": 0
+    },
+    f: {
+      "0": 0,
+      "1": 0
+    },
+    b: {
+      "0": [0, 0]
+    },
+    inputSourceMap: {
+      version: 3,
+      sources: ["/Users/kennyc/code/personal/nailit/app/api/projects-simple/route.ts"],
+      sourcesContent: ["import { NextRequest, NextResponse } from 'next/server'\nimport { getServerSession } from 'next-auth'\nimport { authOptions } from '../auth/[...nextauth]/route'\nimport { prisma } from '../../lib/prisma'\n\n// GET /api/projects-simple - Get projects without complex includes\nexport async function GET() {\n  try {\n    console.log('=== Simple Projects Endpoint ===');\n    \n    const session = await getServerSession(authOptions)\n    console.log('Session:', session);\n    \n    if (!session?.user?.id) {\n      console.log('No session or user ID');\n      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })\n    }\n\n    console.log('Fetching projects for user:', session.user.id);\n    \n    // Try simple query first\n    const projects = await prisma.project.findMany({\n      where: {\n        userId: session.user.id\n      }\n    });\n    \n    console.log('Found projects:', projects.length);\n\n    return NextResponse.json({\n      success: true,\n      projectCount: projects.length,\n      projects: projects,\n      userId: session.user.id\n    });\n    \n  } catch (error: any) {\n    console.error('Error fetching simple projects:', error)\n    return NextResponse.json(\n      { \n        error: 'Failed to fetch projects',\n        message: error.message,\n        code: error.code,\n        stack: error.stack\n      },\n      { status: 500 }\n    )\n  }\n} "],
+      names: ["GET", "console", "log", "session", "getServerSession", "authOptions", "user", "id", "NextResponse", "json", "error", "status", "projects", "prisma", "project", "findMany", "where", "userId", "length", "success", "projectCount", "message", "code", "stack"],
+      mappings: ";;;;+BAMsBA;;;eAAAA;;;wBANoB;0BACT;uBACL;wBACL;AAGhB,eAAeA;IACpB,IAAI;QACFC,QAAQC,GAAG,CAAC;QAEZ,MAAMC,UAAU,MAAMC,IAAAA,0BAAgB,EAACC,kBAAW;QAClDJ,QAAQC,GAAG,CAAC,YAAYC;QAExB,IAAI,CAACA,SAASG,MAAMC,IAAI;YACtBN,QAAQC,GAAG,CAAC;YACZ,OAAOM,oBAAY,CAACC,IAAI,CAAC;gBAAEC,OAAO;YAAe,GAAG;gBAAEC,QAAQ;YAAI;QACpE;QAEAV,QAAQC,GAAG,CAAC,+BAA+BC,QAAQG,IAAI,CAACC,EAAE;QAE1D,yBAAyB;QACzB,MAAMK,WAAW,MAAMC,cAAM,CAACC,OAAO,CAACC,QAAQ,CAAC;YAC7CC,OAAO;gBACLC,QAAQd,QAAQG,IAAI,CAACC,EAAE;YACzB;QACF;QAEAN,QAAQC,GAAG,CAAC,mBAAmBU,SAASM,MAAM;QAE9C,OAAOV,oBAAY,CAACC,IAAI,CAAC;YACvBU,SAAS;YACTC,cAAcR,SAASM,MAAM;YAC7BN,UAAUA;YACVK,QAAQd,QAAQG,IAAI,CAACC,EAAE;QACzB;IAEF,EAAE,OAAOG,OAAY;QACnBT,QAAQS,KAAK,CAAC,mCAAmCA;QACjD,OAAOF,oBAAY,CAACC,IAAI,CACtB;YACEC,OAAO;YACPW,SAASX,MAAMW,OAAO;YACtBC,MAAMZ,MAAMY,IAAI;YAChBC,OAAOb,MAAMa,KAAK;QACpB,GACA;YAAEZ,QAAQ;QAAI;IAElB;AACF"
+    },
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "8f215f9daaec584b43ce9f21696a14f21b8bd590"
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
+  }
+  var actualCoverage = coverage[path];
+  {
+    // @ts-ignore
+    cov_19827odaet = function () {
+      return actualCoverage;
+    };
+  }
+  return actualCoverage;
+}
+cov_19827odaet();
+cov_19827odaet().s[0]++;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/* istanbul ignore next */
+cov_19827odaet().s[1]++;
+Object.defineProperty(exports, "GET", {
+  enumerable: true,
+  get: function () {
+    /* istanbul ignore next */
+    cov_19827odaet().f[0]++;
+    cov_19827odaet().s[2]++;
+    return GET;
+  }
+});
+const _server =
+/* istanbul ignore next */
+(cov_19827odaet().s[3]++, require("next/server"));
+const _nextauth =
+/* istanbul ignore next */
+(cov_19827odaet().s[4]++, require("next-auth"));
+const _route =
+/* istanbul ignore next */
+(cov_19827odaet().s[5]++, require("../auth/[...nextauth]/route"));
+const _prisma =
+/* istanbul ignore next */
+(cov_19827odaet().s[6]++, require("../../lib/prisma"));
+async function GET() {
+  /* istanbul ignore next */
+  cov_19827odaet().f[1]++;
+  cov_19827odaet().s[7]++;
+  try {
+    /* istanbul ignore next */
+    cov_19827odaet().s[8]++;
+    console.log('=== Simple Projects Endpoint ===');
+    const session =
+    /* istanbul ignore next */
+    (cov_19827odaet().s[9]++, await (0, _nextauth.getServerSession)(_route.authOptions));
+    /* istanbul ignore next */
+    cov_19827odaet().s[10]++;
+    console.log('Session:', session);
+    /* istanbul ignore next */
+    cov_19827odaet().s[11]++;
+    if (!session?.user?.id) {
+      /* istanbul ignore next */
+      cov_19827odaet().b[0][0]++;
+      cov_19827odaet().s[12]++;
+      console.log('No session or user ID');
+      /* istanbul ignore next */
+      cov_19827odaet().s[13]++;
+      return _server.NextResponse.json({
+        error: 'Unauthorized'
+      }, {
+        status: 401
+      });
+    } else
+    /* istanbul ignore next */
+    {
+      cov_19827odaet().b[0][1]++;
+    }
+    cov_19827odaet().s[14]++;
+    console.log('Fetching projects for user:', session.user.id);
+    // Try simple query first
+    const projects =
+    /* istanbul ignore next */
+    (cov_19827odaet().s[15]++, await _prisma.prisma.project.findMany({
+      where: {
+        userId: session.user.id
+      }
+    }));
+    /* istanbul ignore next */
+    cov_19827odaet().s[16]++;
+    console.log('Found projects:', projects.length);
+    /* istanbul ignore next */
+    cov_19827odaet().s[17]++;
+    return _server.NextResponse.json({
+      success: true,
+      projectCount: projects.length,
+      projects: projects,
+      userId: session.user.id
+    });
+  } catch (error) {
+    /* istanbul ignore next */
+    cov_19827odaet().s[18]++;
+    console.error('Error fetching simple projects:', error);
+    /* istanbul ignore next */
+    cov_19827odaet().s[19]++;
+    return _server.NextResponse.json({
+      error: 'Failed to fetch projects',
+      message: error.message,
+      code: error.code,
+      stack: error.stack
+    }, {
+      status: 500
+    });
+  }
+}
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJjb3ZfMTk4MjdvZGFldCIsImFjdHVhbENvdmVyYWdlIiwicyIsIkdFVCIsImYiLCJjb25zb2xlIiwibG9nIiwic2Vzc2lvbiIsIl9uZXh0YXV0aCIsImdldFNlcnZlclNlc3Npb24iLCJfcm91dGUiLCJhdXRoT3B0aW9ucyIsInVzZXIiLCJpZCIsImIiLCJfc2VydmVyIiwiTmV4dFJlc3BvbnNlIiwianNvbiIsImVycm9yIiwic3RhdHVzIiwicHJvamVjdHMiLCJfcHJpc21hIiwicHJpc21hIiwicHJvamVjdCIsImZpbmRNYW55Iiwid2hlcmUiLCJ1c2VySWQiLCJsZW5ndGgiLCJzdWNjZXNzIiwicHJvamVjdENvdW50IiwibWVzc2FnZSIsImNvZGUiLCJzdGFjayJdLCJzb3VyY2VzIjpbIi9Vc2Vycy9rZW5ueWMvY29kZS9wZXJzb25hbC9uYWlsaXQvYXBwL2FwaS9wcm9qZWN0cy1zaW1wbGUvcm91dGUudHMiXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgTmV4dFJlcXVlc3QsIE5leHRSZXNwb25zZSB9IGZyb20gJ25leHQvc2VydmVyJ1xuaW1wb3J0IHsgZ2V0U2VydmVyU2Vzc2lvbiB9IGZyb20gJ25leHQtYXV0aCdcbmltcG9ydCB7IGF1dGhPcHRpb25zIH0gZnJvbSAnLi4vYXV0aC9bLi4ubmV4dGF1dGhdL3JvdXRlJ1xuaW1wb3J0IHsgcHJpc21hIH0gZnJvbSAnLi4vLi4vbGliL3ByaXNtYSdcblxuLy8gR0VUIC9hcGkvcHJvamVjdHMtc2ltcGxlIC0gR2V0IHByb2plY3RzIHdpdGhvdXQgY29tcGxleCBpbmNsdWRlc1xuZXhwb3J0IGFzeW5jIGZ1bmN0aW9uIEdFVCgpIHtcbiAgdHJ5IHtcbiAgICBjb25zb2xlLmxvZygnPT09IFNpbXBsZSBQcm9qZWN0cyBFbmRwb2ludCA9PT0nKTtcbiAgICBcbiAgICBjb25zdCBzZXNzaW9uID0gYXdhaXQgZ2V0U2VydmVyU2Vzc2lvbihhdXRoT3B0aW9ucylcbiAgICBjb25zb2xlLmxvZygnU2Vzc2lvbjonLCBzZXNzaW9uKTtcbiAgICBcbiAgICBpZiAoIXNlc3Npb24/LnVzZXI/LmlkKSB7XG4gICAgICBjb25zb2xlLmxvZygnTm8gc2Vzc2lvbiBvciB1c2VyIElEJyk7XG4gICAgICByZXR1cm4gTmV4dFJlc3BvbnNlLmpzb24oeyBlcnJvcjogJ1VuYXV0aG9yaXplZCcgfSwgeyBzdGF0dXM6IDQwMSB9KVxuICAgIH1cblxuICAgIGNvbnNvbGUubG9nKCdGZXRjaGluZyBwcm9qZWN0cyBmb3IgdXNlcjonLCBzZXNzaW9uLnVzZXIuaWQpO1xuICAgIFxuICAgIC8vIFRyeSBzaW1wbGUgcXVlcnkgZmlyc3RcbiAgICBjb25zdCBwcm9qZWN0cyA9IGF3YWl0IHByaXNtYS5wcm9qZWN0LmZpbmRNYW55KHtcbiAgICAgIHdoZXJlOiB7XG4gICAgICAgIHVzZXJJZDogc2Vzc2lvbi51c2VyLmlkXG4gICAgICB9XG4gICAgfSk7XG4gICAgXG4gICAgY29uc29sZS5sb2coJ0ZvdW5kIHByb2plY3RzOicsIHByb2plY3RzLmxlbmd0aCk7XG5cbiAgICByZXR1cm4gTmV4dFJlc3BvbnNlLmpzb24oe1xuICAgICAgc3VjY2VzczogdHJ1ZSxcbiAgICAgIHByb2plY3RDb3VudDogcHJvamVjdHMubGVuZ3RoLFxuICAgICAgcHJvamVjdHM6IHByb2plY3RzLFxuICAgICAgdXNlcklkOiBzZXNzaW9uLnVzZXIuaWRcbiAgICB9KTtcbiAgICBcbiAgfSBjYXRjaCAoZXJyb3I6IGFueSkge1xuICAgIGNvbnNvbGUuZXJyb3IoJ0Vycm9yIGZldGNoaW5nIHNpbXBsZSBwcm9qZWN0czonLCBlcnJvcilcbiAgICByZXR1cm4gTmV4dFJlc3BvbnNlLmpzb24oXG4gICAgICB7IFxuICAgICAgICBlcnJvcjogJ0ZhaWxlZCB0byBmZXRjaCBwcm9qZWN0cycsXG4gICAgICAgIG1lc3NhZ2U6IGVycm9yLm1lc3NhZ2UsXG4gICAgICAgIGNvZGU6IGVycm9yLmNvZGUsXG4gICAgICAgIHN0YWNrOiBlcnJvci5zdGFja1xuICAgICAgfSxcbiAgICAgIHsgc3RhdHVzOiA1MDAgfVxuICAgIClcbiAgfVxufSAiXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztJQU9NO0lBQUFBLGNBQUEsWUFBQUEsQ0FBQTtNQUFBLE9BQUFDLGNBQUE7SUFBQTtFQUFBO0VBQUEsT0FBQUEsY0FBQTtBQUFBO0FBQUFELGNBQUE7QUFBQUEsY0FBQSxHQUFBRSxDQUFBOzs7Ozs7K0JBRGdCOzs7Ozs7V0FBQUMsR0FBQTs7Ozs7a0NBTm9COzs7a0NBQ1Q7OztrQ0FDTDs7O2tDQUNMO0FBR2hCLGVBQWVBLElBQUE7RUFBQTtFQUFBSCxjQUFBLEdBQUFJLENBQUE7RUFBQUosY0FBQSxHQUFBRSxDQUFBO0VBQ3BCLElBQUk7SUFBQTtJQUFBRixjQUFBLEdBQUFFLENBQUE7SUFDRkcsT0FBQSxDQUFRQyxHQUFHLENBQUM7SUFFWixNQUFNQyxPQUFBO0lBQUE7SUFBQSxDQUFBUCxjQUFBLEdBQUFFLENBQUEsT0FBVSxNQUFNLElBQUFNLFNBQUEsQ0FBQUMsZ0JBQWdCLEVBQUNDLE1BQUEsQ0FBQUMsV0FBVztJQUFBO0lBQUFYLGNBQUEsR0FBQUUsQ0FBQTtJQUNsREcsT0FBQSxDQUFRQyxHQUFHLENBQUMsWUFBWUMsT0FBQTtJQUFBO0lBQUFQLGNBQUEsR0FBQUUsQ0FBQTtJQUV4QixJQUFJLENBQUNLLE9BQUEsRUFBU0ssSUFBQSxFQUFNQyxFQUFBLEVBQUk7TUFBQTtNQUFBYixjQUFBLEdBQUFjLENBQUE7TUFBQWQsY0FBQSxHQUFBRSxDQUFBO01BQ3RCRyxPQUFBLENBQVFDLEdBQUcsQ0FBQztNQUFBO01BQUFOLGNBQUEsR0FBQUUsQ0FBQTtNQUNaLE9BQU9hLE9BQUEsQ0FBQUMsWUFBWSxDQUFDQyxJQUFJLENBQUM7UUFBRUMsS0FBQSxFQUFPO01BQWUsR0FBRztRQUFFQyxNQUFBLEVBQVE7TUFBSTtJQUNwRTtJQUFBO0lBQUE7TUFBQW5CLGNBQUEsR0FBQWMsQ0FBQTtJQUFBO0lBQUFkLGNBQUEsR0FBQUUsQ0FBQTtJQUVBRyxPQUFBLENBQVFDLEdBQUcsQ0FBQywrQkFBK0JDLE9BQUEsQ0FBUUssSUFBSSxDQUFDQyxFQUFFO0lBRTFEO0lBQ0EsTUFBTU8sUUFBQTtJQUFBO0lBQUEsQ0FBQXBCLGNBQUEsR0FBQUUsQ0FBQSxRQUFXLE1BQU1tQixPQUFBLENBQUFDLE1BQU0sQ0FBQ0MsT0FBTyxDQUFDQyxRQUFRLENBQUM7TUFDN0NDLEtBQUEsRUFBTztRQUNMQyxNQUFBLEVBQVFuQixPQUFBLENBQVFLLElBQUksQ0FBQ0M7TUFDdkI7SUFDRjtJQUFBO0lBQUFiLGNBQUEsR0FBQUUsQ0FBQTtJQUVBRyxPQUFBLENBQVFDLEdBQUcsQ0FBQyxtQkFBbUJjLFFBQUEsQ0FBU08sTUFBTTtJQUFBO0lBQUEzQixjQUFBLEdBQUFFLENBQUE7SUFFOUMsT0FBT2EsT0FBQSxDQUFBQyxZQUFZLENBQUNDLElBQUksQ0FBQztNQUN2QlcsT0FBQSxFQUFTO01BQ1RDLFlBQUEsRUFBY1QsUUFBQSxDQUFTTyxNQUFNO01BQzdCUCxRQUFBLEVBQVVBLFFBQUE7TUFDVk0sTUFBQSxFQUFRbkIsT0FBQSxDQUFRSyxJQUFJLENBQUNDO0lBQ3ZCO0VBRUYsRUFBRSxPQUFPSyxLQUFBLEVBQVk7SUFBQTtJQUFBbEIsY0FBQSxHQUFBRSxDQUFBO0lBQ25CRyxPQUFBLENBQVFhLEtBQUssQ0FBQyxtQ0FBbUNBLEtBQUE7SUFBQTtJQUFBbEIsY0FBQSxHQUFBRSxDQUFBO0lBQ2pELE9BQU9hLE9BQUEsQ0FBQUMsWUFBWSxDQUFDQyxJQUFJLENBQ3RCO01BQ0VDLEtBQUEsRUFBTztNQUNQWSxPQUFBLEVBQVNaLEtBQUEsQ0FBTVksT0FBTztNQUN0QkMsSUFBQSxFQUFNYixLQUFBLENBQU1hLElBQUk7TUFDaEJDLEtBQUEsRUFBT2QsS0FBQSxDQUFNYztJQUNmLEdBQ0E7TUFBRWIsTUFBQSxFQUFRO0lBQUk7RUFFbEI7QUFDRiIsImlnbm9yZUxpc3QiOltdfQ==

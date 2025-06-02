@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../auth/[...nextauth]/route'
 import { prisma } from '../../lib/prisma'
@@ -34,16 +34,11 @@ export async function GET() {
       userId: session.user.id
     });
     
-  } catch (error: any) {
-    console.error('Error fetching simple projects:', error)
-    return NextResponse.json(
-      { 
-        error: 'Failed to fetch projects',
-        message: error.message,
-        code: error.code,
-        stack: error.stack
-      },
-      { status: 500 }
-    )
+  } catch (error: unknown) {
+    console.error('Error creating simple project:', error);
+    return NextResponse.json({
+      error: error instanceof Error ? error.message : 'Unknown error',
+      timestamp: new Date().toISOString()
+    }, { status: 500 });
   }
 } 

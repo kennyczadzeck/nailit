@@ -66,7 +66,7 @@ export default function WelcomePage() {
             <CardContent className="text-center">
               <ExclamationTriangleIcon className="w-12 h-12 text-red-500 mx-auto mb-4" />
               <h2 className="text-2xl font-bold text-gray-900 mb-4">
-                Don't Let Important Changes Slip Through
+                Don&apos;t Let Important Changes Slip Through
               </h2>
               <p className="text-gray-700 text-lg">
                 Renovation projects involve hundreds of emails. Critical changes to pricing, scope, or timeline 

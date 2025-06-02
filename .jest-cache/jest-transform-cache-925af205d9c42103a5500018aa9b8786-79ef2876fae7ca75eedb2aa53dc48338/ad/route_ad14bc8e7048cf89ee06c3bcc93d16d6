@@ -1,0 +1,748 @@
+bf71d74cad0727d1cea8ea33200c5c3f
+"use strict";
+
+/* istanbul ignore next */
+function cov_ofrpqfyx() {
+  var path = "/Users/kennyc/code/personal/nailit/app/api/init-db/route.ts";
+  var hash = "17bb6d531472d3fef181fe5e987b465df409660b";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
+  var coverageData = {
+    path: "/Users/kennyc/code/personal/nailit/app/api/init-db/route.ts",
+    statementMap: {
+      "0": {
+        start: {
+          line: 2,
+          column: 0
+        },
+        end: {
+          line: 4,
+          column: 3
+        }
+      },
+      "1": {
+        start: {
+          line: 6,
+          column: 4
+        },
+        end: {
+          line: 9,
+          column: 7
+        }
+      },
+      "2": {
+        start: {
+          line: 6,
+          column: 24
+        },
+        end: {
+          line: 9,
+          column: 7
+        }
+      },
+      "3": {
+        start: {
+          line: 11,
+          column: 0
+        },
+        end: {
+          line: 18,
+          column: 3
+        }
+      },
+      "4": {
+        start: {
+          line: 13,
+          column: 8
+        },
+        end: {
+          line: 13,
+          column: 19
+        }
+      },
+      "5": {
+        start: {
+          line: 16,
+          column: 8
+        },
+        end: {
+          line: 16,
+          column: 20
+        }
+      },
+      "6": {
+        start: {
+          line: 19,
+          column: 16
+        },
+        end: {
+          line: 19,
+          column: 38
+        }
+      },
+      "7": {
+        start: {
+          line: 20,
+          column: 16
+        },
+        end: {
+          line: 20,
+          column: 43
+        }
+      },
+      "8": {
+        start: {
+          line: 22,
+          column: 4
+        },
+        end: {
+          line: 85,
+          column: 5
+        }
+      },
+      "9": {
+        start: {
+          line: 24,
+          column: 8
+        },
+        end: {
+          line: 24,
+          column: 54
+        }
+      },
+      "10": {
+        start: {
+          line: 25,
+          column: 8
+        },
+        end: {
+          line: 25,
+          column: 40
+        }
+      },
+      "11": {
+        start: {
+          line: 26,
+          column: 8
+        },
+        end: {
+          line: 26,
+          column: 54
+        }
+      },
+      "12": {
+        start: {
+          line: 28,
+          column: 8
+        },
+        end: {
+          line: 28,
+          column: 51
+        }
+      },
+      "13": {
+        start: {
+          line: 29,
+          column: 8
+        },
+        end: {
+          line: 72,
+          column: 9
+        }
+      },
+      "14": {
+        start: {
+          line: 31,
+          column: 30
+        },
+        end: {
+          line: 31,
+          column: 63
+        }
+      },
+      "15": {
+        start: {
+          line: 32,
+          column: 12
+        },
+        end: {
+          line: 32,
+          column: 74
+        }
+      },
+      "16": {
+        start: {
+          line: 33,
+          column: 12
+        },
+        end: {
+          line: 38,
+          column: 15
+        }
+      },
+      "17": {
+        start: {
+          line: 40,
+          column: 12
+        },
+        end: {
+          line: 40,
+          column: 77
+        }
+      },
+      "18": {
+        start: {
+          line: 41,
+          column: 12
+        },
+        end: {
+          line: 41,
+          column: 60
+        }
+      },
+      "19": {
+        start: {
+          line: 43,
+          column: 12
+        },
+        end: {
+          line: 71,
+          column: 13
+        }
+      },
+      "20": {
+        start: {
+          line: 44,
+          column: 16
+        },
+        end: {
+          line: 44,
+          column: 70
+        }
+      },
+      "21": {
+        start: {
+          line: 47,
+          column: 16
+        },
+        end: {
+          line: 61,
+          column: 19
+        }
+      },
+      "22": {
+        start: {
+          line: 63,
+          column: 16
+        },
+        end: {
+          line: 63,
+          column: 73
+        }
+      },
+      "23": {
+        start: {
+          line: 64,
+          column: 16
+        },
+        end: {
+          line: 70,
+          column: 19
+        }
+      },
+      "24": {
+        start: {
+          line: 74,
+          column: 8
+        },
+        end: {
+          line: 74,
+          column: 69
+        }
+      },
+      "25": {
+        start: {
+          line: 75,
+          column: 8
+        },
+        end: {
+          line: 82,
+          column: 11
+        }
+      },
+      "26": {
+        start: {
+          line: 84,
+          column: 8
+        },
+        end: {
+          line: 84,
+          column: 43
+        }
+      },
+      "27": {
+        start: {
+          line: 89,
+          column: 4
+        },
+        end: {
+          line: 120,
+          column: 5
+        }
+      },
+      "28": {
+        start: {
+          line: 90,
+          column: 8
+        },
+        end: {
+          line: 90,
+          column: 40
+        }
+      },
+      "29": {
+        start: {
+          line: 91,
+          column: 8
+        },
+        end: {
+          line: 108,
+          column: 9
+        }
+      },
+      "30": {
+        start: {
+          line: 92,
+          column: 30
+        },
+        end: {
+          line: 92,
+          column: 63
+        }
+      },
+      "31": {
+        start: {
+          line: 93,
+          column: 12
+        },
+        end: {
+          line: 97,
+          column: 15
+        }
+      },
+      "32": {
+        start: {
+          line: 99,
+          column: 12
+        },
+        end: {
+          line: 107,
+          column: 15
+        }
+      },
+      "33": {
+        start: {
+          line: 110,
+          column: 8
+        },
+        end: {
+          line: 117,
+          column: 11
+        }
+      },
+      "34": {
+        start: {
+          line: 119,
+          column: 8
+        },
+        end: {
+          line: 119,
+          column: 43
+        }
+      }
+    },
+    fnMap: {
+      "0": {
+        name: "_export",
+        decl: {
+          start: {
+            line: 5,
+            column: 9
+          },
+          end: {
+            line: 5,
+            column: 16
+          }
+        },
+        loc: {
+          start: {
+            line: 5,
+            column: 30
+          },
+          end: {
+            line: 10,
+            column: 1
+          }
+        },
+        line: 5
+      },
+      "1": {
+        name: "(anonymous_1)",
+        decl: {
+          start: {
+            line: 12,
+            column: 4
+          },
+          end: {
+            line: 12,
+            column: 5
+          }
+        },
+        loc: {
+          start: {
+            line: 12,
+            column: 15
+          },
+          end: {
+            line: 14,
+            column: 5
+          }
+        },
+        line: 12
+      },
+      "2": {
+        name: "(anonymous_2)",
+        decl: {
+          start: {
+            line: 15,
+            column: 4
+          },
+          end: {
+            line: 15,
+            column: 5
+          }
+        },
+        loc: {
+          start: {
+            line: 15,
+            column: 16
+          },
+          end: {
+            line: 17,
+            column: 5
+          }
+        },
+        line: 15
+      },
+      "3": {
+        name: "POST",
+        decl: {
+          start: {
+            line: 21,
+            column: 15
+          },
+          end: {
+            line: 21,
+            column: 19
+          }
+        },
+        loc: {
+          start: {
+            line: 21,
+            column: 22
+          },
+          end: {
+            line: 86,
+            column: 1
+          }
+        },
+        line: 21
+      },
+      "4": {
+        name: "GET",
+        decl: {
+          start: {
+            line: 87,
+            column: 15
+          },
+          end: {
+            line: 87,
+            column: 18
+          }
+        },
+        loc: {
+          start: {
+            line: 87,
+            column: 21
+          },
+          end: {
+            line: 121,
+            column: 1
+          }
+        },
+        line: 87
+      }
+    },
+    branchMap: {},
+    s: {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0,
+      "8": 0,
+      "9": 0,
+      "10": 0,
+      "11": 0,
+      "12": 0,
+      "13": 0,
+      "14": 0,
+      "15": 0,
+      "16": 0,
+      "17": 0,
+      "18": 0,
+      "19": 0,
+      "20": 0,
+      "21": 0,
+      "22": 0,
+      "23": 0,
+      "24": 0,
+      "25": 0,
+      "26": 0,
+      "27": 0,
+      "28": 0,
+      "29": 0,
+      "30": 0,
+      "31": 0,
+      "32": 0,
+      "33": 0,
+      "34": 0
+    },
+    f: {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0
+    },
+    b: {},
+    inputSourceMap: {
+      version: 3,
+      sources: ["/Users/kennyc/code/personal/nailit/app/api/init-db/route.ts"],
+      sourcesContent: ["import { NextRequest, NextResponse } from 'next/server';\nimport { prisma } from '../../lib/prisma';\n\nexport async function POST() {\n  try {\n    // Test basic connection\n    console.log('Testing database connection...');\n    await prisma.$connect();\n    console.log('Database connection successful');\n\n    // Check if tables exist by trying to query them\n    console.log('Checking if tables exist...');\n    \n    try {\n      // Test if tables exist by trying to count users\n      const userCount = await prisma.user.count();\n      console.log(`Tables exist. Current user count: ${userCount}`);\n      \n      return NextResponse.json({ \n        status: 'Already initialized',\n        userCount,\n        message: 'Database tables already exist',\n        timestamp: new Date().toISOString() \n      });\n    } catch (tableError: any) {\n      console.log('Tables do not exist, attempting to create them...');\n      console.log('Table error:', tableError.message);\n      \n      // Tables don't exist, try to create them using raw SQL\n      try {\n        console.log('Creating tables using Prisma schema...');\n        \n        // Use Prisma's $executeRaw to run the schema creation\n        // For now, we'll provide instructions since we can't run migrations in serverless\n        return NextResponse.json({ \n          status: 'Tables missing - setup required',\n          error: 'Database tables do not exist',\n          message: 'Tables need to be created',\n          instructions: [\n            '1. Run locally: npx prisma db push --accept-data-loss',\n            '2. Or use Neon Console to run SQL schema',\n            '3. Or create tables manually'\n          ],\n          neonConsole: 'Go to Neon Console \u2192 SQL Editor and run your schema',\n          tableError: tableError.message,\n          timestamp: new Date().toISOString()\n        }, { status: 424 }); // 424 Failed Dependency\n      } catch (creationError: any) {\n        console.error('Failed to create tables:', creationError);\n        return NextResponse.json({ \n          status: 'Table creation failed',\n          error: creationError.message,\n          timestamp: new Date().toISOString()\n        }, { status: 500 });\n      }\n    }\n    \n  } catch (connectionError: any) {\n    console.error('Database connection error:', connectionError);\n    \n    return NextResponse.json({ \n      status: 'Connection failed',\n      error: connectionError.message,\n      code: connectionError.code,\n      timestamp: new Date().toISOString()\n    }, { status: 500 });\n  } finally {\n    await prisma.$disconnect();\n  }\n}\n\nexport async function GET() {\n  // Same as POST but read-only check\n  try {\n    await prisma.$connect();\n    \n    try {\n      const userCount = await prisma.user.count();\n      return NextResponse.json({ \n        status: 'Connected and initialized',\n        userCount,\n        timestamp: new Date().toISOString() \n      });\n    } catch (tableError: any) {\n      return NextResponse.json({ \n        status: 'Connected but tables missing',\n        error: 'Tables do not exist',\n        code: tableError.code,\n        message: 'Use POST /api/init-db to initialize',\n        timestamp: new Date().toISOString()\n      }, { status: 424 });\n    }\n  } catch (error: any) {\n    return NextResponse.json({ \n      status: 'Connection failed',\n      error: error.message,\n      code: error.code,\n      timestamp: new Date().toISOString()\n    }, { status: 500 });\n  } finally {\n    await prisma.$disconnect();\n  }\n} "],
+      names: ["GET", "POST", "console", "log", "prisma", "$connect", "userCount", "user", "count", "NextResponse", "json", "status", "message", "timestamp", "Date", "toISOString", "tableError", "error", "instructions", "neonConsole", "creationError", "connectionError", "code", "$disconnect"],
+      mappings: ";;;;;;;;;;;QAuEsBA;eAAAA;;QApEAC;eAAAA;;;wBAHoB;wBACnB;AAEhB,eAAeA;IACpB,IAAI;QACF,wBAAwB;QACxBC,QAAQC,GAAG,CAAC;QACZ,MAAMC,cAAM,CAACC,QAAQ;QACrBH,QAAQC,GAAG,CAAC;QAEZ,gDAAgD;QAChDD,QAAQC,GAAG,CAAC;QAEZ,IAAI;YACF,gDAAgD;YAChD,MAAMG,YAAY,MAAMF,cAAM,CAACG,IAAI,CAACC,KAAK;YACzCN,QAAQC,GAAG,CAAC,CAAC,kCAAkC,EAAEG,WAAW;YAE5D,OAAOG,oBAAY,CAACC,IAAI,CAAC;gBACvBC,QAAQ;gBACRL;gBACAM,SAAS;gBACTC,WAAW,IAAIC,OAAOC,WAAW;YACnC;QACF,EAAE,OAAOC,YAAiB;YACxBd,QAAQC,GAAG,CAAC;YACZD,QAAQC,GAAG,CAAC,gBAAgBa,WAAWJ,OAAO;YAE9C,uDAAuD;YACvD,IAAI;gBACFV,QAAQC,GAAG,CAAC;gBAEZ,sDAAsD;gBACtD,kFAAkF;gBAClF,OAAOM,oBAAY,CAACC,IAAI,CAAC;oBACvBC,QAAQ;oBACRM,OAAO;oBACPL,SAAS;oBACTM,cAAc;wBACZ;wBACA;wBACA;qBACD;oBACDC,aAAa;oBACbH,YAAYA,WAAWJ,OAAO;oBAC9BC,WAAW,IAAIC,OAAOC,WAAW;gBACnC,GAAG;oBAAEJ,QAAQ;gBAAI,IAAI,wBAAwB;YAC/C,EAAE,OAAOS,eAAoB;gBAC3BlB,QAAQe,KAAK,CAAC,4BAA4BG;gBAC1C,OAAOX,oBAAY,CAACC,IAAI,CAAC;oBACvBC,QAAQ;oBACRM,OAAOG,cAAcR,OAAO;oBAC5BC,WAAW,IAAIC,OAAOC,WAAW;gBACnC,GAAG;oBAAEJ,QAAQ;gBAAI;YACnB;QACF;IAEF,EAAE,OAAOU,iBAAsB;QAC7BnB,QAAQe,KAAK,CAAC,8BAA8BI;QAE5C,OAAOZ,oBAAY,CAACC,IAAI,CAAC;YACvBC,QAAQ;YACRM,OAAOI,gBAAgBT,OAAO;YAC9BU,MAAMD,gBAAgBC,IAAI;YAC1BT,WAAW,IAAIC,OAAOC,WAAW;QACnC,GAAG;YAAEJ,QAAQ;QAAI;IACnB,SAAU;QACR,MAAMP,cAAM,CAACmB,WAAW;IAC1B;AACF;AAEO,eAAevB;IACpB,mCAAmC;IACnC,IAAI;QACF,MAAMI,cAAM,CAACC,QAAQ;QAErB,IAAI;YACF,MAAMC,YAAY,MAAMF,cAAM,CAACG,IAAI,CAACC,KAAK;YACzC,OAAOC,oBAAY,CAACC,IAAI,CAAC;gBACvBC,QAAQ;gBACRL;gBACAO,WAAW,IAAIC,OAAOC,WAAW;YACnC;QACF,EAAE,OAAOC,YAAiB;YACxB,OAAOP,oBAAY,CAACC,IAAI,CAAC;gBACvBC,QAAQ;gBACRM,OAAO;gBACPK,MAAMN,WAAWM,IAAI;gBACrBV,SAAS;gBACTC,WAAW,IAAIC,OAAOC,WAAW;YACnC,GAAG;gBAAEJ,QAAQ;YAAI;QACnB;IACF,EAAE,OAAOM,OAAY;QACnB,OAAOR,oBAAY,CAACC,IAAI,CAAC;YACvBC,QAAQ;YACRM,OAAOA,MAAML,OAAO;YACpBU,MAAML,MAAMK,IAAI;YAChBT,WAAW,IAAIC,OAAOC,WAAW;QACnC,GAAG;YAAEJ,QAAQ;QAAI;IACnB,SAAU;QACR,MAAMP,cAAM,CAACmB,WAAW;IAC1B;AACF"
+    },
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "17bb6d531472d3fef181fe5e987b465df409660b"
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
+  }
+  var actualCoverage = coverage[path];
+  {
+    // @ts-ignore
+    cov_ofrpqfyx = function () {
+      return actualCoverage;
+    };
+  }
+  return actualCoverage;
+}
+cov_ofrpqfyx();
+cov_ofrpqfyx().s[0]++;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+function _export(target, all) {
+  /* istanbul ignore next */
+  cov_ofrpqfyx().f[0]++;
+  cov_ofrpqfyx().s[1]++;
+  for (var name in all) {
+    /* istanbul ignore next */
+    cov_ofrpqfyx().s[2]++;
+    Object.defineProperty(target, name, {
+      enumerable: true,
+      get: Object.getOwnPropertyDescriptor(all, name).get
+    });
+  }
+}
+/* istanbul ignore next */
+cov_ofrpqfyx().s[3]++;
+_export(exports, {
+  get GET() {
+    /* istanbul ignore next */
+    cov_ofrpqfyx().f[1]++;
+    cov_ofrpqfyx().s[4]++;
+    return GET;
+  },
+  get POST() {
+    /* istanbul ignore next */
+    cov_ofrpqfyx().f[2]++;
+    cov_ofrpqfyx().s[5]++;
+    return POST;
+  }
+});
+const _server =
+/* istanbul ignore next */
+(cov_ofrpqfyx().s[6]++, require("next/server"));
+const _prisma =
+/* istanbul ignore next */
+(cov_ofrpqfyx().s[7]++, require("../../lib/prisma"));
+async function POST() {
+  /* istanbul ignore next */
+  cov_ofrpqfyx().f[3]++;
+  cov_ofrpqfyx().s[8]++;
+  try {
+    /* istanbul ignore next */
+    cov_ofrpqfyx().s[9]++;
+    // Test basic connection
+    console.log('Testing database connection...');
+    /* istanbul ignore next */
+    cov_ofrpqfyx().s[10]++;
+    await _prisma.prisma.$connect();
+    /* istanbul ignore next */
+    cov_ofrpqfyx().s[11]++;
+    console.log('Database connection successful');
+    // Check if tables exist by trying to query them
+    /* istanbul ignore next */
+    cov_ofrpqfyx().s[12]++;
+    console.log('Checking if tables exist...');
+    /* istanbul ignore next */
+    cov_ofrpqfyx().s[13]++;
+    try {
+      // Test if tables exist by trying to count users
+      const userCount =
+      /* istanbul ignore next */
+      (cov_ofrpqfyx().s[14]++, await _prisma.prisma.user.count());
+      /* istanbul ignore next */
+      cov_ofrpqfyx().s[15]++;
+      console.log(`Tables exist. Current user count: ${userCount}`);
+      /* istanbul ignore next */
+      cov_ofrpqfyx().s[16]++;
+      return _server.NextResponse.json({
+        status: 'Already initialized',
+        userCount,
+        message: 'Database tables already exist',
+        timestamp: new Date().toISOString()
+      });
+    } catch (tableError) {
+      /* istanbul ignore next */
+      cov_ofrpqfyx().s[17]++;
+      console.log('Tables do not exist, attempting to create them...');
+      /* istanbul ignore next */
+      cov_ofrpqfyx().s[18]++;
+      console.log('Table error:', tableError.message);
+      // Tables don't exist, try to create them using raw SQL
+      /* istanbul ignore next */
+      cov_ofrpqfyx().s[19]++;
+      try {
+        /* istanbul ignore next */
+        cov_ofrpqfyx().s[20]++;
+        console.log('Creating tables using Prisma schema...');
+        // Use Prisma's $executeRaw to run the schema creation
+        // For now, we'll provide instructions since we can't run migrations in serverless
+        /* istanbul ignore next */
+        cov_ofrpqfyx().s[21]++;
+        return _server.NextResponse.json({
+          status: 'Tables missing - setup required',
+          error: 'Database tables do not exist',
+          message: 'Tables need to be created',
+          instructions: ['1. Run locally: npx prisma db push --accept-data-loss', '2. Or use Neon Console to run SQL schema', '3. Or create tables manually'],
+          neonConsole: 'Go to Neon Console → SQL Editor and run your schema',
+          tableError: tableError.message,
+          timestamp: new Date().toISOString()
+        }, {
+          status: 424
+        }); // 424 Failed Dependency
+      } catch (creationError) {
+        /* istanbul ignore next */
+        cov_ofrpqfyx().s[22]++;
+        console.error('Failed to create tables:', creationError);
+        /* istanbul ignore next */
+        cov_ofrpqfyx().s[23]++;
+        return _server.NextResponse.json({
+          status: 'Table creation failed',
+          error: creationError.message,
+          timestamp: new Date().toISOString()
+        }, {
+          status: 500
+        });
+      }
+    }
+  } catch (connectionError) {
+    /* istanbul ignore next */
+    cov_ofrpqfyx().s[24]++;
+    console.error('Database connection error:', connectionError);
+    /* istanbul ignore next */
+    cov_ofrpqfyx().s[25]++;
+    return _server.NextResponse.json({
+      status: 'Connection failed',
+      error: connectionError.message,
+      code: connectionError.code,
+      timestamp: new Date().toISOString()
+    }, {
+      status: 500
+    });
+  } finally {
+    /* istanbul ignore next */
+    cov_ofrpqfyx().s[26]++;
+    await _prisma.prisma.$disconnect();
+  }
+}
+async function GET() {
+  /* istanbul ignore next */
+  cov_ofrpqfyx().f[4]++;
+  cov_ofrpqfyx().s[27]++;
+  // Same as POST but read-only check
+  try {
+    /* istanbul ignore next */
+    cov_ofrpqfyx().s[28]++;
+    await _prisma.prisma.$connect();
+    /* istanbul ignore next */
+    cov_ofrpqfyx().s[29]++;
+    try {
+      const userCount =
+      /* istanbul ignore next */
+      (cov_ofrpqfyx().s[30]++, await _prisma.prisma.user.count());
+      /* istanbul ignore next */
+      cov_ofrpqfyx().s[31]++;
+      return _server.NextResponse.json({
+        status: 'Connected and initialized',
+        userCount,
+        timestamp: new Date().toISOString()
+      });
+    } catch (tableError) {
+      /* istanbul ignore next */
+      cov_ofrpqfyx().s[32]++;
+      return _server.NextResponse.json({
+        status: 'Connected but tables missing',
+        error: 'Tables do not exist',
+        code: tableError.code,
+        message: 'Use POST /api/init-db to initialize',
+        timestamp: new Date().toISOString()
+      }, {
+        status: 424
+      });
+    }
+  } catch (error) {
+    /* istanbul ignore next */
+    cov_ofrpqfyx().s[33]++;
+    return _server.NextResponse.json({
+      status: 'Connection failed',
+      error: error.message,
+      code: error.code,
+      timestamp: new Date().toISOString()
+    }, {
+      status: 500
+    });
+  } finally {
+    /* istanbul ignore next */
+    cov_ofrpqfyx().s[34]++;
+    await _prisma.prisma.$disconnect();
+  }
+}
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJHRVQiLCJjb3Zfb2ZycHFmeXgiLCJmIiwicyIsIlBPU1QiLCJjb25zb2xlIiwibG9nIiwiX3ByaXNtYSIsInByaXNtYSIsIiRjb25uZWN0IiwidXNlckNvdW50IiwidXNlciIsImNvdW50IiwiX3NlcnZlciIsIk5leHRSZXNwb25zZSIsImpzb24iLCJzdGF0dXMiLCJtZXNzYWdlIiwidGltZXN0YW1wIiwiRGF0ZSIsInRvSVNPU3RyaW5nIiwidGFibGVFcnJvciIsImVycm9yIiwiaW5zdHJ1Y3Rpb25zIiwibmVvbkNvbnNvbGUiLCJjcmVhdGlvbkVycm9yIiwiY29ubmVjdGlvbkVycm9yIiwiY29kZSIsIiRkaXNjb25uZWN0Il0sInNvdXJjZXMiOlsiL1VzZXJzL2tlbm55Yy9jb2RlL3BlcnNvbmFsL25haWxpdC9hcHAvYXBpL2luaXQtZGIvcm91dGUudHMiXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgTmV4dFJlcXVlc3QsIE5leHRSZXNwb25zZSB9IGZyb20gJ25leHQvc2VydmVyJztcbmltcG9ydCB7IHByaXNtYSB9IGZyb20gJy4uLy4uL2xpYi9wcmlzbWEnO1xuXG5leHBvcnQgYXN5bmMgZnVuY3Rpb24gUE9TVCgpIHtcbiAgdHJ5IHtcbiAgICAvLyBUZXN0IGJhc2ljIGNvbm5lY3Rpb25cbiAgICBjb25zb2xlLmxvZygnVGVzdGluZyBkYXRhYmFzZSBjb25uZWN0aW9uLi4uJyk7XG4gICAgYXdhaXQgcHJpc21hLiRjb25uZWN0KCk7XG4gICAgY29uc29sZS5sb2coJ0RhdGFiYXNlIGNvbm5lY3Rpb24gc3VjY2Vzc2Z1bCcpO1xuXG4gICAgLy8gQ2hlY2sgaWYgdGFibGVzIGV4aXN0IGJ5IHRyeWluZyB0byBxdWVyeSB0aGVtXG4gICAgY29uc29sZS5sb2coJ0NoZWNraW5nIGlmIHRhYmxlcyBleGlzdC4uLicpO1xuICAgIFxuICAgIHRyeSB7XG4gICAgICAvLyBUZXN0IGlmIHRhYmxlcyBleGlzdCBieSB0cnlpbmcgdG8gY291bnQgdXNlcnNcbiAgICAgIGNvbnN0IHVzZXJDb3VudCA9IGF3YWl0IHByaXNtYS51c2VyLmNvdW50KCk7XG4gICAgICBjb25zb2xlLmxvZyhgVGFibGVzIGV4aXN0LiBDdXJyZW50IHVzZXIgY291bnQ6ICR7dXNlckNvdW50fWApO1xuICAgICAgXG4gICAgICByZXR1cm4gTmV4dFJlc3BvbnNlLmpzb24oeyBcbiAgICAgICAgc3RhdHVzOiAnQWxyZWFkeSBpbml0aWFsaXplZCcsXG4gICAgICAgIHVzZXJDb3VudCxcbiAgICAgICAgbWVzc2FnZTogJ0RhdGFiYXNlIHRhYmxlcyBhbHJlYWR5IGV4aXN0JyxcbiAgICAgICAgdGltZXN0YW1wOiBuZXcgRGF0ZSgpLnRvSVNPU3RyaW5nKCkgXG4gICAgICB9KTtcbiAgICB9IGNhdGNoICh0YWJsZUVycm9yOiBhbnkpIHtcbiAgICAgIGNvbnNvbGUubG9nKCdUYWJsZXMgZG8gbm90IGV4aXN0LCBhdHRlbXB0aW5nIHRvIGNyZWF0ZSB0aGVtLi4uJyk7XG4gICAgICBjb25zb2xlLmxvZygnVGFibGUgZXJyb3I6JywgdGFibGVFcnJvci5tZXNzYWdlKTtcbiAgICAgIFxuICAgICAgLy8gVGFibGVzIGRvbid0IGV4aXN0LCB0cnkgdG8gY3JlYXRlIHRoZW0gdXNpbmcgcmF3IFNRTFxuICAgICAgdHJ5IHtcbiAgICAgICAgY29uc29sZS5sb2coJ0NyZWF0aW5nIHRhYmxlcyB1c2luZyBQcmlzbWEgc2NoZW1hLi4uJyk7XG4gICAgICAgIFxuICAgICAgICAvLyBVc2UgUHJpc21hJ3MgJGV4ZWN1dGVSYXcgdG8gcnVuIHRoZSBzY2hlbWEgY3JlYXRpb25cbiAgICAgICAgLy8gRm9yIG5vdywgd2UnbGwgcHJvdmlkZSBpbnN0cnVjdGlvbnMgc2luY2Ugd2UgY2FuJ3QgcnVuIG1pZ3JhdGlvbnMgaW4gc2VydmVybGVzc1xuICAgICAgICByZXR1cm4gTmV4dFJlc3BvbnNlLmpzb24oeyBcbiAgICAgICAgICBzdGF0dXM6ICdUYWJsZXMgbWlzc2luZyAtIHNldHVwIHJlcXVpcmVkJyxcbiAgICAgICAgICBlcnJvcjogJ0RhdGFiYXNlIHRhYmxlcyBkbyBub3QgZXhpc3QnLFxuICAgICAgICAgIG1lc3NhZ2U6ICdUYWJsZXMgbmVlZCB0byBiZSBjcmVhdGVkJyxcbiAgICAgICAgICBpbnN0cnVjdGlvbnM6IFtcbiAgICAgICAgICAgICcxLiBSdW4gbG9jYWxseTogbnB4IHByaXNtYSBkYiBwdXNoIC0tYWNjZXB0LWRhdGEtbG9zcycsXG4gICAgICAgICAgICAnMi4gT3IgdXNlIE5lb24gQ29uc29sZSB0byBydW4gU1FMIHNjaGVtYScsXG4gICAgICAgICAgICAnMy4gT3IgY3JlYXRlIHRhYmxlcyBtYW51YWxseSdcbiAgICAgICAgICBdLFxuICAgICAgICAgIG5lb25Db25zb2xlOiAnR28gdG8gTmVvbiBDb25zb2xlIOKGkiBTUUwgRWRpdG9yIGFuZCBydW4geW91ciBzY2hlbWEnLFxuICAgICAgICAgIHRhYmxlRXJyb3I6IHRhYmxlRXJyb3IubWVzc2FnZSxcbiAgICAgICAgICB0aW1lc3RhbXA6IG5ldyBEYXRlKCkudG9JU09TdHJpbmcoKVxuICAgICAgICB9LCB7IHN0YXR1czogNDI0IH0pOyAvLyA0MjQgRmFpbGVkIERlcGVuZGVuY3lcbiAgICAgIH0gY2F0Y2ggKGNyZWF0aW9uRXJyb3I6IGFueSkge1xuICAgICAgICBjb25zb2xlLmVycm9yKCdGYWlsZWQgdG8gY3JlYXRlIHRhYmxlczonLCBjcmVhdGlvbkVycm9yKTtcbiAgICAgICAgcmV0dXJuIE5leHRSZXNwb25zZS5qc29uKHsgXG4gICAgICAgICAgc3RhdHVzOiAnVGFibGUgY3JlYXRpb24gZmFpbGVkJyxcbiAgICAgICAgICBlcnJvcjogY3JlYXRpb25FcnJvci5tZXNzYWdlLFxuICAgICAgICAgIHRpbWVzdGFtcDogbmV3IERhdGUoKS50b0lTT1N0cmluZygpXG4gICAgICAgIH0sIHsgc3RhdHVzOiA1MDAgfSk7XG4gICAgICB9XG4gICAgfVxuICAgIFxuICB9IGNhdGNoIChjb25uZWN0aW9uRXJyb3I6IGFueSkge1xuICAgIGNvbnNvbGUuZXJyb3IoJ0RhdGFiYXNlIGNvbm5lY3Rpb24gZXJyb3I6JywgY29ubmVjdGlvbkVycm9yKTtcbiAgICBcbiAgICByZXR1cm4gTmV4dFJlc3BvbnNlLmpzb24oeyBcbiAgICAgIHN0YXR1czogJ0Nvbm5lY3Rpb24gZmFpbGVkJyxcbiAgICAgIGVycm9yOiBjb25uZWN0aW9uRXJyb3IubWVzc2FnZSxcbiAgICAgIGNvZGU6IGNvbm5lY3Rpb25FcnJvci5jb2RlLFxuICAgICAgdGltZXN0YW1wOiBuZXcgRGF0ZSgpLnRvSVNPU3RyaW5nKClcbiAgICB9LCB7IHN0YXR1czogNTAwIH0pO1xuICB9IGZpbmFsbHkge1xuICAgIGF3YWl0IHByaXNtYS4kZGlzY29ubmVjdCgpO1xuICB9XG59XG5cbmV4cG9ydCBhc3luYyBmdW5jdGlvbiBHRVQoKSB7XG4gIC8vIFNhbWUgYXMgUE9TVCBidXQgcmVhZC1vbmx5IGNoZWNrXG4gIHRyeSB7XG4gICAgYXdhaXQgcHJpc21hLiRjb25uZWN0KCk7XG4gICAgXG4gICAgdHJ5IHtcbiAgICAgIGNvbnN0IHVzZXJDb3VudCA9IGF3YWl0IHByaXNtYS51c2VyLmNvdW50KCk7XG4gICAgICByZXR1cm4gTmV4dFJlc3BvbnNlLmpzb24oeyBcbiAgICAgICAgc3RhdHVzOiAnQ29ubmVjdGVkIGFuZCBpbml0aWFsaXplZCcsXG4gICAgICAgIHVzZXJDb3VudCxcbiAgICAgICAgdGltZXN0YW1wOiBuZXcgRGF0ZSgpLnRvSVNPU3RyaW5nKCkgXG4gICAgICB9KTtcbiAgICB9IGNhdGNoICh0YWJsZUVycm9yOiBhbnkpIHtcbiAgICAgIHJldHVybiBOZXh0UmVzcG9uc2UuanNvbih7IFxuICAgICAgICBzdGF0dXM6ICdDb25uZWN0ZWQgYnV0IHRhYmxlcyBtaXNzaW5nJyxcbiAgICAgICAgZXJyb3I6ICdUYWJsZXMgZG8gbm90IGV4aXN0JyxcbiAgICAgICAgY29kZTogdGFibGVFcnJvci5jb2RlLFxuICAgICAgICBtZXNzYWdlOiAnVXNlIFBPU1QgL2FwaS9pbml0LWRiIHRvIGluaXRpYWxpemUnLFxuICAgICAgICB0aW1lc3RhbXA6IG5ldyBEYXRlKCkudG9JU09TdHJpbmcoKVxuICAgICAgfSwgeyBzdGF0dXM6IDQyNCB9KTtcbiAgICB9XG4gIH0gY2F0Y2ggKGVycm9yOiBhbnkpIHtcbiAgICByZXR1cm4gTmV4dFJlc3BvbnNlLmpzb24oeyBcbiAgICAgIHN0YXR1czogJ0Nvbm5lY3Rpb24gZmFpbGVkJyxcbiAgICAgIGVycm9yOiBlcnJvci5tZXNzYWdlLFxuICAgICAgY29kZTogZXJyb3IuY29kZSxcbiAgICAgIHRpbWVzdGFtcDogbmV3IERhdGUoKS50b0lTT1N0cmluZygpXG4gICAgfSwgeyBzdGF0dXM6IDUwMCB9KTtcbiAgfSBmaW5hbGx5IHtcbiAgICBhd2FpdCBwcmlzbWEuJGRpc2Nvbm5lY3QoKTtcbiAgfVxufSAiXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7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

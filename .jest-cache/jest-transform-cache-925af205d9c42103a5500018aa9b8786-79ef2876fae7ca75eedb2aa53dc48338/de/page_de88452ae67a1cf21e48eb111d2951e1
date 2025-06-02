@@ -1,0 +1,1010 @@
+ff62c0789b34a5316c821c6979d47785
+'use client';
+"use strict";
+
+/* istanbul ignore next */
+function cov_15gihj6wp6() {
+  var path = "/Users/kennyc/code/personal/nailit/app/auth/error/page.tsx";
+  var hash = "6b1b27097b331ed22e51aa50b410f991d84fb529";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
+  var coverageData = {
+    path: "/Users/kennyc/code/personal/nailit/app/auth/error/page.tsx",
+    statementMap: {
+      "0": {
+        start: {
+          line: 3,
+          column: 0
+        },
+        end: {
+          line: 5,
+          column: 3
+        }
+      },
+      "1": {
+        start: {
+          line: 6,
+          column: 0
+        },
+        end: {
+          line: 11,
+          column: 3
+        }
+      },
+      "2": {
+        start: {
+          line: 9,
+          column: 8
+        },
+        end: {
+          line: 9,
+          column: 25
+        }
+      },
+      "3": {
+        start: {
+          line: 12,
+          column: 20
+        },
+        end: {
+          line: 12,
+          column: 48
+        }
+      },
+      "4": {
+        start: {
+          line: 13,
+          column: 15
+        },
+        end: {
+          line: 13,
+          column: 31
+        }
+      },
+      "5": {
+        start: {
+          line: 14,
+          column: 20
+        },
+        end: {
+          line: 14,
+          column: 46
+        }
+      },
+      "6": {
+        start: {
+          line: 15,
+          column: 28
+        },
+        end: {
+          line: 15,
+          column: 74
+        }
+      },
+      "7": {
+        start: {
+          line: 16,
+          column: 16
+        },
+        end: {
+          line: 16,
+          column: 53
+        }
+      },
+      "8": {
+        start: {
+          line: 18,
+          column: 4
+        },
+        end: {
+          line: 20,
+          column: 6
+        }
+      },
+      "9": {
+        start: {
+          line: 23,
+          column: 25
+        },
+        end: {
+          line: 23,
+          column: 59
+        }
+      },
+      "10": {
+        start: {
+          line: 24,
+          column: 18
+        },
+        end: {
+          line: 24,
+          column: 43
+        }
+      },
+      "11": {
+        start: {
+          line: 25,
+          column: 28
+        },
+        end: {
+          line: 54,
+          column: 5
+        }
+      },
+      "12": {
+        start: {
+          line: 26,
+          column: 8
+        },
+        end: {
+          line: 53,
+          column: 9
+        }
+      },
+      "13": {
+        start: {
+          line: 28,
+          column: 16
+        },
+        end: {
+          line: 28,
+          column: 99
+        }
+      },
+      "14": {
+        start: {
+          line: 30,
+          column: 16
+        },
+        end: {
+          line: 30,
+          column: 114
+        }
+      },
+      "15": {
+        start: {
+          line: 32,
+          column: 16
+        },
+        end: {
+          line: 32,
+          column: 104
+        }
+      },
+      "16": {
+        start: {
+          line: 34,
+          column: 16
+        },
+        end: {
+          line: 34,
+          column: 87
+        }
+      },
+      "17": {
+        start: {
+          line: 36,
+          column: 16
+        },
+        end: {
+          line: 36,
+          column: 95
+        }
+      },
+      "18": {
+        start: {
+          line: 38,
+          column: 16
+        },
+        end: {
+          line: 38,
+          column: 91
+        }
+      },
+      "19": {
+        start: {
+          line: 40,
+          column: 16
+        },
+        end: {
+          line: 40,
+          column: 91
+        }
+      },
+      "20": {
+        start: {
+          line: 42,
+          column: 16
+        },
+        end: {
+          line: 42,
+          column: 86
+        }
+      },
+      "21": {
+        start: {
+          line: 44,
+          column: 16
+        },
+        end: {
+          line: 44,
+          column: 120
+        }
+      },
+      "22": {
+        start: {
+          line: 46,
+          column: 16
+        },
+        end: {
+          line: 46,
+          column: 81
+        }
+      },
+      "23": {
+        start: {
+          line: 48,
+          column: 16
+        },
+        end: {
+          line: 48,
+          column: 96
+        }
+      },
+      "24": {
+        start: {
+          line: 50,
+          column: 16
+        },
+        end: {
+          line: 50,
+          column: 68
+        }
+      },
+      "25": {
+        start: {
+          line: 52,
+          column: 16
+        },
+        end: {
+          line: 52,
+          column: 95
+        }
+      },
+      "26": {
+        start: {
+          line: 55,
+          column: 4
+        },
+        end: {
+          line: 179,
+          column: 7
+        }
+      },
+      "27": {
+        start: {
+          line: 182,
+          column: 4
+        },
+        end: {
+          line: 202,
+          column: 7
+        }
+      }
+    },
+    fnMap: {
+      "0": {
+        name: "(anonymous_0)",
+        decl: {
+          start: {
+            line: 8,
+            column: 9
+          },
+          end: {
+            line: 8,
+            column: 10
+          }
+        },
+        loc: {
+          start: {
+            line: 8,
+            column: 20
+          },
+          end: {
+            line: 10,
+            column: 5
+          }
+        },
+        line: 8
+      },
+      "1": {
+        name: "_interop_require_default",
+        decl: {
+          start: {
+            line: 17,
+            column: 9
+          },
+          end: {
+            line: 17,
+            column: 33
+          }
+        },
+        loc: {
+          start: {
+            line: 17,
+            column: 39
+          },
+          end: {
+            line: 21,
+            column: 1
+          }
+        },
+        line: 17
+      },
+      "2": {
+        name: "AuthErrorContent",
+        decl: {
+          start: {
+            line: 22,
+            column: 9
+          },
+          end: {
+            line: 22,
+            column: 25
+          }
+        },
+        loc: {
+          start: {
+            line: 22,
+            column: 28
+          },
+          end: {
+            line: 180,
+            column: 1
+          }
+        },
+        line: 22
+      },
+      "3": {
+        name: "(anonymous_3)",
+        decl: {
+          start: {
+            line: 25,
+            column: 28
+          },
+          end: {
+            line: 25,
+            column: 29
+          }
+        },
+        loc: {
+          start: {
+            line: 25,
+            column: 37
+          },
+          end: {
+            line: 54,
+            column: 5
+          }
+        },
+        line: 25
+      },
+      "4": {
+        name: "AuthError",
+        decl: {
+          start: {
+            line: 181,
+            column: 9
+          },
+          end: {
+            line: 181,
+            column: 18
+          }
+        },
+        loc: {
+          start: {
+            line: 181,
+            column: 21
+          },
+          end: {
+            line: 203,
+            column: 1
+          }
+        },
+        line: 181
+      }
+    },
+    branchMap: {
+      "0": {
+        loc: {
+          start: {
+            line: 18,
+            column: 11
+          },
+          end: {
+            line: 20,
+            column: 5
+          }
+        },
+        type: "cond-expr",
+        locations: [{
+          start: {
+            line: 18,
+            column: 35
+          },
+          end: {
+            line: 18,
+            column: 38
+          }
+        }, {
+          start: {
+            line: 18,
+            column: 41
+          },
+          end: {
+            line: 20,
+            column: 5
+          }
+        }],
+        line: 18
+      },
+      "1": {
+        loc: {
+          start: {
+            line: 18,
+            column: 11
+          },
+          end: {
+            line: 18,
+            column: 32
+          }
+        },
+        type: "binary-expr",
+        locations: [{
+          start: {
+            line: 18,
+            column: 11
+          },
+          end: {
+            line: 18,
+            column: 14
+          }
+        }, {
+          start: {
+            line: 18,
+            column: 18
+          },
+          end: {
+            line: 18,
+            column: 32
+          }
+        }],
+        line: 18
+      },
+      "2": {
+        loc: {
+          start: {
+            line: 26,
+            column: 8
+          },
+          end: {
+            line: 53,
+            column: 9
+          }
+        },
+        type: "switch",
+        locations: [{
+          start: {
+            line: 27,
+            column: 12
+          },
+          end: {
+            line: 28,
+            column: 99
+          }
+        }, {
+          start: {
+            line: 29,
+            column: 12
+          },
+          end: {
+            line: 30,
+            column: 114
+          }
+        }, {
+          start: {
+            line: 31,
+            column: 12
+          },
+          end: {
+            line: 32,
+            column: 104
+          }
+        }, {
+          start: {
+            line: 33,
+            column: 12
+          },
+          end: {
+            line: 34,
+            column: 87
+          }
+        }, {
+          start: {
+            line: 35,
+            column: 12
+          },
+          end: {
+            line: 36,
+            column: 95
+          }
+        }, {
+          start: {
+            line: 37,
+            column: 12
+          },
+          end: {
+            line: 38,
+            column: 91
+          }
+        }, {
+          start: {
+            line: 39,
+            column: 12
+          },
+          end: {
+            line: 40,
+            column: 91
+          }
+        }, {
+          start: {
+            line: 41,
+            column: 12
+          },
+          end: {
+            line: 42,
+            column: 86
+          }
+        }, {
+          start: {
+            line: 43,
+            column: 12
+          },
+          end: {
+            line: 44,
+            column: 120
+          }
+        }, {
+          start: {
+            line: 45,
+            column: 12
+          },
+          end: {
+            line: 46,
+            column: 81
+          }
+        }, {
+          start: {
+            line: 47,
+            column: 12
+          },
+          end: {
+            line: 48,
+            column: 96
+          }
+        }, {
+          start: {
+            line: 49,
+            column: 12
+          },
+          end: {
+            line: 50,
+            column: 68
+          }
+        }, {
+          start: {
+            line: 51,
+            column: 12
+          },
+          end: {
+            line: 52,
+            column: 95
+          }
+        }],
+        line: 26
+      },
+      "3": {
+        loc: {
+          start: {
+            line: 118,
+            column: 62
+          },
+          end: {
+            line: 118,
+            column: 94
+          }
+        },
+        type: "binary-expr",
+        locations: [{
+          start: {
+            line: 118,
+            column: 62
+          },
+          end: {
+            line: 118,
+            column: 67
+          }
+        }, {
+          start: {
+            line: 118,
+            column: 71
+          },
+          end: {
+            line: 118,
+            column: 94
+          }
+        }],
+        line: 118
+      },
+      "4": {
+        loc: {
+          start: {
+            line: 151,
+            column: 28
+          },
+          end: {
+            line: 173,
+            column: 30
+          }
+        },
+        type: "binary-expr",
+        locations: [{
+          start: {
+            line: 151,
+            column: 28
+          },
+          end: {
+            line: 151,
+            column: 52
+          }
+        }, {
+          start: {
+            line: 151,
+            column: 70
+          },
+          end: {
+            line: 173,
+            column: 30
+          }
+        }],
+        line: 151
+      }
+    },
+    s: {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0,
+      "8": 0,
+      "9": 0,
+      "10": 0,
+      "11": 0,
+      "12": 0,
+      "13": 0,
+      "14": 0,
+      "15": 0,
+      "16": 0,
+      "17": 0,
+      "18": 0,
+      "19": 0,
+      "20": 0,
+      "21": 0,
+      "22": 0,
+      "23": 0,
+      "24": 0,
+      "25": 0,
+      "26": 0,
+      "27": 0
+    },
+    f: {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0
+    },
+    b: {
+      "0": [0, 0],
+      "1": [0, 0],
+      "2": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      "3": [0, 0],
+      "4": [0, 0]
+    },
+    inputSourceMap: {
+      version: 3,
+      sources: ["/Users/kennyc/code/personal/nailit/app/auth/error/page.tsx"],
+      sourcesContent: ["'use client';\n\nimport { Suspense } from 'react';\nimport { useSearchParams } from 'next/navigation';\nimport Link from 'next/link';\nimport { Button } from '../../components/ui/Button';\n\nfunction AuthErrorContent() {\n  const searchParams = useSearchParams();\n  const error = searchParams.get('error');\n\n  const getErrorMessage = (error: string | null) => {\n    switch (error) {\n      case 'Configuration':\n        return 'There is a problem with the server configuration. Please try again later.';\n      case 'AccessDenied':\n        return 'You denied access to the application. Please try again and grant permission to continue.';\n      case 'Verification':\n        return 'The verification link was invalid or has expired. Please try signing in again.';\n      case 'OAuthSignin':\n        return 'Error in constructing an authorization URL. Please try again.';\n      case 'OAuthCallback':\n        return 'Error in handling the response from OAuth provider. Please try again.';\n      case 'OAuthCreateAccount':\n        return 'Could not create OAuth account in the database. Please try again.';\n      case 'EmailCreateAccount':\n        return 'Could not create email account in the database. Please try again.';\n      case 'Callback':\n        return 'Error in the OAuth callback handler route. Please try again.';\n      case 'OAuthAccountNotLinked':\n        return 'This email is already associated with another account. Please use the original sign-in method.';\n      case 'EmailSignin':\n        return 'Error sending the verification email. Please try again.';\n      case 'CredentialsSignin':\n        return 'Invalid credentials provided. Please check your details and try again.';\n      case 'SessionRequired':\n        return 'You must be signed in to access this page.';\n      default:\n        return 'An unexpected error occurred during authentication. Please try again.';\n    }\n  };\n\n  return (\n    <div className=\"min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8\">\n      <div className=\"sm:mx-auto sm:w-full sm:max-w-md\">\n        <div className=\"mx-auto h-16 w-16 flex items-center justify-center rounded-full bg-red-100\">\n          <svg className=\"h-8 w-8 text-red-600\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\">\n            <path strokeLinecap=\"round\" strokeLinejoin=\"round\" strokeWidth={2} d=\"M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z\" />\n          </svg>\n        </div>\n        <h2 className=\"mt-6 text-center text-3xl font-extrabold text-gray-900\">\n          Authentication Error\n        </h2>\n        <p className=\"mt-2 text-center text-sm text-gray-600\">\n          We encountered an issue while signing you in\n        </p>\n      </div>\n\n      <div className=\"mt-8 sm:mx-auto sm:w-full sm:max-w-md\">\n        <div className=\"bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10\">\n          <div className=\"space-y-6\">\n            <div className=\"bg-red-50 border border-red-200 rounded-md p-4\">\n              <div className=\"flex\">\n                <div className=\"flex-shrink-0\">\n                  <svg className=\"h-5 w-5 text-red-400\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\">\n                    <path strokeLinecap=\"round\" strokeLinejoin=\"round\" strokeWidth={2} d=\"M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z\" />\n                  </svg>\n                </div>\n                <div className=\"ml-3\">\n                  <h3 className=\"text-sm font-medium text-red-800\">\n                    {error || 'Authentication Failed'}\n                  </h3>\n                  <div className=\"mt-2 text-sm text-red-700\">\n                    <p>{getErrorMessage(error)}</p>\n                  </div>\n                </div>\n              </div>\n            </div>\n\n            <div className=\"space-y-4\">\n              <Link href=\"/auth/signin\">\n                <Button className=\"w-full\">\n                  Try Again\n                </Button>\n              </Link>\n              \n              <Link href=\"/\">\n                <Button variant=\"outline\" className=\"w-full\">\n                  Go Home\n                </Button>\n              </Link>\n            </div>\n\n            {error === 'AccessDenied' && (\n              <div className=\"mt-6 p-4 bg-blue-50 border border-blue-200 rounded-md\">\n                <h4 className=\"text-sm font-medium text-blue-800 mb-2\">\n                  Why do we need access?\n                </h4>\n                <ul className=\"text-xs text-blue-700 space-y-1\">\n                  <li>\u2022 Read your Gmail to monitor project communications</li>\n                  <li>\u2022 Send reply emails through the platform</li>\n                  <li>\u2022 Access is required for core functionality</li>\n                </ul>\n              </div>\n            )}\n          </div>\n        </div>\n      </div>\n    </div>\n  );\n}\n\nexport default function AuthError() {\n  return (\n    <Suspense fallback={\n      <div className=\"min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8\">\n        <div className=\"sm:mx-auto sm:w-full sm:max-w-md\">\n          <div className=\"mx-auto h-16 w-16 flex items-center justify-center rounded-full bg-gray-100\">\n            <div className=\"animate-spin h-8 w-8 border-4 border-gray-300 border-t-blue-600 rounded-full\"></div>\n          </div>\n          <h2 className=\"mt-6 text-center text-3xl font-extrabold text-gray-900\">\n            Loading...\n          </h2>\n        </div>\n      </div>\n    }>\n      <AuthErrorContent />\n    </Suspense>\n  );\n} "],
+      names: ["AuthError", "AuthErrorContent", "searchParams", "useSearchParams", "error", "get", "getErrorMessage", "div", "className", "svg", "fill", "viewBox", "stroke", "path", "strokeLinecap", "strokeLinejoin", "strokeWidth", "d", "h2", "p", "h3", "Link", "href", "Button", "variant", "h4", "ul", "li", "Suspense", "fallback"],
+      mappings: "AAAA;;;;;+BAgHA;;;eAAwBA;;;;uBA9GC;4BACO;6DACf;wBACM;;;;;;AAEvB,SAASC;IACP,MAAMC,eAAeC,IAAAA,2BAAe;IACpC,MAAMC,QAAQF,aAAaG,GAAG,CAAC;IAE/B,MAAMC,kBAAkB,CAACF;QACvB,OAAQA;YACN,KAAK;gBACH,OAAO;YACT,KAAK;gBACH,OAAO;YACT,KAAK;gBACH,OAAO;YACT,KAAK;gBACH,OAAO;YACT,KAAK;gBACH,OAAO;YACT,KAAK;gBACH,OAAO;YACT,KAAK;gBACH,OAAO;YACT,KAAK;gBACH,OAAO;YACT,KAAK;gBACH,OAAO;YACT,KAAK;gBACH,OAAO;YACT,KAAK;gBACH,OAAO;YACT,KAAK;gBACH,OAAO;YACT;gBACE,OAAO;QACX;IACF;IAEA,qBACE,sBAACG;QAAIC,WAAU;;0BACb,sBAACD;gBAAIC,WAAU;;kCACb,qBAACD;wBAAIC,WAAU;kCACb,cAAA,qBAACC;4BAAID,WAAU;4BAAuBE,MAAK;4BAAOC,SAAQ;4BAAYC,QAAO;sCAC3E,cAAA,qBAACC;gCAAKC,eAAc;gCAAQC,gBAAe;gCAAQC,aAAa;gCAAGC,GAAE;;;;kCAGzE,qBAACC;wBAAGV,WAAU;kCAAyD;;kCAGvE,qBAACW;wBAAEX,WAAU;kCAAyC;;;;0BAKxD,qBAACD;gBAAIC,WAAU;0BACb,cAAA,qBAACD;oBAAIC,WAAU;8BACb,cAAA,sBAACD;wBAAIC,WAAU;;0CACb,qBAACD;gCAAIC,WAAU;0CACb,cAAA,sBAACD;oCAAIC,WAAU;;sDACb,qBAACD;4CAAIC,WAAU;sDACb,cAAA,qBAACC;gDAAID,WAAU;gDAAuBE,MAAK;gDAAOC,SAAQ;gDAAYC,QAAO;0DAC3E,cAAA,qBAACC;oDAAKC,eAAc;oDAAQC,gBAAe;oDAAQC,aAAa;oDAAGC,GAAE;;;;sDAGzE,sBAACV;4CAAIC,WAAU;;8DACb,qBAACY;oDAAGZ,WAAU;8DACXJ,SAAS;;8DAEZ,qBAACG;oDAAIC,WAAU;8DACb,cAAA,qBAACW;kEAAGb,gBAAgBF;;;;;;;;0CAM5B,sBAACG;gCAAIC,WAAU;;kDACb,qBAACa,aAAI;wCAACC,MAAK;kDACT,cAAA,qBAACC,cAAM;4CAACf,WAAU;sDAAS;;;kDAK7B,qBAACa,aAAI;wCAACC,MAAK;kDACT,cAAA,qBAACC,cAAM;4CAACC,SAAQ;4CAAUhB,WAAU;sDAAS;;;;;4BAMhDJ,UAAU,gCACT,sBAACG;gCAAIC,WAAU;;kDACb,qBAACiB;wCAAGjB,WAAU;kDAAyC;;kDAGvD,sBAACkB;wCAAGlB,WAAU;;0DACZ,qBAACmB;0DAAG;;0DACJ,qBAACA;0DAAG;;0DACJ,qBAACA;0DAAG;;;;;;;;;;;;AAStB;AAEe,SAAS3B;IACtB,qBACE,qBAAC4B,eAAQ;QAACC,wBACR,qBAACtB;YAAIC,WAAU;sBACb,cAAA,sBAACD;gBAAIC,WAAU;;kCACb,qBAACD;wBAAIC,WAAU;kCACb,cAAA,qBAACD;4BAAIC,WAAU;;;kCAEjB,qBAACU;wBAAGV,WAAU;kCAAyD;;;;;kBAM3E,cAAA,qBAACP;;AAGP"
+    },
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "6b1b27097b331ed22e51aa50b410f991d84fb529"
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
+  }
+  var actualCoverage = coverage[path];
+  {
+    // @ts-ignore
+    cov_15gihj6wp6 = function () {
+      return actualCoverage;
+    };
+  }
+  return actualCoverage;
+}
+cov_15gihj6wp6();
+cov_15gihj6wp6().s[0]++;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/* istanbul ignore next */
+cov_15gihj6wp6().s[1]++;
+Object.defineProperty(exports, "default", {
+  enumerable: true,
+  get: function () {
+    /* istanbul ignore next */
+    cov_15gihj6wp6().f[0]++;
+    cov_15gihj6wp6().s[2]++;
+    return AuthError;
+  }
+});
+const _jsxruntime =
+/* istanbul ignore next */
+(cov_15gihj6wp6().s[3]++, require("react/jsx-runtime"));
+const _react =
+/* istanbul ignore next */
+(cov_15gihj6wp6().s[4]++, require("react"));
+const _navigation =
+/* istanbul ignore next */
+(cov_15gihj6wp6().s[5]++, require("next/navigation"));
+const _link =
+/* istanbul ignore next */
+(/*#__PURE__*/cov_15gihj6wp6().s[6]++, _interop_require_default(require("next/link")));
+const _Button =
+/* istanbul ignore next */
+(cov_15gihj6wp6().s[7]++, require("../../components/ui/Button"));
+function _interop_require_default(obj) {
+  /* istanbul ignore next */
+  cov_15gihj6wp6().f[1]++;
+  cov_15gihj6wp6().s[8]++;
+  return /* istanbul ignore next */(cov_15gihj6wp6().b[1][0]++, obj) &&
+  /* istanbul ignore next */
+  (cov_15gihj6wp6().b[1][1]++, obj.__esModule) ?
+  /* istanbul ignore next */
+  (cov_15gihj6wp6().b[0][0]++, obj) :
+  /* istanbul ignore next */
+  (cov_15gihj6wp6().b[0][1]++, {
+    default: obj
+  });
+}
+function AuthErrorContent() {
+  /* istanbul ignore next */
+  cov_15gihj6wp6().f[2]++;
+  const searchParams =
+  /* istanbul ignore next */
+  (cov_15gihj6wp6().s[9]++, (0, _navigation.useSearchParams)());
+  const error =
+  /* istanbul ignore next */
+  (cov_15gihj6wp6().s[10]++, searchParams.get('error'));
+  /* istanbul ignore next */
+  cov_15gihj6wp6().s[11]++;
+  const getErrorMessage = error => {
+    /* istanbul ignore next */
+    cov_15gihj6wp6().f[3]++;
+    cov_15gihj6wp6().s[12]++;
+    switch (error) {
+      case 'Configuration':
+        /* istanbul ignore next */
+        cov_15gihj6wp6().b[2][0]++;
+        cov_15gihj6wp6().s[13]++;
+        return 'There is a problem with the server configuration. Please try again later.';
+      case 'AccessDenied':
+        /* istanbul ignore next */
+        cov_15gihj6wp6().b[2][1]++;
+        cov_15gihj6wp6().s[14]++;
+        return 'You denied access to the application. Please try again and grant permission to continue.';
+      case 'Verification':
+        /* istanbul ignore next */
+        cov_15gihj6wp6().b[2][2]++;
+        cov_15gihj6wp6().s[15]++;
+        return 'The verification link was invalid or has expired. Please try signing in again.';
+      case 'OAuthSignin':
+        /* istanbul ignore next */
+        cov_15gihj6wp6().b[2][3]++;
+        cov_15gihj6wp6().s[16]++;
+        return 'Error in constructing an authorization URL. Please try again.';
+      case 'OAuthCallback':
+        /* istanbul ignore next */
+        cov_15gihj6wp6().b[2][4]++;
+        cov_15gihj6wp6().s[17]++;
+        return 'Error in handling the response from OAuth provider. Please try again.';
+      case 'OAuthCreateAccount':
+        /* istanbul ignore next */
+        cov_15gihj6wp6().b[2][5]++;
+        cov_15gihj6wp6().s[18]++;
+        return 'Could not create OAuth account in the database. Please try again.';
+      case 'EmailCreateAccount':
+        /* istanbul ignore next */
+        cov_15gihj6wp6().b[2][6]++;
+        cov_15gihj6wp6().s[19]++;
+        return 'Could not create email account in the database. Please try again.';
+      case 'Callback':
+        /* istanbul ignore next */
+        cov_15gihj6wp6().b[2][7]++;
+        cov_15gihj6wp6().s[20]++;
+        return 'Error in the OAuth callback handler route. Please try again.';
+      case 'OAuthAccountNotLinked':
+        /* istanbul ignore next */
+        cov_15gihj6wp6().b[2][8]++;
+        cov_15gihj6wp6().s[21]++;
+        return 'This email is already associated with another account. Please use the original sign-in method.';
+      case 'EmailSignin':
+        /* istanbul ignore next */
+        cov_15gihj6wp6().b[2][9]++;
+        cov_15gihj6wp6().s[22]++;
+        return 'Error sending the verification email. Please try again.';
+      case 'CredentialsSignin':
+        /* istanbul ignore next */
+        cov_15gihj6wp6().b[2][10]++;
+        cov_15gihj6wp6().s[23]++;
+        return 'Invalid credentials provided. Please check your details and try again.';
+      case 'SessionRequired':
+        /* istanbul ignore next */
+        cov_15gihj6wp6().b[2][11]++;
+        cov_15gihj6wp6().s[24]++;
+        return 'You must be signed in to access this page.';
+      default:
+        /* istanbul ignore next */
+        cov_15gihj6wp6().b[2][12]++;
+        cov_15gihj6wp6().s[25]++;
+        return 'An unexpected error occurred during authentication. Please try again.';
+    }
+  };
+  /* istanbul ignore next */
+  cov_15gihj6wp6().s[26]++;
+  return /*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+    className: "min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8",
+    children: [/*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+      className: "sm:mx-auto sm:w-full sm:max-w-md",
+      children: [/*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+        className: "mx-auto h-16 w-16 flex items-center justify-center rounded-full bg-red-100",
+        children: /*#__PURE__*/(0, _jsxruntime.jsx)("svg", {
+          className: "h-8 w-8 text-red-600",
+          fill: "none",
+          viewBox: "0 0 24 24",
+          stroke: "currentColor",
+          children: /*#__PURE__*/(0, _jsxruntime.jsx)("path", {
+            strokeLinecap: "round",
+            strokeLinejoin: "round",
+            strokeWidth: 2,
+            d: "M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+          })
+        })
+      }), /*#__PURE__*/(0, _jsxruntime.jsx)("h2", {
+        className: "mt-6 text-center text-3xl font-extrabold text-gray-900",
+        children: "Authentication Error"
+      }), /*#__PURE__*/(0, _jsxruntime.jsx)("p", {
+        className: "mt-2 text-center text-sm text-gray-600",
+        children: "We encountered an issue while signing you in"
+      })]
+    }), /*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+      className: "mt-8 sm:mx-auto sm:w-full sm:max-w-md",
+      children: /*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+        className: "bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10",
+        children: /*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+          className: "space-y-6",
+          children: [/*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+            className: "bg-red-50 border border-red-200 rounded-md p-4",
+            children: /*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+              className: "flex",
+              children: [/*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+                className: "flex-shrink-0",
+                children: /*#__PURE__*/(0, _jsxruntime.jsx)("svg", {
+                  className: "h-5 w-5 text-red-400",
+                  fill: "none",
+                  viewBox: "0 0 24 24",
+                  stroke: "currentColor",
+                  children: /*#__PURE__*/(0, _jsxruntime.jsx)("path", {
+                    strokeLinecap: "round",
+                    strokeLinejoin: "round",
+                    strokeWidth: 2,
+                    d: "M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  })
+                })
+              }), /*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+                className: "ml-3",
+                children: [/*#__PURE__*/(0, _jsxruntime.jsx)("h3", {
+                  className: "text-sm font-medium text-red-800",
+                  children:
+                  /* istanbul ignore next */
+                  (cov_15gihj6wp6().b[3][0]++, error) ||
+                  /* istanbul ignore next */
+                  (cov_15gihj6wp6().b[3][1]++, 'Authentication Failed')
+                }), /*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+                  className: "mt-2 text-sm text-red-700",
+                  children: /*#__PURE__*/(0, _jsxruntime.jsx)("p", {
+                    children: getErrorMessage(error)
+                  })
+                })]
+              })]
+            })
+          }), /*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+            className: "space-y-4",
+            children: [/*#__PURE__*/(0, _jsxruntime.jsx)(_link.default, {
+              href: "/auth/signin",
+              children: /*#__PURE__*/(0, _jsxruntime.jsx)(_Button.Button, {
+                className: "w-full",
+                children: "Try Again"
+              })
+            }), /*#__PURE__*/(0, _jsxruntime.jsx)(_link.default, {
+              href: "/",
+              children: /*#__PURE__*/(0, _jsxruntime.jsx)(_Button.Button, {
+                variant: "outline",
+                className: "w-full",
+                children: "Go Home"
+              })
+            })]
+          }),
+          /* istanbul ignore next */
+          (cov_15gihj6wp6().b[4][0]++, error === 'AccessDenied') &&
+          /* istanbul ignore next */
+          (cov_15gihj6wp6().b[4][1]++, /*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+            className: "mt-6 p-4 bg-blue-50 border border-blue-200 rounded-md",
+            children: [/*#__PURE__*/(0, _jsxruntime.jsx)("h4", {
+              className: "text-sm font-medium text-blue-800 mb-2",
+              children: "Why do we need access?"
+            }), /*#__PURE__*/(0, _jsxruntime.jsxs)("ul", {
+              className: "text-xs text-blue-700 space-y-1",
+              children: [/*#__PURE__*/(0, _jsxruntime.jsx)("li", {
+                children: "• Read your Gmail to monitor project communications"
+              }), /*#__PURE__*/(0, _jsxruntime.jsx)("li", {
+                children: "• Send reply emails through the platform"
+              }), /*#__PURE__*/(0, _jsxruntime.jsx)("li", {
+                children: "• Access is required for core functionality"
+              })]
+            })]
+          }))]
+        })
+      })
+    })]
+  });
+}
+function AuthError() {
+  /* istanbul ignore next */
+  cov_15gihj6wp6().f[4]++;
+  cov_15gihj6wp6().s[27]++;
+  return /*#__PURE__*/(0, _jsxruntime.jsx)(_react.Suspense, {
+    fallback: /*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+      className: "min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8",
+      children: /*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+        className: "sm:mx-auto sm:w-full sm:max-w-md",
+        children: [/*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+          className: "mx-auto h-16 w-16 flex items-center justify-center rounded-full bg-gray-100",
+          children: /*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+            className: "animate-spin h-8 w-8 border-4 border-gray-300 border-t-blue-600 rounded-full"
+          })
+        }), /*#__PURE__*/(0, _jsxruntime.jsx)("h2", {
+          className: "mt-6 text-center text-3xl font-extrabold text-gray-900",
+          children: "Loading..."
+        })]
+      })
+    }),
+    children: /*#__PURE__*/(0, _jsxruntime.jsx)(AuthErrorContent, {})
+  });
+}
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJBdXRoRXJyb3IiLCJBdXRoRXJyb3JDb250ZW50IiwiY292XzE1Z2loajZ3cDYiLCJmIiwic2VhcmNoUGFyYW1zIiwicyIsIl9uYXZpZ2F0aW9uIiwidXNlU2VhcmNoUGFyYW1zIiwiZXJyb3IiLCJnZXQiLCJnZXRFcnJvck1lc3NhZ2UiLCJiIiwiX2pzeHJ1bnRpbWUiLCJqc3hzIiwiY2xhc3NOYW1lIiwianN4IiwiZmlsbCIsInZpZXdCb3giLCJzdHJva2UiLCJzdHJva2VMaW5lY2FwIiwic3Ryb2tlTGluZWpvaW4iLCJzdHJva2VXaWR0aCIsImQiLCJfbGluayIsImRlZmF1bHQiLCJocmVmIiwiX0J1dHRvbiIsIkJ1dHRvbiIsInZhcmlhbnQiLCJfcmVhY3QiLCJTdXNwZW5zZSIsImZhbGxiYWNrIl0sInNvdXJjZXMiOlsiL1VzZXJzL2tlbm55Yy9jb2RlL3BlcnNvbmFsL25haWxpdC9hcHAvYXV0aC9lcnJvci9wYWdlLnRzeCJdLCJzb3VyY2VzQ29udGVudCI6WyIndXNlIGNsaWVudCc7XG5cbmltcG9ydCB7IFN1c3BlbnNlIH0gZnJvbSAncmVhY3QnO1xuaW1wb3J0IHsgdXNlU2VhcmNoUGFyYW1zIH0gZnJvbSAnbmV4dC9uYXZpZ2F0aW9uJztcbmltcG9ydCBMaW5rIGZyb20gJ25leHQvbGluayc7XG5pbXBvcnQgeyBCdXR0b24gfSBmcm9tICcuLi8uLi9jb21wb25lbnRzL3VpL0J1dHRvbic7XG5cbmZ1bmN0aW9uIEF1dGhFcnJvckNvbnRlbnQoKSB7XG4gIGNvbnN0IHNlYXJjaFBhcmFtcyA9IHVzZVNlYXJjaFBhcmFtcygpO1xuICBjb25zdCBlcnJvciA9IHNlYXJjaFBhcmFtcy5nZXQoJ2Vycm9yJyk7XG5cbiAgY29uc3QgZ2V0RXJyb3JNZXNzYWdlID0gKGVycm9yOiBzdHJpbmcgfCBudWxsKSA9PiB7XG4gICAgc3dpdGNoIChlcnJvcikge1xuICAgICAgY2FzZSAnQ29uZmlndXJhdGlvbic6XG4gICAgICAgIHJldHVybiAnVGhlcmUgaXMgYSBwcm9ibGVtIHdpdGggdGhlIHNlcnZlciBjb25maWd1cmF0aW9uLiBQbGVhc2UgdHJ5IGFnYWluIGxhdGVyLic7XG4gICAgICBjYXNlICdBY2Nlc3NEZW5pZWQnOlxuICAgICAgICByZXR1cm4gJ1lvdSBkZW5pZWQgYWNjZXNzIHRvIHRoZSBhcHBsaWNhdGlvbi4gUGxlYXNlIHRyeSBhZ2FpbiBhbmQgZ3JhbnQgcGVybWlzc2lvbiB0byBjb250aW51ZS4nO1xuICAgICAgY2FzZSAnVmVyaWZpY2F0aW9uJzpcbiAgICAgICAgcmV0dXJuICdUaGUgdmVyaWZpY2F0aW9uIGxpbmsgd2FzIGludmFsaWQgb3IgaGFzIGV4cGlyZWQuIFBsZWFzZSB0cnkgc2lnbmluZyBpbiBhZ2Fpbi4nO1xuICAgICAgY2FzZSAnT0F1dGhTaWduaW4nOlxuICAgICAgICByZXR1cm4gJ0Vycm9yIGluIGNvbnN0cnVjdGluZyBhbiBhdXRob3JpemF0aW9uIFVSTC4gUGxlYXNlIHRyeSBhZ2Fpbi4nO1xuICAgICAgY2FzZSAnT0F1dGhDYWxsYmFjayc6XG4gICAgICAgIHJldHVybiAnRXJyb3IgaW4gaGFuZGxpbmcgdGhlIHJlc3BvbnNlIGZyb20gT0F1dGggcHJvdmlkZXIuIFBsZWFzZSB0cnkgYWdhaW4uJztcbiAgICAgIGNhc2UgJ09BdXRoQ3JlYXRlQWNjb3VudCc6XG4gICAgICAgIHJldHVybiAnQ291bGQgbm90IGNyZWF0ZSBPQXV0aCBhY2NvdW50IGluIHRoZSBkYXRhYmFzZS4gUGxlYXNlIHRyeSBhZ2Fpbi4nO1xuICAgICAgY2FzZSAnRW1haWxDcmVhdGVBY2NvdW50JzpcbiAgICAgICAgcmV0dXJuICdDb3VsZCBub3QgY3JlYXRlIGVtYWlsIGFjY291bnQgaW4gdGhlIGRhdGFiYXNlLiBQbGVhc2UgdHJ5IGFnYWluLic7XG4gICAgICBjYXNlICdDYWxsYmFjayc6XG4gICAgICAgIHJldHVybiAnRXJyb3IgaW4gdGhlIE9BdXRoIGNhbGxiYWNrIGhhbmRsZXIgcm91dGUuIFBsZWFzZSB0cnkgYWdhaW4uJztcbiAgICAgIGNhc2UgJ09BdXRoQWNjb3VudE5vdExpbmtlZCc6XG4gICAgICAgIHJldHVybiAnVGhpcyBlbWFpbCBpcyBhbHJlYWR5IGFzc29jaWF0ZWQgd2l0aCBhbm90aGVyIGFjY291bnQuIFBsZWFzZSB1c2UgdGhlIG9yaWdpbmFsIHNpZ24taW4gbWV0aG9kLic7XG4gICAgICBjYXNlICdFbWFpbFNpZ25pbic6XG4gICAgICAgIHJldHVybiAnRXJyb3Igc2VuZGluZyB0aGUgdmVyaWZpY2F0aW9uIGVtYWlsLiBQbGVhc2UgdHJ5IGFnYWluLic7XG4gICAgICBjYXNlICdDcmVkZW50aWFsc1NpZ25pbic6XG4gICAgICAgIHJldHVybiAnSW52YWxpZCBjcmVkZW50aWFscyBwcm92aWRlZC4gUGxlYXNlIGNoZWNrIHlvdXIgZGV0YWlscyBhbmQgdHJ5IGFnYWluLic7XG4gICAgICBjYXNlICdTZXNzaW9uUmVxdWlyZWQnOlxuICAgICAgICByZXR1cm4gJ1lvdSBtdXN0IGJlIHNpZ25lZCBpbiB0byBhY2Nlc3MgdGhpcyBwYWdlLic7XG4gICAgICBkZWZhdWx0OlxuICAgICAgICByZXR1cm4gJ0FuIHVuZXhwZWN0ZWQgZXJyb3Igb2NjdXJyZWQgZHVyaW5nIGF1dGhlbnRpY2F0aW9uLiBQbGVhc2UgdHJ5IGFnYWluLic7XG4gICAgfVxuICB9O1xuXG4gIHJldHVybiAoXG4gICAgPGRpdiBjbGFzc05hbWU9XCJtaW4taC1zY3JlZW4gYmctZ3JheS01MCBmbGV4IGZsZXgtY29sIGp1c3RpZnktY2VudGVyIHB5LTEyIHNtOnB4LTYgbGc6cHgtOFwiPlxuICAgICAgPGRpdiBjbGFzc05hbWU9XCJzbTpteC1hdXRvIHNtOnctZnVsbCBzbTptYXgtdy1tZFwiPlxuICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cIm14LWF1dG8gaC0xNiB3LTE2IGZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHJvdW5kZWQtZnVsbCBiZy1yZWQtMTAwXCI+XG4gICAgICAgICAgPHN2ZyBjbGFzc05hbWU9XCJoLTggdy04IHRleHQtcmVkLTYwMFwiIGZpbGw9XCJub25lXCIgdmlld0JveD1cIjAgMCAyNCAyNFwiIHN0cm9rZT1cImN1cnJlbnRDb2xvclwiPlxuICAgICAgICAgICAgPHBhdGggc3Ryb2tlTGluZWNhcD1cInJvdW5kXCIgc3Ryb2tlTGluZWpvaW49XCJyb3VuZFwiIHN0cm9rZVdpZHRoPXsyfSBkPVwiTTEyIDl2Mm0wIDRoLjAxbS02LjkzOCA0aDEzLjg1NmMxLjU0IDAgMi41MDItMS42NjcgMS43MzItMi41TDEzLjczMiA0Yy0uNzctLjgzMy0xLjk2NC0uODMzLTIuNzMyIDBMMy43MzIgMTYuNWMtLjc3LjgzMy4xOTIgMi41IDEuNzMyIDIuNXpcIiAvPlxuICAgICAgICAgIDwvc3ZnPlxuICAgICAgICA8L2Rpdj5cbiAgICAgICAgPGgyIGNsYXNzTmFtZT1cIm10LTYgdGV4dC1jZW50ZXIgdGV4dC0zeGwgZm9udC1leHRyYWJvbGQgdGV4dC1ncmF5LTkwMFwiPlxuICAgICAgICAgIEF1dGhlbnRpY2F0aW9uIEVycm9yXG4gICAgICAgIDwvaDI+XG4gICAgICAgIDxwIGNsYXNzTmFtZT1cIm10LTIgdGV4dC1jZW50ZXIgdGV4dC1zbSB0ZXh0LWdyYXktNjAwXCI+XG4gICAgICAgICAgV2UgZW5jb3VudGVyZWQgYW4gaXNzdWUgd2hpbGUgc2lnbmluZyB5b3UgaW5cbiAgICAgICAgPC9wPlxuICAgICAgPC9kaXY+XG5cbiAgICAgIDxkaXYgY2xhc3NOYW1lPVwibXQtOCBzbTpteC1hdXRvIHNtOnctZnVsbCBzbTptYXgtdy1tZFwiPlxuICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImJnLXdoaXRlIHB5LTggcHgtNCBzaGFkb3cgc206cm91bmRlZC1sZyBzbTpweC0xMFwiPlxuICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwic3BhY2UteS02XCI+XG4gICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImJnLXJlZC01MCBib3JkZXIgYm9yZGVyLXJlZC0yMDAgcm91bmRlZC1tZCBwLTRcIj5cbiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJmbGV4XCI+XG4gICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJmbGV4LXNocmluay0wXCI+XG4gICAgICAgICAgICAgICAgICA8c3ZnIGNsYXNzTmFtZT1cImgtNSB3LTUgdGV4dC1yZWQtNDAwXCIgZmlsbD1cIm5vbmVcIiB2aWV3Qm94PVwiMCAwIDI0IDI0XCIgc3Ryb2tlPVwiY3VycmVudENvbG9yXCI+XG4gICAgICAgICAgICAgICAgICAgIDxwYXRoIHN0cm9rZUxpbmVjYXA9XCJyb3VuZFwiIHN0cm9rZUxpbmVqb2luPVwicm91bmRcIiBzdHJva2VXaWR0aD17Mn0gZD1cIk0xMiA4djRtMCA0aC4wMU0yMSAxMmE5IDkgMCAxMS0xOCAwIDkgOSAwIDAxMTggMHpcIiAvPlxuICAgICAgICAgICAgICAgICAgPC9zdmc+XG4gICAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJtbC0zXCI+XG4gICAgICAgICAgICAgICAgICA8aDMgY2xhc3NOYW1lPVwidGV4dC1zbSBmb250LW1lZGl1bSB0ZXh0LXJlZC04MDBcIj5cbiAgICAgICAgICAgICAgICAgICAge2Vycm9yIHx8ICdBdXRoZW50aWNhdGlvbiBGYWlsZWQnfVxuICAgICAgICAgICAgICAgICAgPC9oMz5cbiAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwibXQtMiB0ZXh0LXNtIHRleHQtcmVkLTcwMFwiPlxuICAgICAgICAgICAgICAgICAgICA8cD57Z2V0RXJyb3JNZXNzYWdlKGVycm9yKX08L3A+XG4gICAgICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICA8L2Rpdj5cblxuICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJzcGFjZS15LTRcIj5cbiAgICAgICAgICAgICAgPExpbmsgaHJlZj1cIi9hdXRoL3NpZ25pblwiPlxuICAgICAgICAgICAgICAgIDxCdXR0b24gY2xhc3NOYW1lPVwidy1mdWxsXCI+XG4gICAgICAgICAgICAgICAgICBUcnkgQWdhaW5cbiAgICAgICAgICAgICAgICA8L0J1dHRvbj5cbiAgICAgICAgICAgICAgPC9MaW5rPlxuICAgICAgICAgICAgICBcbiAgICAgICAgICAgICAgPExpbmsgaHJlZj1cIi9cIj5cbiAgICAgICAgICAgICAgICA8QnV0dG9uIHZhcmlhbnQ9XCJvdXRsaW5lXCIgY2xhc3NOYW1lPVwidy1mdWxsXCI+XG4gICAgICAgICAgICAgICAgICBHbyBIb21lXG4gICAgICAgICAgICAgICAgPC9CdXR0b24+XG4gICAgICAgICAgICAgIDwvTGluaz5cbiAgICAgICAgICAgIDwvZGl2PlxuXG4gICAgICAgICAgICB7ZXJyb3IgPT09ICdBY2Nlc3NEZW5pZWQnICYmIChcbiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJtdC02IHAtNCBiZy1ibHVlLTUwIGJvcmRlciBib3JkZXItYmx1ZS0yMDAgcm91bmRlZC1tZFwiPlxuICAgICAgICAgICAgICAgIDxoNCBjbGFzc05hbWU9XCJ0ZXh0LXNtIGZvbnQtbWVkaXVtIHRleHQtYmx1ZS04MDAgbWItMlwiPlxuICAgICAgICAgICAgICAgICAgV2h5IGRvIHdlIG5lZWQgYWNjZXNzP1xuICAgICAgICAgICAgICAgIDwvaDQ+XG4gICAgICAgICAgICAgICAgPHVsIGNsYXNzTmFtZT1cInRleHQteHMgdGV4dC1ibHVlLTcwMCBzcGFjZS15LTFcIj5cbiAgICAgICAgICAgICAgICAgIDxsaT7igKIgUmVhZCB5b3VyIEdtYWlsIHRvIG1vbml0b3IgcHJvamVjdCBjb21tdW5pY2F0aW9uczwvbGk+XG4gICAgICAgICAgICAgICAgICA8bGk+4oCiIFNlbmQgcmVwbHkgZW1haWxzIHRocm91Z2ggdGhlIHBsYXRmb3JtPC9saT5cbiAgICAgICAgICAgICAgICAgIDxsaT7igKIgQWNjZXNzIGlzIHJlcXVpcmVkIGZvciBjb3JlIGZ1bmN0aW9uYWxpdHk8L2xpPlxuICAgICAgICAgICAgICAgIDwvdWw+XG4gICAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgKX1cbiAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgPC9kaXY+XG4gICAgICA8L2Rpdj5cbiAgICA8L2Rpdj5cbiAgKTtcbn1cblxuZXhwb3J0IGRlZmF1bHQgZnVuY3Rpb24gQXV0aEVycm9yKCkge1xuICByZXR1cm4gKFxuICAgIDxTdXNwZW5zZSBmYWxsYmFjaz17XG4gICAgICA8ZGl2IGNsYXNzTmFtZT1cIm1pbi1oLXNjcmVlbiBiZy1ncmF5LTUwIGZsZXggZmxleC1jb2wganVzdGlmeS1jZW50ZXIgcHktMTIgc206cHgtNiBsZzpweC04XCI+XG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwic206bXgtYXV0byBzbTp3LWZ1bGwgc206bWF4LXctbWRcIj5cbiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cIm14LWF1dG8gaC0xNiB3LTE2IGZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHJvdW5kZWQtZnVsbCBiZy1ncmF5LTEwMFwiPlxuICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJhbmltYXRlLXNwaW4gaC04IHctOCBib3JkZXItNCBib3JkZXItZ3JheS0zMDAgYm9yZGVyLXQtYmx1ZS02MDAgcm91bmRlZC1mdWxsXCI+PC9kaXY+XG4gICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgPGgyIGNsYXNzTmFtZT1cIm10LTYgdGV4dC1jZW50ZXIgdGV4dC0zeGwgZm9udC1leHRyYWJvbGQgdGV4dC1ncmF5LTkwMFwiPlxuICAgICAgICAgICAgTG9hZGluZy4uLlxuICAgICAgICAgIDwvaDI+XG4gICAgICAgIDwvZGl2PlxuICAgICAgPC9kaXY+XG4gICAgfT5cbiAgICAgIDxBdXRoRXJyb3JDb250ZW50IC8+XG4gICAgPC9TdXNwZW5zZT5cbiAgKTtcbn0gIl0sIm1hcHBpbmdzIjoiQUFBQTs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7K0JBZ0hBOzs7Ozs7V0FBd0JBLFNBQUE7Ozs7Ozs7O2tDQTlHQzs7O2tDQUNPOzs7d0VBQ2Y7OztrQ0FDTTs7Ozs7Ozs7Ozs7Ozs7O0FBRXZCLFNBQVNDLGlCQUFBO0VBQUE7RUFBQUMsY0FBQSxHQUFBQyxDQUFBO0VBQ1AsTUFBTUMsWUFBQTtFQUFBO0VBQUEsQ0FBQUYsY0FBQSxHQUFBRyxDQUFBLE9BQWUsSUFBQUMsV0FBQSxDQUFBQyxlQUFlO0VBQ3BDLE1BQU1DLEtBQUE7RUFBQTtFQUFBLENBQUFOLGNBQUEsR0FBQUcsQ0FBQSxRQUFRRCxZQUFBLENBQWFLLEdBQUcsQ0FBQztFQUFBO0VBQUFQLGNBQUEsR0FBQUcsQ0FBQTtFQUUvQixNQUFNSyxlQUFBLEdBQW1CRixLQUFBO0lBQUE7SUFBQU4sY0FBQSxHQUFBQyxDQUFBO0lBQUFELGNBQUEsR0FBQUcsQ0FBQTtJQUN2QixRQUFRRyxLQUFBO01BQ04sS0FBSztRQUFBO1FBQUFOLGNBQUEsR0FBQVMsQ0FBQTtRQUFBVCxjQUFBLEdBQUFHLENBQUE7UUFDSCxPQUFPO01BQ1QsS0FBSztRQUFBO1FBQUFILGNBQUEsR0FBQVMsQ0FBQTtRQUFBVCxjQUFBLEdBQUFHLENBQUE7UUFDSCxPQUFPO01BQ1QsS0FBSztRQUFBO1FBQUFILGNBQUEsR0FBQVMsQ0FBQTtRQUFBVCxjQUFBLEdBQUFHLENBQUE7UUFDSCxPQUFPO01BQ1QsS0FBSztRQUFBO1FBQUFILGNBQUEsR0FBQVMsQ0FBQTtRQUFBVCxjQUFBLEdBQUFHLENBQUE7UUFDSCxPQUFPO01BQ1QsS0FBSztRQUFBO1FBQUFILGNBQUEsR0FBQVMsQ0FBQTtRQUFBVCxjQUFBLEdBQUFHLENBQUE7UUFDSCxPQUFPO01BQ1QsS0FBSztRQUFBO1FBQUFILGNBQUEsR0FBQVMsQ0FBQTtRQUFBVCxjQUFBLEdBQUFHLENBQUE7UUFDSCxPQUFPO01BQ1QsS0FBSztRQUFBO1FBQUFILGNBQUEsR0FBQVMsQ0FBQTtRQUFBVCxjQUFBLEdBQUFHLENBQUE7UUFDSCxPQUFPO01BQ1QsS0FBSztRQUFBO1FBQUFILGNBQUEsR0FBQVMsQ0FBQTtRQUFBVCxjQUFBLEdBQUFHLENBQUE7UUFDSCxPQUFPO01BQ1QsS0FBSztRQUFBO1FBQUFILGNBQUEsR0FBQVMsQ0FBQTtRQUFBVCxjQUFBLEdBQUFHLENBQUE7UUFDSCxPQUFPO01BQ1QsS0FBSztRQUFBO1FBQUFILGNBQUEsR0FBQVMsQ0FBQTtRQUFBVCxjQUFBLEdBQUFHLENBQUE7UUFDSCxPQUFPO01BQ1QsS0FBSztRQUFBO1FBQUFILGNBQUEsR0FBQVMsQ0FBQTtRQUFBVCxjQUFBLEdBQUFHLENBQUE7UUFDSCxPQUFPO01BQ1QsS0FBSztRQUFBO1FBQUFILGNBQUEsR0FBQVMsQ0FBQTtRQUFBVCxjQUFBLEdBQUFHLENBQUE7UUFDSCxPQUFPO01BQ1Q7UUFBQTtRQUFBSCxjQUFBLEdBQUFTLENBQUE7UUFBQVQsY0FBQSxHQUFBRyxDQUFBO1FBQ0UsT0FBTztJQUNYO0VBQ0Y7RUFBQTtFQUFBSCxjQUFBLEdBQUFHLENBQUE7RUFFQSxvQkFDRSxJQUFBTyxXQUFBLENBQUFDLElBQUEsRUFBQztJQUFJQyxTQUFBLEVBQVU7NEJBQ2IsSUFBQUYsV0FBQSxDQUFBQyxJQUFBLEVBQUM7TUFBSUMsU0FBQSxFQUFVOzhCQUNiLElBQUFGLFdBQUEsQ0FBQUcsR0FBQSxFQUFDO1FBQUlELFNBQUEsRUFBVTtrQkFDYixpQkFBQUYsV0FBQSxDQUFBRyxHQUFBLEVBQUM7VUFBSUQsU0FBQSxFQUFVO1VBQXVCRSxJQUFBLEVBQUs7VUFBT0MsT0FBQSxFQUFRO1VBQVlDLE1BQUEsRUFBTztvQkFDM0UsaUJBQUFOLFdBQUEsQ0FBQUcsR0FBQSxFQUFDO1lBQUtJLGFBQUEsRUFBYztZQUFRQyxjQUFBLEVBQWU7WUFBUUMsV0FBQSxFQUFhO1lBQUdDLENBQUEsRUFBRTs7O3VCQUd6RSxJQUFBVixXQUFBLENBQUFHLEdBQUEsRUFBQztRQUFHRCxTQUFBLEVBQVU7a0JBQXlEO3VCQUd2RSxJQUFBRixXQUFBLENBQUFHLEdBQUEsRUFBQztRQUFFRCxTQUFBLEVBQVU7a0JBQXlDOztxQkFLeEQsSUFBQUYsV0FBQSxDQUFBRyxHQUFBLEVBQUM7TUFBSUQsU0FBQSxFQUFVO2dCQUNiLGlCQUFBRixXQUFBLENBQUFHLEdBQUEsRUFBQztRQUFJRCxTQUFBLEVBQVU7a0JBQ2IsaUJBQUFGLFdBQUEsQ0FBQUMsSUFBQSxFQUFDO1VBQUlDLFNBQUEsRUFBVTtrQ0FDYixJQUFBRixXQUFBLENBQUFHLEdBQUEsRUFBQztZQUFJRCxTQUFBLEVBQVU7c0JBQ2IsaUJBQUFGLFdBQUEsQ0FBQUMsSUFBQSxFQUFDO2NBQUlDLFNBQUEsRUFBVTtzQ0FDYixJQUFBRixXQUFBLENBQUFHLEdBQUEsRUFBQztnQkFBSUQsU0FBQSxFQUFVOzBCQUNiLGlCQUFBRixXQUFBLENBQUFHLEdBQUEsRUFBQztrQkFBSUQsU0FBQSxFQUFVO2tCQUF1QkUsSUFBQSxFQUFLO2tCQUFPQyxPQUFBLEVBQVE7a0JBQVlDLE1BQUEsRUFBTzs0QkFDM0UsaUJBQUFOLFdBQUEsQ0FBQUcsR0FBQSxFQUFDO29CQUFLSSxhQUFBLEVBQWM7b0JBQVFDLGNBQUEsRUFBZTtvQkFBUUMsV0FBQSxFQUFhO29CQUFHQyxDQUFBLEVBQUU7OzsrQkFHekUsSUFBQVYsV0FBQSxDQUFBQyxJQUFBLEVBQUM7Z0JBQUlDLFNBQUEsRUFBVTt3Q0FDYixJQUFBRixXQUFBLENBQUFHLEdBQUEsRUFBQztrQkFBR0QsU0FBQSxFQUFVOztrQkFDWDtrQkFBQSxDQUFBWixjQUFBLEdBQUFTLENBQUEsVUFBQUgsS0FBQTtrQkFBQTtrQkFBQSxDQUFBTixjQUFBLEdBQUFTLENBQUEsVUFBUztpQ0FFWixJQUFBQyxXQUFBLENBQUFHLEdBQUEsRUFBQztrQkFBSUQsU0FBQSxFQUFVOzRCQUNiLGlCQUFBRixXQUFBLENBQUFHLEdBQUEsRUFBQzs4QkFBR0wsZUFBQSxDQUFnQkYsS0FBQTs7Ozs7MkJBTTVCLElBQUFJLFdBQUEsQ0FBQUMsSUFBQSxFQUFDO1lBQUlDLFNBQUEsRUFBVTtvQ0FDYixJQUFBRixXQUFBLENBQUFHLEdBQUEsRUFBQ1EsS0FBQSxDQUFBQyxPQUFJO2NBQUNDLElBQUEsRUFBSzt3QkFDVCxpQkFBQWIsV0FBQSxDQUFBRyxHQUFBLEVBQUNXLE9BQUEsQ0FBQUMsTUFBTTtnQkFBQ2IsU0FBQSxFQUFVOzBCQUFTOzs2QkFLN0IsSUFBQUYsV0FBQSxDQUFBRyxHQUFBLEVBQUNRLEtBQUEsQ0FBQUMsT0FBSTtjQUFDQyxJQUFBLEVBQUs7d0JBQ1QsaUJBQUFiLFdBQUEsQ0FBQUcsR0FBQSxFQUFDVyxPQUFBLENBQUFDLE1BQU07Z0JBQUNDLE9BQUEsRUFBUTtnQkFBVWQsU0FBQSxFQUFVOzBCQUFTOzs7O1VBTWhEO1VBQUEsQ0FBQVosY0FBQSxHQUFBUyxDQUFBLFVBQUFILEtBQUEsS0FBVTtVQUFBO1VBQUEsQ0FBQU4sY0FBQSxHQUFBUyxDQUFBLHVCQUNULElBQUFDLFdBQUEsQ0FBQUMsSUFBQSxFQUFDO1lBQUlDLFNBQUEsRUFBVTtvQ0FDYixJQUFBRixXQUFBLENBQUFHLEdBQUEsRUFBQztjQUFHRCxTQUFBLEVBQVU7d0JBQXlDOzZCQUd2RCxJQUFBRixXQUFBLENBQUFDLElBQUEsRUFBQztjQUFHQyxTQUFBLEVBQVU7c0NBQ1osSUFBQUYsV0FBQSxDQUFBRyxHQUFBLEVBQUM7MEJBQUc7K0JBQ0osSUFBQUgsV0FBQSxDQUFBRyxHQUFBLEVBQUM7MEJBQUc7K0JBQ0osSUFBQUgsV0FBQSxDQUFBRyxHQUFBLEVBQUM7MEJBQUc7Ozs7Ozs7O0FBU3RCO0FBRWUsU0FBU2YsVUFBQTtFQUFBO0VBQUFFLGNBQUEsR0FBQUMsQ0FBQTtFQUFBRCxjQUFBLEdBQUFHLENBQUE7RUFDdEIsb0JBQ0UsSUFBQU8sV0FBQSxDQUFBRyxHQUFBLEVBQUNjLE1BQUEsQ0FBQUMsUUFBUTtJQUFDQyxRQUFBLGVBQ1IsSUFBQW5CLFdBQUEsQ0FBQUcsR0FBQSxFQUFDO01BQUlELFNBQUEsRUFBVTtnQkFDYixpQkFBQUYsV0FBQSxDQUFBQyxJQUFBLEVBQUM7UUFBSUMsU0FBQSxFQUFVO2dDQUNiLElBQUFGLFdBQUEsQ0FBQUcsR0FBQSxFQUFDO1VBQUlELFNBQUEsRUFBVTtvQkFDYixpQkFBQUYsV0FBQSxDQUFBRyxHQUFBLEVBQUM7WUFBSUQsU0FBQSxFQUFVOzt5QkFFakIsSUFBQUYsV0FBQSxDQUFBRyxHQUFBLEVBQUM7VUFBR0QsU0FBQSxFQUFVO29CQUF5RDs7OztjQU0zRSxpQkFBQUYsV0FBQSxDQUFBRyxHQUFBLEVBQUNkLGdCQUFBOztBQUdQIiwiaWdub3JlTGlzdCI6W119

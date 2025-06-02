@@ -35,14 +35,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   confirmationText = '',
   loading = false
 }) => {
-  const [inputValue, setInputValue] = useState('');
   const [isConfirmEnabled, setIsConfirmEnabled] = useState(!requiresTextConfirmation);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setInputValue(value);
-    setIsConfirmEnabled(!requiresTextConfirmation || value === confirmationText);
-  };
 
   const handleConfirm = () => {
     if (isConfirmEnabled) {
@@ -51,8 +44,6 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   };
 
   const handleClose = () => {
-    setInputValue('');
-    setIsConfirmEnabled(!requiresTextConfirmation);
     onClose();
   };
 
