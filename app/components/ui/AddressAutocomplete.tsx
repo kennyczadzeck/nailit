@@ -4,7 +4,8 @@ import React, { useEffect, useRef, useState } from 'react';
 
 declare global {
   interface Window {
-    google: Record<string, any>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    google: any;
     initGoogleMaps: () => void;
     googleMapsLoading: boolean;
     googleMapsCallbacks: (() => void)[];
@@ -40,7 +41,8 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   apiKey
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const autocompleteRef = useRef<Record<string, any> | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const autocompleteRef = useRef<any>(null);
   const [isGoogleMapsLoaded, setIsGoogleMapsLoaded] = useState(false);
   const [lastSelectedAddress, setLastSelectedAddress] = useState('');
 
@@ -151,11 +153,13 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   }, [isGoogleMapsLoaded, onChange]);
 
   // Parse Google Places address components
-  const parseAddressComponents = (place: Record<string, any>): AddressData => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const parseAddressComponents = (place: any): AddressData => {
     const components = place.address_components || [];
     
     const getComponent = (types: string[]) => {
-      const component = components.find((comp: Record<string, any>) => 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const component = components.find((comp: any) => 
         comp.types.some((type: string) => types.includes(type))
       );
       return component?.long_name || '';

@@ -14,13 +14,10 @@ export async function GET() {
       userCount,
       timestamp: new Date().toISOString() 
     });
-  } catch (error: any) {
-    console.error('Database connection error:', error);
-    
-    return NextResponse.json({ 
-      status: 'Error',
-      error: error.message,
-      code: error.code,
+  } catch (error: unknown) {
+    console.error('Database test error:', error);
+    return NextResponse.json({
+      error: error instanceof Error ? error.message : 'Unknown error',
       timestamp: new Date().toISOString()
     }, { status: 500 });
   } finally {

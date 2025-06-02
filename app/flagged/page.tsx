@@ -37,7 +37,7 @@ export default function FlaggedItemsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
-  const [project, setProject] = useState<any>(null);
+  const [project, setProject] = useState<{ status?: string; id?: string } | null>(null);
 
   // Fetch flagged items from API
   useEffect(() => {

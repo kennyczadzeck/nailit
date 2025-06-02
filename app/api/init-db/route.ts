@@ -22,9 +22,9 @@ export async function POST() {
         message: 'Database tables already exist',
         timestamp: new Date().toISOString() 
       });
-    } catch (tableError: any) {
+    } catch (tableError: unknown) {
       console.log('Tables do not exist, attempting to create them...');
-      console.log('Table error:', tableError.message);
+      console.log('Table error:', tableError instanceof Error ? tableError.message : 'Unknown error');
       
       // Tables don't exist, try to create them using raw SQL
       try {
@@ -42,26 +42,26 @@ export async function POST() {
             '3. Or create tables manually'
           ],
           neonConsole: 'Go to Neon Console → SQL Editor and run your schema',
-          tableError: tableError.message,
+          tableError: tableError instanceof Error ? tableError.message : 'Unknown error',
           timestamp: new Date().toISOString()
         }, { status: 424 }); // 424 Failed Dependency
-      } catch (creationError: any) {
+      } catch (creationError: unknown) {
         console.error('Failed to create tables:', creationError);
         return NextResponse.json({ 
           status: 'Table creation failed',
-          error: creationError.message,
+          error: creationError instanceof Error ? creationError.message : 'Unknown error',
           timestamp: new Date().toISOString()
         }, { status: 500 });
       }
     }
     
-  } catch (connectionError: any) {
+  } catch (connectionError: unknown) {
     console.error('Database connection error:', connectionError);
     
     return NextResponse.json({ 
       status: 'Connection failed',
-      error: connectionError.message,
-      code: connectionError.code,
+      error: connectionError instanceof Error ? connectionError.message : 'Unknown error',
+      code: connectionError instanceof Error && 'code' in connectionError ? String((connectionError as Record<string, unknown>).code) : undefined,
       timestamp: new Date().toISOString()
     }, { status: 500 });
   } finally {
@@ -81,20 +81,20 @@ export async function GET() {
         userCount,
         timestamp: new Date().toISOString() 
       });
-    } catch (tableError: any) {
+    } catch (tableError: unknown) {
       return NextResponse.json({ 
         status: 'Connected but tables missing',
         error: 'Tables do not exist',
-        code: tableError.code,
+        code: tableError instanceof Error && 'code' in tableError ? String((tableError as Record<string, unknown>).code) : undefined,
         message: 'Use POST /api/init-db to initialize',
         timestamp: new Date().toISOString()
       }, { status: 424 });
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json({ 
       status: 'Connection failed',
-      error: error.message,
-      code: error.code,
+      error: error instanceof Error ? error.message : 'Unknown error',
+      code: error instanceof Error && 'code' in error ? String((error as Record<string, unknown>).code) : undefined,
       timestamp: new Date().toISOString()
     }, { status: 500 });
   } finally {
