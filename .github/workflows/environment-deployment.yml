@@ -19,13 +19,21 @@ jobs:
       - name: Detect Environment
         id: detect
         run: |
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            # For pull requests, use the target branch
+            TARGET_BRANCH="${{ github.base_ref }}"
+          else
+            # For push events, use the current branch
+            TARGET_BRANCH="${{ github.ref_name }}"
+          fi
+          
+          if [[ "$TARGET_BRANCH" == "main" ]]; then
             echo "environment=production" >> $GITHUB_OUTPUT
             echo "deploy=true" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
+          elif [[ "$TARGET_BRANCH" == "staging" ]]; then
             echo "environment=staging" >> $GITHUB_OUTPUT
             echo "deploy=true" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
+          elif [[ "$TARGET_BRANCH" == "develop" ]]; then
             echo "environment=development" >> $GITHUB_OUTPUT
             echo "deploy=true" >> $GITHUB_OUTPUT
           else
