@@ -37,6 +37,8 @@ const customJestConfig = {
     '^@/(.*)$': '<rootDir>/app/$1',
     '^@/components/(.*)$': '<rootDir>/app/components/$1',
     '^@/lib/(.*)$': '<rootDir>/app/lib/$1',
+    '^@/fixtures/(.*)$': '<rootDir>/tests/fixtures/$1',
+    '^@/helpers/(.*)$': '<rootDir>/tests/helpers/$1',
   },
   testMatch: [
     '<rootDir>/tests/**/*.test.{js,jsx,ts,tsx}',
@@ -53,6 +55,10 @@ const customJestConfig = {
   testEnvironmentOptions: {
     customExportConditions: [''],
   },
+  // Parallel execution optimization
+  maxWorkers: process.env.CI ? 2 : '50%',
+  // Cache optimization
+  cacheDirectory: '<rootDir>/.jest-cache',
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

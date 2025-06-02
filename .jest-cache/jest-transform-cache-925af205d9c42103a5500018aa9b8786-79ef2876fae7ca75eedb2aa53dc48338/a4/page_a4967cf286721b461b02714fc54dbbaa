@@ -1,0 +1,600 @@
+ebafd122e065daf34cb1af5bc90e82dd
+"use strict";
+
+/* istanbul ignore next */
+function cov_1elre1egur() {
+  var path = "/Users/kennyc/code/personal/nailit/app/welcome/page.tsx";
+  var hash = "b824389f2b00ae5f75f17aabbbdf319e886902f2";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
+  var coverageData = {
+    path: "/Users/kennyc/code/personal/nailit/app/welcome/page.tsx",
+    statementMap: {
+      "0": {
+        start: {
+          line: 2,
+          column: 0
+        },
+        end: {
+          line: 4,
+          column: 3
+        }
+      },
+      "1": {
+        start: {
+          line: 5,
+          column: 0
+        },
+        end: {
+          line: 10,
+          column: 3
+        }
+      },
+      "2": {
+        start: {
+          line: 8,
+          column: 8
+        },
+        end: {
+          line: 8,
+          column: 27
+        }
+      },
+      "3": {
+        start: {
+          line: 11,
+          column: 20
+        },
+        end: {
+          line: 11,
+          column: 48
+        }
+      },
+      "4": {
+        start: {
+          line: 12,
+          column: 29
+        },
+        end: {
+          line: 12,
+          column: 71
+        }
+      },
+      "5": {
+        start: {
+          line: 13,
+          column: 28
+        },
+        end: {
+          line: 13,
+          column: 74
+        }
+      },
+      "6": {
+        start: {
+          line: 14,
+          column: 16
+        },
+        end: {
+          line: 14,
+          column: 50
+        }
+      },
+      "7": {
+        start: {
+          line: 15,
+          column: 14
+        },
+        end: {
+          line: 15,
+          column: 46
+        }
+      },
+      "8": {
+        start: {
+          line: 16,
+          column: 17
+        },
+        end: {
+          line: 16,
+          column: 55
+        }
+      },
+      "9": {
+        start: {
+          line: 18,
+          column: 4
+        },
+        end: {
+          line: 20,
+          column: 6
+        }
+      },
+      "10": {
+        start: {
+          line: 23,
+          column: 4
+        },
+        end: {
+          line: 282,
+          column: 7
+        }
+      },
+      "11": {
+        start: {
+          line: 232,
+          column: 60
+        },
+        end: {
+          line: 248,
+          column: 49
+        }
+      }
+    },
+    fnMap: {
+      "0": {
+        name: "(anonymous_0)",
+        decl: {
+          start: {
+            line: 7,
+            column: 9
+          },
+          end: {
+            line: 7,
+            column: 10
+          }
+        },
+        loc: {
+          start: {
+            line: 7,
+            column: 20
+          },
+          end: {
+            line: 9,
+            column: 5
+          }
+        },
+        line: 7
+      },
+      "1": {
+        name: "_interop_require_default",
+        decl: {
+          start: {
+            line: 17,
+            column: 9
+          },
+          end: {
+            line: 17,
+            column: 33
+          }
+        },
+        loc: {
+          start: {
+            line: 17,
+            column: 39
+          },
+          end: {
+            line: 21,
+            column: 1
+          }
+        },
+        line: 17
+      },
+      "2": {
+        name: "WelcomePage",
+        decl: {
+          start: {
+            line: 22,
+            column: 9
+          },
+          end: {
+            line: 22,
+            column: 20
+          }
+        },
+        loc: {
+          start: {
+            line: 22,
+            column: 23
+          },
+          end: {
+            line: 283,
+            column: 1
+          }
+        },
+        line: 22
+      },
+      "3": {
+        name: "(anonymous_3)",
+        decl: {
+          start: {
+            line: 232,
+            column: 38
+          },
+          end: {
+            line: 232,
+            column: 39
+          }
+        },
+        loc: {
+          start: {
+            line: 232,
+            column: 60
+          },
+          end: {
+            line: 248,
+            column: 49
+          }
+        },
+        line: 232
+      }
+    },
+    branchMap: {
+      "0": {
+        loc: {
+          start: {
+            line: 18,
+            column: 11
+          },
+          end: {
+            line: 20,
+            column: 5
+          }
+        },
+        type: "cond-expr",
+        locations: [{
+          start: {
+            line: 18,
+            column: 35
+          },
+          end: {
+            line: 18,
+            column: 38
+          }
+        }, {
+          start: {
+            line: 18,
+            column: 41
+          },
+          end: {
+            line: 20,
+            column: 5
+          }
+        }],
+        line: 18
+      },
+      "1": {
+        loc: {
+          start: {
+            line: 18,
+            column: 11
+          },
+          end: {
+            line: 18,
+            column: 32
+          }
+        },
+        type: "binary-expr",
+        locations: [{
+          start: {
+            line: 18,
+            column: 11
+          },
+          end: {
+            line: 18,
+            column: 14
+          }
+        }, {
+          start: {
+            line: 18,
+            column: 18
+          },
+          end: {
+            line: 18,
+            column: 32
+          }
+        }],
+        line: 18
+      }
+    },
+    s: {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0,
+      "8": 0,
+      "9": 0,
+      "10": 0,
+      "11": 0
+    },
+    f: {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+    },
+    b: {
+      "0": [0, 0],
+      "1": [0, 0]
+    },
+    inputSourceMap: {
+      version: 3,
+      sources: ["/Users/kennyc/code/personal/nailit/app/welcome/page.tsx"],
+      sourcesContent: ["import React from 'react';\nimport Link from 'next/link';\nimport { Button } from '../components/ui/Button';\nimport { Card, CardContent } from '../components/ui/Card';\nimport { \n  ShieldCheckIcon, \n  ClockIcon, \n  DocumentTextIcon,\n  ExclamationTriangleIcon \n} from '@heroicons/react/24/outline';\n\nexport default function WelcomePage() {\n  return (\n    <div className=\"min-h-screen bg-gradient-to-br from-gray-50 to-gray-100\">\n      {/* Header */}\n      <header className=\"bg-white shadow-sm\">\n        <div className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4\">\n          <div className=\"flex items-center justify-between\">\n            <Link href=\"/\" className=\"flex items-center gap-2\">\n              <div className=\"w-8 h-8 bg-[#34A853] rounded-md flex items-center justify-center\">\n                <svg className=\"w-5 h-5 text-white\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" strokeWidth=\"2\">\n                  <path d=\"M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/>\n                  <polyline points=\"9 22 9 12 15 12 15 22\"/>\n                  <path d=\"M6 18l3-3 3 3\"/>\n                </svg>\n              </div>\n              <span className=\"text-xl font-bold text-gray-900\">NailIt</span>\n            </Link>\n            <Link href=\"/auth/signin\">\n              <Button variant=\"outline\" size=\"sm\">\n                Sign In with Google\n              </Button>\n            </Link>\n          </div>\n        </div>\n      </header>\n\n      {/* Hero Section */}\n      <main className=\"max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16\">\n        <div className=\"text-center mb-16\">\n          <h1 className=\"text-4xl md:text-6xl font-bold text-gray-900 mb-6\">\n            Never Miss Another\n            <span className=\"text-[#34A853] block\">Project Change</span>\n          </h1>\n          <p className=\"text-xl text-gray-600 mb-8 max-w-3xl mx-auto\">\n            NailIt monitors your renovation project emails and automatically flags important changes in pricing, scope, and schedule. \n            Stay protected and in control of your project.\n          </p>\n          <div className=\"flex flex-col sm:flex-row gap-4 justify-center\">\n            <Link href=\"/auth/signin\">\n              <Button size=\"lg\" className=\"text-lg px-8 py-4\">\n                Get Started with Google\n              </Button>\n            </Link>\n            <a href=\"#how-it-works\">\n              <Button variant=\"outline\" size=\"lg\" className=\"text-lg px-8 py-4\">\n                See How It Works\n              </Button>\n            </a>\n          </div>\n        </div>\n\n        {/* Problem Statement */}\n        <div className=\"mb-16\">\n          <Card className=\"bg-red-50 border-red-200\">\n            <CardContent className=\"text-center\">\n              <ExclamationTriangleIcon className=\"w-12 h-12 text-red-500 mx-auto mb-4\" />\n              <h2 className=\"text-2xl font-bold text-gray-900 mb-4\">\n                Don't Let Important Changes Slip Through\n              </h2>\n              <p className=\"text-gray-700 text-lg\">\n                Renovation projects involve hundreds of emails. Critical changes to pricing, scope, or timeline \n                can get buried in your inbox, leading to costly surprises and disputes.\n              </p>\n            </CardContent>\n          </Card>\n        </div>\n\n        {/* Features Grid */}\n        <div className=\"grid md:grid-cols-3 gap-8 mb-16\">\n          <Card>\n            <CardContent className=\"text-center\">\n              <ShieldCheckIcon className=\"w-12 h-12 text-[#34A853] mx-auto mb-4\" />\n              <h3 className=\"text-xl font-semibold text-gray-900 mb-3\">\n                Automatic Protection\n              </h3>\n              <p className=\"text-gray-600\">\n                AI monitors your Gmail and automatically flags important changes in project communications.\n              </p>\n            </CardContent>\n          </Card>\n\n          <Card>\n            <CardContent className=\"text-center\">\n              <ClockIcon className=\"w-12 h-12 text-[#1A73E8] mx-auto mb-4\" />\n              <h3 className=\"text-xl font-semibold text-gray-900 mb-3\">\n                Real-Time Alerts\n              </h3>\n              <p className=\"text-gray-600\">\n                Get notified immediately when pricing, scope, or schedule changes are detected.\n              </p>\n            </CardContent>\n          </Card>\n\n          <Card>\n            <CardContent className=\"text-center\">\n              <DocumentTextIcon className=\"w-12 h-12 text-[#34A853] mx-auto mb-4\" />\n              <h3 className=\"text-xl font-semibold text-gray-900 mb-3\">\n                Audit Trail\n              </h3>\n              <p className=\"text-gray-600\">\n                Maintain a complete record of all project decisions and changes for your protection.\n              </p>\n            </CardContent>\n          </Card>\n        </div>\n\n        {/* How It Works */}\n        <div id=\"how-it-works\" className=\"text-center mb-16\">\n          <h2 className=\"text-3xl font-bold text-gray-900 mb-12\">How NailIt Protects Your Project</h2>\n          <div className=\"grid md:grid-cols-4 gap-8\">\n            {[\n              { step: '1', title: 'Sign in with Google', desc: 'Securely connect your Gmail account' },\n              { step: '2', title: 'Set Up Project', desc: 'Add your contractor and project details' },\n              { step: '3', title: 'Monitor Emails', desc: 'AI scans all project communications' },\n              { step: '4', title: 'Get Protected', desc: 'Receive alerts and maintain audit trail' },\n            ].map((item) => (\n              <div key={item.step} className=\"flex flex-col items-center\">\n                <div className=\"w-12 h-12 bg-[#34A853] text-white rounded-full flex items-center justify-center text-xl font-bold mb-4\">\n                  {item.step}\n                </div>\n                <h3 className=\"text-lg font-semibold text-gray-900 mb-2\">{item.title}</h3>\n                <p className=\"text-gray-600 text-sm\">{item.desc}</p>\n              </div>\n            ))}\n          </div>\n        </div>\n\n        {/* CTA Section */}\n        <div className=\"text-center\">\n          <Card className=\"bg-[#34A853] text-white\">\n            <CardContent>\n              <h2 className=\"text-3xl font-bold mb-4\">\n                Start Protecting Your Project Today\n              </h2>\n              <p className=\"text-xl mb-8 opacity-90\">\n                Join homeowners who never miss important project changes\n              </p>\n              <Link href=\"/auth/signin\">\n                <Button variant=\"outline\" size=\"lg\" className=\"bg-white text-[#34A853] hover:bg-gray-100\">\n                  Get Started with Google\n                </Button>\n              </Link>\n            </CardContent>\n          </Card>\n        </div>\n      </main>\n    </div>\n  );\n} "],
+      names: ["WelcomePage", "div", "className", "header", "Link", "href", "svg", "viewBox", "fill", "stroke", "strokeWidth", "path", "d", "polyline", "points", "span", "Button", "variant", "size", "main", "h1", "p", "a", "Card", "CardContent", "ExclamationTriangleIcon", "h2", "ShieldCheckIcon", "h3", "ClockIcon", "DocumentTextIcon", "id", "step", "title", "desc", "map", "item"],
+      mappings: "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"
+    },
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "b824389f2b00ae5f75f17aabbbdf319e886902f2"
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
+  }
+  var actualCoverage = coverage[path];
+  {
+    // @ts-ignore
+    cov_1elre1egur = function () {
+      return actualCoverage;
+    };
+  }
+  return actualCoverage;
+}
+cov_1elre1egur();
+cov_1elre1egur().s[0]++;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/* istanbul ignore next */
+cov_1elre1egur().s[1]++;
+Object.defineProperty(exports, "default", {
+  enumerable: true,
+  get: function () {
+    /* istanbul ignore next */
+    cov_1elre1egur().f[0]++;
+    cov_1elre1egur().s[2]++;
+    return WelcomePage;
+  }
+});
+const _jsxruntime =
+/* istanbul ignore next */
+(cov_1elre1egur().s[3]++, require("react/jsx-runtime"));
+const _react =
+/* istanbul ignore next */
+(/*#__PURE__*/cov_1elre1egur().s[4]++, _interop_require_default(require("react")));
+const _link =
+/* istanbul ignore next */
+(/*#__PURE__*/cov_1elre1egur().s[5]++, _interop_require_default(require("next/link")));
+const _Button =
+/* istanbul ignore next */
+(cov_1elre1egur().s[6]++, require("../components/ui/Button"));
+const _Card =
+/* istanbul ignore next */
+(cov_1elre1egur().s[7]++, require("../components/ui/Card"));
+const _outline =
+/* istanbul ignore next */
+(cov_1elre1egur().s[8]++, require("@heroicons/react/24/outline"));
+function _interop_require_default(obj) {
+  /* istanbul ignore next */
+  cov_1elre1egur().f[1]++;
+  cov_1elre1egur().s[9]++;
+  return /* istanbul ignore next */(cov_1elre1egur().b[1][0]++, obj) &&
+  /* istanbul ignore next */
+  (cov_1elre1egur().b[1][1]++, obj.__esModule) ?
+  /* istanbul ignore next */
+  (cov_1elre1egur().b[0][0]++, obj) :
+  /* istanbul ignore next */
+  (cov_1elre1egur().b[0][1]++, {
+    default: obj
+  });
+}
+function WelcomePage() {
+  /* istanbul ignore next */
+  cov_1elre1egur().f[2]++;
+  cov_1elre1egur().s[10]++;
+  return /*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+    className: "min-h-screen bg-gradient-to-br from-gray-50 to-gray-100",
+    children: [/*#__PURE__*/(0, _jsxruntime.jsx)("header", {
+      className: "bg-white shadow-sm",
+      children: /*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+        className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4",
+        children: /*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+          className: "flex items-center justify-between",
+          children: [/*#__PURE__*/(0, _jsxruntime.jsxs)(_link.default, {
+            href: "/",
+            className: "flex items-center gap-2",
+            children: [/*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+              className: "w-8 h-8 bg-[#34A853] rounded-md flex items-center justify-center",
+              children: /*#__PURE__*/(0, _jsxruntime.jsxs)("svg", {
+                className: "w-5 h-5 text-white",
+                viewBox: "0 0 24 24",
+                fill: "none",
+                stroke: "currentColor",
+                strokeWidth: "2",
+                children: [/*#__PURE__*/(0, _jsxruntime.jsx)("path", {
+                  d: "M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
+                }), /*#__PURE__*/(0, _jsxruntime.jsx)("polyline", {
+                  points: "9 22 9 12 15 12 15 22"
+                }), /*#__PURE__*/(0, _jsxruntime.jsx)("path", {
+                  d: "M6 18l3-3 3 3"
+                })]
+              })
+            }), /*#__PURE__*/(0, _jsxruntime.jsx)("span", {
+              className: "text-xl font-bold text-gray-900",
+              children: "NailIt"
+            })]
+          }), /*#__PURE__*/(0, _jsxruntime.jsx)(_link.default, {
+            href: "/auth/signin",
+            children: /*#__PURE__*/(0, _jsxruntime.jsx)(_Button.Button, {
+              variant: "outline",
+              size: "sm",
+              children: "Sign In with Google"
+            })
+          })]
+        })
+      })
+    }), /*#__PURE__*/(0, _jsxruntime.jsxs)("main", {
+      className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16",
+      children: [/*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+        className: "text-center mb-16",
+        children: [/*#__PURE__*/(0, _jsxruntime.jsxs)("h1", {
+          className: "text-4xl md:text-6xl font-bold text-gray-900 mb-6",
+          children: ["Never Miss Another", /*#__PURE__*/(0, _jsxruntime.jsx)("span", {
+            className: "text-[#34A853] block",
+            children: "Project Change"
+          })]
+        }), /*#__PURE__*/(0, _jsxruntime.jsx)("p", {
+          className: "text-xl text-gray-600 mb-8 max-w-3xl mx-auto",
+          children: "NailIt monitors your renovation project emails and automatically flags important changes in pricing, scope, and schedule. Stay protected and in control of your project."
+        }), /*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+          className: "flex flex-col sm:flex-row gap-4 justify-center",
+          children: [/*#__PURE__*/(0, _jsxruntime.jsx)(_link.default, {
+            href: "/auth/signin",
+            children: /*#__PURE__*/(0, _jsxruntime.jsx)(_Button.Button, {
+              size: "lg",
+              className: "text-lg px-8 py-4",
+              children: "Get Started with Google"
+            })
+          }), /*#__PURE__*/(0, _jsxruntime.jsx)("a", {
+            href: "#how-it-works",
+            children: /*#__PURE__*/(0, _jsxruntime.jsx)(_Button.Button, {
+              variant: "outline",
+              size: "lg",
+              className: "text-lg px-8 py-4",
+              children: "See How It Works"
+            })
+          })]
+        })]
+      }), /*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+        className: "mb-16",
+        children: /*#__PURE__*/(0, _jsxruntime.jsx)(_Card.Card, {
+          className: "bg-red-50 border-red-200",
+          children: /*#__PURE__*/(0, _jsxruntime.jsxs)(_Card.CardContent, {
+            className: "text-center",
+            children: [/*#__PURE__*/(0, _jsxruntime.jsx)(_outline.ExclamationTriangleIcon, {
+              className: "w-12 h-12 text-red-500 mx-auto mb-4"
+            }), /*#__PURE__*/(0, _jsxruntime.jsx)("h2", {
+              className: "text-2xl font-bold text-gray-900 mb-4",
+              children: "Don't Let Important Changes Slip Through"
+            }), /*#__PURE__*/(0, _jsxruntime.jsx)("p", {
+              className: "text-gray-700 text-lg",
+              children: "Renovation projects involve hundreds of emails. Critical changes to pricing, scope, or timeline can get buried in your inbox, leading to costly surprises and disputes."
+            })]
+          })
+        })
+      }), /*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+        className: "grid md:grid-cols-3 gap-8 mb-16",
+        children: [/*#__PURE__*/(0, _jsxruntime.jsx)(_Card.Card, {
+          children: /*#__PURE__*/(0, _jsxruntime.jsxs)(_Card.CardContent, {
+            className: "text-center",
+            children: [/*#__PURE__*/(0, _jsxruntime.jsx)(_outline.ShieldCheckIcon, {
+              className: "w-12 h-12 text-[#34A853] mx-auto mb-4"
+            }), /*#__PURE__*/(0, _jsxruntime.jsx)("h3", {
+              className: "text-xl font-semibold text-gray-900 mb-3",
+              children: "Automatic Protection"
+            }), /*#__PURE__*/(0, _jsxruntime.jsx)("p", {
+              className: "text-gray-600",
+              children: "AI monitors your Gmail and automatically flags important changes in project communications."
+            })]
+          })
+        }), /*#__PURE__*/(0, _jsxruntime.jsx)(_Card.Card, {
+          children: /*#__PURE__*/(0, _jsxruntime.jsxs)(_Card.CardContent, {
+            className: "text-center",
+            children: [/*#__PURE__*/(0, _jsxruntime.jsx)(_outline.ClockIcon, {
+              className: "w-12 h-12 text-[#1A73E8] mx-auto mb-4"
+            }), /*#__PURE__*/(0, _jsxruntime.jsx)("h3", {
+              className: "text-xl font-semibold text-gray-900 mb-3",
+              children: "Real-Time Alerts"
+            }), /*#__PURE__*/(0, _jsxruntime.jsx)("p", {
+              className: "text-gray-600",
+              children: "Get notified immediately when pricing, scope, or schedule changes are detected."
+            })]
+          })
+        }), /*#__PURE__*/(0, _jsxruntime.jsx)(_Card.Card, {
+          children: /*#__PURE__*/(0, _jsxruntime.jsxs)(_Card.CardContent, {
+            className: "text-center",
+            children: [/*#__PURE__*/(0, _jsxruntime.jsx)(_outline.DocumentTextIcon, {
+              className: "w-12 h-12 text-[#34A853] mx-auto mb-4"
+            }), /*#__PURE__*/(0, _jsxruntime.jsx)("h3", {
+              className: "text-xl font-semibold text-gray-900 mb-3",
+              children: "Audit Trail"
+            }), /*#__PURE__*/(0, _jsxruntime.jsx)("p", {
+              className: "text-gray-600",
+              children: "Maintain a complete record of all project decisions and changes for your protection."
+            })]
+          })
+        })]
+      }), /*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+        id: "how-it-works",
+        className: "text-center mb-16",
+        children: [/*#__PURE__*/(0, _jsxruntime.jsx)("h2", {
+          className: "text-3xl font-bold text-gray-900 mb-12",
+          children: "How NailIt Protects Your Project"
+        }), /*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+          className: "grid md:grid-cols-4 gap-8",
+          children: [{
+            step: '1',
+            title: 'Sign in with Google',
+            desc: 'Securely connect your Gmail account'
+          }, {
+            step: '2',
+            title: 'Set Up Project',
+            desc: 'Add your contractor and project details'
+          }, {
+            step: '3',
+            title: 'Monitor Emails',
+            desc: 'AI scans all project communications'
+          }, {
+            step: '4',
+            title: 'Get Protected',
+            desc: 'Receive alerts and maintain audit trail'
+          }].map(item => {
+            /* istanbul ignore next */
+            cov_1elre1egur().f[3]++;
+            cov_1elre1egur().s[11]++;
+            return /*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+              className: "flex flex-col items-center",
+              children: [/*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+                className: "w-12 h-12 bg-[#34A853] text-white rounded-full flex items-center justify-center text-xl font-bold mb-4",
+                children: item.step
+              }), /*#__PURE__*/(0, _jsxruntime.jsx)("h3", {
+                className: "text-lg font-semibold text-gray-900 mb-2",
+                children: item.title
+              }), /*#__PURE__*/(0, _jsxruntime.jsx)("p", {
+                className: "text-gray-600 text-sm",
+                children: item.desc
+              })]
+            }, item.step);
+          })
+        })]
+      }), /*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+        className: "text-center",
+        children: /*#__PURE__*/(0, _jsxruntime.jsx)(_Card.Card, {
+          className: "bg-[#34A853] text-white",
+          children: /*#__PURE__*/(0, _jsxruntime.jsxs)(_Card.CardContent, {
+            children: [/*#__PURE__*/(0, _jsxruntime.jsx)("h2", {
+              className: "text-3xl font-bold mb-4",
+              children: "Start Protecting Your Project Today"
+            }), /*#__PURE__*/(0, _jsxruntime.jsx)("p", {
+              className: "text-xl mb-8 opacity-90",
+              children: "Join homeowners who never miss important project changes"
+            }), /*#__PURE__*/(0, _jsxruntime.jsx)(_link.default, {
+              href: "/auth/signin",
+              children: /*#__PURE__*/(0, _jsxruntime.jsx)(_Button.Button, {
+                variant: "outline",
+                size: "lg",
+                className: "bg-white text-[#34A853] hover:bg-gray-100",
+                children: "Get Started with Google"
+              })
+            })]
+          })
+        })
+      })]
+    })]
+  });
+}
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJXZWxjb21lUGFnZSIsImNvdl8xZWxyZTFlZ3VyIiwiZiIsInMiLCJfanN4cnVudGltZSIsImpzeHMiLCJjbGFzc05hbWUiLCJqc3giLCJfbGluayIsImRlZmF1bHQiLCJocmVmIiwidmlld0JveCIsImZpbGwiLCJzdHJva2UiLCJzdHJva2VXaWR0aCIsImQiLCJwb2ludHMiLCJfQnV0dG9uIiwiQnV0dG9uIiwidmFyaWFudCIsInNpemUiLCJfQ2FyZCIsIkNhcmQiLCJDYXJkQ29udGVudCIsIl9vdXRsaW5lIiwiRXhjbGFtYXRpb25UcmlhbmdsZUljb24iLCJTaGllbGRDaGVja0ljb24iLCJDbG9ja0ljb24iLCJEb2N1bWVudFRleHRJY29uIiwiaWQiLCJzdGVwIiwidGl0bGUiLCJkZXNjIiwibWFwIiwiaXRlbSJdLCJzb3VyY2VzIjpbIi9Vc2Vycy9rZW5ueWMvY29kZS9wZXJzb25hbC9uYWlsaXQvYXBwL3dlbGNvbWUvcGFnZS50c3giXSwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IFJlYWN0IGZyb20gJ3JlYWN0JztcbmltcG9ydCBMaW5rIGZyb20gJ25leHQvbGluayc7XG5pbXBvcnQgeyBCdXR0b24gfSBmcm9tICcuLi9jb21wb25lbnRzL3VpL0J1dHRvbic7XG5pbXBvcnQgeyBDYXJkLCBDYXJkQ29udGVudCB9IGZyb20gJy4uL2NvbXBvbmVudHMvdWkvQ2FyZCc7XG5pbXBvcnQgeyBcbiAgU2hpZWxkQ2hlY2tJY29uLCBcbiAgQ2xvY2tJY29uLCBcbiAgRG9jdW1lbnRUZXh0SWNvbixcbiAgRXhjbGFtYXRpb25UcmlhbmdsZUljb24gXG59IGZyb20gJ0BoZXJvaWNvbnMvcmVhY3QvMjQvb3V0bGluZSc7XG5cbmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIFdlbGNvbWVQYWdlKCkge1xuICByZXR1cm4gKFxuICAgIDxkaXYgY2xhc3NOYW1lPVwibWluLWgtc2NyZWVuIGJnLWdyYWRpZW50LXRvLWJyIGZyb20tZ3JheS01MCB0by1ncmF5LTEwMFwiPlxuICAgICAgey8qIEhlYWRlciAqL31cbiAgICAgIDxoZWFkZXIgY2xhc3NOYW1lPVwiYmctd2hpdGUgc2hhZG93LXNtXCI+XG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwibWF4LXctN3hsIG14LWF1dG8gcHgtNCBzbTpweC02IGxnOnB4LTggcHktNFwiPlxuICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1iZXR3ZWVuXCI+XG4gICAgICAgICAgICA8TGluayBocmVmPVwiL1wiIGNsYXNzTmFtZT1cImZsZXggaXRlbXMtY2VudGVyIGdhcC0yXCI+XG4gICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwidy04IGgtOCBiZy1bIzM0QTg1M10gcm91bmRlZC1tZCBmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlclwiPlxuICAgICAgICAgICAgICAgIDxzdmcgY2xhc3NOYW1lPVwidy01IGgtNSB0ZXh0LXdoaXRlXCIgdmlld0JveD1cIjAgMCAyNCAyNFwiIGZpbGw9XCJub25lXCIgc3Ryb2tlPVwiY3VycmVudENvbG9yXCIgc3Ryb2tlV2lkdGg9XCIyXCI+XG4gICAgICAgICAgICAgICAgICA8cGF0aCBkPVwiTTMgOWw5LTcgOSA3djExYTIgMiAwIDAgMS0yIDJINWEyIDIgMCAwIDEtMi0yelwiLz5cbiAgICAgICAgICAgICAgICAgIDxwb2x5bGluZSBwb2ludHM9XCI5IDIyIDkgMTIgMTUgMTIgMTUgMjJcIi8+XG4gICAgICAgICAgICAgICAgICA8cGF0aCBkPVwiTTYgMThsMy0zIDMgM1wiLz5cbiAgICAgICAgICAgICAgICA8L3N2Zz5cbiAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT1cInRleHQteGwgZm9udC1ib2xkIHRleHQtZ3JheS05MDBcIj5OYWlsSXQ8L3NwYW4+XG4gICAgICAgICAgICA8L0xpbms+XG4gICAgICAgICAgICA8TGluayBocmVmPVwiL2F1dGgvc2lnbmluXCI+XG4gICAgICAgICAgICAgIDxCdXR0b24gdmFyaWFudD1cIm91dGxpbmVcIiBzaXplPVwic21cIj5cbiAgICAgICAgICAgICAgICBTaWduIEluIHdpdGggR29vZ2xlXG4gICAgICAgICAgICAgIDwvQnV0dG9uPlxuICAgICAgICAgICAgPC9MaW5rPlxuICAgICAgICAgIDwvZGl2PlxuICAgICAgICA8L2Rpdj5cbiAgICAgIDwvaGVhZGVyPlxuXG4gICAgICB7LyogSGVybyBTZWN0aW9uICovfVxuICAgICAgPG1haW4gY2xhc3NOYW1lPVwibWF4LXctN3hsIG14LWF1dG8gcHgtNCBzbTpweC02IGxnOnB4LTggcHktMTZcIj5cbiAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJ0ZXh0LWNlbnRlciBtYi0xNlwiPlxuICAgICAgICAgIDxoMSBjbGFzc05hbWU9XCJ0ZXh0LTR4bCBtZDp0ZXh0LTZ4bCBmb250LWJvbGQgdGV4dC1ncmF5LTkwMCBtYi02XCI+XG4gICAgICAgICAgICBOZXZlciBNaXNzIEFub3RoZXJcbiAgICAgICAgICAgIDxzcGFuIGNsYXNzTmFtZT1cInRleHQtWyMzNEE4NTNdIGJsb2NrXCI+UHJvamVjdCBDaGFuZ2U8L3NwYW4+XG4gICAgICAgICAgPC9oMT5cbiAgICAgICAgICA8cCBjbGFzc05hbWU9XCJ0ZXh0LXhsIHRleHQtZ3JheS02MDAgbWItOCBtYXgtdy0zeGwgbXgtYXV0b1wiPlxuICAgICAgICAgICAgTmFpbEl0IG1vbml0b3JzIHlvdXIgcmVub3ZhdGlvbiBwcm9qZWN0IGVtYWlscyBhbmQgYXV0b21hdGljYWxseSBmbGFncyBpbXBvcnRhbnQgY2hhbmdlcyBpbiBwcmljaW5nLCBzY29wZSwgYW5kIHNjaGVkdWxlLiBcbiAgICAgICAgICAgIFN0YXkgcHJvdGVjdGVkIGFuZCBpbiBjb250cm9sIG9mIHlvdXIgcHJvamVjdC5cbiAgICAgICAgICA8L3A+XG4gICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJmbGV4IGZsZXgtY29sIHNtOmZsZXgtcm93IGdhcC00IGp1c3RpZnktY2VudGVyXCI+XG4gICAgICAgICAgICA8TGluayBocmVmPVwiL2F1dGgvc2lnbmluXCI+XG4gICAgICAgICAgICAgIDxCdXR0b24gc2l6ZT1cImxnXCIgY2xhc3NOYW1lPVwidGV4dC1sZyBweC04IHB5LTRcIj5cbiAgICAgICAgICAgICAgICBHZXQgU3RhcnRlZCB3aXRoIEdvb2dsZVxuICAgICAgICAgICAgICA8L0J1dHRvbj5cbiAgICAgICAgICAgIDwvTGluaz5cbiAgICAgICAgICAgIDxhIGhyZWY9XCIjaG93LWl0LXdvcmtzXCI+XG4gICAgICAgICAgICAgIDxCdXR0b24gdmFyaWFudD1cIm91dGxpbmVcIiBzaXplPVwibGdcIiBjbGFzc05hbWU9XCJ0ZXh0LWxnIHB4LTggcHktNFwiPlxuICAgICAgICAgICAgICAgIFNlZSBIb3cgSXQgV29ya3NcbiAgICAgICAgICAgICAgPC9CdXR0b24+XG4gICAgICAgICAgICA8L2E+XG4gICAgICAgICAgPC9kaXY+XG4gICAgICAgIDwvZGl2PlxuXG4gICAgICAgIHsvKiBQcm9ibGVtIFN0YXRlbWVudCAqL31cbiAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJtYi0xNlwiPlxuICAgICAgICAgIDxDYXJkIGNsYXNzTmFtZT1cImJnLXJlZC01MCBib3JkZXItcmVkLTIwMFwiPlxuICAgICAgICAgICAgPENhcmRDb250ZW50IGNsYXNzTmFtZT1cInRleHQtY2VudGVyXCI+XG4gICAgICAgICAgICAgIDxFeGNsYW1hdGlvblRyaWFuZ2xlSWNvbiBjbGFzc05hbWU9XCJ3LTEyIGgtMTIgdGV4dC1yZWQtNTAwIG14LWF1dG8gbWItNFwiIC8+XG4gICAgICAgICAgICAgIDxoMiBjbGFzc05hbWU9XCJ0ZXh0LTJ4bCBmb250LWJvbGQgdGV4dC1ncmF5LTkwMCBtYi00XCI+XG4gICAgICAgICAgICAgICAgRG9uJ3QgTGV0IEltcG9ydGFudCBDaGFuZ2VzIFNsaXAgVGhyb3VnaFxuICAgICAgICAgICAgICA8L2gyPlxuICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9XCJ0ZXh0LWdyYXktNzAwIHRleHQtbGdcIj5cbiAgICAgICAgICAgICAgICBSZW5vdmF0aW9uIHByb2plY3RzIGludm9sdmUgaHVuZHJlZHMgb2YgZW1haWxzLiBDcml0aWNhbCBjaGFuZ2VzIHRvIHByaWNpbmcsIHNjb3BlLCBvciB0aW1lbGluZSBcbiAgICAgICAgICAgICAgICBjYW4gZ2V0IGJ1cmllZCBpbiB5b3VyIGluYm94LCBsZWFkaW5nIHRvIGNvc3RseSBzdXJwcmlzZXMgYW5kIGRpc3B1dGVzLlxuICAgICAgICAgICAgICA8L3A+XG4gICAgICAgICAgICA8L0NhcmRDb250ZW50PlxuICAgICAgICAgIDwvQ2FyZD5cbiAgICAgICAgPC9kaXY+XG5cbiAgICAgICAgey8qIEZlYXR1cmVzIEdyaWQgKi99XG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiZ3JpZCBtZDpncmlkLWNvbHMtMyBnYXAtOCBtYi0xNlwiPlxuICAgICAgICAgIDxDYXJkPlxuICAgICAgICAgICAgPENhcmRDb250ZW50IGNsYXNzTmFtZT1cInRleHQtY2VudGVyXCI+XG4gICAgICAgICAgICAgIDxTaGllbGRDaGVja0ljb24gY2xhc3NOYW1lPVwidy0xMiBoLTEyIHRleHQtWyMzNEE4NTNdIG14LWF1dG8gbWItNFwiIC8+XG4gICAgICAgICAgICAgIDxoMyBjbGFzc05hbWU9XCJ0ZXh0LXhsIGZvbnQtc2VtaWJvbGQgdGV4dC1ncmF5LTkwMCBtYi0zXCI+XG4gICAgICAgICAgICAgICAgQXV0b21hdGljIFByb3RlY3Rpb25cbiAgICAgICAgICAgICAgPC9oMz5cbiAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwidGV4dC1ncmF5LTYwMFwiPlxuICAgICAgICAgICAgICAgIEFJIG1vbml0b3JzIHlvdXIgR21haWwgYW5kIGF1dG9tYXRpY2FsbHkgZmxhZ3MgaW1wb3J0YW50IGNoYW5nZXMgaW4gcHJvamVjdCBjb21tdW5pY2F0aW9ucy5cbiAgICAgICAgICAgICAgPC9wPlxuICAgICAgICAgICAgPC9DYXJkQ29udGVudD5cbiAgICAgICAgICA8L0NhcmQ+XG5cbiAgICAgICAgICA8Q2FyZD5cbiAgICAgICAgICAgIDxDYXJkQ29udGVudCBjbGFzc05hbWU9XCJ0ZXh0LWNlbnRlclwiPlxuICAgICAgICAgICAgICA8Q2xvY2tJY29uIGNsYXNzTmFtZT1cInctMTIgaC0xMiB0ZXh0LVsjMUE3M0U4XSBteC1hdXRvIG1iLTRcIiAvPlxuICAgICAgICAgICAgICA8aDMgY2xhc3NOYW1lPVwidGV4dC14bCBmb250LXNlbWlib2xkIHRleHQtZ3JheS05MDAgbWItM1wiPlxuICAgICAgICAgICAgICAgIFJlYWwtVGltZSBBbGVydHNcbiAgICAgICAgICAgICAgPC9oMz5cbiAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwidGV4dC1ncmF5LTYwMFwiPlxuICAgICAgICAgICAgICAgIEdldCBub3RpZmllZCBpbW1lZGlhdGVseSB3aGVuIHByaWNpbmcsIHNjb3BlLCBvciBzY2hlZHVsZSBjaGFuZ2VzIGFyZSBkZXRlY3RlZC5cbiAgICAgICAgICAgICAgPC9wPlxuICAgICAgICAgICAgPC9DYXJkQ29udGVudD5cbiAgICAgICAgICA8L0NhcmQ+XG5cbiAgICAgICAgICA8Q2FyZD5cbiAgICAgICAgICAgIDxDYXJkQ29udGVudCBjbGFzc05hbWU9XCJ0ZXh0LWNlbnRlclwiPlxuICAgICAgICAgICAgICA8RG9jdW1lbnRUZXh0SWNvbiBjbGFzc05hbWU9XCJ3LTEyIGgtMTIgdGV4dC1bIzM0QTg1M10gbXgtYXV0byBtYi00XCIgLz5cbiAgICAgICAgICAgICAgPGgzIGNsYXNzTmFtZT1cInRleHQteGwgZm9udC1zZW1pYm9sZCB0ZXh0LWdyYXktOTAwIG1iLTNcIj5cbiAgICAgICAgICAgICAgICBBdWRpdCBUcmFpbFxuICAgICAgICAgICAgICA8L2gzPlxuICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9XCJ0ZXh0LWdyYXktNjAwXCI+XG4gICAgICAgICAgICAgICAgTWFpbnRhaW4gYSBjb21wbGV0ZSByZWNvcmQgb2YgYWxsIHByb2plY3QgZGVjaXNpb25zIGFuZCBjaGFuZ2VzIGZvciB5b3VyIHByb3RlY3Rpb24uXG4gICAgICAgICAgICAgIDwvcD5cbiAgICAgICAgICAgIDwvQ2FyZENvbnRlbnQ+XG4gICAgICAgICAgPC9DYXJkPlxuICAgICAgICA8L2Rpdj5cblxuICAgICAgICB7LyogSG93IEl0IFdvcmtzICovfVxuICAgICAgICA8ZGl2IGlkPVwiaG93LWl0LXdvcmtzXCIgY2xhc3NOYW1lPVwidGV4dC1jZW50ZXIgbWItMTZcIj5cbiAgICAgICAgICA8aDIgY2xhc3NOYW1lPVwidGV4dC0zeGwgZm9udC1ib2xkIHRleHQtZ3JheS05MDAgbWItMTJcIj5Ib3cgTmFpbEl0IFByb3RlY3RzIFlvdXIgUHJvamVjdDwvaDI+XG4gICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJncmlkIG1kOmdyaWQtY29scy00IGdhcC04XCI+XG4gICAgICAgICAgICB7W1xuICAgICAgICAgICAgICB7IHN0ZXA6ICcxJywgdGl0bGU6ICdTaWduIGluIHdpdGggR29vZ2xlJywgZGVzYzogJ1NlY3VyZWx5IGNvbm5lY3QgeW91ciBHbWFpbCBhY2NvdW50JyB9LFxuICAgICAgICAgICAgICB7IHN0ZXA6ICcyJywgdGl0bGU6ICdTZXQgVXAgUHJvamVjdCcsIGRlc2M6ICdBZGQgeW91ciBjb250cmFjdG9yIGFuZCBwcm9qZWN0IGRldGFpbHMnIH0sXG4gICAgICAgICAgICAgIHsgc3RlcDogJzMnLCB0aXRsZTogJ01vbml0b3IgRW1haWxzJywgZGVzYzogJ0FJIHNjYW5zIGFsbCBwcm9qZWN0IGNvbW11bmljYXRpb25zJyB9LFxuICAgICAgICAgICAgICB7IHN0ZXA6ICc0JywgdGl0bGU6ICdHZXQgUHJvdGVjdGVkJywgZGVzYzogJ1JlY2VpdmUgYWxlcnRzIGFuZCBtYWludGFpbiBhdWRpdCB0cmFpbCcgfSxcbiAgICAgICAgICAgIF0ubWFwKChpdGVtKSA9PiAoXG4gICAgICAgICAgICAgIDxkaXYga2V5PXtpdGVtLnN0ZXB9IGNsYXNzTmFtZT1cImZsZXggZmxleC1jb2wgaXRlbXMtY2VudGVyXCI+XG4gICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJ3LTEyIGgtMTIgYmctWyMzNEE4NTNdIHRleHQtd2hpdGUgcm91bmRlZC1mdWxsIGZsZXggaXRlbXMtY2VudGVyIGp1c3RpZnktY2VudGVyIHRleHQteGwgZm9udC1ib2xkIG1iLTRcIj5cbiAgICAgICAgICAgICAgICAgIHtpdGVtLnN0ZXB9XG4gICAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgICAgPGgzIGNsYXNzTmFtZT1cInRleHQtbGcgZm9udC1zZW1pYm9sZCB0ZXh0LWdyYXktOTAwIG1iLTJcIj57aXRlbS50aXRsZX08L2gzPlxuICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT1cInRleHQtZ3JheS02MDAgdGV4dC1zbVwiPntpdGVtLmRlc2N9PC9wPlxuICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgICkpfVxuICAgICAgICAgIDwvZGl2PlxuICAgICAgICA8L2Rpdj5cblxuICAgICAgICB7LyogQ1RBIFNlY3Rpb24gKi99XG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwidGV4dC1jZW50ZXJcIj5cbiAgICAgICAgICA8Q2FyZCBjbGFzc05hbWU9XCJiZy1bIzM0QTg1M10gdGV4dC13aGl0ZVwiPlxuICAgICAgICAgICAgPENhcmRDb250ZW50PlxuICAgICAgICAgICAgICA8aDIgY2xhc3NOYW1lPVwidGV4dC0zeGwgZm9udC1ib2xkIG1iLTRcIj5cbiAgICAgICAgICAgICAgICBTdGFydCBQcm90ZWN0aW5nIFlvdXIgUHJvamVjdCBUb2RheVxuICAgICAgICAgICAgICA8L2gyPlxuICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9XCJ0ZXh0LXhsIG1iLTggb3BhY2l0eS05MFwiPlxuICAgICAgICAgICAgICAgIEpvaW4gaG9tZW93bmVycyB3aG8gbmV2ZXIgbWlzcyBpbXBvcnRhbnQgcHJvamVjdCBjaGFuZ2VzXG4gICAgICAgICAgICAgIDwvcD5cbiAgICAgICAgICAgICAgPExpbmsgaHJlZj1cIi9hdXRoL3NpZ25pblwiPlxuICAgICAgICAgICAgICAgIDxCdXR0b24gdmFyaWFudD1cIm91dGxpbmVcIiBzaXplPVwibGdcIiBjbGFzc05hbWU9XCJiZy13aGl0ZSB0ZXh0LVsjMzRBODUzXSBob3ZlcjpiZy1ncmF5LTEwMFwiPlxuICAgICAgICAgICAgICAgICAgR2V0IFN0YXJ0ZWQgd2l0aCBHb29nbGVcbiAgICAgICAgICAgICAgICA8L0J1dHRvbj5cbiAgICAgICAgICAgICAgPC9MaW5rPlxuICAgICAgICAgICAgPC9DYXJkQ29udGVudD5cbiAgICAgICAgICA8L0NhcmQ+XG4gICAgICAgIDwvZGl2PlxuICAgICAgPC9tYWluPlxuICAgIDwvZGl2PlxuICApO1xufSAiXSwibWFwcGluZ3MiOiI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7K0JBV0E7Ozs7OztXQUF3QkEsV0FBQTs7Ozs7Ozs7d0VBWE47Ozt3RUFDRDs7O2tDQUNNOzs7a0NBQ1c7OztrQ0FNM0I7Ozs7Ozs7Ozs7Ozs7OztBQUVRLFNBQVNBLFlBQUE7RUFBQTtFQUFBQyxjQUFBLEdBQUFDLENBQUE7RUFBQUQsY0FBQSxHQUFBRSxDQUFBO0VBQ3RCLG9CQUNFLElBQUFDLFdBQUEsQ0FBQUMsSUFBQSxFQUFD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

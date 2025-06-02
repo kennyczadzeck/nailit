@@ -1,0 +1,735 @@
+f57e08e2e588ac3959c54aa71b43d805
+'use client';
+"use strict";
+
+/* istanbul ignore next */
+function cov_d19etdtw6() {
+  var path = "/Users/kennyc/code/personal/nailit/app/account/page.tsx";
+  var hash = "f6eeef997b00292f3cf7e57f026f1f3b73fe272f";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
+  var coverageData = {
+    path: "/Users/kennyc/code/personal/nailit/app/account/page.tsx",
+    statementMap: {
+      "0": {
+        start: {
+          line: 3,
+          column: 0
+        },
+        end: {
+          line: 5,
+          column: 3
+        }
+      },
+      "1": {
+        start: {
+          line: 6,
+          column: 0
+        },
+        end: {
+          line: 11,
+          column: 3
+        }
+      },
+      "2": {
+        start: {
+          line: 9,
+          column: 8
+        },
+        end: {
+          line: 9,
+          column: 27
+        }
+      },
+      "3": {
+        start: {
+          line: 12,
+          column: 20
+        },
+        end: {
+          line: 12,
+          column: 48
+        }
+      },
+      "4": {
+        start: {
+          line: 13,
+          column: 29
+        },
+        end: {
+          line: 13,
+          column: 71
+        }
+      },
+      "5": {
+        start: {
+          line: 14,
+          column: 16
+        },
+        end: {
+          line: 14,
+          column: 42
+        }
+      },
+      "6": {
+        start: {
+          line: 15,
+          column: 20
+        },
+        end: {
+          line: 15,
+          column: 55
+        }
+      },
+      "7": {
+        start: {
+          line: 16,
+          column: 14
+        },
+        end: {
+          line: 16,
+          column: 46
+        }
+      },
+      "8": {
+        start: {
+          line: 17,
+          column: 16
+        },
+        end: {
+          line: 17,
+          column: 50
+        }
+      },
+      "9": {
+        start: {
+          line: 18,
+          column: 17
+        },
+        end: {
+          line: 18,
+          column: 55
+        }
+      },
+      "10": {
+        start: {
+          line: 20,
+          column: 4
+        },
+        end: {
+          line: 22,
+          column: 6
+        }
+      },
+      "11": {
+        start: {
+          line: 25,
+          column: 30
+        },
+        end: {
+          line: 25,
+          column: 55
+        }
+      },
+      "12": {
+        start: {
+          line: 26,
+          column: 4
+        },
+        end: {
+          line: 345,
+          column: 7
+        }
+      }
+    },
+    fnMap: {
+      "0": {
+        name: "(anonymous_0)",
+        decl: {
+          start: {
+            line: 8,
+            column: 9
+          },
+          end: {
+            line: 8,
+            column: 10
+          }
+        },
+        loc: {
+          start: {
+            line: 8,
+            column: 20
+          },
+          end: {
+            line: 10,
+            column: 5
+          }
+        },
+        line: 8
+      },
+      "1": {
+        name: "_interop_require_default",
+        decl: {
+          start: {
+            line: 19,
+            column: 9
+          },
+          end: {
+            line: 19,
+            column: 33
+          }
+        },
+        loc: {
+          start: {
+            line: 19,
+            column: 39
+          },
+          end: {
+            line: 23,
+            column: 1
+          }
+        },
+        line: 19
+      },
+      "2": {
+        name: "AccountPage",
+        decl: {
+          start: {
+            line: 24,
+            column: 9
+          },
+          end: {
+            line: 24,
+            column: 20
+          }
+        },
+        loc: {
+          start: {
+            line: 24,
+            column: 23
+          },
+          end: {
+            line: 346,
+            column: 1
+          }
+        },
+        line: 24
+      }
+    },
+    branchMap: {
+      "0": {
+        loc: {
+          start: {
+            line: 20,
+            column: 11
+          },
+          end: {
+            line: 22,
+            column: 5
+          }
+        },
+        type: "cond-expr",
+        locations: [{
+          start: {
+            line: 20,
+            column: 35
+          },
+          end: {
+            line: 20,
+            column: 38
+          }
+        }, {
+          start: {
+            line: 20,
+            column: 41
+          },
+          end: {
+            line: 22,
+            column: 5
+          }
+        }],
+        line: 20
+      },
+      "1": {
+        loc: {
+          start: {
+            line: 20,
+            column: 11
+          },
+          end: {
+            line: 20,
+            column: 32
+          }
+        },
+        type: "binary-expr",
+        locations: [{
+          start: {
+            line: 20,
+            column: 11
+          },
+          end: {
+            line: 20,
+            column: 14
+          }
+        }, {
+          start: {
+            line: 20,
+            column: 18
+          },
+          end: {
+            line: 20,
+            column: 32
+          }
+        }],
+        line: 20
+      },
+      "2": {
+        loc: {
+          start: {
+            line: 68,
+            column: 52
+          },
+          end: {
+            line: 72,
+            column: 54
+          }
+        },
+        type: "binary-expr",
+        locations: [{
+          start: {
+            line: 68,
+            column: 52
+          },
+          end: {
+            line: 68,
+            column: 72
+          }
+        }, {
+          start: {
+            line: 68,
+            column: 90
+          },
+          end: {
+            line: 72,
+            column: 54
+          }
+        }],
+        line: 68
+      },
+      "3": {
+        loc: {
+          start: {
+            line: 70,
+            column: 61
+          },
+          end: {
+            line: 70,
+            column: 91
+          }
+        },
+        type: "binary-expr",
+        locations: [{
+          start: {
+            line: 70,
+            column: 61
+          },
+          end: {
+            line: 70,
+            column: 78
+          }
+        }, {
+          start: {
+            line: 70,
+            column: 82
+          },
+          end: {
+            line: 70,
+            column: 91
+          }
+        }],
+        line: 70
+      },
+      "4": {
+        loc: {
+          start: {
+            line: 78,
+            column: 74
+          },
+          end: {
+            line: 78,
+            column: 108
+          }
+        },
+        type: "binary-expr",
+        locations: [{
+          start: {
+            line: 78,
+            column: 74
+          },
+          end: {
+            line: 78,
+            column: 93
+          }
+        }, {
+          start: {
+            line: 78,
+            column: 97
+          },
+          end: {
+            line: 78,
+            column: 108
+          }
+        }],
+        line: 78
+      }
+    },
+    s: {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0,
+      "7": 0,
+      "8": 0,
+      "9": 0,
+      "10": 0,
+      "11": 0,
+      "12": 0
+    },
+    f: {
+      "0": 0,
+      "1": 0,
+      "2": 0
+    },
+    b: {
+      "0": [0, 0],
+      "1": [0, 0],
+      "2": [0, 0],
+      "3": [0, 0],
+      "4": [0, 0]
+    },
+    inputSourceMap: {
+      version: 3,
+      sources: ["/Users/kennyc/code/personal/nailit/app/account/page.tsx"],
+      sourcesContent: ["'use client';\n\nimport React from 'react';\nimport { useSession } from 'next-auth/react';\nimport { Navigation } from '../components/Navigation';\nimport { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';\nimport { Button } from '../components/ui/Button';\nimport { \n  UserCircleIcon,\n  ShieldCheckIcon,\n  KeyIcon,\n  TrashIcon\n} from '@heroicons/react/24/outline';\n\nexport default function AccountPage() {\n  const { data: session } = useSession();\n\n  return (\n    <div className=\"min-h-screen bg-gray-50\">\n      <Navigation />\n      \n      <main className=\"max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8\">\n        {/* Header */}\n        <div className=\"mb-8\">\n          <h1 className=\"text-3xl font-bold text-gray-900\">Account Settings</h1>\n          <p className=\"text-gray-600 mt-1\">Manage your personal account and security preferences</p>\n        </div>\n\n        <div className=\"space-y-8\">\n          {/* Profile Information */}\n          <Card>\n            <CardHeader>\n              <CardTitle className=\"flex items-center gap-2\">\n                <UserCircleIcon className=\"w-5 h-5\" />\n                Profile Information\n              </CardTitle>\n            </CardHeader>\n            <CardContent className=\"space-y-6\">\n              <div className=\"flex items-center gap-6\">\n                {session?.user?.image && (\n                  <img \n                    src={session.user.image} \n                    alt={session.user.name || 'Profile'} \n                    className=\"w-20 h-20 rounded-full\"\n                  />\n                )}\n                <div className=\"flex-1\">\n                  <h3 className=\"text-lg font-medium text-gray-900\">\n                    {session?.user?.name || 'User Name'}\n                  </h3>\n                  <p className=\"text-gray-600\">{session?.user?.email}</p>\n                  <p className=\"text-sm text-gray-500 mt-1\">\n                    Profile managed through Google Account\n                  </p>\n                </div>\n              </div>\n              \n              <div className=\"bg-blue-50 border border-blue-200 rounded-lg p-4\">\n                <div className=\"flex\">\n                  <div className=\"flex-shrink-0\">\n                    <ShieldCheckIcon className=\"h-5 w-5 text-blue-400\" />\n                  </div>\n                  <div className=\"ml-3\">\n                    <h3 className=\"text-sm font-medium text-blue-800\">\n                      Google Account Integration\n                    </h3>\n                    <div className=\"mt-2 text-sm text-blue-700\">\n                      <p>\n                        Your profile information is synced with your Google account. \n                        To update your name or profile picture, please visit your Google Account settings.\n                      </p>\n                    </div>\n                    <div className=\"mt-3\">\n                      <a \n                        href=\"https://myaccount.google.com/\" \n                        target=\"_blank\" \n                        rel=\"noopener noreferrer\"\n                        className=\"text-sm font-medium text-blue-800 hover:text-blue-900\"\n                      >\n                        Manage Google Account \u2192\n                      </a>\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </CardContent>\n          </Card>\n\n          {/* Connected Services */}\n          <Card>\n            <CardHeader>\n              <CardTitle className=\"flex items-center gap-2\">\n                <KeyIcon className=\"w-5 h-5\" />\n                Connected Services\n              </CardTitle>\n            </CardHeader>\n            <CardContent className=\"space-y-4\">\n              <div className=\"border border-gray-200 rounded-lg p-4\">\n                <div className=\"flex items-center justify-between\">\n                  <div className=\"flex items-center gap-3\">\n                    <div className=\"w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center\">\n                      <svg className=\"w-6 h-6 text-white\" viewBox=\"0 0 24 24\">\n                        <path fill=\"currentColor\" d=\"M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z\"/>\n                        <path fill=\"currentColor\" d=\"M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z\"/>\n                        <path fill=\"currentColor\" d=\"M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z\"/>\n                        <path fill=\"currentColor\" d=\"M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z\"/>\n                      </svg>\n                    </div>\n                    <div>\n                      <p className=\"text-sm font-medium text-gray-900\">Google Account</p>\n                      <p className=\"text-sm text-gray-600\">{session?.user?.email}</p>\n                      <p className=\"text-xs text-green-600\">\u2713 Connected & Active</p>\n                    </div>\n                  </div>\n                  <div className=\"text-sm text-gray-500\">\n                    Primary account\n                  </div>\n                </div>\n              </div>\n              \n              <div className=\"text-sm text-gray-600\">\n                <p>NailIt uses your Google account for authentication and Gmail integration. \n                Disconnecting would sign you out and disable email monitoring.</p>\n              </div>\n            </CardContent>\n          </Card>\n\n          {/* Privacy & Security */}\n          <Card>\n            <CardHeader>\n              <CardTitle className=\"flex items-center gap-2\">\n                <ShieldCheckIcon className=\"w-5 h-5\" />\n                Privacy & Security\n              </CardTitle>\n            </CardHeader>\n            <CardContent className=\"space-y-6\">\n              <div className=\"bg-green-50 border border-green-200 rounded-lg p-4\">\n                <div className=\"flex\">\n                  <div className=\"flex-shrink-0\">\n                    <ShieldCheckIcon className=\"h-5 w-5 text-green-400\" />\n                  </div>\n                  <div className=\"ml-3\">\n                    <h3 className=\"text-sm font-medium text-green-800\">\n                      Your Data is Protected\n                    </h3>\n                    <div className=\"mt-2 text-sm text-green-700\">\n                      <ul className=\"list-disc list-inside space-y-1\">\n                        <li>Bank-level encryption for all data transmission</li>\n                        <li>Minimal data collection - only what's needed for functionality</li>\n                        <li>No sharing of personal information with third parties</li>\n                        <li>Secure storage with automatic backups</li>\n                      </ul>\n                    </div>\n                  </div>\n                </div>\n              </div>\n\n              <div className=\"space-y-4\">\n                <div>\n                  <h4 className=\"text-sm font-medium text-gray-900 mb-2\">Data Retention</h4>\n                  <p className=\"text-sm text-gray-600 mb-3\">\n                    Your email data is processed for project monitoring and stored securely. \n                    You can request data export or deletion at any time.\n                  </p>\n                  <Button variant=\"outline\" size=\"sm\">Request Data Export</Button>\n                </div>\n              </div>\n            </CardContent>\n          </Card>\n\n          {/* Danger Zone */}\n          <Card className=\"border-red-200\">\n            <CardHeader>\n              <CardTitle className=\"flex items-center gap-2 text-red-700\">\n                <TrashIcon className=\"w-5 h-5\" />\n                Danger Zone\n              </CardTitle>\n            </CardHeader>\n            <CardContent className=\"space-y-4\">\n              <div className=\"bg-red-50 border border-red-200 rounded-lg p-4\">\n                <h4 className=\"text-sm font-medium text-red-800 mb-2\">Delete Account</h4>\n                <p className=\"text-sm text-red-700 mb-3\">\n                  Permanently delete your account and all associated data. This action cannot be undone.\n                </p>\n                <Button variant=\"outline\" size=\"sm\" className=\"text-red-700 border-red-300 hover:bg-red-50\">\n                  Delete Account\n                </Button>\n              </div>\n            </CardContent>\n          </Card>\n        </div>\n      </main>\n    </div>\n  );\n} "],
+      names: ["AccountPage", "data", "session", "useSession", "div", "className", "Navigation", "main", "h1", "p", "Card", "CardHeader", "CardTitle", "UserCircleIcon", "CardContent", "user", "image", "img", "src", "alt", "name", "h3", "email", "ShieldCheckIcon", "a", "href", "target", "rel", "KeyIcon", "svg", "viewBox", "path", "fill", "d", "ul", "li", "h4", "Button", "variant", "size", "TrashIcon"],
+      mappings: "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"
+    },
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "f6eeef997b00292f3cf7e57f026f1f3b73fe272f"
+  };
+  var coverage = global[gcv] || (global[gcv] = {});
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
+  }
+  var actualCoverage = coverage[path];
+  {
+    // @ts-ignore
+    cov_d19etdtw6 = function () {
+      return actualCoverage;
+    };
+  }
+  return actualCoverage;
+}
+cov_d19etdtw6();
+cov_d19etdtw6().s[0]++;
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+/* istanbul ignore next */
+cov_d19etdtw6().s[1]++;
+Object.defineProperty(exports, "default", {
+  enumerable: true,
+  get: function () {
+    /* istanbul ignore next */
+    cov_d19etdtw6().f[0]++;
+    cov_d19etdtw6().s[2]++;
+    return AccountPage;
+  }
+});
+const _jsxruntime =
+/* istanbul ignore next */
+(cov_d19etdtw6().s[3]++, require("react/jsx-runtime"));
+const _react =
+/* istanbul ignore next */
+(/*#__PURE__*/cov_d19etdtw6().s[4]++, _interop_require_default(require("react")));
+const _react1 =
+/* istanbul ignore next */
+(cov_d19etdtw6().s[5]++, require("next-auth/react"));
+const _Navigation =
+/* istanbul ignore next */
+(cov_d19etdtw6().s[6]++, require("../components/Navigation"));
+const _Card =
+/* istanbul ignore next */
+(cov_d19etdtw6().s[7]++, require("../components/ui/Card"));
+const _Button =
+/* istanbul ignore next */
+(cov_d19etdtw6().s[8]++, require("../components/ui/Button"));
+const _outline =
+/* istanbul ignore next */
+(cov_d19etdtw6().s[9]++, require("@heroicons/react/24/outline"));
+function _interop_require_default(obj) {
+  /* istanbul ignore next */
+  cov_d19etdtw6().f[1]++;
+  cov_d19etdtw6().s[10]++;
+  return /* istanbul ignore next */(cov_d19etdtw6().b[1][0]++, obj) &&
+  /* istanbul ignore next */
+  (cov_d19etdtw6().b[1][1]++, obj.__esModule) ?
+  /* istanbul ignore next */
+  (cov_d19etdtw6().b[0][0]++, obj) :
+  /* istanbul ignore next */
+  (cov_d19etdtw6().b[0][1]++, {
+    default: obj
+  });
+}
+function AccountPage() {
+  /* istanbul ignore next */
+  cov_d19etdtw6().f[2]++;
+  const {
+    data: session
+  } =
+  /* istanbul ignore next */
+  (cov_d19etdtw6().s[11]++, (0, _react1.useSession)());
+  /* istanbul ignore next */
+  cov_d19etdtw6().s[12]++;
+  return /*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+    className: "min-h-screen bg-gray-50",
+    children: [/*#__PURE__*/(0, _jsxruntime.jsx)(_Navigation.Navigation, {}), /*#__PURE__*/(0, _jsxruntime.jsxs)("main", {
+      className: "max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8",
+      children: [/*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+        className: "mb-8",
+        children: [/*#__PURE__*/(0, _jsxruntime.jsx)("h1", {
+          className: "text-3xl font-bold text-gray-900",
+          children: "Account Settings"
+        }), /*#__PURE__*/(0, _jsxruntime.jsx)("p", {
+          className: "text-gray-600 mt-1",
+          children: "Manage your personal account and security preferences"
+        })]
+      }), /*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+        className: "space-y-8",
+        children: [/*#__PURE__*/(0, _jsxruntime.jsxs)(_Card.Card, {
+          children: [/*#__PURE__*/(0, _jsxruntime.jsx)(_Card.CardHeader, {
+            children: /*#__PURE__*/(0, _jsxruntime.jsxs)(_Card.CardTitle, {
+              className: "flex items-center gap-2",
+              children: [/*#__PURE__*/(0, _jsxruntime.jsx)(_outline.UserCircleIcon, {
+                className: "w-5 h-5"
+              }), "Profile Information"]
+            })
+          }), /*#__PURE__*/(0, _jsxruntime.jsxs)(_Card.CardContent, {
+            className: "space-y-6",
+            children: [/*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+              className: "flex items-center gap-6",
+              children: [
+              /* istanbul ignore next */
+              (cov_d19etdtw6().b[2][0]++, session?.user?.image) &&
+              /* istanbul ignore next */
+              (cov_d19etdtw6().b[2][1]++, /*#__PURE__*/(0, _jsxruntime.jsx)("img", {
+                src: session.user.image,
+                alt:
+                /* istanbul ignore next */
+                (cov_d19etdtw6().b[3][0]++, session.user.name) ||
+                /* istanbul ignore next */
+                (cov_d19etdtw6().b[3][1]++, 'Profile'),
+                className: "w-20 h-20 rounded-full"
+              })), /*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+                className: "flex-1",
+                children: [/*#__PURE__*/(0, _jsxruntime.jsx)("h3", {
+                  className: "text-lg font-medium text-gray-900",
+                  children:
+                  /* istanbul ignore next */
+                  (cov_d19etdtw6().b[4][0]++, session?.user?.name) ||
+                  /* istanbul ignore next */
+                  (cov_d19etdtw6().b[4][1]++, 'User Name')
+                }), /*#__PURE__*/(0, _jsxruntime.jsx)("p", {
+                  className: "text-gray-600",
+                  children: session?.user?.email
+                }), /*#__PURE__*/(0, _jsxruntime.jsx)("p", {
+                  className: "text-sm text-gray-500 mt-1",
+                  children: "Profile managed through Google Account"
+                })]
+              })]
+            }), /*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+              className: "bg-blue-50 border border-blue-200 rounded-lg p-4",
+              children: /*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+                className: "flex",
+                children: [/*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+                  className: "flex-shrink-0",
+                  children: /*#__PURE__*/(0, _jsxruntime.jsx)(_outline.ShieldCheckIcon, {
+                    className: "h-5 w-5 text-blue-400"
+                  })
+                }), /*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+                  className: "ml-3",
+                  children: [/*#__PURE__*/(0, _jsxruntime.jsx)("h3", {
+                    className: "text-sm font-medium text-blue-800",
+                    children: "Google Account Integration"
+                  }), /*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+                    className: "mt-2 text-sm text-blue-700",
+                    children: /*#__PURE__*/(0, _jsxruntime.jsx)("p", {
+                      children: "Your profile information is synced with your Google account. To update your name or profile picture, please visit your Google Account settings."
+                    })
+                  }), /*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+                    className: "mt-3",
+                    children: /*#__PURE__*/(0, _jsxruntime.jsx)("a", {
+                      href: "https://myaccount.google.com/",
+                      target: "_blank",
+                      rel: "noopener noreferrer",
+                      className: "text-sm font-medium text-blue-800 hover:text-blue-900",
+                      children: "Manage Google Account →"
+                    })
+                  })]
+                })]
+              })
+            })]
+          })]
+        }), /*#__PURE__*/(0, _jsxruntime.jsxs)(_Card.Card, {
+          children: [/*#__PURE__*/(0, _jsxruntime.jsx)(_Card.CardHeader, {
+            children: /*#__PURE__*/(0, _jsxruntime.jsxs)(_Card.CardTitle, {
+              className: "flex items-center gap-2",
+              children: [/*#__PURE__*/(0, _jsxruntime.jsx)(_outline.KeyIcon, {
+                className: "w-5 h-5"
+              }), "Connected Services"]
+            })
+          }), /*#__PURE__*/(0, _jsxruntime.jsxs)(_Card.CardContent, {
+            className: "space-y-4",
+            children: [/*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+              className: "border border-gray-200 rounded-lg p-4",
+              children: /*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+                className: "flex items-center justify-between",
+                children: [/*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+                  className: "flex items-center gap-3",
+                  children: [/*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+                    className: "w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center",
+                    children: /*#__PURE__*/(0, _jsxruntime.jsxs)("svg", {
+                      className: "w-6 h-6 text-white",
+                      viewBox: "0 0 24 24",
+                      children: [/*#__PURE__*/(0, _jsxruntime.jsx)("path", {
+                        fill: "currentColor",
+                        d: "M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                      }), /*#__PURE__*/(0, _jsxruntime.jsx)("path", {
+                        fill: "currentColor",
+                        d: "M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                      }), /*#__PURE__*/(0, _jsxruntime.jsx)("path", {
+                        fill: "currentColor",
+                        d: "M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                      }), /*#__PURE__*/(0, _jsxruntime.jsx)("path", {
+                        fill: "currentColor",
+                        d: "M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                      })]
+                    })
+                  }), /*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+                    children: [/*#__PURE__*/(0, _jsxruntime.jsx)("p", {
+                      className: "text-sm font-medium text-gray-900",
+                      children: "Google Account"
+                    }), /*#__PURE__*/(0, _jsxruntime.jsx)("p", {
+                      className: "text-sm text-gray-600",
+                      children: session?.user?.email
+                    }), /*#__PURE__*/(0, _jsxruntime.jsx)("p", {
+                      className: "text-xs text-green-600",
+                      children: "✓ Connected & Active"
+                    })]
+                  })]
+                }), /*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+                  className: "text-sm text-gray-500",
+                  children: "Primary account"
+                })]
+              })
+            }), /*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+              className: "text-sm text-gray-600",
+              children: /*#__PURE__*/(0, _jsxruntime.jsx)("p", {
+                children: "NailIt uses your Google account for authentication and Gmail integration. Disconnecting would sign you out and disable email monitoring."
+              })
+            })]
+          })]
+        }), /*#__PURE__*/(0, _jsxruntime.jsxs)(_Card.Card, {
+          children: [/*#__PURE__*/(0, _jsxruntime.jsx)(_Card.CardHeader, {
+            children: /*#__PURE__*/(0, _jsxruntime.jsxs)(_Card.CardTitle, {
+              className: "flex items-center gap-2",
+              children: [/*#__PURE__*/(0, _jsxruntime.jsx)(_outline.ShieldCheckIcon, {
+                className: "w-5 h-5"
+              }), "Privacy & Security"]
+            })
+          }), /*#__PURE__*/(0, _jsxruntime.jsxs)(_Card.CardContent, {
+            className: "space-y-6",
+            children: [/*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+              className: "bg-green-50 border border-green-200 rounded-lg p-4",
+              children: /*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+                className: "flex",
+                children: [/*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+                  className: "flex-shrink-0",
+                  children: /*#__PURE__*/(0, _jsxruntime.jsx)(_outline.ShieldCheckIcon, {
+                    className: "h-5 w-5 text-green-400"
+                  })
+                }), /*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+                  className: "ml-3",
+                  children: [/*#__PURE__*/(0, _jsxruntime.jsx)("h3", {
+                    className: "text-sm font-medium text-green-800",
+                    children: "Your Data is Protected"
+                  }), /*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+                    className: "mt-2 text-sm text-green-700",
+                    children: /*#__PURE__*/(0, _jsxruntime.jsxs)("ul", {
+                      className: "list-disc list-inside space-y-1",
+                      children: [/*#__PURE__*/(0, _jsxruntime.jsx)("li", {
+                        children: "Bank-level encryption for all data transmission"
+                      }), /*#__PURE__*/(0, _jsxruntime.jsx)("li", {
+                        children: "Minimal data collection - only what's needed for functionality"
+                      }), /*#__PURE__*/(0, _jsxruntime.jsx)("li", {
+                        children: "No sharing of personal information with third parties"
+                      }), /*#__PURE__*/(0, _jsxruntime.jsx)("li", {
+                        children: "Secure storage with automatic backups"
+                      })]
+                    })
+                  })]
+                })]
+              })
+            }), /*#__PURE__*/(0, _jsxruntime.jsx)("div", {
+              className: "space-y-4",
+              children: /*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+                children: [/*#__PURE__*/(0, _jsxruntime.jsx)("h4", {
+                  className: "text-sm font-medium text-gray-900 mb-2",
+                  children: "Data Retention"
+                }), /*#__PURE__*/(0, _jsxruntime.jsx)("p", {
+                  className: "text-sm text-gray-600 mb-3",
+                  children: "Your email data is processed for project monitoring and stored securely. You can request data export or deletion at any time."
+                }), /*#__PURE__*/(0, _jsxruntime.jsx)(_Button.Button, {
+                  variant: "outline",
+                  size: "sm",
+                  children: "Request Data Export"
+                })]
+              })
+            })]
+          })]
+        }), /*#__PURE__*/(0, _jsxruntime.jsxs)(_Card.Card, {
+          className: "border-red-200",
+          children: [/*#__PURE__*/(0, _jsxruntime.jsx)(_Card.CardHeader, {
+            children: /*#__PURE__*/(0, _jsxruntime.jsxs)(_Card.CardTitle, {
+              className: "flex items-center gap-2 text-red-700",
+              children: [/*#__PURE__*/(0, _jsxruntime.jsx)(_outline.TrashIcon, {
+                className: "w-5 h-5"
+              }), "Danger Zone"]
+            })
+          }), /*#__PURE__*/(0, _jsxruntime.jsx)(_Card.CardContent, {
+            className: "space-y-4",
+            children: /*#__PURE__*/(0, _jsxruntime.jsxs)("div", {
+              className: "bg-red-50 border border-red-200 rounded-lg p-4",
+              children: [/*#__PURE__*/(0, _jsxruntime.jsx)("h4", {
+                className: "text-sm font-medium text-red-800 mb-2",
+                children: "Delete Account"
+              }), /*#__PURE__*/(0, _jsxruntime.jsx)("p", {
+                className: "text-sm text-red-700 mb-3",
+                children: "Permanently delete your account and all associated data. This action cannot be undone."
+              }), /*#__PURE__*/(0, _jsxruntime.jsx)(_Button.Button, {
+                variant: "outline",
+                size: "sm",
+                className: "text-red-700 border-red-300 hover:bg-red-50",
+                children: "Delete Account"
+              })]
+            })
+          })]
+        })]
+      })]
+    })]
+  });
+}
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJBY2NvdW50UGFnZSIsImNvdl9kMTlldGR0dzYiLCJmIiwiZGF0YSIsInNlc3Npb24iLCJzIiwiX3JlYWN0MSIsInVzZVNlc3Npb24iLCJfanN4cnVudGltZSIsImpzeHMiLCJjbGFzc05hbWUiLCJqc3giLCJfTmF2aWdhdGlvbiIsIk5hdmlnYXRpb24iLCJfQ2FyZCIsIkNhcmQiLCJDYXJkSGVhZGVyIiwiQ2FyZFRpdGxlIiwiX291dGxpbmUiLCJVc2VyQ2lyY2xlSWNvbiIsIkNhcmRDb250ZW50IiwiYiIsInVzZXIiLCJpbWFnZSIsInNyYyIsImFsdCIsIm5hbWUiLCJlbWFpbCIsIlNoaWVsZENoZWNrSWNvbiIsImhyZWYiLCJ0YXJnZXQiLCJyZWwiLCJLZXlJY29uIiwidmlld0JveCIsImZpbGwiLCJkIiwiX0J1dHRvbiIsIkJ1dHRvbiIsInZhcmlhbnQiLCJzaXplIiwiVHJhc2hJY29uIl0sInNvdXJjZXMiOlsiL1VzZXJzL2tlbm55Yy9jb2RlL3BlcnNvbmFsL25haWxpdC9hcHAvYWNjb3VudC9wYWdlLnRzeCJdLCJzb3VyY2VzQ29udGVudCI6WyIndXNlIGNsaWVudCc7XG5cbmltcG9ydCBSZWFjdCBmcm9tICdyZWFjdCc7XG5pbXBvcnQgeyB1c2VTZXNzaW9uIH0gZnJvbSAnbmV4dC1hdXRoL3JlYWN0JztcbmltcG9ydCB7IE5hdmlnYXRpb24gfSBmcm9tICcuLi9jb21wb25lbnRzL05hdmlnYXRpb24nO1xuaW1wb3J0IHsgQ2FyZCwgQ2FyZEhlYWRlciwgQ2FyZFRpdGxlLCBDYXJkQ29udGVudCB9IGZyb20gJy4uL2NvbXBvbmVudHMvdWkvQ2FyZCc7XG5pbXBvcnQgeyBCdXR0b24gfSBmcm9tICcuLi9jb21wb25lbnRzL3VpL0J1dHRvbic7XG5pbXBvcnQgeyBcbiAgVXNlckNpcmNsZUljb24sXG4gIFNoaWVsZENoZWNrSWNvbixcbiAgS2V5SWNvbixcbiAgVHJhc2hJY29uXG59IGZyb20gJ0BoZXJvaWNvbnMvcmVhY3QvMjQvb3V0bGluZSc7XG5cbmV4cG9ydCBkZWZhdWx0IGZ1bmN0aW9uIEFjY291bnRQYWdlKCkge1xuICBjb25zdCB7IGRhdGE6IHNlc3Npb24gfSA9IHVzZVNlc3Npb24oKTtcblxuICByZXR1cm4gKFxuICAgIDxkaXYgY2xhc3NOYW1lPVwibWluLWgtc2NyZWVuIGJnLWdyYXktNTBcIj5cbiAgICAgIDxOYXZpZ2F0aW9uIC8+XG4gICAgICBcbiAgICAgIDxtYWluIGNsYXNzTmFtZT1cIm1heC13LTR4bCBteC1hdXRvIHB4LTQgc206cHgtNiBsZzpweC04IHB5LThcIj5cbiAgICAgICAgey8qIEhlYWRlciAqL31cbiAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJtYi04XCI+XG4gICAgICAgICAgPGgxIGNsYXNzTmFtZT1cInRleHQtM3hsIGZvbnQtYm9sZCB0ZXh0LWdyYXktOTAwXCI+QWNjb3VudCBTZXR0aW5nczwvaDE+XG4gICAgICAgICAgPHAgY2xhc3NOYW1lPVwidGV4dC1ncmF5LTYwMCBtdC0xXCI+TWFuYWdlIHlvdXIgcGVyc29uYWwgYWNjb3VudCBhbmQgc2VjdXJpdHkgcHJlZmVyZW5jZXM8L3A+XG4gICAgICAgIDwvZGl2PlxuXG4gICAgICAgIDxkaXYgY2xhc3NOYW1lPVwic3BhY2UteS04XCI+XG4gICAgICAgICAgey8qIFByb2ZpbGUgSW5mb3JtYXRpb24gKi99XG4gICAgICAgICAgPENhcmQ+XG4gICAgICAgICAgICA8Q2FyZEhlYWRlcj5cbiAgICAgICAgICAgICAgPENhcmRUaXRsZSBjbGFzc05hbWU9XCJmbGV4IGl0ZW1zLWNlbnRlciBnYXAtMlwiPlxuICAgICAgICAgICAgICAgIDxVc2VyQ2lyY2xlSWNvbiBjbGFzc05hbWU9XCJ3LTUgaC01XCIgLz5cbiAgICAgICAgICAgICAgICBQcm9maWxlIEluZm9ybWF0aW9uXG4gICAgICAgICAgICAgIDwvQ2FyZFRpdGxlPlxuICAgICAgICAgICAgPC9DYXJkSGVhZGVyPlxuICAgICAgICAgICAgPENhcmRDb250ZW50IGNsYXNzTmFtZT1cInNwYWNlLXktNlwiPlxuICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImZsZXggaXRlbXMtY2VudGVyIGdhcC02XCI+XG4gICAgICAgICAgICAgICAge3Nlc3Npb24/LnVzZXI/LmltYWdlICYmIChcbiAgICAgICAgICAgICAgICAgIDxpbWcgXG4gICAgICAgICAgICAgICAgICAgIHNyYz17c2Vzc2lvbi51c2VyLmltYWdlfSBcbiAgICAgICAgICAgICAgICAgICAgYWx0PXtzZXNzaW9uLnVzZXIubmFtZSB8fCAnUHJvZmlsZSd9IFxuICAgICAgICAgICAgICAgICAgICBjbGFzc05hbWU9XCJ3LTIwIGgtMjAgcm91bmRlZC1mdWxsXCJcbiAgICAgICAgICAgICAgICAgIC8+XG4gICAgICAgICAgICAgICAgKX1cbiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImZsZXgtMVwiPlxuICAgICAgICAgICAgICAgICAgPGgzIGNsYXNzTmFtZT1cInRleHQtbGcgZm9udC1tZWRpdW0gdGV4dC1ncmF5LTkwMFwiPlxuICAgICAgICAgICAgICAgICAgICB7c2Vzc2lvbj8udXNlcj8ubmFtZSB8fCAnVXNlciBOYW1lJ31cbiAgICAgICAgICAgICAgICAgIDwvaDM+XG4gICAgICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9XCJ0ZXh0LWdyYXktNjAwXCI+e3Nlc3Npb24/LnVzZXI/LmVtYWlsfTwvcD5cbiAgICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT1cInRleHQtc20gdGV4dC1ncmF5LTUwMCBtdC0xXCI+XG4gICAgICAgICAgICAgICAgICAgIFByb2ZpbGUgbWFuYWdlZCB0aHJvdWdoIEdvb2dsZSBBY2NvdW50XG4gICAgICAgICAgICAgICAgICA8L3A+XG4gICAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgICBcbiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJiZy1ibHVlLTUwIGJvcmRlciBib3JkZXItYmx1ZS0yMDAgcm91bmRlZC1sZyBwLTRcIj5cbiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImZsZXhcIj5cbiAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiZmxleC1zaHJpbmstMFwiPlxuICAgICAgICAgICAgICAgICAgICA8U2hpZWxkQ2hlY2tJY29uIGNsYXNzTmFtZT1cImgtNSB3LTUgdGV4dC1ibHVlLTQwMFwiIC8+XG4gICAgICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwibWwtM1wiPlxuICAgICAgICAgICAgICAgICAgICA8aDMgY2xhc3NOYW1lPVwidGV4dC1zbSBmb250LW1lZGl1bSB0ZXh0LWJsdWUtODAwXCI+XG4gICAgICAgICAgICAgICAgICAgICAgR29vZ2xlIEFjY291bnQgSW50ZWdyYXRpb25cbiAgICAgICAgICAgICAgICAgICAgPC9oMz5cbiAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJtdC0yIHRleHQtc20gdGV4dC1ibHVlLTcwMFwiPlxuICAgICAgICAgICAgICAgICAgICAgIDxwPlxuICAgICAgICAgICAgICAgICAgICAgICAgWW91ciBwcm9maWxlIGluZm9ybWF0aW9uIGlzIHN5bmNlZCB3aXRoIHlvdXIgR29vZ2xlIGFjY291bnQuIFxuICAgICAgICAgICAgICAgICAgICAgICAgVG8gdXBkYXRlIHlvdXIgbmFtZSBvciBwcm9maWxlIHBpY3R1cmUsIHBsZWFzZSB2aXNpdCB5b3VyIEdvb2dsZSBBY2NvdW50IHNldHRpbmdzLlxuICAgICAgICAgICAgICAgICAgICAgIDwvcD5cbiAgICAgICAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwibXQtM1wiPlxuICAgICAgICAgICAgICAgICAgICAgIDxhIFxuICAgICAgICAgICAgICAgICAgICAgICAgaHJlZj1cImh0dHBzOi8vbXlhY2NvdW50Lmdvb2dsZS5jb20vXCIgXG4gICAgICAgICAgICAgICAgICAgICAgICB0YXJnZXQ9XCJfYmxhbmtcIiBcbiAgICAgICAgICAgICAgICAgICAgICAgIHJlbD1cIm5vb3BlbmVyIG5vcmVmZXJyZXJcIlxuICAgICAgICAgICAgICAgICAgICAgICAgY2xhc3NOYW1lPVwidGV4dC1zbSBmb250LW1lZGl1bSB0ZXh0LWJsdWUtODAwIGhvdmVyOnRleHQtYmx1ZS05MDBcIlxuICAgICAgICAgICAgICAgICAgICAgID5cbiAgICAgICAgICAgICAgICAgICAgICAgIE1hbmFnZSBHb29nbGUgQWNjb3VudCDihpJcbiAgICAgICAgICAgICAgICAgICAgICA8L2E+XG4gICAgICAgICAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgPC9DYXJkQ29udGVudD5cbiAgICAgICAgICA8L0NhcmQ+XG5cbiAgICAgICAgICB7LyogQ29ubmVjdGVkIFNlcnZpY2VzICovfVxuICAgICAgICAgIDxDYXJkPlxuICAgICAgICAgICAgPENhcmRIZWFkZXI+XG4gICAgICAgICAgICAgIDxDYXJkVGl0bGUgY2xhc3NOYW1lPVwiZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTJcIj5cbiAgICAgICAgICAgICAgICA8S2V5SWNvbiBjbGFzc05hbWU9XCJ3LTUgaC01XCIgLz5cbiAgICAgICAgICAgICAgICBDb25uZWN0ZWQgU2VydmljZXNcbiAgICAgICAgICAgICAgPC9DYXJkVGl0bGU+XG4gICAgICAgICAgICA8L0NhcmRIZWFkZXI+XG4gICAgICAgICAgICA8Q2FyZENvbnRlbnQgY2xhc3NOYW1lPVwic3BhY2UteS00XCI+XG4gICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiYm9yZGVyIGJvcmRlci1ncmF5LTIwMCByb3VuZGVkLWxnIHAtNFwiPlxuICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiZmxleCBpdGVtcy1jZW50ZXIganVzdGlmeS1iZXR3ZWVuXCI+XG4gICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cImZsZXggaXRlbXMtY2VudGVyIGdhcC0zXCI+XG4gICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwidy0xMCBoLTEwIGJnLXJlZC01MDAgcm91bmRlZC1sZyBmbGV4IGl0ZW1zLWNlbnRlciBqdXN0aWZ5LWNlbnRlclwiPlxuICAgICAgICAgICAgICAgICAgICAgIDxzdmcgY2xhc3NOYW1lPVwidy02IGgtNiB0ZXh0LXdoaXRlXCIgdmlld0JveD1cIjAgMCAyNCAyNFwiPlxuICAgICAgICAgICAgICAgICAgICAgICAgPHBhdGggZmlsbD1cImN1cnJlbnRDb2xvclwiIGQ9XCJNMjIuNTYgMTIuMjVjMC0uNzgtLjA3LTEuNTMtLjItMi4yNUgxMnY0LjI2aDUuOTJjLS4yNiAxLjM3LTEuMDQgMi41My0yLjIxIDMuMzF2Mi43N2gzLjU3YzIuMDgtMS45MiAzLjI4LTQuNzQgMy4yOC04LjA5elwiLz5cbiAgICAgICAgICAgICAgICAgICAgICAgIDxwYXRoIGZpbGw9XCJjdXJyZW50Q29sb3JcIiBkPVwiTTEyIDIzYzIuOTcgMCA1LjQ2LS45OCA3LjI4LTIuNjZsLTMuNTctMi43N2MtLjk4LjY2LTIuMjMgMS4wNi0zLjcxIDEuMDYtMi44NiAwLTUuMjktMS45My02LjE2LTQuNTNIMi4xOHYyLjg0QzMuOTkgMjAuNTMgNy43IDIzIDEyIDIzelwiLz5cbiAgICAgICAgICAgICAgICAgICAgICAgIDxwYXRoIGZpbGw9XCJjdXJyZW50Q29sb3JcIiBkPVwiTTUuODQgMTQuMDljLS4yMi0uNjYtLjM1LTEuMzYtLjM1LTIuMDlzLjEzLTEuNDMuMzUtMi4wOVY3LjA3SDIuMThDMS40MyA4LjU1IDEgMTAuMjIgMSAxMnMuNDMgMy40NSAxLjE4IDQuOTNsMi44NS0yLjIyLjgxLS42MnpcIi8+XG4gICAgICAgICAgICAgICAgICAgICAgICA8cGF0aCBmaWxsPVwiY3VycmVudENvbG9yXCIgZD1cIk0xMiA1LjM4YzEuNjIgMCAzLjA2LjU2IDQuMjEgMS42NGwzLjE1LTMuMTVDMTcuNDUgMi4wOSAxNC45NyAxIDEyIDEgNy43IDEgMy45OSAzLjQ3IDIuMTggNy4wN2wzLjY2IDIuODRjLjg3LTIuNiAzLjMtNC41MyA2LjE2LTQuNTN6XCIvPlxuICAgICAgICAgICAgICAgICAgICAgIDwvc3ZnPlxuICAgICAgICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgICAgICAgICAgPGRpdj5cbiAgICAgICAgICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9XCJ0ZXh0LXNtIGZvbnQtbWVkaXVtIHRleHQtZ3JheS05MDBcIj5Hb29nbGUgQWNjb3VudDwvcD5cbiAgICAgICAgICAgICAgICAgICAgICA8cCBjbGFzc05hbWU9XCJ0ZXh0LXNtIHRleHQtZ3JheS02MDBcIj57c2Vzc2lvbj8udXNlcj8uZW1haWx9PC9wPlxuICAgICAgICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT1cInRleHQteHMgdGV4dC1ncmVlbi02MDBcIj7inJMgQ29ubmVjdGVkICYgQWN0aXZlPC9wPlxuICAgICAgICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJ0ZXh0LXNtIHRleHQtZ3JheS01MDBcIj5cbiAgICAgICAgICAgICAgICAgICAgUHJpbWFyeSBhY2NvdW50XG4gICAgICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgIFxuICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT1cInRleHQtc20gdGV4dC1ncmF5LTYwMFwiPlxuICAgICAgICAgICAgICAgIDxwPk5haWxJdCB1c2VzIHlvdXIgR29vZ2xlIGFjY291bnQgZm9yIGF1dGhlbnRpY2F0aW9uIGFuZCBHbWFpbCBpbnRlZ3JhdGlvbi4gXG4gICAgICAgICAgICAgICAgRGlzY29ubmVjdGluZyB3b3VsZCBzaWduIHlvdSBvdXQgYW5kIGRpc2FibGUgZW1haWwgbW9uaXRvcmluZy48L3A+XG4gICAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgPC9DYXJkQ29udGVudD5cbiAgICAgICAgICA8L0NhcmQ+XG5cbiAgICAgICAgICB7LyogUHJpdmFjeSAmIFNlY3VyaXR5ICovfVxuICAgICAgICAgIDxDYXJkPlxuICAgICAgICAgICAgPENhcmRIZWFkZXI+XG4gICAgICAgICAgICAgIDxDYXJkVGl0bGUgY2xhc3NOYW1lPVwiZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTJcIj5cbiAgICAgICAgICAgICAgICA8U2hpZWxkQ2hlY2tJY29uIGNsYXNzTmFtZT1cInctNSBoLTVcIiAvPlxuICAgICAgICAgICAgICAgIFByaXZhY3kgJiBTZWN1cml0eVxuICAgICAgICAgICAgICA8L0NhcmRUaXRsZT5cbiAgICAgICAgICAgIDwvQ2FyZEhlYWRlcj5cbiAgICAgICAgICAgIDxDYXJkQ29udGVudCBjbGFzc05hbWU9XCJzcGFjZS15LTZcIj5cbiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJiZy1ncmVlbi01MCBib3JkZXIgYm9yZGVyLWdyZWVuLTIwMCByb3VuZGVkLWxnIHAtNFwiPlxuICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwiZmxleFwiPlxuICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJmbGV4LXNocmluay0wXCI+XG4gICAgICAgICAgICAgICAgICAgIDxTaGllbGRDaGVja0ljb24gY2xhc3NOYW1lPVwiaC01IHctNSB0ZXh0LWdyZWVuLTQwMFwiIC8+XG4gICAgICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwibWwtM1wiPlxuICAgICAgICAgICAgICAgICAgICA8aDMgY2xhc3NOYW1lPVwidGV4dC1zbSBmb250LW1lZGl1bSB0ZXh0LWdyZWVuLTgwMFwiPlxuICAgICAgICAgICAgICAgICAgICAgIFlvdXIgRGF0YSBpcyBQcm90ZWN0ZWRcbiAgICAgICAgICAgICAgICAgICAgPC9oMz5cbiAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJtdC0yIHRleHQtc20gdGV4dC1ncmVlbi03MDBcIj5cbiAgICAgICAgICAgICAgICAgICAgICA8dWwgY2xhc3NOYW1lPVwibGlzdC1kaXNjIGxpc3QtaW5zaWRlIHNwYWNlLXktMVwiPlxuICAgICAgICAgICAgICAgICAgICAgICAgPGxpPkJhbmstbGV2ZWwgZW5jcnlwdGlvbiBmb3IgYWxsIGRhdGEgdHJhbnNtaXNzaW9uPC9saT5cbiAgICAgICAgICAgICAgICAgICAgICAgIDxsaT5NaW5pbWFsIGRhdGEgY29sbGVjdGlvbiAtIG9ubHkgd2hhdCdzIG5lZWRlZCBmb3IgZnVuY3Rpb25hbGl0eTwvbGk+XG4gICAgICAgICAgICAgICAgICAgICAgICA8bGk+Tm8gc2hhcmluZyBvZiBwZXJzb25hbCBpbmZvcm1hdGlvbiB3aXRoIHRoaXJkIHBhcnRpZXM8L2xpPlxuICAgICAgICAgICAgICAgICAgICAgICAgPGxpPlNlY3VyZSBzdG9yYWdlIHdpdGggYXV0b21hdGljIGJhY2t1cHM8L2xpPlxuICAgICAgICAgICAgICAgICAgICAgIDwvdWw+XG4gICAgICAgICAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICAgIDwvZGl2PlxuXG4gICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPVwic3BhY2UteS00XCI+XG4gICAgICAgICAgICAgICAgPGRpdj5cbiAgICAgICAgICAgICAgICAgIDxoNCBjbGFzc05hbWU9XCJ0ZXh0LXNtIGZvbnQtbWVkaXVtIHRleHQtZ3JheS05MDAgbWItMlwiPkRhdGEgUmV0ZW50aW9uPC9oND5cbiAgICAgICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT1cInRleHQtc20gdGV4dC1ncmF5LTYwMCBtYi0zXCI+XG4gICAgICAgICAgICAgICAgICAgIFlvdXIgZW1haWwgZGF0YSBpcyBwcm9jZXNzZWQgZm9yIHByb2plY3QgbW9uaXRvcmluZyBhbmQgc3RvcmVkIHNlY3VyZWx5LiBcbiAgICAgICAgICAgICAgICAgICAgWW91IGNhbiByZXF1ZXN0IGRhdGEgZXhwb3J0IG9yIGRlbGV0aW9uIGF0IGFueSB0aW1lLlxuICAgICAgICAgICAgICAgICAgPC9wPlxuICAgICAgICAgICAgICAgICAgPEJ1dHRvbiB2YXJpYW50PVwib3V0bGluZVwiIHNpemU9XCJzbVwiPlJlcXVlc3QgRGF0YSBFeHBvcnQ8L0J1dHRvbj5cbiAgICAgICAgICAgICAgICA8L2Rpdj5cbiAgICAgICAgICAgICAgPC9kaXY+XG4gICAgICAgICAgICA8L0NhcmRDb250ZW50PlxuICAgICAgICAgIDwvQ2FyZD5cblxuICAgICAgICAgIHsvKiBEYW5nZXIgWm9uZSAqL31cbiAgICAgICAgICA8Q2FyZCBjbGFzc05hbWU9XCJib3JkZXItcmVkLTIwMFwiPlxuICAgICAgICAgICAgPENhcmRIZWFkZXI+XG4gICAgICAgICAgICAgIDxDYXJkVGl0bGUgY2xhc3NOYW1lPVwiZmxleCBpdGVtcy1jZW50ZXIgZ2FwLTIgdGV4dC1yZWQtNzAwXCI+XG4gICAgICAgICAgICAgICAgPFRyYXNoSWNvbiBjbGFzc05hbWU9XCJ3LTUgaC01XCIgLz5cbiAgICAgICAgICAgICAgICBEYW5nZXIgWm9uZVxuICAgICAgICAgICAgICA8L0NhcmRUaXRsZT5cbiAgICAgICAgICAgIDwvQ2FyZEhlYWRlcj5cbiAgICAgICAgICAgIDxDYXJkQ29udGVudCBjbGFzc05hbWU9XCJzcGFjZS15LTRcIj5cbiAgICAgICAgICAgICAgPGRpdiBjbGFzc05hbWU9XCJiZy1yZWQtNTAgYm9yZGVyIGJvcmRlci1yZWQtMjAwIHJvdW5kZWQtbGcgcC00XCI+XG4gICAgICAgICAgICAgICAgPGg0IGNsYXNzTmFtZT1cInRleHQtc20gZm9udC1tZWRpdW0gdGV4dC1yZWQtODAwIG1iLTJcIj5EZWxldGUgQWNjb3VudDwvaDQ+XG4gICAgICAgICAgICAgICAgPHAgY2xhc3NOYW1lPVwidGV4dC1zbSB0ZXh0LXJlZC03MDAgbWItM1wiPlxuICAgICAgICAgICAgICAgICAgUGVybWFuZW50bHkgZGVsZXRlIHlvdXIgYWNjb3VudCBhbmQgYWxsIGFzc29jaWF0ZWQgZGF0YS4gVGhpcyBhY3Rpb24gY2Fubm90IGJlIHVuZG9uZS5cbiAgICAgICAgICAgICAgICA8L3A+XG4gICAgICAgICAgICAgICAgPEJ1dHRvbiB2YXJpYW50PVwib3V0bGluZVwiIHNpemU9XCJzbVwiIGNsYXNzTmFtZT1cInRleHQtcmVkLTcwMCBib3JkZXItcmVkLTMwMCBob3ZlcjpiZy1yZWQtNTBcIj5cbiAgICAgICAgICAgICAgICAgIERlbGV0ZSBBY2NvdW50XG4gICAgICAgICAgICAgICAgPC9CdXR0b24+XG4gICAgICAgICAgICAgIDwvZGl2PlxuICAgICAgICAgICAgPC9DYXJkQ29udGVudD5cbiAgICAgICAgICA8L0NhcmQ+XG4gICAgICAgIDwvZGl2PlxuICAgICAgPC9tYWluPlxuICAgIDwvZGl2PlxuICApO1xufSAiXSwibWFwcGluZ3MiOiJBQUFBOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7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

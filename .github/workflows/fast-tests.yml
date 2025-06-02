@@ -1,0 +1,57 @@
+name: 🚀 Fast Tests (Stage 1)
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  fast-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+    - name: 📦 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 🏗️ Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+
+    - name: 📥 Install dependencies
+      run: npm ci
+
+    - name: 🔍 Type checking
+      run: npm run type-check
+
+    - name: 🧹 Lint code
+      run: npm run lint:check
+
+    - name: ⚡ Run fast tests
+      run: npm run test:ci:fast
+
+    - name: 📊 Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: fast-test-results-${{ matrix.node-version }}
+        path: |
+          coverage/
+          test-results/
+
+  security-check:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 📦 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 🔒 Run security audit
+      run: npm audit --audit-level=moderate
+
+    - name: 🔍 Check for vulnerabilities
+      run: npm audit --audit-level=high --production 
