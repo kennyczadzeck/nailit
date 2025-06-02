@@ -72,7 +72,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [detect-environment]
     if: needs.detect-environment.outputs.environment != 'feature'
-    environment: ${{ needs.detect-environment.outputs.environment }}
+    environment: ${{ github.event_name == 'push' && needs.detect-environment.outputs.environment || null }}
     steps:
       - uses: actions/checkout@v4
       
@@ -87,21 +87,26 @@ jobs:
         
       - name: Validate Prisma Schema
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DATABASE_MIGRATION_URL: ${{ secrets.DATABASE_MIGRATION_URL }}
+          DATABASE_URL: ${{ github.event_name == 'push' && secrets.DATABASE_URL || 'postgresql://placeholder:placeholder@localhost:5432/placeholder_db' }}
+          DATABASE_MIGRATION_URL: ${{ github.event_name == 'push' && secrets.DATABASE_MIGRATION_URL || 'postgresql://placeholder:placeholder@localhost:5432/placeholder_db' }}
         run: npx prisma validate
         
       - name: Generate Prisma Client
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DATABASE_MIGRATION_URL: ${{ secrets.DATABASE_MIGRATION_URL }}
+          DATABASE_URL: ${{ github.event_name == 'push' && secrets.DATABASE_URL || 'postgresql://placeholder:placeholder@localhost:5432/placeholder_db' }}
+          DATABASE_MIGRATION_URL: ${{ github.event_name == 'push' && secrets.DATABASE_MIGRATION_URL || 'postgresql://placeholder:placeholder@localhost:5432/placeholder_db' }}
         run: npx prisma generate
         
       - name: Test Database Connection
+        if: github.event_name == 'push'
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           DATABASE_MIGRATION_URL: ${{ secrets.DATABASE_MIGRATION_URL }}
         run: echo "SELECT 1;" | npx prisma db execute --stdin --schema prisma/schema.prisma
+        
+      - name: Skip Database Connection Test (PR)
+        if: github.event_name == 'pull_request'
+        run: echo "⏭️ Skipping database connectivity test for pull request (security)"
 
   deployment-ready:
     runs-on: ubuntu-latest
