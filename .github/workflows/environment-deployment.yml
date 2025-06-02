@@ -77,9 +77,13 @@ jobs:
         run: npm ci --legacy-peer-deps
         
       - name: Validate Prisma Schema
+        env:
+          DATABASE_MIGRATION_URL: postgresql://placeholder:placeholder@localhost:5432/placeholder_db
         run: npx prisma validate
         
       - name: Generate Prisma Client
+        env:
+          DATABASE_MIGRATION_URL: postgresql://placeholder:placeholder@localhost:5432/placeholder_db
         run: npx prisma generate
         
       # TODO: Add database connectivity test when env vars are available
