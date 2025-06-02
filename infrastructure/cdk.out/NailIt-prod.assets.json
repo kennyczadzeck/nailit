@@ -1,0 +1,20 @@
+{
+  "version": "31.0.0",
+  "files": {
+    "ae1058231ceb8ed776eb79c6bf1dd9bdf0956f37cae961980dfdf081917a0587": {
+      "source": {
+        "path": "NailIt-prod.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "207091906248-us-east-1": {
+          "bucketName": "cdk-hnb659fds-assets-207091906248-us-east-1",
+          "objectKey": "ae1058231ceb8ed776eb79c6bf1dd9bdf0956f37cae961980dfdf081917a0587.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-file-publishing-role-207091906248-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}

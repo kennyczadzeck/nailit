@@ -1,0 +1,580 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "NailIt-prod": {
+        "id": "NailIt-prod",
+        "path": "NailIt-prod",
+        "children": {
+          "EmailStorageBucket": {
+            "id": "EmailStorageBucket",
+            "path": "NailIt-prod/EmailStorageBucket",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "NailIt-prod/EmailStorageBucket/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
+                  "aws:cdk:cloudformation:props": {
+                    "bucketName": "nailit-prod-emails-207091906248",
+                    "lifecycleConfiguration": {
+                      "rules": [
+                        {
+                          "id": "DeleteOldVersions",
+                          "noncurrentVersionExpiration": {
+                            "noncurrentDays": 30
+                          },
+                          "status": "Enabled"
+                        },
+                        {
+                          "id": "TransitionToIA",
+                          "status": "Enabled",
+                          "transitions": [
+                            {
+                              "storageClass": "STANDARD_IA",
+                              "transitionInDays": 30
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    "tags": [
+                      {
+                        "key": "DatabaseProvider",
+                        "value": "Neon"
+                      },
+                      {
+                        "key": "Environment",
+                        "value": "production"
+                      },
+                      {
+                        "key": "HostingProvider",
+                        "value": "Amplify"
+                      },
+                      {
+                        "key": "ManagedBy",
+                        "value": "CDK"
+                      },
+                      {
+                        "key": "Project",
+                        "value": "NailIt"
+                      }
+                    ],
+                    "versioningConfiguration": {
+                      "status": "Enabled"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3.CfnBucket",
+                  "version": "2.80.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_s3.Bucket",
+              "version": "2.80.0"
+            }
+          },
+          "EmailProcessingDLQ": {
+            "id": "EmailProcessingDLQ",
+            "path": "NailIt-prod/EmailProcessingDLQ",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "NailIt-prod/EmailProcessingDLQ/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::SQS::Queue",
+                  "aws:cdk:cloudformation:props": {
+                    "messageRetentionPeriod": 1209600,
+                    "queueName": "nailit-prod-email-dlq",
+                    "tags": [
+                      {
+                        "key": "DatabaseProvider",
+                        "value": "Neon"
+                      },
+                      {
+                        "key": "Environment",
+                        "value": "production"
+                      },
+                      {
+                        "key": "HostingProvider",
+                        "value": "Amplify"
+                      },
+                      {
+                        "key": "ManagedBy",
+                        "value": "CDK"
+                      },
+                      {
+                        "key": "Project",
+                        "value": "NailIt"
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_sqs.CfnQueue",
+                  "version": "2.80.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_sqs.Queue",
+              "version": "2.80.0"
+            }
+          },
+          "EmailProcessingQueue": {
+            "id": "EmailProcessingQueue",
+            "path": "NailIt-prod/EmailProcessingQueue",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "NailIt-prod/EmailProcessingQueue/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::SQS::Queue",
+                  "aws:cdk:cloudformation:props": {
+                    "messageRetentionPeriod": 1209600,
+                    "queueName": "nailit-prod-email-queue",
+                    "redrivePolicy": {
+                      "deadLetterTargetArn": {
+                        "Fn::GetAtt": [
+                          "EmailProcessingDLQ47CD13DA",
+                          "Arn"
+                        ]
+                      },
+                      "maxReceiveCount": 3
+                    },
+                    "tags": [
+                      {
+                        "key": "DatabaseProvider",
+                        "value": "Neon"
+                      },
+                      {
+                        "key": "Environment",
+                        "value": "production"
+                      },
+                      {
+                        "key": "HostingProvider",
+                        "value": "Amplify"
+                      },
+                      {
+                        "key": "ManagedBy",
+                        "value": "CDK"
+                      },
+                      {
+                        "key": "Project",
+                        "value": "NailIt"
+                      }
+                    ],
+                    "visibilityTimeout": 300
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_sqs.CfnQueue",
+                  "version": "2.80.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_sqs.Queue",
+              "version": "2.80.0"
+            }
+          },
+          "AIProcessingDLQ": {
+            "id": "AIProcessingDLQ",
+            "path": "NailIt-prod/AIProcessingDLQ",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "NailIt-prod/AIProcessingDLQ/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::SQS::Queue",
+                  "aws:cdk:cloudformation:props": {
+                    "messageRetentionPeriod": 1209600,
+                    "queueName": "nailit-prod-ai-dlq",
+                    "tags": [
+                      {
+                        "key": "DatabaseProvider",
+                        "value": "Neon"
+                      },
+                      {
+                        "key": "Environment",
+                        "value": "production"
+                      },
+                      {
+                        "key": "HostingProvider",
+                        "value": "Amplify"
+                      },
+                      {
+                        "key": "ManagedBy",
+                        "value": "CDK"
+                      },
+                      {
+                        "key": "Project",
+                        "value": "NailIt"
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_sqs.CfnQueue",
+                  "version": "2.80.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_sqs.Queue",
+              "version": "2.80.0"
+            }
+          },
+          "AIProcessingQueue": {
+            "id": "AIProcessingQueue",
+            "path": "NailIt-prod/AIProcessingQueue",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "NailIt-prod/AIProcessingQueue/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::SQS::Queue",
+                  "aws:cdk:cloudformation:props": {
+                    "messageRetentionPeriod": 1209600,
+                    "queueName": "nailit-prod-ai-queue",
+                    "redrivePolicy": {
+                      "deadLetterTargetArn": {
+                        "Fn::GetAtt": [
+                          "AIProcessingDLQCB23727F",
+                          "Arn"
+                        ]
+                      },
+                      "maxReceiveCount": 3
+                    },
+                    "tags": [
+                      {
+                        "key": "DatabaseProvider",
+                        "value": "Neon"
+                      },
+                      {
+                        "key": "Environment",
+                        "value": "production"
+                      },
+                      {
+                        "key": "HostingProvider",
+                        "value": "Amplify"
+                      },
+                      {
+                        "key": "ManagedBy",
+                        "value": "CDK"
+                      },
+                      {
+                        "key": "Project",
+                        "value": "NailIt"
+                      }
+                    ],
+                    "visibilityTimeout": 600
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_sqs.CfnQueue",
+                  "version": "2.80.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_sqs.Queue",
+              "version": "2.80.0"
+            }
+          },
+          "NotificationTopic": {
+            "id": "NotificationTopic",
+            "path": "NailIt-prod/NotificationTopic",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "NailIt-prod/NotificationTopic/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::SNS::Topic",
+                  "aws:cdk:cloudformation:props": {
+                    "displayName": "NailIt production Notifications",
+                    "tags": [
+                      {
+                        "key": "DatabaseProvider",
+                        "value": "Neon"
+                      },
+                      {
+                        "key": "Environment",
+                        "value": "production"
+                      },
+                      {
+                        "key": "HostingProvider",
+                        "value": "Amplify"
+                      },
+                      {
+                        "key": "ManagedBy",
+                        "value": "CDK"
+                      },
+                      {
+                        "key": "Project",
+                        "value": "NailIt"
+                      }
+                    ],
+                    "topicName": "nailit-prod-notifications"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_sns.CfnTopic",
+                  "version": "2.80.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_sns.Topic",
+              "version": "2.80.0"
+            }
+          },
+          "LambdaExecutionRole": {
+            "id": "LambdaExecutionRole",
+            "path": "NailIt-prod/LambdaExecutionRole",
+            "children": {
+              "ImportLambdaExecutionRole": {
+                "id": "ImportLambdaExecutionRole",
+                "path": "NailIt-prod/LambdaExecutionRole/ImportLambdaExecutionRole",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.Resource",
+                  "version": "2.80.0"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "NailIt-prod/LambdaExecutionRole/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                  "aws:cdk:cloudformation:props": {
+                    "assumeRolePolicyDocument": {
+                      "Statement": [
+                        {
+                          "Action": "sts:AssumeRole",
+                          "Effect": "Allow",
+                          "Principal": {
+                            "Service": "lambda.amazonaws.com"
+                          }
+                        }
+                      ],
+                      "Version": "2012-10-17"
+                    },
+                    "managedPolicyArns": [
+                      {
+                        "Fn::Join": [
+                          "",
+                          [
+                            "arn:",
+                            {
+                              "Ref": "AWS::Partition"
+                            },
+                            ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                          ]
+                        ]
+                      }
+                    ],
+                    "policies": [
+                      {
+                        "policyName": "NailItServiceAccess",
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": [
+                                "s3:GetObject",
+                                "s3:PutObject",
+                                "s3:DeleteObject"
+                              ],
+                              "Effect": "Allow",
+                              "Resource": [
+                                {
+                                  "Fn::GetAtt": [
+                                    "EmailStorageBucket61C70CE5",
+                                    "Arn"
+                                  ]
+                                },
+                                {
+                                  "Fn::Join": [
+                                    "",
+                                    [
+                                      {
+                                        "Fn::GetAtt": [
+                                          "EmailStorageBucket61C70CE5",
+                                          "Arn"
+                                        ]
+                                      },
+                                      "/*"
+                                    ]
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "Action": [
+                                "sqs:SendMessage",
+                                "sqs:ReceiveMessage",
+                                "sqs:DeleteMessage",
+                                "sqs:GetQueueAttributes"
+                              ],
+                              "Effect": "Allow",
+                              "Resource": [
+                                {
+                                  "Fn::GetAtt": [
+                                    "EmailProcessingQueue467E1B82",
+                                    "Arn"
+                                  ]
+                                },
+                                {
+                                  "Fn::GetAtt": [
+                                    "AIProcessingQueue59FC2ECB",
+                                    "Arn"
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "Action": "sns:Publish",
+                              "Effect": "Allow",
+                              "Resource": {
+                                "Ref": "NotificationTopicEB7A0DF1"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        }
+                      }
+                    ],
+                    "roleName": "nailit-prod-lambda-execution",
+                    "tags": [
+                      {
+                        "key": "DatabaseProvider",
+                        "value": "Neon"
+                      },
+                      {
+                        "key": "Environment",
+                        "value": "production"
+                      },
+                      {
+                        "key": "HostingProvider",
+                        "value": "Amplify"
+                      },
+                      {
+                        "key": "ManagedBy",
+                        "value": "CDK"
+                      },
+                      {
+                        "key": "Project",
+                        "value": "NailIt"
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                  "version": "2.80.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_iam.Role",
+              "version": "2.80.0"
+            }
+          },
+          "EmailBucketName": {
+            "id": "EmailBucketName",
+            "path": "NailIt-prod/EmailBucketName",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.80.0"
+            }
+          },
+          "EmailQueueUrl": {
+            "id": "EmailQueueUrl",
+            "path": "NailIt-prod/EmailQueueUrl",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.80.0"
+            }
+          },
+          "AIQueueUrl": {
+            "id": "AIQueueUrl",
+            "path": "NailIt-prod/AIQueueUrl",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.80.0"
+            }
+          },
+          "NotificationTopicArn": {
+            "id": "NotificationTopicArn",
+            "path": "NailIt-prod/NotificationTopicArn",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.80.0"
+            }
+          },
+          "LambdaExecutionRoleArn": {
+            "id": "LambdaExecutionRoleArn",
+            "path": "NailIt-prod/LambdaExecutionRoleArn",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.80.0"
+            }
+          },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "NailIt-prod/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "NailIt-prod/CDKMetadata/Default",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.80.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.4.2"
+            }
+          },
+          "BootstrapVersion": {
+            "id": "BootstrapVersion",
+            "path": "NailIt-prod/BootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnParameter",
+              "version": "2.80.0"
+            }
+          },
+          "CheckBootstrapVersion": {
+            "id": "CheckBootstrapVersion",
+            "path": "NailIt-prod/CheckBootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnRule",
+              "version": "2.80.0"
+            }
+          }
+        },
+        "constructInfo": {
+          "fqn": "aws-cdk-lib.Stack",
+          "version": "2.80.0"
+        }
+      },
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree",
+        "constructInfo": {
+          "fqn": "constructs.Construct",
+          "version": "10.4.2"
+        }
+      }
+    },
+    "constructInfo": {
+      "fqn": "aws-cdk-lib.App",
+      "version": "2.80.0"
+    }
+  }
+}

@@ -1,0 +1,170 @@
+{
+  "version": "31.0.0",
+  "artifacts": {
+    "NailIt-prod.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "NailIt-prod.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "NailIt-prod": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://207091906248/us-east-1",
+      "properties": {
+        "templateFile": "NailIt-prod.template.json",
+        "tags": {
+          "DatabaseProvider": "Neon",
+          "Environment": "production",
+          "HostingProvider": "Amplify",
+          "ManagedBy": "CDK",
+          "Project": "NailIt"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-deploy-role-207091906248-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-cfn-exec-role-207091906248-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/ae1058231ceb8ed776eb79c6bf1dd9bdf0956f37cae961980dfdf081917a0587.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "NailIt-prod.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-lookup-role-207091906248-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "NailIt-prod.assets"
+      ],
+      "metadata": {
+        "/NailIt-prod": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "DatabaseProvider",
+                "Value": "Neon"
+              },
+              {
+                "Key": "Environment",
+                "Value": "production"
+              },
+              {
+                "Key": "HostingProvider",
+                "Value": "Amplify"
+              },
+              {
+                "Key": "ManagedBy",
+                "Value": "CDK"
+              },
+              {
+                "Key": "Project",
+                "Value": "NailIt"
+              }
+            ]
+          }
+        ],
+        "/NailIt-prod/EmailStorageBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EmailStorageBucket61C70CE5"
+          }
+        ],
+        "/NailIt-prod/EmailProcessingDLQ/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EmailProcessingDLQ47CD13DA"
+          }
+        ],
+        "/NailIt-prod/EmailProcessingQueue/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EmailProcessingQueue467E1B82"
+          }
+        ],
+        "/NailIt-prod/AIProcessingDLQ/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AIProcessingDLQCB23727F"
+          }
+        ],
+        "/NailIt-prod/AIProcessingQueue/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AIProcessingQueue59FC2ECB"
+          }
+        ],
+        "/NailIt-prod/NotificationTopic/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NotificationTopicEB7A0DF1"
+          }
+        ],
+        "/NailIt-prod/LambdaExecutionRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaExecutionRoleD5C26073"
+          }
+        ],
+        "/NailIt-prod/EmailBucketName": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EmailBucketName"
+          }
+        ],
+        "/NailIt-prod/EmailQueueUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EmailQueueUrl"
+          }
+        ],
+        "/NailIt-prod/AIQueueUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AIQueueUrl"
+          }
+        ],
+        "/NailIt-prod/NotificationTopicArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NotificationTopicArn"
+          }
+        ],
+        "/NailIt-prod/LambdaExecutionRoleArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaExecutionRoleArn"
+          }
+        ],
+        "/NailIt-prod/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/NailIt-prod/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/NailIt-prod/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "NailIt-prod"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}
