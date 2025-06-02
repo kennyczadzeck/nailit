@@ -2,9 +2,9 @@ name: 🔄 Integration Tests (Stage 2)
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, develop, feature/** ]
   pull_request:
-    branches: [ main, develop ]
+    branches: [ main, develop, feature/** ]
 
 jobs:
   integration-tests:
@@ -41,6 +41,7 @@ jobs:
     - name: 🗄️ Setup test database
       env:
         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/nailit_test
+        DATABASE_MIGRATION_URL: postgresql://postgres:postgres@localhost:5432/nailit_test
       run: |
         npx prisma db push --force-reset
         npm run db:seed
@@ -48,6 +49,7 @@ jobs:
     - name: 🔗 Run integration tests
       env:
         DATABASE_URL: postgresql://postgres:postgres@localhost:5432/nailit_test
+        DATABASE_MIGRATION_URL: postgresql://postgres:postgres@localhost:5432/nailit_test
         NEXTAUTH_SECRET: test-secret
         NEXTAUTH_URL: http://localhost:3000
       run: npm run test:ci:integration
