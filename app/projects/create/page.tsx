@@ -499,7 +499,7 @@ export default function CreateProject() {
           <ul className="text-xs sm:text-sm text-blue-700 space-y-1">
             <li>• NailIt will automatically monitor emails from all team members</li>
             <li>• AI will scan for important changes in pricing, scope, and schedule</li>
-            <li>• You'll receive alerts when significant changes are detected</li>
+            <li>• You&apos;ll receive alerts when significant changes are detected</li>
             <li>• All project communications will be tracked in your timeline</li>
           </ul>
         </div>

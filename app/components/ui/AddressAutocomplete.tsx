@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 declare global {
   interface Window {
-    google: any;
+    google: Record<string, any>;
     initGoogleMaps: () => void;
     googleMapsLoading: boolean;
     googleMapsCallbacks: (() => void)[];
@@ -40,7 +40,7 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   apiKey
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const autocompleteRef = useRef<any>(null);
+  const autocompleteRef = useRef<Record<string, any> | null>(null);
   const [isGoogleMapsLoaded, setIsGoogleMapsLoaded] = useState(false);
   const [lastSelectedAddress, setLastSelectedAddress] = useState('');
 
@@ -151,11 +151,11 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   }, [isGoogleMapsLoaded, onChange]);
 
   // Parse Google Places address components
-  const parseAddressComponents = (place: any): AddressData => {
+  const parseAddressComponents = (place: Record<string, any>): AddressData => {
     const components = place.address_components || [];
     
     const getComponent = (types: string[]) => {
-      const component = components.find((comp: any) => 
+      const component = components.find((comp: Record<string, any>) => 
         comp.types.some((type: string) => types.includes(type))
       );
       return component?.long_name || '';

@@ -69,9 +69,9 @@ export default function FlaggedItemsPage() {
       
       const items = await response.json();
       setFlaggedItems(items);
-    } catch (err) {
-      console.error('Error fetching flagged items:', err);
-      setError('Failed to load flagged items');
+    } catch (error: unknown) {
+      console.error('Error fetching flagged items:', error)
+      setError(error instanceof Error ? error.message : 'Failed to fetch flagged items')
     } finally {
       setLoading(false);
     }
