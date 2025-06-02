@@ -65,8 +65,8 @@ describe('Projects API Integration Tests', () => {
       
       // Set up database with user's projects
       const userProjects = projectScenarios.userWithProjects.projects
-      mockPrisma.project.count.mockResolvedValue(userProjects.length)
-      mockPrisma.project.findMany.mockResolvedValue(userProjects)
+      ;(mockPrisma.project.count as jest.Mock).mockResolvedValue(userProjects.length)
+      ;(mockPrisma.project.findMany as jest.Mock).mockResolvedValue(userProjects)
 
       // When: I make a GET request to "/api/projects"
       const response = await GET()
@@ -100,8 +100,8 @@ describe('Projects API Integration Tests', () => {
     test('Given I am authenticated, When projects are fetched, Then correct database query is made', async () => {
       // Given: I am authenticated as a user (using centralized fixtures)
       mockGetServerSession.mockResolvedValue({ user: testUsers.john } as any)
-      mockPrisma.project.count.mockResolvedValue(1)
-      mockPrisma.project.findMany.mockResolvedValue([testProjects.kitchenReno])
+      ;(mockPrisma.project.count as jest.Mock).mockResolvedValue(1)
+      ;(mockPrisma.project.findMany as jest.Mock).mockResolvedValue([testProjects.kitchenReno])
 
       // When: projects are fetched
       await GET()
@@ -154,8 +154,8 @@ describe('Projects API Integration Tests', () => {
     test('Given I am authenticated but have no projects, When I make GET request, Then I receive empty array', async () => {
       // Given: I am authenticated but have no projects (using centralized fixtures)
       mockGetServerSession.mockResolvedValue({ user: testUsers.jane } as any)
-      mockPrisma.project.count.mockResolvedValue(0)
-      mockPrisma.project.findMany.mockResolvedValue([])
+      ;(mockPrisma.project.count as jest.Mock).mockResolvedValue(0)
+      ;(mockPrisma.project.findMany as jest.Mock).mockResolvedValue([])
 
       // When: I make a GET request to "/api/projects"
       const response = await GET()
@@ -176,7 +176,7 @@ describe('Projects API Integration Tests', () => {
     test('Given I am authenticated, When database fails, Then I receive 500 with error message', async () => {
       // Given: I am authenticated but database encounters an error (using centralized fixtures)
       mockGetServerSession.mockResolvedValue({ user: testUsers.john } as any)
-      mockPrisma.project.count.mockRejectedValue(new Error('Database connection failed'))
+      ;(mockPrisma.project.count as jest.Mock).mockRejectedValue(new Error('Database connection failed'))
 
       // When: I make a GET request to "/api/projects"
       const response = await GET()

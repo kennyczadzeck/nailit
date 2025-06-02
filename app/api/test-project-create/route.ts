@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
       console.error('JSON parse error:', parseError);
       return NextResponse.json({ 
         error: 'Invalid JSON in request body',
-        parseError: parseError.message
+        parseError: (parseError as Error).message
       }, { status: 400 });
     }
 

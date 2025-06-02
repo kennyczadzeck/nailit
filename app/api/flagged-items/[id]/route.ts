@@ -17,31 +17,47 @@ export async function PATCH(
       const updatedItem = await prisma.flaggedItem.update({
         where: { id: itemId },
         data: {
-          category: category as 'cost' | 'schedule' | 'scope',
+          category: category.toUpperCase() as 'COST' | 'SCHEDULE' | 'SCOPE',
           aiConfidence: 1.0, // User-corrected classification gets full confidence
-          status: 'confirmed'
+          status: 'CONFIRMED'
         }
       })
 
       // Log the ML feedback
       await prisma.mLFeedback.create({
         data: {
-          flaggedItemId: itemId,
-          feedback: 'reclassified',
-          originalCategory: updatedItem.category,
-          correctedCategory: category as 'cost' | 'schedule' | 'scope',
-          confidence: 1.0
+          feedbackType: 'RECLASSIFY',
+          userAction: 'reclassified',
+          correctCategory: category.toUpperCase() as 'COST' | 'SCHEDULE' | 'SCOPE',
+          confidence: 1.0,
+          projectId: updatedItem.projectId
         }
       })
+
+      // Create timeline entry for confirmed item
+      if (category && updatedItem.impact) {
+        await prisma.timelineEntry.create({
+          data: {
+            title: `Confirmed: ${updatedItem.title}`,
+            description: updatedItem.description,
+            category: category.toUpperCase() as 'COST' | 'SCHEDULE' | 'SCOPE',
+            date: new Date(),
+            impact: updatedItem.impact,
+            projectId: updatedItem.projectId,
+            flaggedItemId: itemId,
+            verified: true
+          }
+        })
+      }
 
       return NextResponse.json(updatedItem)
     }
 
     // Handle other actions (confirm, ignore, email_sent)
-    const statusMap: Record<string, 'pending' | 'confirmed' | 'ignored' | 'email_sent'> = {
-      confirm: 'confirmed',
-      ignore: 'ignored',
-      email_sent: 'email_sent'
+    const statusMap: Record<string, 'PENDING' | 'CONFIRMED' | 'IGNORED' | 'EMAIL_SENT'> = {
+      confirm: 'CONFIRMED',
+      ignore: 'IGNORED',
+      email_sent: 'EMAIL_SENT'
     }
 
     if (!action || !statusMap[action]) {
@@ -59,8 +75,7 @@ export async function PATCH(
         updateData = {
           status: 'CONFIRMED',
           reviewedAt: new Date(),
-          userNotes: notes || null,
-          mlFeedback: 'POSITIVE'
+          userNotes: notes || null
         }
 
         // Get the flagged item to create timeline entry
@@ -81,7 +96,6 @@ export async function PATCH(
               projectId: flaggedItem.projectId,
               flaggedItemId: itemId,
               verified: true,
-              fromFlaggedItem: true,
             }
           })
         }
@@ -91,8 +105,7 @@ export async function PATCH(
         updateData = {
           status: 'IGNORED',
           reviewedAt: new Date(),
-          userNotes: notes || null,
-          mlFeedback: 'NEGATIVE'
+          userNotes: notes || null
         }
         break
 
@@ -118,13 +131,13 @@ export async function PATCH(
     })
 
     // Log ML feedback
-    const feedbackType = action === 'confirm' ? 'positive' : action === 'ignore' ? 'negative' : 'pending';
+    const feedbackType = action === 'confirm' ? 'POSITIVE' : action === 'ignore' ? 'NEGATIVE' : 'PENDING';
     await prisma.mLFeedback.create({
       data: {
+        feedbackType: feedbackType as 'POSITIVE' | 'NEGATIVE' | 'RECLASSIFY',
+        userAction: action,
         flaggedItemId: itemId,
-        feedback: feedbackType,
-        originalCategory: updatedItem.category as 'cost' | 'schedule' | 'scope' | 'unclassified',
-        confidence: updatedItem.aiConfidence || 0
+        projectId: updatedItem.projectId
       }
     });
 
