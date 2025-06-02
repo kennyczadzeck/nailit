@@ -52,12 +52,22 @@ export async function GET() {
       bothSet: !!(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET),
     },
     
+    // AWS Services (New serverless infrastructure)
+    aws: {
+      s3Bucket: process.env.NAILIT_S3_BUCKET || 'NOT_SET',
+      sqsEmailQueue: process.env.NAILIT_SQS_EMAIL_QUEUE || 'NOT_SET',
+      snsTopic: process.env.NAILIT_SNS_TOPIC || 'NOT_SET',
+      allSet: !!(process.env.NAILIT_S3_BUCKET && process.env.NAILIT_SQS_EMAIL_QUEUE && process.env.NAILIT_SNS_TOPIC),
+    },
+    
     // Quick Health Check
     healthCheck: {
       allNextAuthVarsSet: !!(process.env.NEXTAUTH_URL && process.env.NEXTAUTH_SECRET),
       allDatabaseVarsSet: !!(process.env.DATABASE_URL && process.env.DATABASE_MIGRATION_URL),
+      allAWSVarsSet: !!(process.env.NAILIT_S3_BUCKET && process.env.NAILIT_SQS_EMAIL_QUEUE && process.env.NAILIT_SNS_TOPIC),
       urlConfigCorrect: checkUrlMatch(process.env.NEXTAUTH_URL, detectedEnvironment),
       readyForAuth: !!(process.env.NEXTAUTH_URL && process.env.NEXTAUTH_SECRET && checkUrlMatch(process.env.NEXTAUTH_URL, detectedEnvironment)),
+      infrastructureReady: !!(process.env.NAILIT_S3_BUCKET && process.env.NAILIT_SQS_EMAIL_QUEUE && process.env.NAILIT_SNS_TOPIC),
     },
     
     timestamp: new Date().toISOString(),
