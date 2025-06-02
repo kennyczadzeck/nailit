@@ -185,7 +185,7 @@ export default function ConnectGmailPage() {
                   Gmail Successfully Connected!
                 </h2>
                 <p className="text-gray-600 mb-8 max-w-md mx-auto">
-                  Great! Now let's set up your first renovation project so NailIt can start 
+                  Great! Now let&apos;s set up your first renovation project so NailIt can start 
                   monitoring your project communications and protecting you from unexpected changes.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">

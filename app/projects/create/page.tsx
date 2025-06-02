@@ -503,6 +503,12 @@ export default function CreateProject() {
             <li>• All project communications will be tracked in your timeline</li>
           </ul>
         </div>
+
+        <div className="mt-4 sm:mt-6 p-4 bg-gray-50 border border-gray-200 rounded-md">
+          <h4 className="text-sm font-medium text-gray-800 mb-2">
+            Don&apos;t have any team members yet? You can add them later in your project settings.
+          </h4>
+        </div>
       </div>
     </div>
   );

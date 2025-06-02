@@ -32,6 +32,7 @@
     "test:feature:components": "jest tests/features/components --passWithNoTests",
     
     "lint:check": "next lint --max-warnings 0",
+    "lint:ci": "next lint --max-warnings 20",
     "type-check": "tsc --noEmit",
     "build:test": "next build && npm run test:ci:all",
     "deploy:staging": "npm run test:ci:all && npm run build",

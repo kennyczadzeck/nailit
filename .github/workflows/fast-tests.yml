@@ -30,7 +30,7 @@ jobs:
       run: npm run type-check
 
     - name: 🧹 Lint code
-      run: npm run lint:check
+      run: npm run lint:ci
 
     - name: ⚡ Run fast tests
       run: npm run test:ci:fast

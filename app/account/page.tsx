@@ -146,7 +146,7 @@ export default function AccountPage() {
                     <div className="mt-2 text-sm text-green-700">
                       <ul className="list-disc list-inside space-y-1">
                         <li>Bank-level encryption for all data transmission</li>
-                        <li>Minimal data collection - only what's needed for functionality</li>
+                        <li>Minimal data collection - only what&apos;s needed for functionality</li>
                         <li>No sharing of personal information with third parties</li>
                         <li>Secure storage with automatic backups</li>
                       </ul>

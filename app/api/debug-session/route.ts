@@ -19,11 +19,11 @@ export async function GET(request: NextRequest) {
       userEmail: session?.user?.email,
       timestamp: new Date().toISOString()
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Session debug error:', error);
     return NextResponse.json({
-      error: error.message,
-      stack: error.stack,
+      error: error instanceof Error ? error.message : 'An unknown error occurred',
+      stack: error instanceof Error ? error.stack : undefined,
       timestamp: new Date().toISOString()
     }, { status: 500 });
   }

@@ -32,8 +32,6 @@ export async function GET() {
       include: {
         user: true,
         emailSettings: true,
-        // Use dynamic access to bypass TypeScript issues
-        ...(prisma as any).teamMembers && { teamMembers: true },
         _count: {
           select: {
             flaggedItems: {
@@ -54,7 +52,7 @@ export async function GET() {
     })
 
     return NextResponse.json(projects)
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error fetching projects:', error)
     return NextResponse.json(
       { error: 'Failed to fetch projects' },
@@ -285,7 +283,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(project, { status: 201 })
     */
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error creating project:', error)
     return NextResponse.json(
       { error: 'Failed to create project' },

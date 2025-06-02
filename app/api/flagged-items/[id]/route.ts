@@ -67,7 +67,7 @@ export async function PATCH(
       )
     }
 
-    let updateData: any = {}
+    let updateData: Record<string, any> = {}
     let timelineEntry = null
 
     switch (action) {
