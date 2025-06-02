@@ -2,7 +2,7 @@ name: 🚀 Fast Tests (Stage 1)
 
 on:
   push:
-    branches: [ main, develop, 'feature/**' ]
+    branches: [ main, develop, feature/** ]
   pull_request:
     branches: [ main, develop ]
 
@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [18.x, 20.x]
+        node-version: [20.x]
     
     steps:
     - name: 📦 Checkout code
@@ -34,15 +34,6 @@ jobs:
 
     - name: ⚡ Run fast tests
       run: npm run test:ci:fast
-
-    - name: 📊 Upload test results
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: fast-test-results-${{ matrix.node-version }}
-        path: |
-          coverage/
-          test-results/
 
   security-check:
     runs-on: ubuntu-latest
