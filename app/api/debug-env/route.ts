@@ -61,6 +61,16 @@ export async function GET() {
       allSet: !!(process.env.NAILIT_AWS_REGION && process.env.NAILIT_S3_BUCKET && process.env.NAILIT_SQS_EMAIL_QUEUE && process.env.NAILIT_SNS_TOPIC),
     },
     
+    // Logging Configuration
+    logging: {
+      region: process.env.NAILIT_AWS_REGION || 'NOT_SET',
+      logLevel: process.env.LOG_LEVEL || 'environment-default',
+      cloudWatchDisabled: process.env.DISABLE_CLOUDWATCH_LOGS === 'true',
+      nodeEnv: process.env.NODE_ENV || 'NOT_SET',
+      cloudWatchConfigured: !!(process.env.NAILIT_AWS_REGION && process.env.NODE_ENV !== 'development'),
+      willLogToCloudWatch: !!(process.env.NAILIT_AWS_REGION && process.env.NODE_ENV !== 'development' && process.env.DISABLE_CLOUDWATCH_LOGS !== 'true'),
+    },
+    
     // Quick Health Check
     healthCheck: {
       allNextAuthVarsSet: !!(process.env.NEXTAUTH_URL && process.env.NEXTAUTH_SECRET),
