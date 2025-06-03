@@ -46,9 +46,9 @@ class NailItLogger {
     this.logStreamName = `${new Date().toISOString().split('T')[0]}-${Math.random().toString(36).substr(2, 9)}`;
 
     // Initialize CloudWatch client if in AWS environment
-    if (process.env.AWS_REGION && this.environment !== 'development') {
+    if (process.env.NAILIT_AWS_REGION && this.environment !== 'development') {
       this.cloudWatchClient = new CloudWatchLogsClient({
-        region: process.env.AWS_REGION || 'us-east-1'
+        region: process.env.NAILIT_AWS_REGION || 'us-east-1'
       });
     }
 

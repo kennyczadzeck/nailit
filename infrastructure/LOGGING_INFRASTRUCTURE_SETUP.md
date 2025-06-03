@@ -109,7 +109,7 @@ Create an IAM policy with these permissions:
 ### Option 3: Auto-Creation (Limited)
 
 The application can auto-create log groups, but this requires broader permissions:
-- Set `AWS_REGION` environment variable
+- Set `NAILIT_AWS_REGION` environment variable
 - Ensure IAM role has `logs:CreateLogGroup` permission
 - Log groups will use default retention (never expire)
 
@@ -121,7 +121,7 @@ Add these to your Amplify environment variables:
 
 ```bash
 # Required for CloudWatch integration
-AWS_REGION=us-east-1
+NAILIT_AWS_REGION=us-east-1
 
 # Optional: Override default log level
 LOG_LEVEL=info
@@ -211,7 +211,7 @@ filter metadata.userId exists
 **1. "Access Denied" errors**
 - Check IAM role has CloudWatch Logs permissions
 - Verify log group names match application configuration
-- Ensure AWS_REGION is set correctly
+- Ensure NAILIT_AWS_REGION is set correctly
 
 **2. Logs not appearing in CloudWatch**
 - Check AWS credentials are configured
