@@ -188,8 +188,9 @@ class NailItLogger {
   }
 
   private enrichMetadata(metadata: LogMetadata): LogMetadata {
+    const sanitized = this.sanitizeMetadata(metadata);
     return {
-      ...metadata,
+      ...sanitized,
       timestamp: new Date().toISOString(),
       environment: this.environment,
       nodeVersion: process.version,
