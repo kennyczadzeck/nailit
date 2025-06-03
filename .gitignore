@@ -12,6 +12,7 @@
 
 # testing
 /coverage
+/.jest-cache
 
 # next.js
 /.next/
@@ -41,4 +42,14 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# SWC cache
+/.swc
+
+# Generated prisma
 /app/generated/prisma
+
+# Large installer files
+*.pkg
+*.dmg
+*.exe
+*.msi
