@@ -23,31 +23,10 @@ export class LoggingStack extends cdk.Stack {
     // CLOUDWATCH LOG GROUPS
     // =================================
 
-    // Main application log group
+    // Main application log group (the only one we use)
     this.applicationLogGroup = new logs.LogGroup(this, 'ApplicationLogGroup', {
       logGroupName: `/nailit/${environment}/application`,
       retention: environment === 'production' ? logs.RetentionDays.ONE_MONTH : logs.RetentionDays.TWO_WEEKS,
-      removalPolicy: environment === 'production' ? cdk.RemovalPolicy.RETAIN : cdk.RemovalPolicy.DESTROY,
-    });
-
-    // Error-specific log group for monitoring
-    const errorLogGroup = new logs.LogGroup(this, 'ErrorLogGroup', {
-      logGroupName: `/nailit/${environment}/errors`,
-      retention: environment === 'production' ? logs.RetentionDays.THREE_MONTHS : logs.RetentionDays.ONE_MONTH,
-      removalPolicy: environment === 'production' ? cdk.RemovalPolicy.RETAIN : cdk.RemovalPolicy.DESTROY,
-    });
-
-    // Security events log group
-    const securityLogGroup = new logs.LogGroup(this, 'SecurityLogGroup', {
-      logGroupName: `/nailit/${environment}/security`,
-      retention: logs.RetentionDays.ONE_YEAR, // Security logs kept longer
-      removalPolicy: cdk.RemovalPolicy.RETAIN, // Always retain security logs
-    });
-
-    // Performance monitoring log group
-    const performanceLogGroup = new logs.LogGroup(this, 'PerformanceLogGroup', {
-      logGroupName: `/nailit/${environment}/performance`,
-      retention: environment === 'production' ? logs.RetentionDays.ONE_MONTH : logs.RetentionDays.ONE_WEEK,
       removalPolicy: environment === 'production' ? cdk.RemovalPolicy.RETAIN : cdk.RemovalPolicy.DESTROY,
     });
 
@@ -61,7 +40,6 @@ export class LoggingStack extends cdk.Stack {
       assumedBy: new iam.CompositePrincipal(
         new iam.ServicePrincipal('amplify.amazonaws.com'),
         new iam.ServicePrincipal('lambda.amazonaws.com'), // For future Lambda functions
-        new iam.WebIdentityPrincipal('arn:aws:iam::*:oidc-provider/token.actions.githubusercontent.com') // For GitHub Actions
       ),
       description: `Logging permissions for NailIt ${environment} environment`,
     });
@@ -78,14 +56,8 @@ export class LoggingStack extends cdk.Stack {
       ],
       resources: [
         this.applicationLogGroup.logGroupArn,
-        errorLogGroup.logGroupArn,
-        securityLogGroup.logGroupArn,
-        performanceLogGroup.logGroupArn,
-        // Allow creation of new log streams within these groups
+        // Allow creation of new log streams within this group
         `${this.applicationLogGroup.logGroupArn}:*`,
-        `${errorLogGroup.logGroupArn}:*`,
-        `${securityLogGroup.logGroupArn}:*`,
-        `${performanceLogGroup.logGroupArn}:*`,
       ],
     }));
 
@@ -137,18 +109,6 @@ export class LoggingStack extends cdk.Stack {
       value: this.loggingRole.roleArn,
       description: 'IAM Role ARN for logging permissions',
       exportName: `NailIt-${envConfig.resourceSuffix}-LoggingRole`,
-    });
-
-    new cdk.CfnOutput(this, 'ErrorLogGroupName', {
-      value: errorLogGroup.logGroupName,
-      description: 'CloudWatch Log Group for error logs',
-      exportName: `NailIt-${envConfig.resourceSuffix}-ErrorLogGroup`,
-    });
-
-    new cdk.CfnOutput(this, 'SecurityLogGroupName', {
-      value: securityLogGroup.logGroupName,
-      description: 'CloudWatch Log Group for security logs',
-      exportName: `NailIt-${envConfig.resourceSuffix}-SecurityLogGroup`,
     });
 
     // =================================

@@ -41,11 +41,11 @@ class NailItLogger {
   private logStreamName: string;
 
   constructor() {
-    this.environment = process.env.NODE_ENV || 'development';
+    this.environment = this.detectEnvironment();
     this.logGroupName = `/nailit/${this.environment}/application`;
     this.logStreamName = `${new Date().toISOString().split('T')[0]}-${Math.random().toString(36).substr(2, 9)}`;
 
-    // Initialize CloudWatch client if in AWS environment
+    // Initialize CloudWatch client if in AWS environment and not development
     if (process.env.NAILIT_AWS_REGION && this.environment !== 'development') {
       this.cloudWatchClient = new CloudWatchLogsClient({
         region: process.env.NAILIT_AWS_REGION || 'us-east-1'
@@ -328,6 +328,42 @@ class NailItLogger {
     };
 
     return sanitizeObject(sanitized);
+  }
+
+  /**
+   * Detects the current environment based on Amplify branch or NODE_ENV
+   * Maps Amplify branches to our environment names:
+   * - develop branch → development 
+   * - staging branch → staging
+   * - main branch → production
+   * - local development → development
+   */
+  private detectEnvironment(): string {
+    // In Amplify, use AWS_BRANCH for environment detection
+    const awsBranch = process.env.AWS_BRANCH;
+    
+    if (awsBranch) {
+      switch (awsBranch) {
+        case 'develop':
+          return 'development';
+        case 'staging':
+          return 'staging';
+        case 'main':
+          return 'production';
+        default:
+          // For feature branches or unknown branches, treat as development
+          return 'development';
+      }
+    }
+    
+    // Fallback to NODE_ENV for local development
+    const nodeEnv = process.env.NODE_ENV;
+    if (nodeEnv === 'development' || nodeEnv === 'test') {
+      return 'development';
+    }
+    
+    // Default fallback
+    return 'development';
   }
 }
 

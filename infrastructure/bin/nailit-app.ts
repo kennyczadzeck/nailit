@@ -2,6 +2,7 @@
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { NailItInfrastructureStack } from '../lib/nailit-infrastructure-stack';
+import { LoggingStack } from '../lib/logging-stack';
 
 const app = new cdk.App();
 
@@ -35,7 +36,18 @@ if (!envConfig) {
   throw new Error(`Unknown environment: ${environment}. Must be one of: ${Object.keys(environments).join(', ')}`);
 }
 
+// Deploy main infrastructure stack
 new NailItInfrastructureStack(app, `NailIt-${envConfig.resourceSuffix}`, {
+  env: {
+    account: accountId,
+    region: region,
+  },
+  environment: environment,
+  envConfig: envConfig,
+});
+
+// Deploy logging infrastructure stack
+new LoggingStack(app, `LoggingStack-${envConfig.resourceSuffix}`, {
   env: {
     account: accountId,
     region: region,
