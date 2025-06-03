@@ -146,19 +146,6 @@ export default function CreateProject() {
     setTeamMembers(prev => prev.filter((_, i) => i !== index));
   };
 
-  const getRoleLabel = (role: string) => {
-    switch (role) {
-      case 'GENERAL_CONTRACTOR':
-        return 'General Contractor';
-      case 'ARCHITECT_DESIGNER':
-        return 'Architect/Designer';
-      case 'PROJECT_MANAGER':
-        return 'Project Manager';
-      default:
-        return role;
-    }
-  };
-
   // Get available roles for team member (excluding General Contractor for non-first members)
   const getAvailableRoles = (index: number) => {
     if (index === 0) {
@@ -499,9 +486,15 @@ export default function CreateProject() {
           <ul className="text-xs sm:text-sm text-blue-700 space-y-1">
             <li>• NailIt will automatically monitor emails from all team members</li>
             <li>• AI will scan for important changes in pricing, scope, and schedule</li>
-            <li>• You'll receive alerts when significant changes are detected</li>
+            <li>• You&apos;ll receive alerts when significant changes are detected</li>
             <li>• All project communications will be tracked in your timeline</li>
           </ul>
+        </div>
+
+        <div className="mt-4 sm:mt-6 p-4 bg-gray-50 border border-gray-200 rounded-md">
+          <h4 className="text-sm font-medium text-gray-800 mb-2">
+            Don&apos;t have any team members yet? You can add them later in your project settings.
+          </h4>
         </div>
       </div>
     </div>

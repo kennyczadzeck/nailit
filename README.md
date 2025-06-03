@@ -226,3 +226,5 @@ This line was added to test the 3-environment development workflow:
 - Environment variables moved from Secrets Manager to standard env vars
 - DIRECT_URL variables added to all environments
 - Ready for authentication re-enablement
+
+<!-- Test PR workflow validation - can be removed after testing -->

@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 declare global {
   interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     google: any;
     initGoogleMaps: () => void;
     googleMapsLoading: boolean;
@@ -40,9 +41,9 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   apiKey
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const autocompleteRef = useRef<any>(null);
   const [isGoogleMapsLoaded, setIsGoogleMapsLoaded] = useState(false);
-  const [lastSelectedAddress, setLastSelectedAddress] = useState('');
 
   // Load Google Maps API with duplicate prevention
   useEffect(() => {
@@ -134,7 +135,6 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
       
       // Mark as autocomplete selection and preserve the formatted address
       const selectedAddress = place.formatted_address || '';
-      setLastSelectedAddress(selectedAddress);
       
       // Use setTimeout to ensure this happens after any pending state updates
       setTimeout(() => {
@@ -151,10 +151,12 @@ export const AddressAutocomplete: React.FC<AddressAutocompleteProps> = ({
   }, [isGoogleMapsLoaded, onChange]);
 
   // Parse Google Places address components
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const parseAddressComponents = (place: any): AddressData => {
     const components = place.address_components || [];
     
     const getComponent = (types: string[]) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const component = components.find((comp: any) => 
         comp.types.some((type: string) => types.includes(type))
       );

@@ -1,13 +1,11 @@
-name: Environment Deployment Strategy
+name: 🚀 Deployment Pipeline
 
 on:
   push:
     branches: [main, staging, develop]
-  pull_request:
-    branches: [main, staging, develop]
 
 env:
-  NODE_VERSION: '18'
+  NODE_VERSION: '20'
 
 jobs:
   detect-environment:
@@ -19,13 +17,15 @@ jobs:
       - name: Detect Environment
         id: detect
         run: |
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+          BRANCH="${{ github.ref_name }}"
+          
+          if [[ "$BRANCH" == "main" ]]; then
             echo "environment=production" >> $GITHUB_OUTPUT
             echo "deploy=true" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.ref }}" == "refs/heads/staging" ]]; then
+          elif [[ "$BRANCH" == "staging" ]]; then
             echo "environment=staging" >> $GITHUB_OUTPUT
             echo "deploy=true" >> $GITHUB_OUTPUT
-          elif [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
+          elif [[ "$BRANCH" == "develop" ]]; then
             echo "environment=development" >> $GITHUB_OUTPUT
             echo "deploy=true" >> $GITHUB_OUTPUT
           else
@@ -33,7 +33,7 @@ jobs:
             echo "deploy=false" >> $GITHUB_OUTPUT
           fi
 
-  test:
+  code-quality:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -51,19 +51,16 @@ jobs:
         run: npx prisma generate
         
       - name: Lint
-        run: npm run lint
+        run: npm run lint:ci
         
       - name: Type Check
-        run: npx tsc --noEmit
-        
-      # Add tests when available
-      # - name: Run Tests
-      #   run: npm test
+        run: npm run type-check
 
   validate-schema:
     runs-on: ubuntu-latest
     needs: [detect-environment]
     if: needs.detect-environment.outputs.environment != 'feature'
+    environment: ${{ needs.detect-environment.outputs.environment }}
     steps:
       - uses: actions/checkout@v4
       
@@ -77,20 +74,26 @@ jobs:
         run: npm ci --legacy-peer-deps
         
       - name: Validate Prisma Schema
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_MIGRATION_URL: ${{ secrets.DATABASE_MIGRATION_URL }}
         run: npx prisma validate
         
       - name: Generate Prisma Client
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_MIGRATION_URL: ${{ secrets.DATABASE_MIGRATION_URL }}
         run: npx prisma generate
         
-      # TODO: Add database connectivity test when env vars are available
-      # - name: Test Database Connection
-      #   run: npx prisma db execute --command "SELECT 1"
-      #   env:
-      #     DATABASE_URL: ${{ secrets[format('DATABASE_URL_{0}', upper(needs.detect-environment.outputs.environment))] }}
+      - name: Test Database Connection
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_MIGRATION_URL: ${{ secrets.DATABASE_MIGRATION_URL }}
+        run: echo "SELECT 1;" | npx prisma db execute --stdin --schema prisma/schema.prisma
 
   deployment-ready:
     runs-on: ubuntu-latest
-    needs: [detect-environment, test, validate-schema]
+    needs: [detect-environment, code-quality, validate-schema]
     if: always() && needs.detect-environment.outputs.deploy == 'true'
     steps:
       - name: Deployment Status
@@ -111,7 +114,7 @@ jobs:
 
   notify-deployment:
     runs-on: ubuntu-latest
-    needs: [detect-environment, test, validate-schema]
+    needs: [detect-environment, code-quality, validate-schema]
     if: failure()
     steps:
       - name: Deployment Failure
@@ -121,4 +124,5 @@ jobs:
           echo "📋 Common issues:"
           echo "  • Linting errors"
           echo "  • TypeScript compilation errors"  
-          echo "  • Prisma schema validation errors" 
+          echo "  • Prisma schema validation errors"
+          echo "  • Database connectivity issues" 
