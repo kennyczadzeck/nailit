@@ -104,12 +104,14 @@ async function handleLoggingTest(request: NextRequest): Promise<NextResponse> {
       results,
       environmentInfo: {
         nodeEnv: process.env.NODE_ENV,
+        awsBranch: process.env.AWS_BRANCH,
+        detectedEnvironment: detectEnvironment(),
         region: process.env.NAILIT_AWS_REGION || 'NOT_SET',
         logLevel: process.env.LOG_LEVEL || 'environment-default',
         cloudWatchDisabled: process.env.DISABLE_CLOUDWATCH_LOGS === 'true',
         willLogToCloudWatch: !!(
           process.env.NAILIT_AWS_REGION && 
-          process.env.NODE_ENV !== 'development' && 
+          detectEnvironment() !== 'development' && 
           process.env.DISABLE_CLOUDWATCH_LOGS !== 'true'
         )
       },
@@ -142,4 +144,35 @@ async function handleLoggingTest(request: NextRequest): Promise<NextResponse> {
 
 // Wrap with automatic request logging
 export const GET = RequestLogger.wrap(handleLoggingTest);
-export const POST = RequestLogger.wrap(handleLoggingTest); 
+export const POST = RequestLogger.wrap(handleLoggingTest);
+
+/**
+ * Detects the current environment - must match the logic in logger.ts
+ */
+function detectEnvironment(): string {
+  // In Amplify, use AWS_BRANCH for environment detection
+  const awsBranch = process.env.AWS_BRANCH;
+  
+  if (awsBranch) {
+    switch (awsBranch) {
+      case 'develop':
+        return 'development';
+      case 'staging':
+        return 'staging';
+      case 'main':
+        return 'production';
+      default:
+        // For feature branches or unknown branches, treat as development
+        return 'development';
+    }
+  }
+  
+  // Fallback to NODE_ENV for local development
+  const nodeEnv = process.env.NODE_ENV;
+  if (nodeEnv === 'development' || nodeEnv === 'test') {
+    return 'development';
+  }
+  
+  // Default fallback
+  return 'development';
+} 
