@@ -140,6 +140,21 @@ export class NailItInfrastructureStack extends cdk.Stack {
               ],
               resources: [notificationTopic.topicArn],
             }),
+            // CloudWatch Logs permissions for application logging
+            new iam.PolicyStatement({
+              effect: iam.Effect.ALLOW,
+              actions: [
+                'logs:CreateLogGroup',
+                'logs:CreateLogStream',
+                'logs:PutLogEvents',
+                'logs:DescribeLogGroups',
+                'logs:DescribeLogStreams',
+              ],
+              resources: [
+                `arn:aws:logs:*:*:log-group:/nailit/${environment}/*`,
+                `arn:aws:logs:*:*:log-group:/nailit/${environment}/*:*`,
+              ],
+            }),
           ],
         }),
       },

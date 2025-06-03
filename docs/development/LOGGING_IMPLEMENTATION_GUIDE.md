@@ -184,7 +184,7 @@ async function processEmail(emailId: string) {
 
 ```bash
 # AWS CloudWatch (Production/Staging)
-AWS_REGION=us-east-1
+NAILIT_AWS_REGION=us-east-1
 NODE_ENV=production
 
 # Optional: Custom log level override
