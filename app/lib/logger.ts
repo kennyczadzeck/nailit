@@ -1,5 +1,5 @@
 import winston from 'winston';
-import { CloudWatchLogsClient, PutLogEventsCommand, CreateLogStreamCommand } from '@aws-sdk/client-cloudwatch-logs';
+import { CloudWatchLogsClient, PutLogEventsCommand } from '@aws-sdk/client-cloudwatch-logs';
 
 // Enhanced types for better TypeScript support
 export type LogLevel = 'error' | 'warn' | 'info' | 'debug';
@@ -20,7 +20,7 @@ export interface LogMetadata {
   context?: LogContext;
   environment?: string;
   timestamp?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface StructuredLogEntry {
@@ -102,7 +102,7 @@ class NailItLogger {
           format: winston.format.combine(
             winston.format.colorize(),
             winston.format.simple(),
-            winston.format.printf((info: any) => {
+            winston.format.printf((info) => {
               const { level, message, timestamp, ...meta } = info;
               const metaStr = Object.keys(meta).length ? JSON.stringify(meta, null, 2) : '';
               return `${timestamp} [${level}]: ${message} ${metaStr}`;
@@ -142,17 +142,17 @@ class NailItLogger {
     return transports;
   }
 
-  private formatLog(info: any): string {
+  private formatLog(info: winston.Logform.TransformableInfo): string {
     const { timestamp, level, message, service, environment, version, ...meta } = info;
     
     const logEntry: StructuredLogEntry = {
       level: level as LogLevel,
-      message,
+      message: String(message),
       metadata: meta,
-      timestamp,
-      environment,
-      service,
-      version
+      timestamp: String(timestamp),
+      environment: String(environment),
+      service: String(service),
+      version: String(version)
     };
 
     return JSON.stringify(logEntry);
@@ -271,7 +271,9 @@ class NailItLogger {
   }
 
   public logRequestEnd(method: string, url: string, statusCode: number, metadata: LogMetadata = {}): void {
-    const duration = metadata.startTime ? Date.now() - metadata.startTime : undefined;
+    const duration = metadata.startTime && typeof metadata.startTime === 'number' 
+      ? Date.now() - metadata.startTime 
+      : undefined;
     this.apiRequest(method, url, statusCode, duration || 0, {
       ...metadata,
       phase: 'end'
@@ -308,18 +310,16 @@ class NailItLogger {
     const sensitive = ['password', 'token', 'secret', 'key', 'authorization'];
     const sanitized = { ...metadata };
 
-    const sanitizeObject = (obj: any): any => {
-      if (typeof obj !== 'object' || obj === null) return obj;
-      
-      const result = Array.isArray(obj) ? [] : {};
+    const sanitizeObject = (obj: Record<string, unknown>): Record<string, unknown> => {
+      const result: Record<string, unknown> = {};
       
       for (const [key, value] of Object.entries(obj)) {
         if (sensitive.some(s => key.toLowerCase().includes(s))) {
-          (result as any)[key] = '[REDACTED]';
-        } else if (typeof value === 'object') {
-          (result as any)[key] = sanitizeObject(value);
+          result[key] = '[REDACTED]';
+        } else if (typeof value === 'object' && value !== null) {
+          result[key] = sanitizeObject(value as Record<string, unknown>);
         } else {
-          (result as any)[key] = value;
+          result[key] = value;
         }
       }
       

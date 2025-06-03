@@ -1,129 +1,199 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { logger, LogMetadata } from './logger';
 import { v4 as uuidv4 } from 'uuid';
+import { logger } from './logger';
 
-export function generateRequestId(): string {
-  return uuidv4();
+export interface RequestLogContext {
+  requestId: string;
+  method: string;
+  url: string;
+  userAgent?: string;
+  ip?: string;
+  startTime: number;
+  userId?: string;
+  sessionId?: string;
 }
 
-export function extractRequestMetadata(request: NextRequest): LogMetadata {
-  const userAgent = request.headers.get('user-agent') || 'unknown';
-  const ip = request.headers.get('x-forwarded-for') || 
-            request.headers.get('x-real-ip') || 
-            'unknown';
-  const method = request.method;
-  const url = request.url;
+/**
+ * Enhanced request logging middleware for Next.js API routes
+ * Provides automatic request tracing, performance monitoring, and structured logging
+ */
+export class RequestLogger {
+  /**
+   * Creates a request context with unique ID for tracing
+   */
+  static createContext(request: NextRequest): RequestLogContext {
+    const requestId = uuidv4();
+    const url = request.url;
+    const method = request.method;
+    const userAgent = request.headers.get('user-agent') || undefined;
+    const forwarded = request.headers.get('x-forwarded-for');
+    const ip = forwarded ? forwarded.split(',')[0].trim() : 
+               request.headers.get('x-real-ip') || 
+               'unknown';
 
-  return {
-    method,
-    endpoint: url,
-    userAgent,
-    ip,
-    headers: Object.fromEntries(request.headers.entries()),
-  };
-}
-
-export function withRequestLogging<T extends any[]>(
-  handler: (request: NextRequest, ...args: T) => Promise<NextResponse>
-) {
-  return async (request: NextRequest, ...args: T): Promise<NextResponse> => {
-    const requestId = generateRequestId();
-    const startTime = Date.now();
-    const requestMetadata = extractRequestMetadata(request);
-
-    // Add request ID to headers for tracing
-    const enhancedMetadata: LogMetadata = {
-      ...requestMetadata,
+    const context: RequestLogContext = {
       requestId,
-      startTime,
+      method,
+      url,
+      userAgent,
+      ip,
+      startTime: Date.now()
     };
 
-    logger.logRequestStart(request.method, request.url, enhancedMetadata);
-
-    try {
-      const response = await handler(request, ...args);
-      const duration = Date.now() - startTime;
-
-      logger.logRequestEnd(
-        request.method,
-        request.url,
-        response.status,
-        {
-          ...enhancedMetadata,
-          duration,
-          responseSize: response.headers.get('content-length') || 'unknown',
-        }
-      );
-
-      // Add request ID to response headers for debugging
-      response.headers.set('x-request-id', requestId);
-
-      return response;
-    } catch (error) {
-      const duration = Date.now() - startTime;
-      
-      logger.error('Request failed with unhandled error', {
-        ...enhancedMetadata,
-        error: error instanceof Error ? error.message : String(error),
-        duration,
-        stack: error instanceof Error ? error.stack : undefined,
-      });
-
-      // Re-throw the error to maintain normal error handling
-      throw error;
+    // Add authentication context if available
+    const authHeader = request.headers.get('authorization');
+    if (authHeader) {
+      context.sessionId = 'session-placeholder';
     }
-  };
-}
 
-// Utility for API route handlers
-export function logApiCall(
-  method: string,
-  endpoint: string,
-  statusCode: number,
-  metadata: LogMetadata = {}
-): void {
-  const level = statusCode >= 500 ? 'error' : statusCode >= 400 ? 'warn' : 'info';
-  const duration = metadata.startTime ? Date.now() - metadata.startTime : undefined;
-  
-  logger.apiRequest(method, endpoint, statusCode, duration || 0, metadata);
-}
+    return context;
+  }
 
-// Database operation logging
-export function logDatabaseOperation(
-  operation: string,
-  table: string,
-  duration: number,
-  metadata: LogMetadata = {}
-): void {
-  logger.databaseQuery(`${operation} on ${table}`, duration, {
-    ...metadata,
-    operation,
-    table,
-  });
-}
+  /**
+   * Logs the start of a request
+   */
+  static logStart(context: RequestLogContext): void {
+    logger.logRequestStart(context.method, context.url, {
+      requestId: context.requestId,
+      userAgent: context.userAgent,
+      ip: context.ip,
+      userId: context.userId,
+      sessionId: context.sessionId,
+      startTime: context.startTime
+    });
+  }
 
-// Authentication logging
-export function logAuthEvent(
-  event: string,
-  userId?: string,
-  metadata: LogMetadata = {}
-): void {
-  logger.audit(`Authentication: ${event}`, {
-    ...metadata,
-    userId,
-    context: 'auth',
-  });
-}
+  /**
+   * Logs the completion of a request with performance metrics
+   */
+  static logEnd(context: RequestLogContext, response: NextResponse | Response, error?: Error): void {
+    const startTime = context.startTime;
+    const duration = Date.now() - startTime;
+    const statusCode = response.status;
 
-// Security event logging
-export function logSecurityEvent(
-  event: string,
-  severity: 'low' | 'medium' | 'high' | 'critical',
-  metadata: LogMetadata = {}
-): void {
-  logger.security(`Security Event: ${event}`, {
-    ...metadata,
-    severity,
-    security_alert: true,
-  });
+    if (error) {
+      logger.error(`Request failed: ${context.method} ${context.url}`, {
+        requestId: context.requestId,
+        method: context.method,
+        endpoint: context.url,
+        statusCode,
+        duration,
+        error: error.message,
+        stack: error.stack,
+        userAgent: context.userAgent,
+        ip: context.ip,
+        userId: context.userId,
+        sessionId: context.sessionId
+      });
+    } else {
+      logger.logRequestEnd(context.method, context.url, statusCode, {
+        requestId: context.requestId,
+        userAgent: context.userAgent,
+        ip: context.ip,
+        userId: context.userId,
+        sessionId: context.sessionId,
+        startTime: context.startTime
+      });
+    }
+
+    // Log slow requests as warnings
+    if (duration > 5000) {
+      logger.warn(`Slow request detected: ${context.method} ${context.url}`, {
+        requestId: context.requestId,
+        duration,
+        statusCode,
+        context: 'performance'
+      });
+    }
+  }
+
+  /**
+   * Middleware wrapper for API routes
+   */
+  static wrap<T extends unknown[]>(
+    handler: (request: NextRequest, ...args: T) => Promise<NextResponse | Response>
+  ) {
+    return async (request: NextRequest, ...args: T): Promise<NextResponse | Response> => {
+      const context = RequestLogger.createContext(request);
+      RequestLogger.logStart(context);
+
+      try {
+        const response = await handler(request, ...args);
+        RequestLogger.logEnd(context, response);
+        
+        const headers = new Headers(response.headers);
+        headers.set('X-Request-ID', context.requestId);
+        
+        return new NextResponse(response.body, {
+          status: response.status,
+          statusText: response.statusText,
+          headers
+        });
+      } catch (error) {
+        const errorResponse = NextResponse.json(
+          { 
+            error: 'Internal Server Error',
+            requestId: context.requestId
+          },
+          { status: 500 }
+        );
+        
+        RequestLogger.logEnd(context, errorResponse, error as Error);
+        return errorResponse;
+      }
+    };
+  }
+
+  /**
+   * Simple logging utility for manual use in API routes
+   */
+  static logOperation(
+    context: RequestLogContext,
+    operation: string,
+    metadata: Record<string, unknown> = {}
+  ): void {
+    logger.info(`${operation}`, {
+      requestId: context.requestId,
+      context: 'api',
+      operation,
+      ...metadata
+    });
+  }
+
+  /**
+   * Log database operations within a request context
+   */
+  static logDatabaseOperation(
+    context: RequestLogContext,
+    query: string,
+    duration: number,
+    metadata: Record<string, unknown> = {}
+  ): void {
+    logger.databaseQuery(query, duration, {
+      requestId: context.requestId,
+      ...metadata
+    });
+  }
+
+  /**
+   * Log authentication events
+   */
+  static logAuthEvent(
+    context: RequestLogContext,
+    event: 'login' | 'logout' | 'failed_login' | 'token_refresh',
+    userId?: string,
+    metadata: Record<string, unknown> = {}
+  ): void {
+    const isSecurityEvent = event === 'failed_login';
+    const logMethod = isSecurityEvent ? logger.security.bind(logger) : logger.audit.bind(logger);
+    
+    logMethod(`Authentication event: ${event}`, {
+      requestId: context.requestId,
+      userId: userId || context.userId,
+      event,
+      ip: context.ip,
+      userAgent: context.userAgent,
+      ...metadata
+    });
+  }
 } 
