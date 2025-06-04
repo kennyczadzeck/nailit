@@ -331,17 +331,36 @@ class NailItLogger {
   }
 
   /**
-   * Detects the current environment based on Amplify branch or NODE_ENV
-   * Maps Amplify branches to our environment names:
-   * - develop branch → development 
-   * - staging branch → staging
-   * - main branch → production
+   * Detects the current environment based on NAILIT_ENVIRONMENT or fallbacks
+   * Maps custom environment variable to our environment names:
+   * - NAILIT_ENVIRONMENT=development → development 
+   * - NAILIT_ENVIRONMENT=staging → staging
+   * - NAILIT_ENVIRONMENT=production → production
    * - local development → development
    */
   private detectEnvironment(): string {
-    // In Amplify, use AWS_BRANCH for environment detection
-    const awsBranch = process.env.AWS_BRANCH;
+    // Primary: Use our custom environment variable
+    const nailItEnv = process.env.NAILIT_ENVIRONMENT;
     
+    if (nailItEnv) {
+      switch (nailItEnv.toLowerCase()) {
+        case 'development':
+        case 'dev':
+          return 'development';
+        case 'staging':
+        case 'stage':
+          return 'staging';
+        case 'production':
+        case 'prod':
+          return 'production';
+        default:
+          console.warn(`Unknown NAILIT_ENVIRONMENT: ${nailItEnv}, defaulting to development`);
+          return 'development';
+      }
+    }
+    
+    // Fallback: Try AWS_BRANCH (in case Amplify ever provides it)
+    const awsBranch = process.env.AWS_BRANCH;
     if (awsBranch) {
       switch (awsBranch) {
         case 'develop':
@@ -351,12 +370,11 @@ class NailItLogger {
         case 'main':
           return 'production';
         default:
-          // For feature branches or unknown branches, treat as development
           return 'development';
       }
     }
     
-    // Fallback to NODE_ENV for local development
+    // Fallback: NODE_ENV for local development
     const nodeEnv = process.env.NODE_ENV;
     if (nodeEnv === 'development' || nodeEnv === 'test') {
       return 'development';
