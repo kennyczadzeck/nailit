@@ -13,22 +13,55 @@ export async function GET() {
     };
   };
 
-  // Detect environment based on DATABASE_URL
-  const dbUrl = process.env.DATABASE_URL || 'NOT_SET';
-  let detectedEnvironment = 'unknown';
-  
-  if (dbUrl.includes('misty-frog')) {
-    detectedEnvironment = 'production';
-  } else if (dbUrl.includes('raspy-sound')) {
-    detectedEnvironment = 'staging';
-  } else if (dbUrl.includes('still-paper')) {
-    detectedEnvironment = 'development';
+  // Use the same environment detection logic as the logger
+  function detectEnvironment(): string {
+    // Primary: Use our custom environment variable
+    const nailItEnv = process.env.NAILIT_ENVIRONMENT;
+    
+    if (nailItEnv) {
+      switch (nailItEnv.toLowerCase()) {
+        case 'development':
+        case 'dev':
+          return 'development';
+        case 'staging':
+        case 'stage':
+          return 'staging';
+        case 'production':
+        case 'prod':
+          return 'production';
+        default:
+          console.warn(`Unknown NAILIT_ENVIRONMENT: ${nailItEnv}, defaulting to development`);
+          return 'development';
+      }
+    }
+    
+    // Fallback: DATABASE_URL analysis (legacy method)
+    const dbUrl = process.env.DATABASE_URL || 'NOT_SET';
+    if (dbUrl.includes('misty-frog')) {
+      return 'production';
+    } else if (dbUrl.includes('raspy-sound')) {
+      return 'staging';
+    } else if (dbUrl.includes('still-paper')) {
+      return 'development';
+    }
+    
+    // Fallback: NODE_ENV for local development
+    const nodeEnv = process.env.NODE_ENV;
+    if (nodeEnv === 'development' || nodeEnv === 'test') {
+      return 'development';
+    }
+    
+    // Default fallback
+    return 'development';
   }
+
+  const detectedEnvironment = detectEnvironment();
 
   const envConfig = {
     // Environment Detection
     detectedEnvironment,
     nodeEnv: process.env.NODE_ENV,
+    nailItEnvironment: process.env.NAILIT_ENVIRONMENT || 'NOT_SET',
     
     // NextAuth Configuration
     nextauth: {
@@ -40,7 +73,7 @@ export async function GET() {
     
     // Database Configuration
     database: {
-      url: secretInfo(dbUrl),
+      url: secretInfo(process.env.DATABASE_URL || 'NOT_SET'),
       migrationUrl: secretInfo(process.env.DATABASE_MIGRATION_URL),
       bothSet: !!(process.env.DATABASE_URL && process.env.DATABASE_MIGRATION_URL),
     },
@@ -59,6 +92,16 @@ export async function GET() {
       sqsEmailQueue: process.env.NAILIT_SQS_EMAIL_QUEUE || 'NOT_SET',
       snsTopic: process.env.NAILIT_SNS_TOPIC || 'NOT_SET',
       allSet: !!(process.env.NAILIT_AWS_REGION && process.env.NAILIT_S3_BUCKET && process.env.NAILIT_SQS_EMAIL_QUEUE && process.env.NAILIT_SNS_TOPIC),
+    },
+    
+    // Logging Configuration
+    logging: {
+      region: process.env.NAILIT_AWS_REGION || 'NOT_SET',
+      logLevel: process.env.LOG_LEVEL || 'environment-default',
+      cloudWatchDisabled: process.env.DISABLE_CLOUDWATCH_LOGS === 'true',
+      nodeEnv: process.env.NODE_ENV || 'NOT_SET',
+      cloudWatchConfigured: !!(process.env.NAILIT_AWS_REGION && detectedEnvironment !== 'development'),
+      willLogToCloudWatch: !!(process.env.NAILIT_AWS_REGION && detectedEnvironment !== 'development' && process.env.DISABLE_CLOUDWATCH_LOGS !== 'true'),
     },
     
     // Quick Health Check
