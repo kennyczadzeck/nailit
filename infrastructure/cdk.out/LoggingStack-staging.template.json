@@ -52,8 +52,8 @@
      ],
      "Version": "2012-10-17"
     },
-    "Description": "Logging permissions for NailIt staging environment",
-    "RoleName": "nailit-staging-logging-role",
+    "Description": "Logging permissions for NailIt application across all environments",
+    "RoleName": "nailit-amplify-logging-role",
     "Tags": [
      {
       "Key": "Component",
@@ -92,28 +92,15 @@
        ],
        "Effect": "Allow",
        "Resource": [
-        {
-         "Fn::GetAtt": [
-          "ApplicationLogGroupE33FCF9B",
-          "Arn"
-         ]
-        },
-        {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Fn::GetAtt": [
-             "ApplicationLogGroupE33FCF9B",
-             "Arn"
-            ]
-           },
-           ":*"
-          ]
-         ]
-        },
+        "arn:aws:logs:us-east-1:207091906248:log-group:/nailit/development/*",
+        "arn:aws:logs:us-east-1:207091906248:log-group:/nailit/staging/*",
+        "arn:aws:logs:us-east-1:207091906248:log-group:/nailit/production/*",
+        "arn:aws:logs:us-east-1:207091906248:log-group:/nailit/development/application",
         "arn:aws:logs:us-east-1:207091906248:log-group:/nailit/staging/application",
-        "arn:aws:logs:us-east-1:207091906248:log-group:/nailit/staging/application:*"
+        "arn:aws:logs:us-east-1:207091906248:log-group:/nailit/production/application",
+        "arn:aws:logs:us-east-1:207091906248:log-group:/nailit/development/application:*",
+        "arn:aws:logs:us-east-1:207091906248:log-group:/nailit/staging/application:*",
+        "arn:aws:logs:us-east-1:207091906248:log-group:/nailit/production/application:*"
        ]
       }
      ],

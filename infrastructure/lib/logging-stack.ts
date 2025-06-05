@@ -11,7 +11,7 @@ interface LoggingStackProps extends cdk.StackProps {
 }
 
 export class LoggingStack extends cdk.Stack {
-  public readonly loggingRole: iam.Role;
+  public readonly loggingRole: iam.IRole;
   public readonly applicationLogGroup: logs.LogGroup;
   public readonly applicationLogGroupName: string;
 
@@ -38,35 +38,50 @@ export class LoggingStack extends cdk.Stack {
     // IAM ROLE FOR AMPLIFY APP
     // =================================
 
-    // Create a role that Amplify/Next.js can assume for logging
-    this.loggingRole = new iam.Role(this, 'LoggingRole', {
-      roleName: `nailit-${envConfig.resourceSuffix}-logging-role`,
-      assumedBy: new iam.CompositePrincipal(
-        new iam.ServicePrincipal('amplify.amazonaws.com'),
-        new iam.ServicePrincipal('lambda.amazonaws.com'), // For future Lambda functions
-      ),
-      description: `Logging permissions for NailIt ${environment} environment`,
-    });
+    // Create the shared IAM role only in staging environment to avoid conflicts
+    // Other environments will reference this role
+    if (environment === 'staging') {
+      // Create a role that Amplify/Next.js can assume for logging
+      this.loggingRole = new iam.Role(this, 'LoggingRole', {
+        roleName: `nailit-amplify-logging-role`,
+        assumedBy: new iam.CompositePrincipal(
+          new iam.ServicePrincipal('amplify.amazonaws.com'),
+          new iam.ServicePrincipal('lambda.amazonaws.com'), // For future Lambda functions
+        ),
+        description: `Logging permissions for NailIt application across all environments`,
+      });
 
-    // CloudWatch Logs permissions
-    this.loggingRole.addToPolicy(new iam.PolicyStatement({
-      effect: iam.Effect.ALLOW,
-      actions: [
-        'logs:CreateLogGroup',
-        'logs:CreateLogStream',
-        'logs:PutLogEvents',
-        'logs:DescribeLogGroups',
-        'logs:DescribeLogStreams',
-      ],
-      resources: [
-        this.applicationLogGroup.logGroupArn,
-        // Allow creation of new log streams within this group
-        `${this.applicationLogGroup.logGroupArn}:*`,
-        // Also allow access to the existing manual log group
-        `arn:aws:logs:${this.region}:${this.account}:log-group:/nailit/${environment}/application`,
-        `arn:aws:logs:${this.region}:${this.account}:log-group:/nailit/${environment}/application:*`,
-      ],
-    }));
+      // CloudWatch Logs permissions - allow access to all environment log groups
+      (this.loggingRole as iam.Role).addToPolicy(new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: [
+          'logs:CreateLogGroup',
+          'logs:CreateLogStream',
+          'logs:PutLogEvents',
+          'logs:DescribeLogGroups',
+          'logs:DescribeLogStreams',
+        ],
+        resources: [
+          // Allow access to log groups for all environments
+          `arn:aws:logs:${this.region}:${this.account}:log-group:/nailit/development/*`,
+          `arn:aws:logs:${this.region}:${this.account}:log-group:/nailit/staging/*`,
+          `arn:aws:logs:${this.region}:${this.account}:log-group:/nailit/production/*`,
+          `arn:aws:logs:${this.region}:${this.account}:log-group:/nailit/development/application`,
+          `arn:aws:logs:${this.region}:${this.account}:log-group:/nailit/staging/application`,
+          `arn:aws:logs:${this.region}:${this.account}:log-group:/nailit/production/application`,
+          `arn:aws:logs:${this.region}:${this.account}:log-group:/nailit/development/application:*`,
+          `arn:aws:logs:${this.region}:${this.account}:log-group:/nailit/staging/application:*`,
+          `arn:aws:logs:${this.region}:${this.account}:log-group:/nailit/production/application:*`,
+        ],
+      }));
+    } else {
+      // Reference the existing role created in staging
+      this.loggingRole = iam.Role.fromRoleArn(
+        this,
+        'LoggingRole',
+        `arn:aws:iam::${this.account}:role/nailit-amplify-logging-role`
+      );
+    }
 
     // =================================
     // CLOUDWATCH ALARMS

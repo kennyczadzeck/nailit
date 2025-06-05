@@ -30,104 +30,6 @@
     "aws:cdk:path": "LoggingStack-dev/ApplicationLogGroup/Resource"
    }
   },
-  "LoggingRole0BCFB29B": {
-   "Type": "AWS::IAM::Role",
-   "Properties": {
-    "AssumeRolePolicyDocument": {
-     "Statement": [
-      {
-       "Action": "sts:AssumeRole",
-       "Effect": "Allow",
-       "Principal": {
-        "Service": "amplify.amazonaws.com"
-       }
-      },
-      {
-       "Action": "sts:AssumeRole",
-       "Effect": "Allow",
-       "Principal": {
-        "Service": "lambda.amazonaws.com"
-       }
-      }
-     ],
-     "Version": "2012-10-17"
-    },
-    "Description": "Logging permissions for NailIt development environment",
-    "RoleName": "nailit-dev-logging-role",
-    "Tags": [
-     {
-      "Key": "Component",
-      "Value": "Logging"
-     },
-     {
-      "Key": "Environment",
-      "Value": "development"
-     },
-     {
-      "Key": "ManagedBy",
-      "Value": "CDK"
-     },
-     {
-      "Key": "Project",
-      "Value": "NailIt"
-     }
-    ]
-   },
-   "Metadata": {
-    "aws:cdk:path": "LoggingStack-dev/LoggingRole/Resource"
-   }
-  },
-  "LoggingRoleDefaultPolicy7C1A4368": {
-   "Type": "AWS::IAM::Policy",
-   "Properties": {
-    "PolicyDocument": {
-     "Statement": [
-      {
-       "Action": [
-        "logs:CreateLogGroup",
-        "logs:CreateLogStream",
-        "logs:PutLogEvents",
-        "logs:DescribeLogGroups",
-        "logs:DescribeLogStreams"
-       ],
-       "Effect": "Allow",
-       "Resource": [
-        {
-         "Fn::GetAtt": [
-          "ApplicationLogGroupE33FCF9B",
-          "Arn"
-         ]
-        },
-        {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Fn::GetAtt": [
-             "ApplicationLogGroupE33FCF9B",
-             "Arn"
-            ]
-           },
-           ":*"
-          ]
-         ]
-        }
-       ]
-      }
-     ],
-     "Version": "2012-10-17"
-    },
-    "PolicyName": "LoggingRoleDefaultPolicy7C1A4368",
-    "Roles": [
-     {
-      "Ref": "LoggingRole0BCFB29B"
-     }
-    ]
-   },
-   "Metadata": {
-    "aws:cdk:path": "LoggingStack-dev/LoggingRole/DefaultPolicy/Resource"
-   }
-  },
   "ErrorRateMetricFilterA5350FAC": {
    "Type": "AWS::Logs::MetricFilter",
    "Properties": {
@@ -191,7 +93,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02Kyw6CMBREv4V9uSIL495ENxoMfoCppZILpZf0ITFN/920GONq5syZGvYVVAVfbCm6sVT4gHBzXIyML/YeFPUWwpn6kyE/s8NT//pFOoPiiMpJk8Q/R4Z8gtCSkknlvJJC8U64thhZKy15I/Kn8W72Lr+/a2SaOgmD3bzqGrY7qIrBIpbGa4eThHbND7qADi7CAAAA"
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02JQQrCMBBFz9J9MsYsxL2gG6VQDyAxHcu0sSmZiV2U3l2CKK7+++9Z2BswlZtZ+3bQge6wXMX5QbmZbyF2DMs5dqcU86QOj/HHF5RE/khBMJXw/1fVIMecPJZSZ5myFPraVY2xReh587IWtjswVc9EOuVR6InQfPYN3dpReZwAAAA="
    },
    "Metadata": {
     "aws:cdk:path": "LoggingStack-dev/CDKMetadata/Default"
@@ -201,21 +103,14 @@
  "Outputs": {
   "ApplicationLogGroupName": {
    "Description": "CloudWatch Log Group for application logs",
-   "Value": {
-    "Ref": "ApplicationLogGroupE33FCF9B"
-   },
+   "Value": "/nailit/development/application",
    "Export": {
     "Name": "NailIt-dev-ApplicationLogGroup"
    }
   },
   "LoggingRoleArn": {
    "Description": "IAM Role ARN for logging permissions",
-   "Value": {
-    "Fn::GetAtt": [
-     "LoggingRole0BCFB29B",
-     "Arn"
-    ]
-   },
+   "Value": "arn:aws:iam::207091906248:role/nailit-amplify-logging-role",
    "Export": {
     "Name": "NailIt-dev-LoggingRole"
    }
