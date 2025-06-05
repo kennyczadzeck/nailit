@@ -30,96 +30,6 @@
     "aws:cdk:path": "LoggingStack-dev/ApplicationLogGroup/Resource"
    }
   },
-  "ErrorLogGroupB9A57448": {
-   "Type": "AWS::Logs::LogGroup",
-   "Properties": {
-    "LogGroupName": "/nailit/development/errors",
-    "RetentionInDays": 30,
-    "Tags": [
-     {
-      "Key": "Component",
-      "Value": "Logging"
-     },
-     {
-      "Key": "Environment",
-      "Value": "development"
-     },
-     {
-      "Key": "ManagedBy",
-      "Value": "CDK"
-     },
-     {
-      "Key": "Project",
-      "Value": "NailIt"
-     }
-    ]
-   },
-   "UpdateReplacePolicy": "Delete",
-   "DeletionPolicy": "Delete",
-   "Metadata": {
-    "aws:cdk:path": "LoggingStack-dev/ErrorLogGroup/Resource"
-   }
-  },
-  "SecurityLogGroupC389C92F": {
-   "Type": "AWS::Logs::LogGroup",
-   "Properties": {
-    "LogGroupName": "/nailit/development/security",
-    "RetentionInDays": 365,
-    "Tags": [
-     {
-      "Key": "Component",
-      "Value": "Logging"
-     },
-     {
-      "Key": "Environment",
-      "Value": "development"
-     },
-     {
-      "Key": "ManagedBy",
-      "Value": "CDK"
-     },
-     {
-      "Key": "Project",
-      "Value": "NailIt"
-     }
-    ]
-   },
-   "UpdateReplacePolicy": "Retain",
-   "DeletionPolicy": "Retain",
-   "Metadata": {
-    "aws:cdk:path": "LoggingStack-dev/SecurityLogGroup/Resource"
-   }
-  },
-  "PerformanceLogGroup6919F4ED": {
-   "Type": "AWS::Logs::LogGroup",
-   "Properties": {
-    "LogGroupName": "/nailit/development/performance",
-    "RetentionInDays": 7,
-    "Tags": [
-     {
-      "Key": "Component",
-      "Value": "Logging"
-     },
-     {
-      "Key": "Environment",
-      "Value": "development"
-     },
-     {
-      "Key": "ManagedBy",
-      "Value": "CDK"
-     },
-     {
-      "Key": "Project",
-      "Value": "NailIt"
-     }
-    ]
-   },
-   "UpdateReplacePolicy": "Delete",
-   "DeletionPolicy": "Delete",
-   "Metadata": {
-    "aws:cdk:path": "LoggingStack-dev/PerformanceLogGroup/Resource"
-   }
-  },
   "LoggingRole0BCFB29B": {
    "Type": "AWS::IAM::Role",
    "Properties": {
@@ -189,72 +99,12 @@
          ]
         },
         {
-         "Fn::GetAtt": [
-          "ErrorLogGroupB9A57448",
-          "Arn"
-         ]
-        },
-        {
-         "Fn::GetAtt": [
-          "SecurityLogGroupC389C92F",
-          "Arn"
-         ]
-        },
-        {
-         "Fn::GetAtt": [
-          "PerformanceLogGroup6919F4ED",
-          "Arn"
-         ]
-        },
-        {
          "Fn::Join": [
           "",
           [
            {
             "Fn::GetAtt": [
              "ApplicationLogGroupE33FCF9B",
-             "Arn"
-            ]
-           },
-           ":*"
-          ]
-         ]
-        },
-        {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Fn::GetAtt": [
-             "ErrorLogGroupB9A57448",
-             "Arn"
-            ]
-           },
-           ":*"
-          ]
-         ]
-        },
-        {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Fn::GetAtt": [
-             "SecurityLogGroupC389C92F",
-             "Arn"
-            ]
-           },
-           ":*"
-          ]
-         ]
-        },
-        {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Fn::GetAtt": [
-             "PerformanceLogGroup6919F4ED",
              "Arn"
             ]
            },
@@ -368,24 +218,6 @@
    },
    "Export": {
     "Name": "NailIt-dev-LoggingRole"
-   }
-  },
-  "ErrorLogGroupName": {
-   "Description": "CloudWatch Log Group for error logs",
-   "Value": {
-    "Ref": "ErrorLogGroupB9A57448"
-   },
-   "Export": {
-    "Name": "NailIt-dev-ErrorLogGroup"
-   }
-  },
-  "SecurityLogGroupName": {
-   "Description": "CloudWatch Log Group for security logs",
-   "Value": {
-    "Ref": "SecurityLogGroupC389C92F"
-   },
-   "Export": {
-    "Name": "NailIt-dev-SecurityLogGroup"
    }
   }
  },

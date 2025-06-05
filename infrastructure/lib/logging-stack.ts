@@ -13,6 +13,7 @@ interface LoggingStackProps extends cdk.StackProps {
 export class LoggingStack extends cdk.Stack {
   public readonly loggingRole: iam.Role;
   public readonly applicationLogGroup: logs.LogGroup;
+  public readonly applicationLogGroupName: string;
 
   constructor(scope: Construct, id: string, props: LoggingStackProps) {
     super(scope, id, props);
@@ -23,9 +24,12 @@ export class LoggingStack extends cdk.Stack {
     // CLOUDWATCH LOG GROUPS
     // =================================
 
-    // Main application log group (the only one we use)
+    // Create the main application log group with CDK-managed naming
+    // This avoids conflicts with existing manually created log groups
+    this.applicationLogGroupName = `/nailit/${environment}/cdk-application`;
+    
     this.applicationLogGroup = new logs.LogGroup(this, 'ApplicationLogGroup', {
-      logGroupName: `/nailit/${environment}/application`,
+      logGroupName: this.applicationLogGroupName,
       retention: environment === 'production' ? logs.RetentionDays.ONE_MONTH : logs.RetentionDays.TWO_WEEKS,
       removalPolicy: environment === 'production' ? cdk.RemovalPolicy.RETAIN : cdk.RemovalPolicy.DESTROY,
     });
@@ -58,6 +62,9 @@ export class LoggingStack extends cdk.Stack {
         this.applicationLogGroup.logGroupArn,
         // Allow creation of new log streams within this group
         `${this.applicationLogGroup.logGroupArn}:*`,
+        // Also allow access to the existing manual log group
+        `arn:aws:logs:${this.region}:${this.account}:log-group:/nailit/${environment}/application`,
+        `arn:aws:logs:${this.region}:${this.account}:log-group:/nailit/${environment}/application:*`,
       ],
     }));
 
@@ -100,7 +107,7 @@ export class LoggingStack extends cdk.Stack {
     // =================================
 
     new cdk.CfnOutput(this, 'ApplicationLogGroupName', {
-      value: this.applicationLogGroup.logGroupName,
+      value: this.applicationLogGroupName,
       description: 'CloudWatch Log Group for application logs',
       exportName: `NailIt-${envConfig.resourceSuffix}-ApplicationLogGroup`,
     });

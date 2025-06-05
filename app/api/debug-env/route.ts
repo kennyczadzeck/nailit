@@ -104,6 +104,7 @@ export async function GET() {
         accessKeyId: process.env.AWS_ACCESS_KEY_ID ? 'SET' : 'NOT_SET',
         secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY ? 'SET' : 'NOT_SET',
         profile: process.env.AWS_PROFILE ? 'SET' : 'NOT_SET',
+        roleArn: process.env.AWS_ROLE_ARN ? 'SET' : 'NOT_SET',
         hasCredentials: !!(process.env.AWS_ACCESS_KEY_ID || process.env.AWS_PROFILE),
       },
       cloudWatchConfigured: !!(process.env.NAILIT_AWS_REGION && detectedEnvironment !== 'development'),
@@ -113,7 +114,10 @@ export async function GET() {
         process.env.DISABLE_CLOUDWATCH_LOGS !== 'true' &&
         (process.env.AWS_ACCESS_KEY_ID || process.env.AWS_PROFILE)
       ),
-      logGroupName: `/nailit/${detectedEnvironment}/application`,
+      logGroupName: process.env.CDK_LOG_GROUP_NAME || `/nailit/${detectedEnvironment}/cdk-application`,
+      fallbackLogGroupName: `/nailit/${detectedEnvironment}/application`,
+      cdkDeployed: process.env.CDK_LOG_GROUP_NAME ? 'YES' : 'NO',
+      iamRole: 'arn:aws:iam::207091906248:role/nailit-staging-logging-role',
     },
     
     // Quick Health Check

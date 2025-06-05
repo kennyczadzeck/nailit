@@ -3,7 +3,7 @@
   "ApplicationLogGroupE33FCF9B": {
    "Type": "AWS::Logs::LogGroup",
    "Properties": {
-    "LogGroupName": "/nailit/staging/application",
+    "LogGroupName": "/nailit/staging/cdk-application",
     "RetentionInDays": 14,
     "Tags": [
      {
@@ -28,96 +28,6 @@
    "DeletionPolicy": "Delete",
    "Metadata": {
     "aws:cdk:path": "LoggingStack-staging/ApplicationLogGroup/Resource"
-   }
-  },
-  "ErrorLogGroupB9A57448": {
-   "Type": "AWS::Logs::LogGroup",
-   "Properties": {
-    "LogGroupName": "/nailit/staging/errors",
-    "RetentionInDays": 30,
-    "Tags": [
-     {
-      "Key": "Component",
-      "Value": "Logging"
-     },
-     {
-      "Key": "Environment",
-      "Value": "staging"
-     },
-     {
-      "Key": "ManagedBy",
-      "Value": "CDK"
-     },
-     {
-      "Key": "Project",
-      "Value": "NailIt"
-     }
-    ]
-   },
-   "UpdateReplacePolicy": "Delete",
-   "DeletionPolicy": "Delete",
-   "Metadata": {
-    "aws:cdk:path": "LoggingStack-staging/ErrorLogGroup/Resource"
-   }
-  },
-  "SecurityLogGroupC389C92F": {
-   "Type": "AWS::Logs::LogGroup",
-   "Properties": {
-    "LogGroupName": "/nailit/staging/security",
-    "RetentionInDays": 365,
-    "Tags": [
-     {
-      "Key": "Component",
-      "Value": "Logging"
-     },
-     {
-      "Key": "Environment",
-      "Value": "staging"
-     },
-     {
-      "Key": "ManagedBy",
-      "Value": "CDK"
-     },
-     {
-      "Key": "Project",
-      "Value": "NailIt"
-     }
-    ]
-   },
-   "UpdateReplacePolicy": "Retain",
-   "DeletionPolicy": "Retain",
-   "Metadata": {
-    "aws:cdk:path": "LoggingStack-staging/SecurityLogGroup/Resource"
-   }
-  },
-  "PerformanceLogGroup6919F4ED": {
-   "Type": "AWS::Logs::LogGroup",
-   "Properties": {
-    "LogGroupName": "/nailit/staging/performance",
-    "RetentionInDays": 7,
-    "Tags": [
-     {
-      "Key": "Component",
-      "Value": "Logging"
-     },
-     {
-      "Key": "Environment",
-      "Value": "staging"
-     },
-     {
-      "Key": "ManagedBy",
-      "Value": "CDK"
-     },
-     {
-      "Key": "Project",
-      "Value": "NailIt"
-     }
-    ]
-   },
-   "UpdateReplacePolicy": "Delete",
-   "DeletionPolicy": "Delete",
-   "Metadata": {
-    "aws:cdk:path": "LoggingStack-staging/PerformanceLogGroup/Resource"
    }
   },
   "LoggingRole0BCFB29B": {
@@ -189,24 +99,6 @@
          ]
         },
         {
-         "Fn::GetAtt": [
-          "ErrorLogGroupB9A57448",
-          "Arn"
-         ]
-        },
-        {
-         "Fn::GetAtt": [
-          "SecurityLogGroupC389C92F",
-          "Arn"
-         ]
-        },
-        {
-         "Fn::GetAtt": [
-          "PerformanceLogGroup6919F4ED",
-          "Arn"
-         ]
-        },
-        {
          "Fn::Join": [
           "",
           [
@@ -220,48 +112,8 @@
           ]
          ]
         },
-        {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Fn::GetAtt": [
-             "ErrorLogGroupB9A57448",
-             "Arn"
-            ]
-           },
-           ":*"
-          ]
-         ]
-        },
-        {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Fn::GetAtt": [
-             "SecurityLogGroupC389C92F",
-             "Arn"
-            ]
-           },
-           ":*"
-          ]
-         ]
-        },
-        {
-         "Fn::Join": [
-          "",
-          [
-           {
-            "Fn::GetAtt": [
-             "PerformanceLogGroup6919F4ED",
-             "Arn"
-            ]
-           },
-           ":*"
-          ]
-         ]
-        }
+        "arn:aws:logs:us-east-1:207091906248:log-group:/nailit/staging/application",
+        "arn:aws:logs:us-east-1:207091906248:log-group:/nailit/staging/application:*"
        ]
       }
      ],
@@ -351,9 +203,7 @@
  "Outputs": {
   "ApplicationLogGroupName": {
    "Description": "CloudWatch Log Group for application logs",
-   "Value": {
-    "Ref": "ApplicationLogGroupE33FCF9B"
-   },
+   "Value": "/nailit/staging/cdk-application",
    "Export": {
     "Name": "NailIt-staging-ApplicationLogGroup"
    }
@@ -368,24 +218,6 @@
    },
    "Export": {
     "Name": "NailIt-staging-LoggingRole"
-   }
-  },
-  "ErrorLogGroupName": {
-   "Description": "CloudWatch Log Group for error logs",
-   "Value": {
-    "Ref": "ErrorLogGroupB9A57448"
-   },
-   "Export": {
-    "Name": "NailIt-staging-ErrorLogGroup"
-   }
-  },
-  "SecurityLogGroupName": {
-   "Description": "CloudWatch Log Group for security logs",
-   "Value": {
-    "Ref": "SecurityLogGroupC389C92F"
-   },
-   "Export": {
-    "Name": "NailIt-staging-SecurityLogGroup"
    }
   }
  },

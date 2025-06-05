@@ -337,6 +337,20 @@
          "Resource": {
           "Ref": "NotificationTopicEB7A0DF1"
          }
+        },
+        {
+         "Action": [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+          "logs:DescribeLogGroups",
+          "logs:DescribeLogStreams"
+         ],
+         "Effect": "Allow",
+         "Resource": [
+          "arn:aws:logs:*:*:log-group:/nailit/staging/*",
+          "arn:aws:logs:*:*:log-group:/nailit/staging/*:*"
+         ]
         }
        ],
        "Version": "2012-10-17"

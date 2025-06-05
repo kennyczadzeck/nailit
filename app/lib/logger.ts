@@ -44,7 +44,8 @@ class NailItLogger {
 
   constructor() {
     this.environment = this.detectEnvironment();
-    this.logGroupName = `/nailit/${this.environment}/application`;
+    // Prefer CDK-managed log group, fallback to manual naming
+    this.logGroupName = process.env.CDK_LOG_GROUP_NAME || `/nailit/${this.environment}/cdk-application`;
     this.logStreamName = `${new Date().toISOString().split('T')[0]}-${Math.random().toString(36).substr(2, 9)}`;
 
     // Initialize CloudWatch client if in AWS environment and not development
@@ -60,8 +61,12 @@ class NailItLogger {
       // Ensure log group exists (async, don't block constructor)
       this.ensureLogGroupExists().catch(err => {
         console.error('Failed to ensure log group exists:', err);
-        // Disable CloudWatch if setup fails
-        this.cloudWatchClient = undefined;
+        // Try fallback log group name
+        this.logGroupName = `/nailit/${this.environment}/application`;
+        this.ensureLogGroupExists().catch(() => {
+          // Disable CloudWatch if both fail
+          this.cloudWatchClient = undefined;
+        });
       });
     } else {
       // Log why CloudWatch is disabled
