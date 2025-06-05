@@ -103,16 +103,15 @@ export async function GET() {
       awsCredentials: {
         accessKeyId: process.env.NAILIT_IAM_ACCESS_KEY_ID ? 'SET' : 'NOT_SET',
         secretAccessKey: process.env.NAILIT_IAM_ACCESS_KEY_SECRET ? 'SET' : 'NOT_SET',
-        profile: process.env.AWS_PROFILE ? 'SET' : 'NOT_SET',
-        roleArn: process.env.AWS_ROLE_ARN ? 'SET' : 'NOT_SET',
-        hasCredentials: !!(process.env.NAILIT_IAM_ACCESS_KEY_ID || process.env.AWS_PROFILE),
+        hasCredentials: !!(process.env.NAILIT_IAM_ACCESS_KEY_ID && process.env.NAILIT_IAM_ACCESS_KEY_SECRET),
+        credentialMethod: process.env.NAILIT_IAM_ACCESS_KEY_ID ? 'IAM_USER' : 'NONE',
       },
       cloudWatchConfigured: !!(process.env.NAILIT_AWS_REGION && detectedEnvironment !== 'development'),
       willLogToCloudWatch: !!(
         process.env.NAILIT_AWS_REGION && 
         detectedEnvironment !== 'development' && 
         process.env.DISABLE_CLOUDWATCH_LOGS !== 'true' &&
-        (process.env.NAILIT_IAM_ACCESS_KEY_ID || process.env.AWS_PROFILE)
+        (process.env.NAILIT_IAM_ACCESS_KEY_ID && process.env.NAILIT_IAM_ACCESS_KEY_SECRET)
       ),
       logGroupName: `/nailit/${detectedEnvironment}/application`,
       fallbackLogGroupName: 'N/A - using original name',

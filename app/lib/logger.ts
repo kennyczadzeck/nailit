@@ -50,7 +50,7 @@ class NailItLogger {
 
     // Initialize CloudWatch client if in AWS environment and not development
     // Also check if AWS credentials are available
-    const hasAwsCredentials = !!(process.env.NAILIT_IAM_ACCESS_KEY_ID || process.env.AWS_PROFILE);
+    const hasAwsCredentials = !!(process.env.NAILIT_IAM_ACCESS_KEY_ID && process.env.NAILIT_IAM_ACCESS_KEY_SECRET);
     const hasAwsRegion = !!process.env.NAILIT_AWS_REGION;
     
     if (hasAwsRegion && this.environment !== 'development' && hasAwsCredentials) {
@@ -377,7 +377,7 @@ class NailItLogger {
         logGroupName: this.logGroupName,
         logStreamName: this.logStreamName,
         region: process.env.NAILIT_AWS_REGION,
-        hasCredentials: !!(process.env.NAILIT_IAM_ACCESS_KEY_ID || process.env.AWS_PROFILE),
+        hasCredentials: !!(process.env.NAILIT_IAM_ACCESS_KEY_ID && process.env.NAILIT_IAM_ACCESS_KEY_SECRET),
         errorStack: error instanceof Error ? error.stack : undefined
       });
     }
