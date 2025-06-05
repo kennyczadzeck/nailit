@@ -13,7 +13,11 @@ export async function GET() {
   try {
     // Test 1: Check if CloudWatch client can be initialized
     const cloudWatchClient = new CloudWatchLogsClient({
-      region: region
+      region: region,
+      credentials: process.env.NAILIT_LOGGING_ACCESS_KEY_ID ? {
+        accessKeyId: process.env.NAILIT_LOGGING_ACCESS_KEY_ID,
+        secretAccessKey: process.env.NAILIT_LOGGING_SECRET_ACCESS_KEY!
+      } : undefined // Use default credential chain if not explicitly set
     });
     results.push('✅ CloudWatch client initialized successfully');
 
@@ -104,8 +108,8 @@ export async function GET() {
     environmentVariables: {
       NAILIT_ENVIRONMENT: process.env.NAILIT_ENVIRONMENT,
       NAILIT_AWS_REGION: process.env.NAILIT_AWS_REGION,
-      AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID ? '[SET]' : '[NOT SET]',
-      AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY ? '[SET]' : '[NOT SET]',
+      NAILIT_LOGGING_ACCESS_KEY_ID: process.env.NAILIT_LOGGING_ACCESS_KEY_ID ? '[SET]' : '[NOT SET]',
+      NAILIT_LOGGING_SECRET_ACCESS_KEY: process.env.NAILIT_LOGGING_SECRET_ACCESS_KEY ? '[SET]' : '[NOT SET]',
       AWS_REGION: process.env.AWS_REGION
     },
     timestamp: new Date().toISOString()
