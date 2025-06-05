@@ -182,7 +182,21 @@ class NailItLogger {
     // Send to CloudWatch if configured (info, warn, error levels in non-dev environments)
     if (this.cloudWatchClient && ['info', 'warn', 'error'].includes(level)) {
       this.sendToCloudWatch(level, message, enrichedMetadata).catch(err => {
-        console.error('Failed to send log to CloudWatch:', err);
+        // Enhanced error logging for CloudWatch issues
+        const errorDetails = {
+          error: err.message || String(err),
+          errorCode: err.name || 'UnknownError',
+          logGroupName: this.logGroupName,
+          logStreamName: this.logStreamName,
+          level,
+          originalMessage: message,
+          environment: this.environment
+        };
+        
+        console.error('Failed to send log to CloudWatch:', JSON.stringify(errorDetails, null, 2));
+        
+        // Log to Winston as fallback so we can see the issue
+        this.logger.error('CloudWatch logging failed', errorDetails);
       });
     }
   }
@@ -283,9 +297,13 @@ class NailItLogger {
 
   // CloudWatch integration
   private async sendToCloudWatch(level: LogLevel, message: string, metadata: LogMetadata): Promise<void> {
-    if (!this.cloudWatchClient) return;
+    if (!this.cloudWatchClient) {
+      console.log('CloudWatch client not initialized');
+      return;
+    }
 
     try {
+      // Add debug logging for first few attempts
       const logEvent = {
         timestamp: Date.now(),
         message: JSON.stringify({
@@ -295,14 +313,41 @@ class NailItLogger {
         })
       };
 
+      // Enhanced logging to see what we're trying to send
+      if (Math.random() < 0.1) { // Only log 10% of the time to avoid spam
+        console.log('Attempting CloudWatch log:', {
+          logGroupName: this.logGroupName,
+          logStreamName: this.logStreamName,
+          eventSize: logEvent.message.length,
+          level
+        });
+      }
+
       await this.cloudWatchClient.send(new PutLogEventsCommand({
         logGroupName: this.logGroupName,
         logStreamName: this.logStreamName,
         logEvents: [logEvent]
       }));
+
+      // Success logging (only occasionally to avoid spam)
+      if (Math.random() < 0.05) { // Only log 5% of successful sends
+        console.log('CloudWatch log sent successfully');
+      }
+
     } catch (error) {
-      // Fallback to console if CloudWatch fails
-      console.error('CloudWatch logging failed:', error);
+      // Enhanced error handling
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorCode = error instanceof Error ? error.name : 'UnknownError';
+      
+      console.error('CloudWatch logging failed:', {
+        error: errorMessage,
+        errorCode,
+        logGroupName: this.logGroupName,
+        logStreamName: this.logStreamName,
+        region: process.env.NAILIT_AWS_REGION,
+        hasCredentials: !!(process.env.AWS_ACCESS_KEY_ID || process.env.AWS_PROFILE),
+        errorStack: error instanceof Error ? error.stack : undefined
+      });
     }
   }
 
