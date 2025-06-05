@@ -114,9 +114,9 @@ export async function GET() {
         process.env.DISABLE_CLOUDWATCH_LOGS !== 'true' &&
         (process.env.AWS_ACCESS_KEY_ID || process.env.AWS_PROFILE)
       ),
-      logGroupName: process.env.CDK_LOG_GROUP_NAME || `/nailit/${detectedEnvironment}/cdk-application`,
-      fallbackLogGroupName: `/nailit/${detectedEnvironment}/application`,
-      cdkDeployed: process.env.CDK_LOG_GROUP_NAME ? 'YES' : 'NO',
+      logGroupName: `/nailit/${detectedEnvironment}/application`,
+      fallbackLogGroupName: 'N/A - using original name',
+      cdkDeployed: 'MANAGING_ORIGINAL',
       iamRole: 'arn:aws:iam::207091906248:role/nailit-staging-logging-role',
     },
     

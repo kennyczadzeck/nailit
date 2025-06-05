@@ -26,7 +26,7 @@ export class LoggingStack extends cdk.Stack {
 
     // Create the main application log group with CDK-managed naming
     // This avoids conflicts with existing manually created log groups
-    this.applicationLogGroupName = `/nailit/${environment}/cdk-application`;
+    this.applicationLogGroupName = `/nailit/${environment}/application`;
     
     this.applicationLogGroup = new logs.LogGroup(this, 'ApplicationLogGroup', {
       logGroupName: this.applicationLogGroupName,

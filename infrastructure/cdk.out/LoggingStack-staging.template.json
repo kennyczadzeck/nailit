@@ -3,7 +3,7 @@
   "ApplicationLogGroupE33FCF9B": {
    "Type": "AWS::Logs::LogGroup",
    "Properties": {
-    "LogGroupName": "/nailit/staging/cdk-application",
+    "LogGroupName": "/nailit/staging/application",
     "RetentionInDays": 14,
     "Tags": [
      {
@@ -203,7 +203,7 @@
  "Outputs": {
   "ApplicationLogGroupName": {
    "Description": "CloudWatch Log Group for application logs",
-   "Value": "/nailit/staging/cdk-application",
+   "Value": "/nailit/staging/application",
    "Export": {
     "Name": "NailIt-staging-ApplicationLogGroup"
    }
