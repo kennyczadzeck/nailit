@@ -359,21 +359,6 @@ class NailItLogger {
       }
     }
     
-    // Fallback: Try AWS_BRANCH (in case Amplify ever provides it)
-    const awsBranch = process.env.AWS_BRANCH;
-    if (awsBranch) {
-      switch (awsBranch) {
-        case 'develop':
-          return 'development';
-        case 'staging':
-          return 'staging';
-        case 'main':
-          return 'production';
-        default:
-          return 'development';
-      }
-    }
-    
     // Fallback: NODE_ENV for local development
     const nodeEnv = process.env.NODE_ENV;
     if (nodeEnv === 'development' || nodeEnv === 'test') {
