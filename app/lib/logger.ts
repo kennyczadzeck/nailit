@@ -50,15 +50,15 @@ class NailItLogger {
 
     // Initialize CloudWatch client if in AWS environment and not development
     // Also check if AWS credentials are available
-    const hasAwsCredentials = !!(process.env.NAILIT_LOGGING_ACCESS_KEY_ID || process.env.AWS_PROFILE);
+    const hasAwsCredentials = !!(process.env.NAILIT_IAM_ACCESS_KEY_ID || process.env.AWS_PROFILE);
     const hasAwsRegion = !!process.env.NAILIT_AWS_REGION;
     
     if (hasAwsRegion && this.environment !== 'development' && hasAwsCredentials) {
       this.cloudWatchClient = new CloudWatchLogsClient({
         region: process.env.NAILIT_AWS_REGION || 'us-east-1',
-        credentials: process.env.NAILIT_LOGGING_ACCESS_KEY_ID ? {
-          accessKeyId: process.env.NAILIT_LOGGING_ACCESS_KEY_ID,
-          secretAccessKey: process.env.NAILIT_LOGGING_SECRET_ACCESS_KEY!
+        credentials: process.env.NAILIT_IAM_ACCESS_KEY_ID ? {
+          accessKeyId: process.env.NAILIT_IAM_ACCESS_KEY_ID,
+          secretAccessKey: process.env.NAILIT_IAM_ACCESS_KEY_SECRET!
         } : undefined // Use default credential chain if not explicitly set
       });
       
@@ -377,7 +377,7 @@ class NailItLogger {
         logGroupName: this.logGroupName,
         logStreamName: this.logStreamName,
         region: process.env.NAILIT_AWS_REGION,
-        hasCredentials: !!(process.env.NAILIT_LOGGING_ACCESS_KEY_ID || process.env.AWS_PROFILE),
+        hasCredentials: !!(process.env.NAILIT_IAM_ACCESS_KEY_ID || process.env.AWS_PROFILE),
         errorStack: error instanceof Error ? error.stack : undefined
       });
     }
