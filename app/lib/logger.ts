@@ -179,8 +179,8 @@ class NailItLogger {
     const enrichedMetadata = this.enrichMetadata(metadata);
     this.logger.log(level, message, enrichedMetadata);
 
-    // Send to CloudWatch if configured
-    if (this.cloudWatchClient && level === 'error') {
+    // Send to CloudWatch if configured (info, warn, error levels in non-dev environments)
+    if (this.cloudWatchClient && ['info', 'warn', 'error'].includes(level)) {
       this.sendToCloudWatch(level, message, enrichedMetadata).catch(err => {
         console.error('Failed to send log to CloudWatch:', err);
       });
