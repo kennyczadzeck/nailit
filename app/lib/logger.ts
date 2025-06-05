@@ -1,5 +1,5 @@
 import winston from 'winston';
-import { CloudWatchLogsClient, PutLogEventsCommand } from '@aws-sdk/client-cloudwatch-logs';
+import { CloudWatchLogsClient, PutLogEventsCommand, CreateLogGroupCommand, CreateLogStreamCommand } from '@aws-sdk/client-cloudwatch-logs';
 
 // Enhanced types for better TypeScript support
 export type LogLevel = 'error' | 'warn' | 'info' | 'debug';
@@ -39,6 +39,8 @@ class NailItLogger {
   private environment: string;
   private logGroupName: string;
   private logStreamName: string;
+  private logGroupCreated: boolean = false;
+  private logStreamCreated: boolean = false;
 
   constructor() {
     this.environment = this.detectEnvironment();
@@ -49,6 +51,11 @@ class NailItLogger {
     if (process.env.NAILIT_AWS_REGION && this.environment !== 'development') {
       this.cloudWatchClient = new CloudWatchLogsClient({
         region: process.env.NAILIT_AWS_REGION || 'us-east-1'
+      });
+      
+      // Ensure log group exists (async, don't block constructor)
+      this.ensureLogGroupExists().catch(err => {
+        console.error('Failed to ensure log group exists:', err);
       });
     }
 
@@ -303,6 +310,9 @@ class NailItLogger {
     }
 
     try {
+      // Ensure log group and stream exist
+      await this.ensureLogStreamExists();
+
       // Add debug logging for first few attempts
       const logEvent = {
         timestamp: Date.now(),
@@ -348,6 +358,53 @@ class NailItLogger {
         hasCredentials: !!(process.env.AWS_ACCESS_KEY_ID || process.env.AWS_PROFILE),
         errorStack: error instanceof Error ? error.stack : undefined
       });
+    }
+  }
+
+  // Ensure log group and stream exist
+  private async ensureLogGroupExists(): Promise<void> {
+    if (!this.cloudWatchClient || this.logGroupCreated) return;
+
+    try {
+      await this.cloudWatchClient.send(new CreateLogGroupCommand({
+        logGroupName: this.logGroupName
+      }));
+      console.log(`Created CloudWatch log group: ${this.logGroupName}`);
+      this.logGroupCreated = true;
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      if (errorMessage.includes('ResourceAlreadyExistsException')) {
+        console.log(`CloudWatch log group already exists: ${this.logGroupName}`);
+        this.logGroupCreated = true;
+      } else {
+        console.error(`Failed to create CloudWatch log group: ${errorMessage}`);
+        throw error;
+      }
+    }
+  }
+
+  private async ensureLogStreamExists(): Promise<void> {
+    if (!this.cloudWatchClient || this.logStreamCreated) return;
+
+    // Ensure log group exists first
+    await this.ensureLogGroupExists();
+
+    try {
+      await this.cloudWatchClient.send(new CreateLogStreamCommand({
+        logGroupName: this.logGroupName,
+        logStreamName: this.logStreamName
+      }));
+      console.log(`Created CloudWatch log stream: ${this.logStreamName}`);
+      this.logStreamCreated = true;
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      if (errorMessage.includes('ResourceAlreadyExistsException')) {
+        console.log(`CloudWatch log stream already exists: ${this.logStreamName}`);
+        this.logStreamCreated = true;
+      } else {
+        console.error(`Failed to create CloudWatch log stream: ${errorMessage}`);
+        throw error;
+      }
     }
   }
 
