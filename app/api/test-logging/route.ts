@@ -105,7 +105,6 @@ async function handleLoggingTest(request: NextRequest): Promise<NextResponse> {
       environmentInfo: {
         nodeEnv: process.env.NODE_ENV,
         nailItEnvironment: process.env.NAILIT_ENVIRONMENT,
-        awsBranch: process.env.AWS_BRANCH,
         detectedEnvironment: detectEnvironment(),
         region: process.env.NAILIT_AWS_REGION || 'NOT_SET',
         logLevel: process.env.LOG_LEVEL || 'environment-default',
@@ -167,21 +166,6 @@ function detectEnvironment(): string {
         return 'production';
       default:
         console.warn(`Unknown NAILIT_ENVIRONMENT: ${nailItEnv}, defaulting to development`);
-        return 'development';
-    }
-  }
-  
-  // Fallback: Try AWS_BRANCH (in case Amplify ever provides it)
-  const awsBranch = process.env.AWS_BRANCH;
-  if (awsBranch) {
-    switch (awsBranch) {
-      case 'develop':
-        return 'development';
-      case 'staging':
-        return 'staging';
-      case 'main':
-        return 'production';
-      default:
         return 'development';
     }
   }

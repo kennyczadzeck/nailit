@@ -35,21 +35,6 @@ export async function GET() {
       }
     }
     
-    // Fallback: Try AWS_BRANCH (in case Amplify ever provides it)
-    const awsBranch = process.env.AWS_BRANCH;
-    if (awsBranch) {
-      switch (awsBranch) {
-        case 'develop':
-          return 'development';
-        case 'staging':
-          return 'staging';
-        case 'main':
-          return 'production';
-        default:
-          return 'development';
-      }
-    }
-    
     // Fallback: DATABASE_URL analysis (legacy method)
     const dbUrl = process.env.DATABASE_URL || 'NOT_SET';
     if (dbUrl.includes('misty-frog')) {
@@ -77,7 +62,6 @@ export async function GET() {
     detectedEnvironment,
     nodeEnv: process.env.NODE_ENV,
     nailItEnvironment: process.env.NAILIT_ENVIRONMENT || 'NOT_SET',
-    awsBranch: process.env.AWS_BRANCH || 'NOT_SET',
     
     // NextAuth Configuration
     nextauth: {
