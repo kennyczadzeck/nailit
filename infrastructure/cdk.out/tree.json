@@ -624,9 +624,9 @@
               "version": "2.80.0"
             }
           },
-          "LoggingRole": {
-            "id": "LoggingRole",
-            "path": "LoggingStack-dev/LoggingRole",
+          "AmplifyServiceRole": {
+            "id": "AmplifyServiceRole",
+            "path": "LoggingStack-dev/AmplifyServiceRole",
             "constructInfo": {
               "fqn": "aws-cdk-lib.Resource",
               "version": "2.80.0"

@@ -30,7 +30,7 @@
     "aws:cdk:path": "LoggingStack-staging/ApplicationLogGroup/Resource"
    }
   },
-  "LoggingRole0BCFB29B": {
+  "AmplifyServiceRole1EB3E935": {
    "Type": "AWS::IAM::Role",
    "Properties": {
     "AssumeRolePolicyDocument": {
@@ -52,8 +52,8 @@
      ],
      "Version": "2012-10-17"
     },
-    "Description": "Logging permissions for NailIt application across all environments",
-    "RoleName": "nailit-amplify-logging-role",
+    "Description": "Comprehensive service role for NailIt Amplify app across all environments",
+    "RoleName": "nailit-amplify-service-role",
     "Tags": [
      {
       "Key": "Component",
@@ -74,10 +74,10 @@
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "LoggingStack-staging/LoggingRole/Resource"
+    "aws:cdk:path": "LoggingStack-staging/AmplifyServiceRole/Resource"
    }
   },
-  "LoggingRoleDefaultPolicy7C1A4368": {
+  "AmplifyServiceRoleDefaultPolicyA4A29B19": {
    "Type": "AWS::IAM::Policy",
    "Properties": {
     "PolicyDocument": {
@@ -102,19 +102,58 @@
         "arn:aws:logs:us-east-1:207091906248:log-group:/nailit/staging/application:*",
         "arn:aws:logs:us-east-1:207091906248:log-group:/nailit/production/application:*"
        ]
+      },
+      {
+       "Action": [
+        "s3:GetObject",
+        "s3:PutObject",
+        "s3:DeleteObject",
+        "s3:ListBucket"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        "arn:aws:s3:::nailit-*-emails-207091906248",
+        "arn:aws:s3:::nailit-*-emails-207091906248/*"
+       ]
+      },
+      {
+       "Action": [
+        "sqs:SendMessage",
+        "sqs:ReceiveMessage",
+        "sqs:DeleteMessage",
+        "sqs:GetQueueAttributes",
+        "sqs:GetQueueUrl"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        "arn:aws:sqs:us-east-1:207091906248:nailit-*-email-queue",
+        "arn:aws:sqs:us-east-1:207091906248:nailit-*-ai-queue",
+        "arn:aws:sqs:us-east-1:207091906248:nailit-*-email-dlq",
+        "arn:aws:sqs:us-east-1:207091906248:nailit-*-ai-dlq"
+       ]
+      },
+      {
+       "Action": [
+        "sns:Publish",
+        "sns:Subscribe",
+        "sns:Unsubscribe",
+        "sns:ListTopics"
+       ],
+       "Effect": "Allow",
+       "Resource": "arn:aws:sns:us-east-1:207091906248:nailit-*-notifications"
       }
      ],
      "Version": "2012-10-17"
     },
-    "PolicyName": "LoggingRoleDefaultPolicy7C1A4368",
+    "PolicyName": "AmplifyServiceRoleDefaultPolicyA4A29B19",
     "Roles": [
      {
-      "Ref": "LoggingRole0BCFB29B"
+      "Ref": "AmplifyServiceRole1EB3E935"
      }
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "LoggingStack-staging/LoggingRole/DefaultPolicy/Resource"
+    "aws:cdk:path": "LoggingStack-staging/AmplifyServiceRole/DefaultPolicy/Resource"
    }
   },
   "ErrorRateMetricFilterA5350FAC": {
@@ -199,7 +238,7 @@
    "Description": "IAM Role ARN for logging permissions",
    "Value": {
     "Fn::GetAtt": [
-     "LoggingRole0BCFB29B",
+     "AmplifyServiceRole1EB3E935",
      "Arn"
     ]
    },

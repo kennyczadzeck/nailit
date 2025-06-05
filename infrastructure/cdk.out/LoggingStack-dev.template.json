@@ -110,7 +110,7 @@
   },
   "LoggingRoleArn": {
    "Description": "IAM Role ARN for logging permissions",
-   "Value": "arn:aws:iam::207091906248:role/nailit-amplify-logging-role",
+   "Value": "arn:aws:iam::207091906248:role/nailit-amplify-service-role",
    "Export": {
     "Name": "NailIt-dev-LoggingRole"
    }

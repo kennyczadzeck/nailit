@@ -117,7 +117,7 @@ export async function GET() {
       logGroupName: `/nailit/${detectedEnvironment}/application`,
       fallbackLogGroupName: 'N/A - using original name',
       cdkDeployed: 'MANAGING_ORIGINAL',
-      iamRole: 'arn:aws:iam::207091906248:role/nailit-amplify-logging-role',
+      iamRole: 'arn:aws:iam::207091906248:role/nailit-amplify-service-role',
     },
     
     // Quick Health Check

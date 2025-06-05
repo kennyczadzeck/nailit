@@ -41,17 +41,17 @@ export class LoggingStack extends cdk.Stack {
     // Create the shared IAM role only in staging environment to avoid conflicts
     // Other environments will reference this role
     if (environment === 'staging') {
-      // Create a role that Amplify/Next.js can assume for logging
-      this.loggingRole = new iam.Role(this, 'LoggingRole', {
-        roleName: `nailit-amplify-logging-role`,
+      // Create a comprehensive role that Amplify can assume for all AWS services
+      this.loggingRole = new iam.Role(this, 'AmplifyServiceRole', {
+        roleName: `nailit-amplify-service-role`,
         assumedBy: new iam.CompositePrincipal(
           new iam.ServicePrincipal('amplify.amazonaws.com'),
           new iam.ServicePrincipal('lambda.amazonaws.com'), // For future Lambda functions
         ),
-        description: `Logging permissions for NailIt application across all environments`,
+        description: `Comprehensive service role for NailIt Amplify app across all environments`,
       });
 
-      // CloudWatch Logs permissions - allow access to all environment log groups
+      // CloudWatch Logs permissions
       (this.loggingRole as iam.Role).addToPolicy(new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
         actions: [
@@ -74,12 +74,66 @@ export class LoggingStack extends cdk.Stack {
           `arn:aws:logs:${this.region}:${this.account}:log-group:/nailit/production/application:*`,
         ],
       }));
+
+      // S3 permissions for email storage across all environments
+      (this.loggingRole as iam.Role).addToPolicy(new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: [
+          's3:GetObject',
+          's3:PutObject',
+          's3:DeleteObject',
+          's3:ListBucket',
+        ],
+        resources: [
+          `arn:aws:s3:::nailit-*-emails-${this.account}`,
+          `arn:aws:s3:::nailit-*-emails-${this.account}/*`,
+        ],
+      }));
+
+      // SQS permissions for email and AI processing queues
+      (this.loggingRole as iam.Role).addToPolicy(new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: [
+          'sqs:SendMessage',
+          'sqs:ReceiveMessage',
+          'sqs:DeleteMessage',
+          'sqs:GetQueueAttributes',
+          'sqs:GetQueueUrl',
+        ],
+        resources: [
+          `arn:aws:sqs:${this.region}:${this.account}:nailit-*-email-queue`,
+          `arn:aws:sqs:${this.region}:${this.account}:nailit-*-ai-queue`,
+          `arn:aws:sqs:${this.region}:${this.account}:nailit-*-email-dlq`,
+          `arn:aws:sqs:${this.region}:${this.account}:nailit-*-ai-dlq`,
+        ],
+      }));
+
+      // SNS permissions for notifications
+      (this.loggingRole as iam.Role).addToPolicy(new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: [
+          'sns:Publish',
+          'sns:Subscribe',
+          'sns:Unsubscribe',
+          'sns:ListTopics',
+        ],
+        resources: [
+          `arn:aws:sns:${this.region}:${this.account}:nailit-*-notifications`,
+        ],
+      }));
+
+      // Future: Add additional permissions as needed
+      // - RDS/Aurora Serverless permissions
+      // - SecretsManager for sensitive data
+      // - Parameter Store for configuration
+      // - etc.
+
     } else {
       // Reference the existing role created in staging
       this.loggingRole = iam.Role.fromRoleArn(
         this,
-        'LoggingRole',
-        `arn:aws:iam::${this.account}:role/nailit-amplify-logging-role`
+        'AmplifyServiceRole',
+        `arn:aws:iam::${this.account}:role/nailit-amplify-service-role`
       );
     }
 
