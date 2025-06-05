@@ -48,7 +48,11 @@ class NailItLogger {
     this.logStreamName = `${new Date().toISOString().split('T')[0]}-${Math.random().toString(36).substr(2, 9)}`;
 
     // Initialize CloudWatch client if in AWS environment and not development
-    if (process.env.NAILIT_AWS_REGION && this.environment !== 'development') {
+    // Also check if AWS credentials are available
+    const hasAwsCredentials = !!(process.env.AWS_ACCESS_KEY_ID || process.env.AWS_PROFILE);
+    const hasAwsRegion = !!process.env.NAILIT_AWS_REGION;
+    
+    if (hasAwsRegion && this.environment !== 'development' && hasAwsCredentials) {
       this.cloudWatchClient = new CloudWatchLogsClient({
         region: process.env.NAILIT_AWS_REGION || 'us-east-1'
       });
@@ -56,7 +60,20 @@ class NailItLogger {
       // Ensure log group exists (async, don't block constructor)
       this.ensureLogGroupExists().catch(err => {
         console.error('Failed to ensure log group exists:', err);
+        // Disable CloudWatch if setup fails
+        this.cloudWatchClient = undefined;
       });
+    } else {
+      // Log why CloudWatch is disabled
+      if (!hasAwsCredentials) {
+        console.log('CloudWatch logging disabled: AWS credentials not available');
+      }
+      if (!hasAwsRegion) {
+        console.log('CloudWatch logging disabled: AWS region not configured');
+      }
+      if (this.environment === 'development') {
+        console.log('CloudWatch logging disabled: development environment');
+      }
     }
 
     this.logger = winston.createLogger({
