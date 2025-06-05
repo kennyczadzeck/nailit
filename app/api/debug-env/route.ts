@@ -116,8 +116,8 @@ export async function GET() {
       logLevel: process.env.LOG_LEVEL || 'environment-default',
       cloudWatchDisabled: process.env.DISABLE_CLOUDWATCH_LOGS === 'true',
       nodeEnv: process.env.NODE_ENV || 'NOT_SET',
-      cloudWatchConfigured: !!(process.env.NAILIT_AWS_REGION && process.env.NODE_ENV !== 'development'),
-      willLogToCloudWatch: !!(process.env.NAILIT_AWS_REGION && process.env.NODE_ENV !== 'development' && process.env.DISABLE_CLOUDWATCH_LOGS !== 'true'),
+      cloudWatchConfigured: !!(process.env.NAILIT_AWS_REGION && detectedEnvironment !== 'development'),
+      willLogToCloudWatch: !!(process.env.NAILIT_AWS_REGION && detectedEnvironment !== 'development' && process.env.DISABLE_CLOUDWATCH_LOGS !== 'true'),
     },
     
     // Quick Health Check
