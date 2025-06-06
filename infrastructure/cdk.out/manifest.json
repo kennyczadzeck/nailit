@@ -24,7 +24,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-deploy-role-207091906248-us-east-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-cfn-exec-role-207091906248-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/bb61d2ef8514382e5c1d52ab77a71977fff114a8d8b43564e47baf9bcb6dc91e.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/9072a4f50509dbd0a2d2a2913280eca796d3f89b1e6a4e790ef67deeaced2de9.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -97,6 +97,42 @@
             "data": "AIProcessingQueue59FC2ECB"
           }
         ],
+        "/NailIt-dev/EmailIngestionDLQ/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EmailIngestionDLQ9CFE0F2F"
+          }
+        ],
+        "/NailIt-dev/EmailIngestionQueue/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EmailIngestionQueue38CE5AC2"
+          }
+        ],
+        "/NailIt-dev/EmailAssignmentDLQ/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EmailAssignmentDLQ0B1639EA"
+          }
+        ],
+        "/NailIt-dev/EmailAssignmentQueue/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EmailAssignmentQueue2E1F6B02"
+          }
+        ],
+        "/NailIt-dev/EmailFlaggingDLQ/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EmailFlaggingDLQ30BD2187"
+          }
+        ],
+        "/NailIt-dev/EmailFlaggingQueue/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EmailFlaggingQueue8A88E9BD"
+          }
+        ],
         "/NailIt-dev/NotificationTopic/Resource": [
           {
             "type": "aws:cdk:logicalId",
@@ -125,6 +161,24 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "AIQueueUrl"
+          }
+        ],
+        "/NailIt-dev/EmailIngestionQueueUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EmailIngestionQueueUrl"
+          }
+        ],
+        "/NailIt-dev/EmailAssignmentQueueUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EmailAssignmentQueueUrl"
+          }
+        ],
+        "/NailIt-dev/EmailFlaggingQueueUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "EmailFlaggingQueueUrl"
           }
         ],
         "/NailIt-dev/NotificationTopicArn": [
