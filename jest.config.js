@@ -58,6 +58,26 @@ const customJestConfig = {
     '<rootDir>/tests/**/*.test.{js,jsx,ts,tsx}',
     '<rootDir>/app/**/*.test.{js,jsx,ts,tsx}',
   ],
+  // Use 'node' environment for API route tests
+  projects: [
+    {
+      displayName: 'node',
+      testEnvironment: 'node',
+      testMatch: ['<rootDir>/tests/features/api/**/*.test.ts'],
+      setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+    },
+    {
+      displayName: 'jsdom',
+      testEnvironment: 'jest-environment-jsdom',
+      testMatch: [
+        '<rootDir>/tests/bdd/**/*.test.tsx',
+        '<rootDir>/tests/features/components/**/*.test.tsx',
+        '<rootDir>/tests/features/projects/**/*.test.tsx',
+        '<rootDir>/tests/features/authentication/**/*.test.tsx',
+      ],
+      setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+    },
+  ],
   // Use node environment for API route tests
   testEnvironmentOptions: {
     customExportConditions: [''],

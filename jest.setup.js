@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom'
+import 'whatwg-fetch'
 
 // Polyfill for Next.js API routes
 import { TextEncoder, TextDecoder } from 'util'
@@ -6,40 +7,6 @@ global.TextEncoder = TextEncoder
 global.TextDecoder = TextDecoder
 
 // Mock Request and Response for API route testing
-global.Request = class Request {
-  constructor(input, init) {
-    this.url = input
-    this.method = init?.method || 'GET'
-    this.headers = new Map(Object.entries(init?.headers || {}))
-    this.body = init?.body
-  }
-  
-  async json() {
-    return JSON.parse(this.body)
-  }
-}
-
-global.Response = class Response {
-  constructor(body, init) {
-    this.body = body
-    this.status = init?.status || 200
-    this.headers = new Map(Object.entries(init?.headers || {}))
-  }
-  
-  async json() {
-    return JSON.parse(this.body)
-  }
-  
-  static json(data, init) {
-    return new Response(JSON.stringify(data), {
-      ...init,
-      headers: {
-        'Content-Type': 'application/json',
-        ...init?.headers,
-      },
-    })
-  }
-}
 
 // Mock Next.js router
 jest.mock('next/navigation', () => ({
