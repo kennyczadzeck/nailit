@@ -23,7 +23,7 @@ frontend:
           fi
         - npm install --legacy-peer-deps
         - echo "Running schema drift check..."
-        - npx prisma migrate diff --from-migrations ./prisma/migrations --to-schema-datamodel ./prisma/schema.prisma --exit-code
+        - npx prisma migrate diff --from-migrations ./prisma/migrations --to-schema-datamodel ./prisma/schema.prisma --shadow-database-url "$DATABASE_URL" --exit-code
         - |
           if [[ "$ENVIRONMENT" == "development" ]]; then
             echo "Pushing schema changes to development database..."
