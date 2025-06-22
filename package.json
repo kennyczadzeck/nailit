@@ -62,6 +62,9 @@
     "winston": "^3.17.0"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.25.3",
+    "@babel/preset-react": "^7.24.7",
+    "@babel/preset-typescript": "^7.24.7",
     "@eslint/eslintrc": "^3",
     "@playwright/test": "^1.52.0",
     "@testing-library/dom": "^10.4.0",
@@ -83,6 +86,7 @@
     "tailwindcss": "^3.4.0",
     "ts-jest": "^29.3.4",
     "tsx": "^4.19.4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "whatwg-fetch": "^3.6.20"
   }
 }
