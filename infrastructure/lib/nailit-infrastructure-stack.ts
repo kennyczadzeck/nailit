@@ -82,6 +82,48 @@ export class NailItInfrastructureStack extends cdk.Stack {
       },
     });
 
+    // Enhanced Email Ingestion Queue for real-time processing
+    const emailIngestionQueue = new sqs.Queue(this, 'EmailIngestionQueue', {
+      queueName: `nailit-${envConfig.resourceSuffix}-email-ingestion-queue`,
+      visibilityTimeout: cdk.Duration.minutes(3),
+      retentionPeriod: cdk.Duration.days(14),
+      deadLetterQueue: {
+        queue: new sqs.Queue(this, 'EmailIngestionDLQ', {
+          queueName: `nailit-${envConfig.resourceSuffix}-email-ingestion-dlq`,
+          retentionPeriod: cdk.Duration.days(14),
+        }),
+        maxReceiveCount: 3,
+      },
+    });
+
+    // Email Assignment Queue for project association
+    const emailAssignmentQueue = new sqs.Queue(this, 'EmailAssignmentQueue', {
+      queueName: `nailit-${envConfig.resourceSuffix}-email-assignment-queue`,
+      visibilityTimeout: cdk.Duration.minutes(5),
+      retentionPeriod: cdk.Duration.days(14),
+      deadLetterQueue: {
+        queue: new sqs.Queue(this, 'EmailAssignmentDLQ', {
+          queueName: `nailit-${envConfig.resourceSuffix}-email-assignment-dlq`,
+          retentionPeriod: cdk.Duration.days(14),
+        }),
+        maxReceiveCount: 3,
+      },
+    });
+
+    // Email Flagging Queue for flagged item integration
+    const emailFlaggingQueue = new sqs.Queue(this, 'EmailFlaggingQueue', {
+      queueName: `nailit-${envConfig.resourceSuffix}-email-flagging-queue`,
+      visibilityTimeout: cdk.Duration.minutes(8),
+      retentionPeriod: cdk.Duration.days(14),
+      deadLetterQueue: {
+        queue: new sqs.Queue(this, 'EmailFlaggingDLQ', {
+          queueName: `nailit-${envConfig.resourceSuffix}-email-flagging-dlq`,
+          retentionPeriod: cdk.Duration.days(14),
+        }),
+        maxReceiveCount: 3,
+      },
+    });
+
     // =================================
     // SNS NOTIFICATIONS
     // =================================
@@ -131,7 +173,13 @@ export class NailItInfrastructureStack extends cdk.Stack {
                 'sqs:DeleteMessage',
                 'sqs:GetQueueAttributes',
               ],
-              resources: [emailQueue.queueArn, aiQueue.queueArn],
+              resources: [
+                emailQueue.queueArn, 
+                aiQueue.queueArn,
+                emailIngestionQueue.queueArn,
+                emailAssignmentQueue.queueArn,
+                emailFlaggingQueue.queueArn
+              ],
             }),
             new iam.PolicyStatement({
               effect: iam.Effect.ALLOW,
@@ -180,6 +228,24 @@ export class NailItInfrastructureStack extends cdk.Stack {
       value: aiQueue.queueUrl,
       description: 'SQS queue URL for AI processing',
       exportName: `NailIt-${envConfig.resourceSuffix}-AIQueue`,
+    });
+
+    new cdk.CfnOutput(this, 'EmailIngestionQueueUrl', {
+      value: emailIngestionQueue.queueUrl,
+      description: 'SQS queue URL for enhanced email ingestion',
+      exportName: `NailIt-${envConfig.resourceSuffix}-EmailIngestionQueue`,
+    });
+
+    new cdk.CfnOutput(this, 'EmailAssignmentQueueUrl', {
+      value: emailAssignmentQueue.queueUrl,
+      description: 'SQS queue URL for email project assignment',
+      exportName: `NailIt-${envConfig.resourceSuffix}-EmailAssignmentQueue`,
+    });
+
+    new cdk.CfnOutput(this, 'EmailFlaggingQueueUrl', {
+      value: emailFlaggingQueue.queueUrl,
+      description: 'SQS queue URL for email flagging integration',
+      exportName: `NailIt-${envConfig.resourceSuffix}-EmailFlaggingQueue`,
     });
 
     new cdk.CfnOutput(this, 'NotificationTopicArn', {
