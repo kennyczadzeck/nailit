@@ -68,10 +68,13 @@ export async function GET(request: NextRequest) {
       message: 'Gmail OAuth URL generated successfully'
     })
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    const stack = error instanceof Error ? error.stack : undefined;
+
     logger.error('Error initiating Gmail OAuth', {
-      error: error.message,
-      stack: error.stack
+      error: errorMessage,
+      stack: stack
     })
     
     return NextResponse.json(

@@ -4,6 +4,16 @@ import { authOptions } from '../../../auth/[...nextauth]/route'
 import { logger } from '../../../../lib/logger'
 import { prisma } from '../../../../lib/prisma'
 
+type EmailSettings = {
+  gmailConnected: boolean;
+  monitoringEnabled: boolean;
+  gmailTokenExpiry: Date | null;
+  gmailRefreshToken: string | null;
+  notificationsEnabled: boolean;
+  weeklyReports: boolean;
+  highPriorityAlerts: boolean;
+} | null;
+
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
@@ -84,10 +94,13 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ connectionStatus })
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    const stack = error instanceof Error ? error.stack : undefined;
+    
     logger.error('Error retrieving email connection status', {
-      error: error.message,
-      stack: error.stack
+      error: errorMessage,
+      stack: stack
     })
     
     return NextResponse.json(
@@ -98,7 +111,7 @@ export async function GET(request: NextRequest) {
 }
 
 // Helper functions for homeowner-friendly messaging
-function getMonitoringStatus(emailSettings: any) {
+function getMonitoringStatus(emailSettings: EmailSettings) {
   if (!emailSettings?.gmailConnected) return 'disconnected'
   if (!emailSettings?.monitoringEnabled) return 'paused'
   
@@ -110,7 +123,7 @@ function getMonitoringStatus(emailSettings: any) {
   return 'active'
 }
 
-function getStatusMessage(emailSettings: any) {
+function getStatusMessage(emailSettings: EmailSettings) {
   const status = getMonitoringStatus(emailSettings)
   
   switch (status) {
