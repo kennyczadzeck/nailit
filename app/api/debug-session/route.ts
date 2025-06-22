@@ -1,30 +1,45 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]/route';
+import { prisma } from '../../lib/prisma';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    console.log('Debug session endpoint called');
-    console.log('Headers:', Object.fromEntries(request.headers.entries()));
-    
     const session = await getServerSession(authOptions);
-    console.log('Session result:', session);
     
-    return NextResponse.json({
-      session: session,
-      hasSession: !!session,
-      hasUser: !!session?.user,
-      hasUserId: !!session?.user?.id,
+    console.log('Debug session check:', {
+      session,
       userId: session?.user?.id,
-      userEmail: session?.user?.email,
-      timestamp: new Date().toISOString()
+      userEmail: session?.user?.email
     });
-  } catch (error: unknown) {
-    console.error('Session debug error:', error);
+
+    if (session?.user?.id) {
+      // Check if this user ID exists in database
+      const dbUser = await prisma.user.findUnique({
+        where: { id: session.user.id },
+        include: {
+          accounts: true,
+          projects: true
+        }
+      });
+
+      return NextResponse.json({
+        session,
+        dbUser,
+        userExistsInDb: !!dbUser,
+        message: dbUser ? 'User found in database' : 'User NOT found in database - this is the problem!'
+      });
+    }
+
     return NextResponse.json({
-      error: error instanceof Error ? error.message : 'An unknown error occurred',
-      stack: error instanceof Error ? error.stack : undefined,
-      timestamp: new Date().toISOString()
-    }, { status: 500 });
+      session,
+      dbUser: null,
+      userExistsInDb: false,
+      message: 'No session found'
+    });
+
+  } catch (error) {
+    console.error('Debug session error:', error);
+    return NextResponse.json({ error: 'Failed to check session' }, { status: 500 });
   }
-} 
+}
