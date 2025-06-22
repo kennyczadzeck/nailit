@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
     
-    if (!session?.user?.email) {
+    if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -20,12 +20,10 @@ export async function GET(request: NextRequest) {
     }
 
     // Verify user owns the project and get basic info
-    const project = await prisma.project.findUnique({
+    const project = await prisma.project.findFirst({
       where: {
         id: projectId,
-        user: {
-          email: session.user.email
-        }
+        userId: session.user.id
       },
       select: {
         id: true,
@@ -78,7 +76,7 @@ export async function GET(request: NextRequest) {
     }
 
     logger.info('Email connection status retrieved for homeowner', {
-      userId: session.user.email,
+      userId: session.user.id,
       projectId,
       isConnected: connectionStatus.emailMonitoring.isConnected,
       status: connectionStatus.emailMonitoring.status

@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
     
-    if (!session?.user?.email) {
+    if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -20,12 +20,10 @@ export async function GET(request: NextRequest) {
     }
 
     // Verify user owns the project
-    const project = await prisma.project.findUnique({
+    const project = await prisma.project.findFirst({
       where: {
         id: projectId,
-        user: {
-          email: session.user.email
-        }
+        userId: session.user.id
       }
     })
 
@@ -56,11 +54,11 @@ export async function GET(request: NextRequest) {
     oauthUrl.searchParams.set('prompt', 'consent')
     oauthUrl.searchParams.set('state', JSON.stringify({
       projectId,
-      userId: session.user.email
+      userId: session.user.id
     }))
 
     logger.info('Gmail OAuth initiated for project', {
-      userId: session.user.email,
+      userId: session.user.id,
       projectId,
       projectName: project.name
     })
