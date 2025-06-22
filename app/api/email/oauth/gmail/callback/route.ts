@@ -24,8 +24,9 @@ export async function GET(request: NextRequest) {
     let stateData
     try {
       stateData = JSON.parse(state)
-    } catch (parseError: any) {
-      logger.error('Failed to parse OAuth state', { state, error: parseError })
+    } catch (parseError: unknown) {
+      const errorMessage = parseError instanceof Error ? parseError.message : 'An unknown error occurred';
+      logger.error('Failed to parse OAuth state', { state, error: errorMessage })
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/dashboard?email-error=invalid_state`)
     }
 
@@ -110,10 +111,12 @@ export async function GET(request: NextRequest) {
     // Redirect to dashboard with success message
     return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/dashboard?email-connected=true&project=${projectId}`)
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    const stack = error instanceof Error ? error.stack : undefined;
     logger.error('Error in Gmail OAuth callback', {
-      error: error.message,
-      stack: error.stack
+      error: errorMessage,
+      stack: stack
     })
     
     return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/dashboard?email-error=callback_failed`)

@@ -25,8 +25,9 @@ export async function POST(request: NextRequest) {
     let webhookData
     try {
       webhookData = JSON.parse(body)
-    } catch (error: any) {
-      logger.error('Failed to parse Gmail webhook body', { error: error.message, body })
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+      logger.error('Failed to parse Gmail webhook body', { error: errorMessage, body })
       return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
     }
 
@@ -41,8 +42,9 @@ export async function POST(request: NextRequest) {
     try {
       const decodedData = Buffer.from(message.data, 'base64').toString('utf-8')
       notificationData = JSON.parse(decodedData)
-    } catch (error: any) {
-      logger.error('Failed to decode Gmail notification data', { error: error.message })
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+      logger.error('Failed to decode Gmail notification data', { error: errorMessage })
       return NextResponse.json({ error: 'Invalid notification data' }, { status: 400 })
     }
 
@@ -130,10 +132,12 @@ export async function POST(request: NextRequest) {
       projectsProcessed: activeProjects.length
     })
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    const stack = error instanceof Error ? error.stack : undefined;
     logger.error('Error processing Gmail webhook', {
-      error: error.message,
-      stack: error.stack
+      error: errorMessage,
+      stack: stack
     })
     
     return NextResponse.json(
