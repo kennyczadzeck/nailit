@@ -213,79 +213,84 @@ export async function POST(request: NextRequest) {
 
     console.log('All validations passed, creating project...');
 
-    // Create project first without nested creates
-    const project = await prisma.project.create({
-      data: {
-        name: String(name),
-        description: String(description),
-        contractor: generalContractor?.name || null,
-        address: String(address),
-        budget: parsedBudget,
-        startDate: parsedStartDate,
-        endDate: parsedEndDate,
-        userId: session.user.id
-      }
-    });
+    // Use a transaction to ensure all or nothing is created
+    const newProject = await prisma.$transaction(async (tx) => {
+      // 1. Create the project
+      const project = await tx.project.create({
+        data: {
+          name: String(name),
+          description: String(description),
+          contractor: generalContractor?.name || null,
+          address: String(address),
+          budget: parsedBudget,
+          startDate: parsedStartDate,
+          endDate: parsedEndDate,
+          userId: session.user.id,
+        },
+      });
 
-    console.log('Project created successfully:', project.id);
+      console.log('Project created within transaction:', project.id);
 
-    // For now, let's just return the project without creating team members or email settings
-    // to isolate where the failure is happening
-    console.log('Returning project without creating related records for debugging...');
-    return NextResponse.json(project, { status: 201 })
+      // 2. Create team members
+      await tx.teamMember.createMany({
+        data: teamMembers.map(member => ({
+          name: String(member.name),
+          email: String(member.email),
+          role: member.role,
+          projectId: project.id,
+        })),
+      });
 
-    /* TEMPORARILY COMMENTED OUT FOR DEBUGGING
-    // Create team members separately using correct model name
-    for (const member of teamMembers) {
-      console.log('Creating team member:', member);
-      try {
-        await (prisma as any).teamMember.create({
-          data: {
-            name: String(member.name),
-            email: String(member.email),
-            role: member.role,
-            projectId: project.id
-          }
-        });
-        console.log('Team member created successfully:', member.name);
-      } catch (error) {
-        console.error('Team member creation failed:', error);
-        throw new Error(`Failed to create team member ${member.name}: ${error instanceof Error ? error.message : 'Unknown error'}`);
-      }
-    }
+      console.log('Team members created for project:', project.id);
 
-    // Create email settings separately
-    console.log('Creating email settings...');
-    try {
-      await prisma.emailSettings.create({
+      // 3. Create email settings
+      await tx.emailSettings.create({
         data: {
           projectId: project.id,
+          // Set sensible defaults
           monitoringEnabled: true,
-          gmailConnected: true,
-          emailFilters: {
-            contractorEmail: generalContractor?.email,
-            teamEmails: teamMembers.map(member => member.email),
-          },
           notificationsEnabled: true,
-          weeklyReports: true,
+          weeklyReports: false,
           highPriorityAlerts: true,
+        },
+      });
+
+      console.log('Email settings created for project:', project.id);
+      
+      // 4. Create initial timeline entry
+      await tx.timelineEntry.create({
+        data: {
+          title: 'Project Created',
+          description: `The project "${project.name}" was successfully created.`,
+          category: 'CREATE',
+          date: new Date(),
+          impact: 'Project kickoff',
+          projectId: project.id,
+          verified: true
         }
       });
-      console.log('Email settings created successfully');
-    } catch (error) {
-      console.error('Email settings creation failed:', error);
-      throw new Error(`Failed to create email settings: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
+      
+      console.log('Initial timeline entry created for project:', project.id);
 
-    console.log('Project creation completed successfully');
+      // Return the full project data
+      return tx.project.findUnique({
+        where: { id: project.id },
+        include: {
+          teamMembers: true,
+          emailSettings: true,
+        },
+      });
+    });
 
-    return NextResponse.json(project, { status: 201 })
-    */
+    console.log('Transaction successful, returning new project:', newProject?.id);
+    return NextResponse.json(newProject, { status: 201 });
+
   } catch (error: unknown) {
-    console.error('Error creating project:', error)
+    console.error('Error creating project:', error);
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
     return NextResponse.json(
-      { error: 'Failed to create project' },
+      { error: 'Failed to create project', details: errorMessage },
       { status: 500 }
-    )
+    );
   }
 } 
