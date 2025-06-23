@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../auth/[...nextauth]/route'
 import { prisma } from '../../lib/prisma'
-import { Prisma } from '@prisma/client'
+import { Prisma, TeamMemberRole } from '@prisma/client'
 
 // GET /api/projects - Get all projects for authenticated user
 export async function GET() {
@@ -179,7 +179,7 @@ export async function POST(request: NextRequest) {
         data: teamMembers.map(member => ({
           name: String(member.name),
           email: String(member.email),
-          role: member.role,
+          role: member.role as TeamMemberRole,
           projectId: project.id,
         })),
       });
