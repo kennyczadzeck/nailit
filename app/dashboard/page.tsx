@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
@@ -76,7 +76,7 @@ export default function DashboardPage() {
     setShowToast(true);
   };
 
-  const fetchProjects = async () => {
+  const fetchProjects = useCallback(async () => {
     try {
       const response = await fetch('/api/projects');
       if (response.ok) {
@@ -93,7 +93,7 @@ export default function DashboardPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   const fetchRecentActivity = async (projectId: string) => {
     try {
@@ -232,7 +232,7 @@ export default function DashboardPage() {
     }
 
     fetchProjects();
-  }, [session, status, router]);
+  }, [session, status, router, fetchProjects]);
 
   // Redirect to project creation if no projects exist
   useEffect(() => {
