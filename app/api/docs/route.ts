@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { createSwaggerSpec } from 'next-swagger-doc';
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   const spec = createSwaggerSpec({
     definition: {
       openapi: '3.0.0',

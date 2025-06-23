@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { logger } from '../../../../../lib/logger'
 import { prisma } from '../../../../../lib/prisma'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '../../../../auth/[...nextauth]/route'
 
 /**
  * @swagger

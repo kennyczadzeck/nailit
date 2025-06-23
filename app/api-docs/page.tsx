@@ -1,9 +1,31 @@
 'use client';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+
+type RedocStandaloneProps = {
+  spec: unknown;
+  options?: {
+    scrollYOffset?: number;
+    hideDownloadButton?: boolean;
+    disableSearch?: boolean;
+    theme?: {
+      colors?: {
+        primary?: {
+          main?: string;
+        };
+      };
+      typography?: {
+        fontSize?: string;
+        fontFamily?: string;
+      };
+    };
+  };
+};
+
+type RedocStandaloneComponent = React.ComponentType<RedocStandaloneProps>;
 
 export default function ApiDocsPage() {
-  const [spec, setSpec] = useState(null);
-  const [RedocStandalone, setRedocStandalone] = useState<any>(null);
+  const [spec, setSpec] = useState<unknown>(null);
+  const [RedocStandalone, setRedocStandalone] = useState<RedocStandaloneComponent | null>(null);
 
   useEffect(() => {
     const loadRedocAndSpec = async () => {
@@ -15,7 +37,7 @@ export default function ApiDocsPage() {
 
         // Dynamically import Redoc standalone component
         const { RedocStandalone: RedocComponent } = await import('redoc');
-        setRedocStandalone(() => RedocComponent);
+        setRedocStandalone(() => RedocComponent as RedocStandaloneComponent);
       } catch (error) {
         console.error('Error loading API spec or Redoc:', error);
       }
