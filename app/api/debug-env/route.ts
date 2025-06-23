@@ -12,24 +12,4 @@ export async function GET() {
       : 'Not Loaded',
   }
   return NextResponse.json(envVars)
-}
-
-function checkUrlMatch(nextauthUrl: string | undefined, environment: string): boolean {
-  if (!nextauthUrl) return false;
-  
-  const expectedUrl = getExpectedUrl(environment);
-  return nextauthUrl === expectedUrl;
-}
-
-function getExpectedUrl(environment: string): string {
-  switch (environment) {
-    case 'production':
-      return 'https://main.d1rq0k9js5lwg3.amplifyapp.com';
-    case 'staging':
-      return 'https://staging.d1rq0k9js5lwg3.amplifyapp.com';
-    case 'development':
-      return 'https://develop.d1rq0k9js5lwg3.amplifyapp.com';
-    default:
-      return 'http://localhost:3000'; // Local development
-  }
 } 

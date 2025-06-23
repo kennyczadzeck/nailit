@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from './Button';
 import { Card, CardHeader, CardTitle, CardContent } from './Card';
 import { 
@@ -17,7 +17,6 @@ interface ConfirmModalProps {
   confirmText: string;
   cancelText?: string;
   type?: 'danger' | 'warning' | 'info';
-  requiresTextConfirmation?: boolean;
   loading?: boolean;
 }
 
@@ -30,7 +29,6 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
   confirmText,
   cancelText = 'Cancel',
   type = 'warning',
-  requiresTextConfirmation = false,
   loading = false
 }) => {
   const handleConfirm = () => {

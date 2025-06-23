@@ -3,7 +3,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { Navigation } from '../components/Navigation';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -76,26 +75,23 @@ export default function DashboardPage() {
     setShowToast(true);
   };
 
-  const fetchProjects = useCallback(async () => {
-    try {
-      const response = await fetch('/api/projects');
-      if (response.ok) {
-        const data = await response.json();
-        setProjects(data);
-        
-        // Fetch recent activity for the first project (will be active if any exist due to sorting)
-        if (data.length > 0) {
-          await fetchRecentActivity(data[0].id);
-        }
-      }
-    } catch (error) {
-      console.error('Error fetching projects:', error);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const formatTimeAgo = (date: Date) => {
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    const minutes = Math.floor(diff / (1000 * 60));
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
-  const fetchRecentActivity = async (projectId: string) => {
+    if (minutes < 60) {
+      return `${minutes} minutes ago`;
+    } else if (hours < 24) {
+      return `${hours} hours ago`;
+    } else {
+      return `${days} days ago`;
+    }
+  };
+
+  const fetchRecentActivity = useCallback(async (projectId: string) => {
     try {
       // Fetch timeline entries and flagged items in parallel
       const [timelineResponse, flaggedResponse] = await Promise.all([
@@ -113,7 +109,7 @@ export default function DashboardPage() {
             type: 'timeline',
             message: entry.title,
             time: formatTimeAgo(new Date(entry.createdAt)),
-            project: projects[0]?.name || 'Project',
+            project: projects.find(p => p.id === projectId)?.name || 'Project',
             createdAt: new Date(entry.createdAt)
           });
         });
@@ -127,7 +123,7 @@ export default function DashboardPage() {
             type: 'flagged',
             message: `Flagged: ${item.title}`,
             time: formatTimeAgo(new Date(item.createdAt)),
-            project: projects[0]?.name || 'Project',
+            project: projects.find(p => p.id === projectId)?.name || 'Project',
             createdAt: new Date(item.createdAt)
           });
         });
@@ -142,23 +138,28 @@ export default function DashboardPage() {
       // Fallback to empty activity if there's an error
       setRecentActivity([]);
     }
-  };
+  }, [projects]);
 
-  const formatTimeAgo = (date: Date) => {
-    const now = new Date();
-    const diff = now.getTime() - date.getTime();
-    const minutes = Math.floor(diff / (1000 * 60));
-    const hours = Math.floor(diff / (1000 * 60 * 60));
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-    if (minutes < 60) {
-      return `${minutes} minutes ago`;
-    } else if (hours < 24) {
-      return `${hours} hours ago`;
-    } else {
-      return `${days} days ago`;
+  const fetchProjects = useCallback(async () => {
+    try {
+      const response = await fetch('/api/projects');
+      if (response.ok) {
+        const data = await response.json();
+        setProjects(data);
+        
+        // Fetch recent activity for the first project (will be active if any exist due to sorting)
+        if (data.length > 0) {
+          await fetchRecentActivity(data[0].id);
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+    } finally {
+      setLoading(false);
     }
-  };
+  }, [fetchRecentActivity]);
+  
+  const activeProject = projects.find(p => p.status === 'ACTIVE');
 
   const handleArchiveProject = async () => {
     if (!activeProject) return;
@@ -202,15 +203,13 @@ export default function DashboardPage() {
         switch (event.key.toLowerCase()) {
           case 'a':
             event.preventDefault();
-            const activeProject = projects[0];
-            if (activeProject && activeProject.status !== 'ARCHIVED' && !archiving) {
+            if (activeProject && !archiving) {
               setShowArchiveModal(true);
             }
             break;
           case 'n':
             event.preventDefault();
-            const currentProject = projects[0];
-            if (currentProject && currentProject.status === 'ARCHIVED') {
+            if (!activeProject) {
               window.location.href = '/projects/create';
             }
             break;
@@ -220,7 +219,7 @@ export default function DashboardPage() {
 
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [projects, archiving]);
+  }, [activeProject, archiving]);
 
   // Re-enable auth checks now that OAuth is configured
   useEffect(() => {
@@ -248,20 +247,13 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="flex flex-col min-h-screen bg-gray-50">
         <Navigation />
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-64 mb-4"></div>
-            <div className="h-4 bg-gray-200 rounded w-96 mb-8"></div>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-24 bg-gray-200 rounded"></div>
-              ))}
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div className="h-96 bg-gray-200 rounded"></div>
-              <div className="h-96 bg-gray-200 rounded"></div>
+        <main className="flex-1">
+          <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <div className="text-center py-20">
+              <div className="w-12 h-12 border-4 border-gray-200 border-t-[#34A853] rounded-full animate-spin mx-auto" />
+              <p className="mt-4 text-lg text-gray-600">Loading your dashboard...</p>
             </div>
           </div>
         </main>
@@ -269,274 +261,155 @@ export default function DashboardPage() {
     );
   }
 
-  const activeProject = projects[0]; // MVP: Single project focus
+  const archivedProjects = projects.filter(p => p.status === 'ARCHIVED');
+  const hasActiveProject = !!activeProject;
+
+  const getIconForActivity = (type: ActivityItem['type']) => {
+    switch (type) {
+      case 'timeline':
+        return <ClockIcon className="w-5 h-5 text-gray-500" />;
+      case 'flagged':
+        return <FlagIcon className="w-5 h-5 text-gray-500" />;
+      case 'email':
+        return <EnvelopeIcon className="w-5 h-5 text-gray-500" />;
+      default:
+        return <CheckCircleIcon className="w-5 h-5 text-gray-500" />;
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="flex flex-col min-h-screen bg-gray-50">
       <Navigation />
-      
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 sm:mb-8 gap-4 sm:gap-0">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Dashboard</h1>
-            <p className="text-gray-600 mt-1">Monitor your renovation project</p>
-          </div>
-          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-            <div className="relative group">
-              <Button 
-                variant="outline" 
-                className="flex items-center justify-center gap-2 w-full sm:w-auto min-h-[44px] text-sm" 
-                onClick={() => setShowArchiveModal(true)}
-                disabled={archiving || !activeProject || activeProject.status === 'ARCHIVED'}
-                title={
-                  !activeProject 
-                    ? 'No active project to archive'
-                    : activeProject.status === 'ARCHIVED'
-                    ? 'Project already archived'
-                    : 'Archive project and stop monitoring (⌘A)'
-                }
-              >
-                <ArchiveBoxIcon className="w-4 h-4" />
-                <span className="whitespace-nowrap">
-                  {archiving ? 'Archiving...' : activeProject?.status === 'ARCHIVED' ? 'Archived' : 'Archive Project'}
-                </span>
-              </Button>
-              {/* Tooltip for disabled state */}
-              {(!activeProject || activeProject.status === 'ARCHIVED') && (
-                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10">
-                  {!activeProject ? 'No active project to archive' : 'Project already archived'}
-                </div>
-              )}
+      <main className="flex-1">
+        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+          {/* Page Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+              <p className="mt-1 text-sm text-gray-600">Welcome back, {session?.user?.name || 'User'}. Here&apos;s what&apos;s happening.</p>
             </div>
-            <div className="relative group">
-              <Button 
-                variant={activeProject?.status === 'ARCHIVED' ? "primary" : "outline"}
-                className="flex items-center justify-center gap-2 w-full sm:w-auto min-h-[44px] text-sm" 
-                disabled={!activeProject || activeProject.status !== 'ARCHIVED'}
-                onClick={() => window.location.href = '/projects/create'}
-                title={
-                  !activeProject
-                    ? 'Archive current project first'
-                    : activeProject.status !== 'ARCHIVED'
-                    ? 'Archive current project to create new one'
-                    : 'Create a new project (⌘N)'
-                }
-              >
-                <PlusIcon className="w-4 h-4" />
-                <span className="whitespace-nowrap">New Project</span>
+            {hasActiveProject && (
+              <Button onClick={() => setShowArchiveModal(true)} variant="outline">
+                <ArchiveBoxIcon className="w-4 h-4 mr-2" />
+                Archive Current Project
               </Button>
-              {/* Tooltip for disabled state */}
-              {(!activeProject || activeProject.status !== 'ARCHIVED') && (
-                <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs text-white bg-gray-900 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-10">
-                  {!activeProject ? 'Archive current project first' : 'Archive current project to create new one'}
-                </div>
-              )}
-            </div>
+            )}
+            {!hasActiveProject && projects.length > 0 && (
+               <Button onClick={() => window.location.href='/projects/create'}>
+                 <PlusIcon className="w-4 h-4 mr-2" />
+                 Create New Project
+               </Button>
+            )}
           </div>
-        </div>
-
-        {/* MVP Notice */}
-        <Card className={`${activeProject?.status === 'ARCHIVED' ? 'bg-amber-50 border-amber-200' : 'bg-blue-50 border-blue-200'} mb-8`}>
-          <CardContent className="p-6">
-            <div className="flex">
-              <div className="flex-shrink-0">
-                <ExclamationTriangleIcon className={`h-5 w-5 ${activeProject?.status === 'ARCHIVED' ? 'text-amber-400' : 'text-blue-400'}`} />
-              </div>
-              <div className="ml-3">
-                <h3 className={`text-sm font-medium ${activeProject?.status === 'ARCHIVED' ? 'text-amber-800' : 'text-blue-800'}`}>
-                  {activeProject?.status === 'ARCHIVED' ? 'Project Archived' : 'Single Project Focus'}
-                </h3>
-                <div className={`mt-2 text-sm ${activeProject?.status === 'ARCHIVED' ? 'text-amber-700' : 'text-blue-700'}`}>
-                  <p>
-                    {activeProject?.status === 'ARCHIVED' 
-                      ? 'This project is archived and read-only. Email monitoring has stopped. Use the "New Project" button above to start fresh.'
-                      : 'You have one active project. Archive it first to create a new project. Multi-project support coming in future updates.'
-                    }
+          
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Main Content: Active Project */}
+            <div className="lg:col-span-2 space-y-6">
+              {hasActiveProject ? (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex justify-between items-center">
+                      <span>Active Project</span>
+                      <span className="text-sm font-medium text-gray-500">{activeProject.contractor}</span>
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <h3 className="text-lg font-semibold text-gray-900">{activeProject.name}</h3>
+                    <p className="text-sm text-gray-500 mt-1">
+                      Started on {new Date(activeProject.startDate).toLocaleDateString()}
+                    </p>
+                    <div className="flex gap-8 mt-4 pt-4 border-t">
+                      <div>
+                        <div className="text-2xl font-bold text-gray-900">{activeProject._count.timelineEntries}</div>
+                        <div className="text-sm text-gray-500">Timeline Events</div>
+                      </div>
+                      <div>
+                        <div className="text-2xl font-bold text-gray-900">{activeProject._count.flaggedItems}</div>
+                        <div className="text-sm text-gray-500">Flagged Items</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card className="flex flex-col items-center justify-center p-8 text-center">
+                  <ExclamationTriangleIcon className="w-12 h-12 text-amber-400" />
+                  <h3 className="mt-4 text-lg font-semibold text-gray-900">No Active Project</h3>
+                  <p className="mt-1 text-sm text-gray-600">
+                    All your projects are archived. Create a new one to get started.
                   </p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Stats Overview */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
-          <Card>
-            <CardContent className="flex items-center p-4 sm:p-6">
-              <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-[#34A853] rounded-md flex items-center justify-center">
-                  <CheckCircleIcon className="w-5 h-5 text-white" />
-                </div>
-              </div>
-              <div className="ml-3 sm:ml-4 min-w-0">
-                <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">Active Project</p>
-                <p className="text-xl sm:text-2xl font-bold text-gray-900">1</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="flex items-center p-4 sm:p-6">
-              <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-red-500 rounded-md flex items-center justify-center">
-                  <FlagIcon className="w-5 h-5 text-white" />
-                </div>
-              </div>
-              <div className="ml-3 sm:ml-4 min-w-0">
-                <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">Flagged Items</p>
-                <p className="text-xl sm:text-2xl font-bold text-gray-900">{activeProject?._count?.flaggedItems || 0}</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="flex items-center p-4 sm:p-6">
-              <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-[#1A73E8] rounded-md flex items-center justify-center">
-                  <ClockIcon className="w-5 h-5 text-white" />
-                </div>
-              </div>
-              <div className="ml-3 sm:ml-4 min-w-0">
-                <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">Timeline Entries</p>
-                <p className="text-xl sm:text-2xl font-bold text-gray-900">{activeProject?._count?.timelineEntries || 0}</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="flex items-center p-4 sm:p-6">
-              <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-yellow-500 rounded-md flex items-center justify-center">
-                  <ExclamationTriangleIcon className="w-5 h-5 text-white" />
-                </div>
-              </div>
-              <div className="ml-3 sm:ml-4 min-w-0">
-                <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">Needs Attention</p>
-                <p className="text-xl sm:text-2xl font-bold text-gray-900">{Math.min(activeProject?._count?.flaggedItems || 0, 2)}</p>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
-          {/* Active Project */}
-          <Card>
-            <CardHeader className="p-4 sm:p-6 pb-3 sm:pb-4">
-              <CardTitle className="text-lg sm:text-xl">Your Active Project</CardTitle>
-            </CardHeader>
-            <CardContent className="p-4 sm:p-6 pt-0">
-              {activeProject && (
-                <div className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 cursor-pointer">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-semibold text-gray-900 text-base sm:text-lg pr-2">{activeProject.name}</h3>
-                    <span className={`px-2 py-1 text-xs rounded-full flex-shrink-0 ${
-                      activeProject.status === 'ARCHIVED' 
-                        ? 'bg-amber-100 text-amber-800' 
-                        : 'bg-green-100 text-green-800'
-                    }`}>
-                      {activeProject.status === 'ARCHIVED' ? 'Archived' : activeProject.status}
-                    </span>
-                  </div>
-                  <div className="space-y-2 text-sm text-gray-600">
-                    <div className="flex justify-between">
-                      <span>Started:</span>
-                      <span>{new Date(activeProject.startDate).toLocaleDateString()}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Contractor:</span>
-                      <span className="truncate ml-2">{activeProject.contractor}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Monitoring:</span>
-                      <span className={activeProject.status === 'ARCHIVED' ? 'text-amber-600' : 'text-green-600'}>
-                        {activeProject.status === 'ARCHIVED' ? 'Stopped' : 'Active'}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center mt-4 pt-3 border-t border-gray-200">
-                    <span className="text-sm text-gray-500">
-                      Created: {new Date(activeProject.createdAt).toLocaleDateString()}
-                    </span>
-                    {activeProject._count.flaggedItems > 0 && (
-                      <span className="flex items-center gap-1 text-sm text-red-600">
-                        <FlagIcon className="w-4 h-4" />
-                        {activeProject._count.flaggedItems} flagged
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex flex-col sm:flex-row gap-2 mt-4">
-                    <Link href="/timeline" className="flex-1">
-                      <Button variant="outline" size="sm" className="w-full min-h-[40px]">View Timeline</Button>
-                    </Link>
-                    <Link href="/flagged" className="flex-1">
-                      <Button variant="outline" size="sm" className="w-full min-h-[40px]">Review Flagged Items</Button>
-                    </Link>
-                  </div>
-                </div>
+                  <Button className="mt-6" onClick={() => window.location.href = '/projects/create'}>
+                    <PlusIcon className="w-4 h-4 mr-2" />
+                    Create New Project
+                  </Button>
+                </Card>
               )}
-            </CardContent>
-          </Card>
 
-          {/* Recent Activity */}
-          <Card>
-            <CardHeader className="p-4 sm:p-6 pb-3 sm:pb-4">
-              <CardTitle className="text-lg sm:text-xl">Recent Activity</CardTitle>
-            </CardHeader>
-            <CardContent className="p-4 sm:p-6 pt-0">
-              <div className="space-y-4">
-                {recentActivity.length > 0 ? (
-                  recentActivity.map((activity) => (
-                    <div key={activity.id} className="flex items-start gap-3">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                        activity.type === 'flagged' 
-                          ? 'bg-red-100' 
-                          : activity.type === 'timeline'
-                          ? 'bg-blue-100'
-                          : 'bg-green-100'
-                      }`}>
-                        {activity.type === 'flagged' ? (
-                          <FlagIcon className="w-4 h-4 text-red-600" />
-                        ) : activity.type === 'timeline' ? (
-                          <ClockIcon className="w-4 h-4 text-blue-600" />
-                        ) : (
-                          <EnvelopeIcon className="w-4 h-4 text-green-600" />
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm text-gray-900 break-words">{activity.message}</p>
-                        <p className="text-xs text-gray-500 mt-1">{activity.project} • {activity.time}</p>
-                      </div>
+              {/* Archived Projects */}
+              {archivedProjects.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Archived Projects</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="divide-y divide-gray-200">
+                      {archivedProjects.map(project => (
+                        <li key={project.id} className="py-3 flex justify-between items-center">
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">{project.name}</p>
+                            <p className="text-sm text-gray-500">{project.contractor}</p>
+                          </div>
+                          <span className="text-xs text-gray-400">
+                            Archived on {new Date(project.createdAt).toLocaleDateString()}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+            
+            {/* Sidebar: Recent Activity */}
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Recent Activity</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {recentActivity.length > 0 ? (
+                    <ul className="space-y-4">
+                      {recentActivity.map(item => (
+                        <li key={item.id} className="flex items-start gap-3">
+                          <div className="flex-shrink-0 mt-1">
+                            {getIconForActivity(item.type)}
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-700">{item.message}</p>
+                            <p className="text-xs text-gray-500 mt-0.5">{item.time} on {item.project}</p>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <div className="text-center py-6">
+                      <p className="text-sm text-gray-500">No recent activity to display.</p>
                     </div>
-                  ))
-                ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    <ClockIcon className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                    <p className="text-sm">No recent activity yet</p>
-                    <p className="text-xs">Activity will appear here as your project progresses</p>
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </div>
       </main>
 
-      {showArchiveModal && activeProject && (
+      {showArchiveModal && hasActiveProject && (
         <ConfirmModal
           isOpen={showArchiveModal}
           onClose={() => setShowArchiveModal(false)}
           onConfirm={handleArchiveProject}
           title="Archive Project"
-          description={`Archive "${activeProject.name}"?
-
-This will:
-• Stop email monitoring
-• Make project read-only
-• Enable creation of new projects
-
-Archived project data remains accessible for viewing.`}
-          confirmText="Archive Project"
+          description={`Are you sure you want to archive "${activeProject.name}"? You can view archived projects but cannot make changes.`}
+          confirmText={archiving ? 'Archiving...' : 'Yes, Archive'}
           cancelText="Cancel"
           type="warning"
           loading={archiving}
