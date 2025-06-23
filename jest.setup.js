@@ -1,8 +1,8 @@
-import '@testing-library/jest-dom'
-import 'whatwg-fetch'
+require('@testing-library/jest-dom')
+require('whatwg-fetch')
 
 // Polyfill for Next.js API routes
-import { TextEncoder, TextDecoder } from 'util'
+const { TextEncoder, TextDecoder } = require('util')
 global.TextEncoder = TextEncoder
 global.TextDecoder = TextDecoder
 
@@ -31,8 +31,8 @@ jest.mock('next/navigation', () => ({
 // Mock Next.js image
 jest.mock('next/image', () => ({
   __esModule: true,
-  default: (props) => {
-    return <img {...props} />
+  default: () => {
+    return 'NextImageMock'
   },
 }))
 

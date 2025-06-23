@@ -6,25 +6,7 @@ const createJestConfig = nextJest({
 })
 
 // Add any custom config to be passed to Jest
-const customJestConfig = {
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-  testEnvironment: 'jest-environment-jsdom',
-  testPathIgnorePatterns: [
-    '<rootDir>/.next/',
-    '<rootDir>/node_modules/',
-    '<rootDir>/infrastructure/',
-    '<rootDir>/archive/',
-  ],
-  collectCoverageFrom: [
-    'app/**/*.{js,jsx,ts,tsx}',
-    '!app/**/*.d.ts',
-    '!app/**/layout.tsx',
-    '!app/**/loading.tsx',
-    '!app/**/not-found.tsx',
-    '!app/**/error.tsx',
-    '!app/api/debug*/**',
-    '!app/api/test*/**',
-  ],
+const config = {
   // Temporarily disabled coverage thresholds - will re-enable as we increase coverage
   // coverageThreshold: {
   //   global: {
@@ -48,36 +30,45 @@ const customJestConfig = {
   //   },
   // },
   moduleNameMapper: {
+    // '@prisma/client': '<rootDir>/node_modules/@prisma/client',
     '^@/(.*)$': '<rootDir>/app/$1',
     '^@/components/(.*)$': '<rootDir>/app/components/$1',
     '^@/lib/(.*)$': '<rootDir>/app/lib/$1',
-    '^@/fixtures/(.*)$': '<rootDir>/tests/fixtures/$1',
-    '^@/helpers/(.*)$': '<rootDir>/tests/helpers/$1',
+    '^@/utils/(.*)$': '<rootDir>/app/utils/$1',
   },
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
+  testPathIgnorePatterns: [
+    '<rootDir>/node_modules/',
+    '<rootDir>/.next/',
+    '<rootDir>/infrastructure/',
+    '<rootDir>/archive/',
+  ],
+  collectCoverageFrom: [
+    'app/**/*.{js,jsx,ts,tsx}',
+    '!app/**/*.d.ts',
+    '!app/**/layout.tsx',
+    '!app/**/loading.tsx',
+    '!app/**/not-found.tsx',
+    '!app/**/error.tsx',
+    '!app/api/debug*/**',
+    '!app/api/test*/**',
+  ],
   testMatch: [
     '<rootDir>/tests/**/*.test.{js,jsx,ts,tsx}',
     '<rootDir>/app/**/*.test.{js,jsx,ts,tsx}',
   ],
-  // Use 'node' environment for API route tests
-  projects: [
-    {
-      displayName: 'node',
-      testEnvironment: 'node',
-      testMatch: ['<rootDir>/tests/features/api/**/*.test.ts'],
-      setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-    },
-    {
-      displayName: 'jsdom',
-      testEnvironment: 'jest-environment-jsdom',
-      testMatch: [
-        '<rootDir>/tests/bdd/**/*.test.tsx',
-        '<rootDir>/tests/features/components/**/*.test.tsx',
-        '<rootDir>/tests/features/projects/**/*.test.tsx',
-        '<rootDir>/tests/features/authentication/**/*.test.tsx',
-      ],
-      setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-    },
-  ],
+  transform: {
+    '^.+\\.(js|jsx|ts|tsx)$': [
+      'babel-jest',
+      {
+        presets: [
+          ['@babel/preset-env', { targets: { node: 'current' } }],
+          ['@babel/preset-react', { runtime: 'automatic' }],
+          '@babel/preset-typescript',
+        ],
+      },
+    ],
+  },
   // Use node environment for API route tests
   testEnvironmentOptions: {
     customExportConditions: [''],
@@ -86,7 +77,9 @@ const customJestConfig = {
   maxWorkers: process.env.CI ? 2 : '50%',
   // Cache optimization
   cacheDirectory: '<rootDir>/.jest-cache',
+  coverageProvider: 'v8',
+  testEnvironment: 'jest-environment-jsdom',
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
-module.exports = createJestConfig(customJestConfig) 
+module.exports = createJestConfig(config) 
