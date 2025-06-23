@@ -163,6 +163,18 @@ export async function POST(request: NextRequest) {
     }
 
     const newProject = await prisma.$transaction(async (tx) => {
+      // Defensive upsert: ensure user exists
+      await tx.user.upsert({
+        where: { id: session.user.id },
+        update: {},
+        create: {
+          id: session.user.id,
+          name: session.user.name ?? '',
+          email: session.user.email ?? '',
+          image: session.user.image ?? '',
+        },
+      });
+
       const project = await tx.project.create({
         data: {
           name: String(name),
