@@ -198,7 +198,7 @@ export async function POST(request: NextRequest) {
         data: {
           title: 'Project Created',
           description: `The project "${project.name}" was successfully created.`,
-          category: TimelineCategory.GENERAL_UPDATE,
+          category: TimelineCategory.UPDATE,
           date: new Date(),
           impact: 'Project kickoff',
           projectId: project.id,
