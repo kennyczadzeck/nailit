@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '../../lib/prisma'
 
 // Simple classification function - replace with actual AI implementation
-async function classifyEmailContent(emailContent: string, emailSubject: string) {
+async function classifyEmailContent() {
   // Mock classification for now
   return {
     category: 'SCOPE' as const,
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Classify the email content using AI
-    const classification = await classifyEmailContent(content, subject)
+    const classification = await classifyEmailContent()
 
     // Create flagged item from email content
     const flaggedItem = await prisma.flaggedItem.create({

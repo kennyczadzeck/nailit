@@ -18,7 +18,6 @@ import {
   ArchiveBoxIcon,
   Bars3Icon,
   XMarkIcon,
-  ChartBarIcon,
 } from '@heroicons/react/24/outline';
 
 const navigation = [

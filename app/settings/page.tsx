@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { useSession } from 'next-auth/react';
 import { Navigation } from '../components/Navigation';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -14,8 +13,7 @@ import {
   BellIcon,
   EnvelopeIcon,
   CogIcon,
-  ExclamationTriangleIcon,
-  TrashIcon
+  ExclamationTriangleIcon
 } from '@heroicons/react/24/outline';
 
 interface AddressData {
@@ -25,7 +23,6 @@ interface AddressData {
 }
 
 export default function ProjectSettingsPage() {
-  const { data: sessionData, status } = useSession();
   const { currentProject: project, loading, refreshProjects } = useProject();
   const [archiving, setArchiving] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -655,19 +652,11 @@ Archived project data remains accessible for viewing.`}
           isOpen={showDeleteModal}
           onClose={() => setShowDeleteModal(false)}
           onConfirm={handleDeleteProject}
-          title="Delete Project"
-          description={`Are you sure you want to PERMANENTLY DELETE "${project.name}"?
-
-This will:
-• Delete all project data
-• Delete all timeline entries
-• Delete all flagged items
-• This action CANNOT be undone`}
+          title="Permanently Delete Project"
+          description={`This action cannot be undone. This will permanently delete the "${project.name}" project, including all timeline entries and flagged items. Please type the project name to confirm.`}
           confirmText="Delete Project"
           cancelText="Cancel"
           type="danger"
-          requiresTextConfirmation={true}
-          confirmationText={project.name}
           loading={deleting}
         />
       )}

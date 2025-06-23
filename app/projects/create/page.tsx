@@ -57,8 +57,8 @@ export default function CreateProject() {
       setHasSavedData(true);
       try {
         const parsedData = JSON.parse(savedData);
-        setFormData(parsedData.formData || formData);
-        setTeamMembers(parsedData.teamMembers || teamMembers);
+        setFormData(prev => parsedData.formData || prev);
+        setTeamMembers(prev => parsedData.teamMembers || prev);
       } catch (error) {
         console.error('Error loading saved form data:', error);
         localStorage.removeItem(STORAGE_KEY);

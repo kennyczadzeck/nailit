@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../auth/[...nextauth]/route'
 import { prisma } from '../../lib/prisma'
-import { Prisma, TeamMemberRole } from '@prisma/client'
+import { Prisma, TeamMemberRole, TimelineCategory } from '@prisma/client'
 
 // GET /api/projects - Get all projects for authenticated user
 export async function GET() {
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
     let body;
     try {
       body = await request.json()
-    } catch (parseError) {
+    } catch {
       return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
     }
     
@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
       if (isNaN(parsedBudget)) {
         throw new Error('Invalid budget value');
       }
-    } catch (error) {
+    } catch {
       return NextResponse.json(
         { error: 'Invalid budget format' },
         { status: 400 }
@@ -145,7 +145,7 @@ export async function POST(request: NextRequest) {
       if (isNaN(parsedStartDate.getTime()) || isNaN(parsedEndDate.getTime())) {
         throw new Error('Invalid date values');
       }
-    } catch (error) {
+    } catch {
       return NextResponse.json(
         { error: 'Invalid date format' },
         { status: 400 }
@@ -198,7 +198,7 @@ export async function POST(request: NextRequest) {
         data: {
           title: 'Project Created',
           description: `The project "${project.name}" was successfully created.`,
-          category: 'UPDATE',
+          category: TimelineCategory.UPDATE,
           date: new Date(),
           impact: 'Project kickoff',
           projectId: project.id,
