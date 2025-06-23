@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
     let body;
     try {
       body = await request.json()
-    } catch (parseError) {
+    } catch {
       return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
     }
     
@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
       if (isNaN(parsedBudget)) {
         throw new Error('Invalid budget value');
       }
-    } catch (error) {
+    } catch {
       return NextResponse.json(
         { error: 'Invalid budget format' },
         { status: 400 }
@@ -145,7 +145,7 @@ export async function POST(request: NextRequest) {
       if (isNaN(parsedStartDate.getTime()) || isNaN(parsedEndDate.getTime())) {
         throw new Error('Invalid date values');
       }
-    } catch (error) {
+    } catch {
       return NextResponse.json(
         { error: 'Invalid date format' },
         { status: 400 }
