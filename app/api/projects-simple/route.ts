@@ -3,7 +3,34 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '../auth/[...nextauth]/route'
 import { prisma } from '../../lib/prisma'
 
-// GET /api/projects-simple - Get projects without complex includes
+/**
+ * @swagger
+ * /api/projects-simple:
+ *   get:
+ *     summary: Get simplified project list
+ *     description: Get a simplified list of projects with basic information only
+ *     tags:
+ *       - Projects
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved simplified project list
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   name:
+ *                     type: string
+ *                   status:
+ *                     type: string
+ *                     enum: [ACTIVE, ARCHIVED]
+ *       401:
+ *         description: Unauthorized
+ */
 export async function GET() {
   try {
     console.log('=== Simple Projects Endpoint ===');

@@ -3,7 +3,39 @@ import { headers } from 'next/headers'
 import { logger } from '../../../../lib/logger'
 import { prisma } from '../../../../lib/prisma'
 
-// Gmail Push Notification webhook handler
+/**
+ * @swagger
+ * /api/email/webhook/gmail:
+ *   post:
+ *     summary: Gmail webhook notification
+ *     description: Receive webhook notifications from Gmail when new emails arrive
+ *     tags:
+ *       - Email
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               message:
+ *                 type: object
+ *                 properties:
+ *                   data:
+ *                     type: string
+ *                     description: Base64 encoded message data
+ *                   messageId:
+ *                     type: string
+ *                   publishTime:
+ *                     type: string
+ *     responses:
+ *       200:
+ *         description: Webhook processed successfully
+ *       400:
+ *         description: Invalid webhook payload
+ *       500:
+ *         description: Webhook processing error
+ */
 export async function POST(request: NextRequest) {
   try {
     const headersList = await headers()
@@ -147,7 +179,31 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Handle webhook verification (GET request)
+/**
+ * @swagger
+ * /api/email/webhook/gmail:
+ *   get:
+ *     summary: Gmail webhook verification
+ *     description: Handle Gmail webhook verification challenge
+ *     tags:
+ *       - Email
+ *     parameters:
+ *       - in: query
+ *         name: hub.challenge
+ *         schema:
+ *           type: string
+ *         description: Verification challenge from Gmail
+ *       - in: query
+ *         name: hub.mode
+ *         schema:
+ *           type: string
+ *         description: Verification mode
+ *     responses:
+ *       200:
+ *         description: Verification challenge response
+ *       400:
+ *         description: Invalid verification request
+ */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const challenge = searchParams.get('hub.challenge')
