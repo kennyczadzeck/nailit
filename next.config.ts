@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  reactStrictMode: true, // Re-enabled, switching to Redoc for API docs
   eslint: {
     // Warning: This allows production builds to successfully complete even if
     // your project has ESLint errors.

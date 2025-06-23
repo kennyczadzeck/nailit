@@ -1,7 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { logger } from '../../../../../lib/logger'
 import { prisma } from '../../../../../lib/prisma'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '../../../../auth/[...nextauth]/route'
 
+/**
+ * @swagger
+ * /api/email/oauth/gmail/callback:
+ *   get:
+ *     summary: Gmail OAuth callback
+ *     description: Handle the OAuth callback from Gmail to complete email account connection
+ *     tags:
+ *       - Email
+ *     parameters:
+ *       - in: query
+ *         name: code
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: OAuth authorization code from Gmail
+ *       - in: query
+ *         name: state
+ *         schema:
+ *           type: string
+ *         description: State parameter for CSRF protection
+ *     responses:
+ *       302:
+ *         description: Redirect to success/error page after processing
+ *       400:
+ *         description: Bad request - missing authorization code
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: OAuth processing error
+ */
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)

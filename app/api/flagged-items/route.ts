@@ -1,7 +1,53 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '../auth/[...nextauth]/route'
 import { prisma } from '../../lib/prisma'
 
-// GET /api/flagged-items - Get all flagged items for a project
+/**
+ * @swagger
+ * /api/flagged-items:
+ *   get:
+ *     summary: Get flagged items for a project
+ *     description: Returns a list of flagged items for the specified project
+ *     tags:
+ *       - Flagged Items
+ *     parameters:
+ *       - in: query
+ *         name: projectId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the project to get flagged items for
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved flagged items
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   title:
+ *                     type: string
+ *                   description:
+ *                     type: string
+ *                   category:
+ *                     type: string
+ *                     enum: [COST, SCHEDULE, SCOPE, ISSUE, UPDATE]
+ *                   status:
+ *                     type: string
+ *                     enum: [PENDING, RESOLVED, DISMISSED]
+ *                   priority:
+ *                     type: string
+ *                     enum: [LOW, MEDIUM, HIGH]
+ *       400:
+ *         description: Bad request - missing projectId
+ *       401:
+ *         description: Unauthorized
+ */
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)

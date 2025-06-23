@@ -5,6 +5,36 @@ import { authOptions } from '../auth/[...nextauth]/route'
 import { prisma } from '../../lib/prisma'
 import { Prisma, TeamMemberRole, TimelineCategory } from '@prisma/client'
 
+/**
+ * @swagger
+ * /api/projects:
+ *   get:
+ *     summary: Get all projects for authenticated user
+ *     description: Returns a list of all projects belonging to the authenticated user
+ *     tags:
+ *       - Projects
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved projects
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   name:
+ *                     type: string
+ *                   description:
+ *                     type: string
+ *                   status:
+ *                     type: string
+ *                     enum: [ACTIVE, ARCHIVED]
+ *       401:
+ *         description: Unauthorized - user not authenticated
+ */
 // GET /api/projects - Get all projects for authenticated user
 export async function GET() {
   try {
@@ -63,6 +93,67 @@ export async function GET() {
   }
 }
 
+/**
+ * @swagger
+ * /api/projects:
+ *   post:
+ *     summary: Create a new project
+ *     description: Create a new renovation project with team members and settings
+ *     tags:
+ *       - Projects
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - description
+ *               - address
+ *               - budget
+ *               - startDate
+ *               - endDate
+ *               - teamMembers
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Project name
+ *               description:
+ *                 type: string
+ *                 description: Project description
+ *               address:
+ *                 type: string
+ *                 description: Project address
+ *               budget:
+ *                 type: number
+ *                 description: Project budget
+ *               startDate:
+ *                 type: string
+ *                 format: date
+ *               endDate:
+ *                 type: string
+ *                 format: date
+ *               teamMembers:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     name:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     role:
+ *                       type: string
+ *                       enum: [GENERAL_CONTRACTOR, ARCHITECT_DESIGNER, PROJECT_MANAGER]
+ *     responses:
+ *       201:
+ *         description: Project created successfully
+ *       400:
+ *         description: Bad request - validation error
+ *       401:
+ *         description: Unauthorized
+ */
 // POST /api/projects - Create a new project
 export async function POST(request: NextRequest) {
   try {

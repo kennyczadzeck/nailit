@@ -1,7 +1,50 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '../auth/[...nextauth]/route'
 import { prisma } from '../../lib/prisma'
 
-// GET /api/timeline - Get all timeline entries for a project
+/**
+ * @swagger
+ * /api/timeline:
+ *   get:
+ *     summary: Get timeline events for a project
+ *     description: Returns chronological timeline events for the specified project
+ *     tags:
+ *       - Timeline
+ *     parameters:
+ *       - in: query
+ *         name: projectId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID of the project to get timeline for
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved timeline events
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   title:
+ *                     type: string
+ *                   description:
+ *                     type: string
+ *                   date:
+ *                     type: string
+ *                     format: date-time
+ *                   category:
+ *                     type: string
+ *                     enum: [MILESTONE, GENERAL_UPDATE, COST_CHANGE, SCHEDULE_CHANGE, SCOPE_CHANGE, ISSUE_IDENTIFIED, ISSUE_RESOLVED]
+ *       400:
+ *         description: Bad request - missing projectId
+ *       401:
+ *         description: Unauthorized
+ */
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)

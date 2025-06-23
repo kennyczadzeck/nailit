@@ -4,6 +4,22 @@ import { authOptions } from '../../../auth/[...nextauth]/route'
 import { logger } from '../../../../lib/logger'
 import { prisma } from '../../../../lib/prisma'
 
+/**
+ * @swagger
+ * /api/email/oauth/gmail:
+ *   get:
+ *     summary: Initiate Gmail OAuth connection
+ *     description: Start the OAuth flow to connect user's Gmail account for email monitoring
+ *     tags:
+ *       - Email
+ *     responses:
+ *       302:
+ *         description: Redirect to Gmail OAuth authorization page
+ *       401:
+ *         description: Unauthorized - user not authenticated
+ *       500:
+ *         description: OAuth configuration error
+ */
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)

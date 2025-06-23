@@ -14,6 +14,40 @@ type EmailSettings = {
   highPriorityAlerts: boolean;
 } | null;
 
+/**
+ * @swagger
+ * /api/email/connection/status:
+ *   get:
+ *     summary: Check email connection status
+ *     description: Check if the user has connected their email account for monitoring
+ *     tags:
+ *       - Email
+ *     responses:
+ *       200:
+ *         description: Email connection status retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 connected:
+ *                   type: boolean
+ *                   description: Whether email is connected
+ *                 provider:
+ *                   type: string
+ *                   description: Email provider (e.g., gmail)
+ *                 email:
+ *                   type: string
+ *                   description: Connected email address
+ *                 lastSync:
+ *                   type: string
+ *                   format: date-time
+ *                   description: Last sync timestamp
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ */
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
