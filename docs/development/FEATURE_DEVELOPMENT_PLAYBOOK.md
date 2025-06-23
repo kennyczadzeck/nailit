@@ -190,6 +190,28 @@ app/api/<feature-name>/
 - **Zod**: Input validation for all API endpoints
 - **Prisma**: Type-safe database operations
 
+### **Enum Usage Protocol**
+To prevent a common class of runtime errors, the following protocol for using database enums is **MANDATORY**:
+
+1.  **Always Import the Enum Type**: When interacting with a model field that is an enum (e.g., `TimelineCategory`, `TeamMemberRole`), you **must** import the specific enum type from `@prisma/client`.
+    ```typescript
+    import { TimelineCategory } from '@prisma/client'
+    ```
+
+2.  **Never Use Raw Strings**: Do not use "magic strings" in your code to represent an enum value. This bypasses all type safety and will break if the enum definition changes.
+
+    *   **INCORRECT ⛔**:
+        ```typescript
+        // This will cause a runtime error if 'GENERAL_UPDATE' is not a valid enum member.
+        const category = 'GENERAL_UPDATE'; 
+        ```
+
+    *   **CORRECT ✅**:
+        ```typescript
+        // This is type-safe. The compiler will fail if the enum member does not exist.
+        const category = TimelineCategory.GENERAL_UPDATE;
+        ```
+
 ---
 
 ## 🗄️ **Phase 4: Database Schema Management Protocol**
