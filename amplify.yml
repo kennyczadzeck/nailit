@@ -63,6 +63,11 @@ frontend:
         - echo "Copying essential .next files..."
         - cp .next/BUILD_ID ./deploy/.next/
         - cp .next/*.json ./deploy/.next/ 2>/dev/null || echo "No JSON files"
+        - echo "Ensuring trace files are included..."
+        - find .next -name "*.nft.json" | wc -l | xargs echo "Original trace files count:"
+        - find ./deploy -name "*.nft.json" | wc -l | xargs echo "Copied trace files count:"
+        - echo "Copying any missing trace files..."
+        - find .next -name "*.nft.json" -exec cp --parents {} ./deploy/ \; 2>/dev/null || echo "Trace files already copied"
         - echo "Copying public assets..."
         - cp -r public ./deploy/ 2>/dev/null || echo "No public directory"
         - echo "Creating minimal package.json..."
@@ -83,6 +88,9 @@ frontend:
         - ls -la ./deploy/.next/server/ | head -5 || echo "⚠️ server files missing"
         - echo "Static files check:"
         - ls -la ./deploy/.next/static/ | head -5 || echo "⚠️ static files missing"
+        - echo "Final trace files verification:"
+        - find ./deploy -name "*.nft.json" | wc -l | xargs echo "Final trace files count:"
+        - find ./deploy -name "*.nft.json" | head -5 || echo "No trace files found"
         - echo "Total deployment size:"
         - du -sh ./deploy
         - echo "Size breakdown:"
