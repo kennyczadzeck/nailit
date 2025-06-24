@@ -45,13 +45,21 @@ frontend:
         - env | grep -e DISABLE_CLOUDWATCH_LOGS >> .env.production || echo "DISABLE_CLOUDWATCH_LOGS not set"
         - echo "Contents of .env.production:"
         - cat .env.production || echo "No .env.production file created"
-        - npm run build -- --no-lint
+        - echo "=== BUILDING NEXT.JS APPLICATION ==="
+        - npm run build
+        - echo "Build completed. Checking for required files..."
+        - ls -la .next/required-server-files.json || echo "❌ required-server-files.json NOT FOUND after build"
+        - ls -la .next/BUILD_ID || echo "❌ BUILD_ID NOT FOUND after build"
+        - ls -la .next/build-manifest.json || echo "❌ build-manifest.json NOT FOUND after build"
         - echo "=== DEPLOYMENT OPTIMIZATION ==="
         - echo "Creating clean deployment directory..."
         - rm -rf ./deploy
         - mkdir -p ./deploy
         - echo "Copying complete .next directory first..."
         - cp -r .next ./deploy/
+        - echo "Verifying required files were copied..."
+        - ls -la ./deploy/.next/required-server-files.json || echo "❌ required-server-files.json NOT COPIED"
+        - ls -la ./deploy/.next/BUILD_ID || echo "❌ BUILD_ID NOT COPIED"
         - echo "Cleaning up unnecessary files from .next..."
         - rm -rf ./deploy/.next/cache
         - rm -rf ./deploy/.next/trace
@@ -60,21 +68,17 @@ frontend:
         - cp -r public ./deploy/ 2>/dev/null || echo "No public directory"
         - echo "Creating minimal package.json..."
         - echo '{"name":"nailit","type":"module"}' > ./deploy/package.json
-        - echo "=== DEPLOYMENT SIZE ANALYSIS ==="
+        - echo "=== FINAL VERIFICATION ==="
+        - echo "Checking for required Next.js files in deployment directory:"
+        - ls -la ./deploy/.next/required-server-files.json || echo "⚠️ required-server-files.json not found in deploy"
+        - ls -la ./deploy/.next/BUILD_ID || echo "⚠️ BUILD_ID not found in deploy"
+        - ls -la ./deploy/.next/prerender-manifest.json || echo "⚠️ prerender-manifest.json not found in deploy"
         - echo "Total deployment size:"
         - du -sh ./deploy
-        - echo "Breakdown by directory:"
-        - du -sh ./deploy/* 2>/dev/null || echo "No subdirectories"
-        - echo "Checking for required Next.js files:"
-        - ls -la ./deploy/.next/required-server-files.json 2>/dev/null || echo "⚠️ required-server-files.json not found"
-        - ls -la ./deploy/.next/BUILD_ID 2>/dev/null || echo "⚠️ BUILD_ID not found"
-        - ls -la ./deploy/.next/prerender-manifest.json 2>/dev/null || echo "⚠️ prerender-manifest.json not found"
-        - echo "File count:"
-        - find ./deploy -type f | wc -l
-        - echo "Largest files (>1MB):"
-        - find ./deploy -type f -size +1M -exec ls -lh {} \; 2>/dev/null || echo "No large files"
-        - echo "Verifying deployment directory exists:"
+        - echo "Deployment directory contents:"
         - ls -la ./deploy
+        - echo "Deploy .next directory contents:"
+        - ls -la ./deploy/.next | head -20
   artifacts:
     baseDirectory: deploy
     files:
