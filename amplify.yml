@@ -5,7 +5,7 @@ frontend:
       commands:
         - echo "Environment variables check..."
         - echo "DATABASE_URL exists:" $DATABASE_URL
-        - echo "DATABASE_MIGRATION_URL exists:" $DATABASE_MIGRATION_URL
+        - echo "DATABASE_MIGRATION_URL exists:" $DATABASE_URL
         - echo "NEXTAUTH_URL exists:" $NEXTAUTH_URL
         - |
           if [[ "$DATABASE_URL" == *"misty-frog"* ]]; then
@@ -46,23 +46,40 @@ frontend:
         - echo "Contents of .env.production:"
         - cat .env.production || echo "No .env.production file created"
         - npm run build -- --no-lint
-        - echo "Cleaning up build artifacts to reduce deployment size..."
+        - echo "=== AGGRESSIVE DEPLOYMENT OPTIMIZATION ==="
+        - echo "Creating clean deployment directory..."
+        - rm -rf /tmp/deploy
+        - mkdir -p /tmp/deploy
+        - echo "Cleaning up .next directory..."
         - rm -rf .next/cache
+        - rm -rf .next/trace
         - find .next -name "*.map" -delete
-        - echo "Build output size after cleanup:"
-        - du -sh .next
+        - find .next -name "*.txt" -delete
+        - echo "Copying only essential Next.js files..."
+        - mkdir -p /tmp/deploy/.next
+        - cp -r .next/static /tmp/deploy/.next/ 2>/dev/null || echo "No static directory"
+        - cp -r .next/server /tmp/deploy/.next/ 2>/dev/null || echo "No server directory"
+        - cp .next/BUILD_ID /tmp/deploy/.next/ 2>/dev/null || echo "No BUILD_ID"
+        - cp .next/*.json /tmp/deploy/.next/ 2>/dev/null || echo "No JSON files"
+        - echo "Copying public assets..."
+        - cp -r public /tmp/deploy/ 2>/dev/null || echo "No public directory"
+        - echo "Creating minimal package.json..."
+        - echo '{"name":"nailit","type":"module"}' > /tmp/deploy/package.json
+        - echo "=== DEPLOYMENT SIZE ANALYSIS ==="
+        - echo "Total deployment size:"
+        - du -sh /tmp/deploy
+        - echo "Breakdown by directory:"
+        - du -sh /tmp/deploy/* 2>/dev/null || echo "No subdirectories"
+        - echo "File count:"
+        - find /tmp/deploy -type f | wc -l
+        - echo "Largest files (>1MB):"
+        - find /tmp/deploy -type f -size +1M -exec ls -lh {} \; 2>/dev/null || echo "No large files"
   artifacts:
-    baseDirectory: .next
+    baseDirectory: /tmp/deploy
     files:
-      - 'static/**/*'
-      - 'server/**/*'
-      - 'BUILD_ID'
-      - 'app-build-manifest.json'
-      - 'build-manifest.json'
-      - 'export-marker.json'
-      - 'next-server.js.nft.json'
-      - 'package.json'
-      - 'prerender-manifest.json'
-      - 'required-server-files.json'
-      - 'routes-manifest.json'
-      - 'trace' 
+      - '.next/static/**/*'
+      - '.next/server/**/*'
+      - '.next/BUILD_ID'
+      - '.next/*.json'
+      - 'public/**/*'
+      - 'package.json' 
