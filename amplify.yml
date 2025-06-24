@@ -57,9 +57,13 @@ frontend:
         - mkdir -p ./deploy
         - echo "Copying complete .next directory first..."
         - cp -r .next ./deploy/
-        - echo "Verifying required files were copied..."
-        - ls -la ./deploy/.next/required-server-files.json || echo "❌ required-server-files.json NOT COPIED"
-        - ls -la ./deploy/.next/BUILD_ID || echo "❌ BUILD_ID NOT COPIED"
+        - echo "Copying required files to deployment root for Amplify..."
+        - cp .next/required-server-files.json ./deploy/
+        - cp .next/BUILD_ID ./deploy/
+        - cp .next/prerender-manifest.json ./deploy/ 2>/dev/null || echo "No prerender-manifest.json"
+        - echo "Verifying required files were copied to root..."
+        - ls -la ./deploy/required-server-files.json || echo "❌ required-server-files.json NOT in deploy root"
+        - ls -la ./deploy/BUILD_ID || echo "❌ BUILD_ID NOT in deploy root"
         - echo "Cleaning up unnecessary files from .next..."
         - rm -rf ./deploy/.next/cache
         - rm -rf ./deploy/.next/trace
@@ -69,16 +73,13 @@ frontend:
         - echo "Creating minimal package.json..."
         - echo '{"name":"nailit","type":"module"}' > ./deploy/package.json
         - echo "=== FINAL VERIFICATION ==="
-        - echo "Checking for required Next.js files in deployment directory:"
-        - ls -la ./deploy/.next/required-server-files.json || echo "⚠️ required-server-files.json not found in deploy"
-        - ls -la ./deploy/.next/BUILD_ID || echo "⚠️ BUILD_ID not found in deploy"
-        - ls -la ./deploy/.next/prerender-manifest.json || echo "⚠️ prerender-manifest.json not found in deploy"
+        - echo "Checking for required Next.js files in deployment root:"
+        - ls -la ./deploy/required-server-files.json || echo "⚠️ required-server-files.json not found in deploy root"
+        - ls -la ./deploy/BUILD_ID || echo "⚠️ BUILD_ID not found in deploy root"
         - echo "Total deployment size:"
         - du -sh ./deploy
         - echo "Deployment directory contents:"
         - ls -la ./deploy
-        - echo "Deploy .next directory contents:"
-        - ls -la ./deploy/.next | head -20
   artifacts:
     baseDirectory: deploy
     files:
