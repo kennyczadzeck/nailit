@@ -46,21 +46,16 @@ frontend:
         - echo "Contents of .env.production:"
         - cat .env.production || echo "No .env.production file created"
         - npm run build -- --no-lint
-        - echo "=== AGGRESSIVE DEPLOYMENT OPTIMIZATION ==="
+        - echo "=== DEPLOYMENT OPTIMIZATION ==="
         - echo "Creating clean deployment directory..."
         - rm -rf ./deploy
         - mkdir -p ./deploy
-        - echo "Cleaning up .next directory..."
-        - rm -rf .next/cache
-        - rm -rf .next/trace
-        - find .next -name "*.map" -delete
-        - find .next -name "*.txt" -delete
-        - echo "Copying only essential Next.js files..."
-        - mkdir -p ./deploy/.next
-        - cp -r .next/static ./deploy/.next/ 2>/dev/null || echo "No static directory"
-        - cp -r .next/server ./deploy/.next/ 2>/dev/null || echo "No server directory"
-        - cp .next/BUILD_ID ./deploy/.next/ 2>/dev/null || echo "No BUILD_ID"
-        - cp .next/*.json ./deploy/.next/ 2>/dev/null || echo "No JSON files"
+        - echo "Copying complete .next directory first..."
+        - cp -r .next ./deploy/
+        - echo "Cleaning up unnecessary files from .next..."
+        - rm -rf ./deploy/.next/cache
+        - rm -rf ./deploy/.next/trace
+        - find ./deploy/.next -name "*.map" -delete 2>/dev/null || echo "No source maps to delete"
         - echo "Copying public assets..."
         - cp -r public ./deploy/ 2>/dev/null || echo "No public directory"
         - echo "Creating minimal package.json..."
@@ -70,6 +65,10 @@ frontend:
         - du -sh ./deploy
         - echo "Breakdown by directory:"
         - du -sh ./deploy/* 2>/dev/null || echo "No subdirectories"
+        - echo "Checking for required Next.js files:"
+        - ls -la ./deploy/.next/required-server-files.json 2>/dev/null || echo "⚠️ required-server-files.json not found"
+        - ls -la ./deploy/.next/BUILD_ID 2>/dev/null || echo "⚠️ BUILD_ID not found"
+        - ls -la ./deploy/.next/prerender-manifest.json 2>/dev/null || echo "⚠️ prerender-manifest.json not found"
         - echo "File count:"
         - find ./deploy -type f | wc -l
         - echo "Largest files (>1MB):"
