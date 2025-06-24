@@ -5,7 +5,7 @@ frontend:
       commands:
         - echo "Environment variables check..."
         - echo "DATABASE_URL exists:" $DATABASE_URL
-        - echo "DATABASE_MIGRATION_URL exists:" $DATABASE_MIGRATION_URL
+        - echo "DATABASE_MIGRATION_URL exists:" $DATABASE_URL
         - echo "NEXTAUTH_URL exists:" $NEXTAUTH_URL
         - |
           if [[ "$DATABASE_URL" == *"misty-frog"* ]]; then
@@ -46,23 +46,18 @@ frontend:
         - echo "Contents of .env.production:"
         - cat .env.production || echo "No .env.production file created"
         - npm run build -- --no-lint
-        - echo "Cleaning up build artifacts to reduce deployment size..."
+        - echo "Creating optimized deployment directory..."
+        - mkdir -p /tmp/deploy
+        - echo "Cleaning up .next directory..."
         - rm -rf .next/cache
         - find .next -name "*.map" -delete
-        - echo "Build output size after cleanup:"
-        - du -sh .next
+        - echo "Copying essential files to deployment directory..."
+        - cp -r .next /tmp/deploy/
+        - cp -r public /tmp/deploy/ 2>/dev/null || echo "No public directory"
+        - echo '{"name":"nailit","type":"module"}' > /tmp/deploy/package.json
+        - echo "Final deployment size:"
+        - du -sh /tmp/deploy
   artifacts:
-    baseDirectory: .next
+    baseDirectory: /tmp/deploy
     files:
-      - 'static/**/*'
-      - 'server/**/*'
-      - 'BUILD_ID'
-      - 'app-build-manifest.json'
-      - 'build-manifest.json'
-      - 'export-marker.json'
-      - 'next-server.js.nft.json'
-      - 'package.json'
-      - 'prerender-manifest.json'
-      - 'required-server-files.json'
-      - 'routes-manifest.json'
-      - 'trace' 
+      - '**/*' 
