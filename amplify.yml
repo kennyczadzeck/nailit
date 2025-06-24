@@ -47,34 +47,46 @@ frontend:
         - cat .env.production || echo "No .env.production file created"
         - echo "=== BUILDING NEXT.JS APPLICATION ==="
         - npm run build
-        - echo "Build completed. Checking standalone output..."
-        - ls -la .next/standalone/ || echo "❌ standalone directory NOT FOUND"
-        - ls -la .next/required-server-files.json || echo "❌ required-server-files.json NOT FOUND"
-        - echo "=== DEPLOYMENT OPTIMIZATION ==="
-        - echo "Using Next.js standalone output for optimal deployment..."
+        - echo "=== ULTRA-SELECTIVE DEPLOYMENT ==="
+        - echo "Creating minimal deployment with only essential files..."
         - rm -rf ./deploy
-        - mkdir -p ./deploy
-        - echo "Copying standalone application..."
-        - cp -r .next/standalone/* ./deploy/
-        - echo "Copying static assets..."
-        - cp -r .next/static ./deploy/.next/
-        - cp -r public ./deploy/ 2>/dev/null || echo "No public directory"
-        - echo "Copying required Amplify files to root..."
+        - mkdir -p ./deploy/.next
+        - echo "Copying essential Next.js manifest files to deployment root..."
         - cp .next/required-server-files.json ./deploy/
         - cp .next/BUILD_ID ./deploy/
-        - cp .next/prerender-manifest.json ./deploy/ 2>/dev/null || echo "No prerender-manifest.json"
+        - cp .next/prerender-manifest.json ./deploy/ 2>/dev/null || echo "No prerender-manifest"
+        - cp .next/routes-manifest.json ./deploy/ 2>/dev/null || echo "No routes-manifest"
+        - cp .next/build-manifest.json ./deploy/ 2>/dev/null || echo "No build-manifest"
+        - echo "Copying essential .next runtime directories..."
+        - cp -r .next/server ./deploy/.next/
+        - cp -r .next/static ./deploy/.next/
+        - echo "Copying essential .next files..."
+        - cp .next/BUILD_ID ./deploy/.next/
+        - cp .next/*.json ./deploy/.next/ 2>/dev/null || echo "No JSON files"
+        - echo "Copying public assets..."
+        - cp -r public ./deploy/ 2>/dev/null || echo "No public directory"
+        - echo "Creating minimal package.json..."
+        - echo '{"name":"nailit","type":"module"}' > ./deploy/package.json
+        - echo "=== AGGRESSIVE CLEANUP ==="
+        - echo "Removing all unnecessary files from deployment..."
+        - find ./deploy -name "*.map" -delete 2>/dev/null || echo "No source maps"
+        - find ./deploy -name "*.txt" -delete 2>/dev/null || echo "No txt files"
+        - find ./deploy -name "cache" -type d -exec rm -rf {} + 2>/dev/null || echo "No cache dirs"
+        - find ./deploy -name "trace" -type d -exec rm -rf {} + 2>/dev/null || echo "No trace dirs"
         - echo "=== FINAL VERIFICATION ==="
         - echo "Deployment structure:"
         - ls -la ./deploy
-        - echo "Required files check:"
+        - echo "Essential files check:"
         - ls -la ./deploy/required-server-files.json || echo "⚠️ required-server-files.json missing"
         - ls -la ./deploy/BUILD_ID || echo "⚠️ BUILD_ID missing"
-        - echo "Server.js check:"
-        - ls -la ./deploy/server.js || echo "⚠️ server.js missing"
+        - echo "Server files check:"
+        - ls -la ./deploy/.next/server/ | head -5 || echo "⚠️ server files missing"
         - echo "Static files check:"
         - ls -la ./deploy/.next/static/ | head -5 || echo "⚠️ static files missing"
         - echo "Total deployment size:"
         - du -sh ./deploy
+        - echo "Size breakdown:"
+        - du -sh ./deploy/* 2>/dev/null || echo "No subdirectories"
   artifacts:
     baseDirectory: deploy
     files:

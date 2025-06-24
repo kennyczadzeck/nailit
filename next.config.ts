@@ -13,9 +13,6 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   
-  // Optimize for serverless deployment
-  output: 'standalone',
-  
   // Force environment variables to be available at runtime
   env: {
     DATABASE_URL: process.env.DATABASE_URL,
