@@ -42,6 +42,19 @@ interface RequestBody {
 
 interface Response {
   description?: string;
+  content?: {
+    'application/json'?: {
+      schema?: {
+        type?: string;
+        items?: {
+          type?: string;
+          properties?: Record<string, RequestBodyProperty>;
+        };
+        properties?: Record<string, RequestBodyProperty>;
+        enum?: string[];
+      };
+    };
+  };
 }
 
 interface MethodDetails {
@@ -225,6 +238,129 @@ export default function ApiDocsPage() {
       case 'info': return '#2563eb';
       default: return '#6b7280';
     }
+  };
+
+  const renderSchemaProperty = (name: string, property: RequestBodyProperty, level: number = 0): React.ReactNode => {
+    const indent = level * 20;
+    
+    return (
+      <div key={name} style={{ marginLeft: `${indent}px`, marginBottom: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+          <code style={{
+            background: '#f0f7ff',
+            color: '#1565c0',
+            padding: '2px 6px',
+            borderRadius: '3px',
+            fontSize: '0.875rem',
+            fontFamily: 'Monaco, Menlo, monospace'
+          }}>
+            {name}
+          </code>
+          <span style={{
+            fontSize: '0.75rem',
+            color: '#7b1fa2',
+            background: '#f3e5f5',
+            padding: '1px 6px',
+            borderRadius: '3px'
+          }}>
+            {property.type || 'string'}
+            {property.format && ` (${property.format})`}
+          </span>
+          {property.enum && (
+            <span style={{
+              fontSize: '0.75rem',
+              color: '#d32f2f',
+              background: '#fef2f2',
+              padding: '1px 6px',
+              borderRadius: '3px'
+            }}>
+              enum: {property.enum.join(' | ')}
+            </span>
+          )}
+        </div>
+        {property.description && (
+          <div style={{
+            fontSize: '0.875rem',
+            color: '#637381',
+            marginLeft: '0px',
+            fontStyle: 'italic'
+          }}>
+            {property.description}
+          </div>
+        )}
+        {property.properties && (
+          <div style={{ marginLeft: '12px', marginTop: '8px' }}>
+            {Object.entries(property.properties).map(([propName, prop]) =>
+              renderSchemaProperty(propName, prop, level + 1)
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  const renderResponseSchema = (response: Response) => {
+    const schema = response.content?.['application/json']?.schema;
+    if (!schema) return null;
+
+    return (
+      <div style={{
+        background: '#f8fdf8',
+        border: '1px solid #e8f5e8',
+        borderRadius: '6px',
+        padding: '16px',
+        marginTop: '12px'
+      }}>
+        <div style={{
+          fontSize: '0.875rem',
+          fontWeight: '600',
+          color: '#2e7d32',
+          marginBottom: '12px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }}>
+          <span>📄</span>
+          Response Body Schema
+        </div>
+        
+        {schema.type === 'array' && schema.items ? (
+          <div>
+            <div style={{
+              fontSize: '0.875rem',
+              color: '#637381',
+              marginBottom: '8px'
+            }}>
+              Array of objects with the following structure:
+            </div>
+            {schema.items.properties && Object.entries(schema.items.properties).map(([name, prop]) =>
+              renderSchemaProperty(name, prop)
+            )}
+          </div>
+        ) : schema.properties ? (
+          <div>
+            <div style={{
+              fontSize: '0.875rem',
+              color: '#637381',
+              marginBottom: '8px'
+            }}>
+              Object with the following properties:
+            </div>
+            {Object.entries(schema.properties).map(([name, prop]) =>
+              renderSchemaProperty(name, prop)
+            )}
+          </div>
+        ) : (
+          <div style={{
+            fontSize: '0.875rem',
+            color: '#637381'
+          }}>
+            Type: {schema.type || 'object'}
+            {schema.enum && ` (enum: ${schema.enum.join(', ')})`}
+          </div>
+        )}
+      </div>
+    );
   };
 
   const renderParameter = (param: Parameter) => (
@@ -683,42 +819,43 @@ export default function ApiDocsPage() {
                           {Object.entries(endpoint.responses).map(([code, response]: [string, Response]) => {
                             const responseType = getResponseType(code);
                             return (
-                              <div key={code} style={{
-                                background: responseType === 'error' ? '#fef2f2' : '#f8f9fa',
-                                padding: '12px 16px',
-                                borderRadius: '6px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '12px',
-                                minHeight: '40px',
-                                maxHeight: '60px',
-                                overflow: 'hidden',
-                                border: '1px solid #e1e5e9',
-                                borderLeft: `4px solid ${getResponseCodeColor(responseType)}`
-                              }}>
-                                <div style={{
-                                  fontWeight: '600',
-                                  fontFamily: 'Monaco, Menlo, monospace',
-                                  color: 'white',
-                                  padding: '4px 8px',
-                                  borderRadius: '4px',
-                                  display: 'inline-block',
-                                  marginRight: '12px',
-                                  flexShrink: 0,
-                                  minWidth: '50px',
-                                  textAlign: 'center',
-                                  backgroundColor: getResponseCodeColor(responseType)
-                                }}>
-                                  {code}
-                                </div>
-                                <div style={{
-                                  color: '#637381',
-                                  display: 'inline',
-                                  flex: 1
-                                }}>
-                                  {response.description || 'No description provided'}
-                                </div>
-                              </div>
+                                                             <div key={code} style={{
+                                 background: responseType === 'error' ? '#fef2f2' : '#f8f9fa',
+                                 padding: '16px',
+                                 borderRadius: '6px',
+                                 border: '1px solid #e1e5e9',
+                                 borderLeft: `4px solid ${getResponseCodeColor(responseType)}`,
+                                 marginBottom: '12px'
+                               }}>
+                                 <div style={{
+                                   display: 'flex',
+                                   alignItems: 'center',
+                                   gap: '12px',
+                                   marginBottom: response.content?.['application/json']?.schema ? '16px' : '0'
+                                 }}>
+                                   <div style={{
+                                     fontWeight: '600',
+                                     fontFamily: 'Monaco, Menlo, monospace',
+                                     color: 'white',
+                                     padding: '4px 8px',
+                                     borderRadius: '4px',
+                                     display: 'inline-block',
+                                     flexShrink: 0,
+                                     minWidth: '50px',
+                                     textAlign: 'center',
+                                     backgroundColor: getResponseCodeColor(responseType)
+                                   }}>
+                                     {code}
+                                   </div>
+                                   <div style={{
+                                     color: '#637381',
+                                     flex: 1
+                                   }}>
+                                     {response.description || 'No description provided'}
+                                   </div>
+                                 </div>
+                                 {renderResponseSchema(response)}
+                               </div>
                             );
                           })}
                         </div>
