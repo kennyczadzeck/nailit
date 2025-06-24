@@ -3,6 +3,7 @@ import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { NailItInfrastructureStack } from '../lib/nailit-infrastructure-stack';
 import { LoggingStack } from '../lib/logging-stack';
+import { AppRunnerStack } from '../lib/app-runner-stack';
 
 const app = new cdk.App();
 
@@ -48,6 +49,16 @@ new NailItInfrastructureStack(app, `NailIt-${envConfig.resourceSuffix}`, {
 
 // Deploy logging infrastructure stack
 new LoggingStack(app, `LoggingStack-${envConfig.resourceSuffix}`, {
+  env: {
+    account: accountId,
+    region: region,
+  },
+  environment: environment,
+  envConfig: envConfig,
+});
+
+// Deploy App Runner stack
+new AppRunnerStack(app, `AppRunner-${envConfig.resourceSuffix}`, {
   env: {
     account: accountId,
     region: region,
