@@ -57,13 +57,16 @@ frontend:
         - cp -r public ./deploy/ 2>/dev/null || echo "No public directory"
         - echo "Creating package.json..."
         - echo '{"name":"nailit","type":"module"}' > ./deploy/package.json
+        - echo "Copying required-server-files.json to deployment root..."
+        - cp ./deploy/.next/required-server-files.json ./deploy/
         - echo "Updating required-server-files.json appDir to be relative..."
-        - node -e "const fs = require('fs'); const path = './deploy/.next/required-server-files.json'; const config = JSON.parse(fs.readFileSync(path, 'utf8')); config.appDir = process.env.PWD + '/deploy'; fs.writeFileSync(path, JSON.stringify(config, null, 2)); console.log('Updated appDir to:', config.appDir);"
+        - node -e "const fs = require('fs'); const path = './deploy/required-server-files.json'; const config = JSON.parse(fs.readFileSync(path, 'utf8')); config.appDir = process.env.PWD + '/deploy'; fs.writeFileSync(path, JSON.stringify(config, null, 2)); console.log('Updated appDir to:', config.appDir);"
         - echo "=== AGGRESSIVE CLEANUP (preserving essential files) ==="
-        - echo "Removing source maps and cache while preserving trace files..."
+        - echo "Removing source maps, cache, and standalone directory while preserving trace files..."
         - find ./deploy/.next -name "*.map" -delete 2>/dev/null || echo "No source maps"
         - find ./deploy/.next -name "cache" -type d -exec rm -rf {} + 2>/dev/null || echo "No cache dirs"
         - rm -rf ./deploy/.next/cache 2>/dev/null || echo "No .next/cache"
+        - rm -rf ./deploy/.next/standalone 2>/dev/null || echo "No standalone directory"
         - echo "=== FINAL VERIFICATION ==="
         - echo "Deployment structure:"
         - ls -la ./deploy
@@ -71,8 +74,10 @@ frontend:
         - ls -la ./deploy/.next/ | head -10
         - echo "Trace files verification:"
         - find ./deploy -name "*.nft.json" | wc -l | xargs echo "Total trace files:"
-        - echo "Required server files check:"
-        - head -5 ./deploy/.next/required-server-files.json
+        - echo "Required server files check (root):"
+        - ls -la ./deploy/required-server-files.json || echo "⚠️ required-server-files.json missing from root"
+        - echo "Required server files check (.next):"
+        - ls -la ./deploy/.next/required-server-files.json || echo "⚠️ required-server-files.json missing from .next"
         - echo "Total deployment size:"
         - du -sh ./deploy
         - echo "Size breakdown:"
