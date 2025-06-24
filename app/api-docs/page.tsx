@@ -7,6 +7,36 @@ interface Parameter {
   description?: string;
   schema?: {
     type?: string;
+    format?: string;
+    enum?: string[];
+  };
+  in?: string; // 'query', 'path', 'header', etc.
+}
+
+interface RequestBodyProperty {
+  type?: string;
+  format?: string;
+  description?: string;
+  enum?: string[];
+  items?: {
+    type?: string;
+    properties?: Record<string, RequestBodyProperty>;
+  };
+  properties?: Record<string, RequestBodyProperty>;
+}
+
+interface RequestBodySchema {
+  type?: string;
+  required?: string[];
+  properties?: Record<string, RequestBodyProperty>;
+}
+
+interface RequestBody {
+  required?: boolean;
+  content?: {
+    'application/json'?: {
+      schema?: RequestBodySchema;
+    };
   };
 }
 
@@ -19,7 +49,7 @@ interface MethodDetails {
   description?: string;
   tags?: string[];
   parameters?: Parameter[];
-  requestBody?: unknown;
+  requestBody?: RequestBody;
   responses?: Record<string, Response>;
 }
 
@@ -40,7 +70,8 @@ interface EndpointInfo {
   description: string;
   tags: string[];
   parameters?: Parameter[];
-  requestBody?: unknown;
+  requestBodyParams?: Parameter[];
+  requestBody?: RequestBody;
   responses: Record<string, Response>;
 }
 
@@ -48,6 +79,7 @@ export default function ApiDocsPage() {
   const [spec, setSpec] = useState<OpenAPISpec | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [expandedEndpoints, setExpandedEndpoints] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const loadSpec = async () => {
@@ -68,6 +100,32 @@ export default function ApiDocsPage() {
     loadSpec();
   }, []);
 
+  const parseRequestBodyParams = (requestBody?: RequestBody): Parameter[] => {
+    if (!requestBody?.content?.['application/json']?.schema?.properties) {
+      return [];
+    }
+
+    const schema = requestBody.content['application/json'].schema;
+    const required = schema.required || [];
+    const properties = schema.properties;
+
+    if (!properties) {
+      return [];
+    }
+
+    return Object.entries(properties).map(([name, prop]) => ({
+      name,
+      required: required.includes(name),
+      description: prop.description,
+      schema: {
+        type: prop.type,
+        format: prop.format,
+        enum: prop.enum
+      },
+      in: 'body'
+    }));
+  };
+
   const parseEndpoints = (spec: OpenAPISpec): Record<string, EndpointInfo[]> => {
     const endpointsByTag: Record<string, EndpointInfo[]> = {};
     
@@ -80,7 +138,8 @@ export default function ApiDocsPage() {
             summary: details.summary || '',
             description: details.description || '',
             tags: details.tags || ['Other'],
-            parameters: details.parameters,
+            parameters: details.parameters || [],
+            requestBodyParams: parseRequestBodyParams(details.requestBody),
             requestBody: details.requestBody,
             responses: details.responses || {}
           };
@@ -109,37 +168,228 @@ export default function ApiDocsPage() {
     }
   };
 
+  const toggleEndpoint = (endpointId: string) => {
+    const newExpanded = new Set(expandedEndpoints);
+    if (newExpanded.has(endpointId)) {
+      newExpanded.delete(endpointId);
+    } else {
+      newExpanded.add(endpointId);
+    }
+    setExpandedEndpoints(newExpanded);
+  };
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
+  const getParameterTypeDisplay = (param: Parameter): string => {
+    if (param.schema?.enum) {
+      return `enum: ${param.schema.enum.join(' | ')}`;
+    }
+    
+    let type = param.schema?.type || 'string';
+    if (param.schema?.format) {
+      type += ` (${param.schema.format})`;
+    }
+    
+    return type;
+  };
+
+  const getParameterLocation = (param: Parameter): string => {
+    switch (param.in) {
+      case 'query': return 'Query Parameter';
+      case 'path': return 'Path Parameter';
+      case 'header': return 'Header Parameter';
+      case 'body': return 'Request Body';
+      default: return 'Parameter';
+    }
+  };
+
+  const getResponseType = (code: string): string => {
+    const numCode = parseInt(code);
+    if (numCode >= 200 && numCode < 300) return 'success';
+    if (numCode >= 300 && numCode < 400) return 'redirect';
+    if (numCode >= 400 && numCode < 500) return 'error';
+    if (numCode >= 500) return 'error';
+    return 'info';
+  };
+
+  const getResponseCodeColor = (type: string): string => {
+    switch (type) {
+      case 'success': return '#34a853';
+      case 'error': return '#dc2626';
+      case 'redirect': return '#d97706';
+      case 'info': return '#2563eb';
+      default: return '#6b7280';
+    }
+  };
+
   const renderParameter = (param: Parameter) => (
-    <div key={param.name} className="parameter">
-      <code>{param.name}</code>
-      <span className={`required ${param.required ? 'required-true' : 'required-false'}`}>
-        {param.required ? 'required' : 'optional'}
-      </span>
-      <span className="param-type">{param.schema?.type || 'string'}</span>
-      {param.description && <p>{param.description}</p>}
+    <div key={param.name} style={{
+      background: '#f8f9fa',
+      padding: '20px',
+      borderRadius: '8px',
+      marginBottom: '16px',
+      borderLeft: '4px solid #e1e5e9',
+      border: '1px solid #e1e5e9'
+    }}>
+      <div style={{ marginBottom: '16px' }}>
+        <code style={{
+          background: '#263238',
+          color: 'white',
+          padding: '8px 16px',
+          borderRadius: '6px',
+          fontSize: '1rem',
+          fontFamily: 'Monaco, Menlo, monospace',
+          fontWeight: '600',
+          marginBottom: '12px',
+          display: 'inline-block'
+        }}>
+          {param.name}
+        </code>
+        
+        <div style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '32px',
+          marginBottom: '8px',
+          padding: '12px 0'
+        }}>
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '6px',
+            minWidth: '120px'
+          }}>
+            <span style={{
+              fontSize: '0.75rem',
+              fontWeight: '600',
+              color: '#637381',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px'
+            }}>
+              Required
+            </span>
+            <span style={{
+              fontSize: '0.875rem',
+              fontWeight: '500',
+              color: param.required ? '#c62828' : '#2e7d32'
+            }}>
+              {param.required ? 'Yes' : 'No'}
+            </span>
+          </div>
+          
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '6px',
+            minWidth: '120px'
+          }}>
+            <span style={{
+              fontSize: '0.75rem',
+              fontWeight: '600',
+              color: '#637381',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px'
+            }}>
+              Type
+            </span>
+            <span style={{
+              fontSize: '0.875rem',
+              fontWeight: '500',
+              color: '#1565c0',
+              fontFamily: 'Monaco, Menlo, monospace',
+              background: '#f0f7ff',
+              padding: '2px 8px',
+              borderRadius: '4px'
+            }}>
+              {getParameterTypeDisplay(param)}
+            </span>
+          </div>
+          
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '6px',
+            minWidth: '120px'
+          }}>
+            <span style={{
+              fontSize: '0.75rem',
+              fontWeight: '600',
+              color: '#637381',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px'
+            }}>
+              Location
+            </span>
+            <span style={{
+              fontSize: '0.875rem',
+              fontWeight: '500',
+              color: '#7b1fa2'
+            }}>
+              {getParameterLocation(param)}
+            </span>
+          </div>
+        </div>
+        
+        {param.description && (
+          <p style={{
+            color: '#637381',
+            margin: '8px 0 0 0',
+            fontSize: '0.875rem',
+            lineHeight: '1.5'
+          }}>
+            {param.description}
+          </p>
+        )}
+      </div>
     </div>
   );
 
   if (loading) {
     return (
-      <div className="container">
-        <div className="loading">Loading API Documentation...</div>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
+        fontSize: '1.125rem',
+        color: '#637381'
+      }}>
+        Loading API Documentation...
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="container">
-        <div className="error">Error: {error}</div>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
+        fontSize: '1.125rem',
+        color: '#d32f2f'
+      }}>
+        Error: {error}
       </div>
     );
   }
 
   if (!spec) {
     return (
-      <div className="container">
-        <div className="error">No API specification found</div>
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100vh',
+        fontSize: '1.125rem',
+        color: '#d32f2f'
+      }}>
+        No API specification found
       </div>
     );
   }
@@ -147,202 +397,340 @@ export default function ApiDocsPage() {
   const endpointsByTag = parseEndpoints(spec);
 
   return (
-    <div className="container">
-      <style jsx>{`
-        .container {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 20px;
-          font-family: ui-sans-serif, system-ui, sans-serif;
-          line-height: 1.6;
-        }
-        .header {
-          border-bottom: 2px solid #e5e7eb;
-          padding-bottom: 20px;
-          margin-bottom: 30px;
-        }
-        .title {
-          font-size: 2.5rem;
-          font-weight: bold;
-          color: #1f2937;
-          margin: 0 0 10px 0;
-        }
-        .version {
-          display: inline-block;
-          background: #34a853;
-          color: white;
-          padding: 4px 12px;
-          border-radius: 20px;
-          font-size: 0.875rem;
-          font-weight: 500;
-        }
-        .description {
-          color: #6b7280;
-          margin-top: 10px;
-        }
-        .section {
-          margin-bottom: 40px;
-        }
-        .section-title {
-          font-size: 1.5rem;
-          font-weight: 600;
-          color: #1f2937;
-          margin-bottom: 20px;
-          padding-bottom: 8px;
-          border-bottom: 1px solid #e5e7eb;
-        }
-        .endpoint {
-          background: white;
-          border: 1px solid #e5e7eb;
-          border-radius: 8px;
-          margin-bottom: 20px;
-          overflow: hidden;
-        }
-        .endpoint-header {
-          padding: 16px;
-          background: #f9fafb;
-          border-bottom: 1px solid #e5e7eb;
-          display: flex;
-          align-items: center;
-          gap: 12px;
-        }
-        .method {
-          padding: 4px 8px;
-          border-radius: 4px;
-          font-weight: 600;
-          font-size: 0.75rem;
-          color: white;
-          min-width: 60px;
-          text-align: center;
-        }
-        .path {
-          font-family: 'Courier New', monospace;
-          font-weight: 500;
-          color: #1f2937;
-        }
-        .summary {
-          color: #6b7280;
-          margin-left: auto;
-        }
-        .endpoint-body {
-          padding: 16px;
-        }
-        .description-text {
-          color: #4b5563;
-          margin-bottom: 16px;
-        }
-        .subsection {
-          margin-bottom: 16px;
-        }
-        .subsection-title {
-          font-weight: 600;
-          color: #1f2937;
-          margin-bottom: 8px;
-        }
-        .parameter {
-          background: #f3f4f6;
-          padding: 8px 12px;
-          border-radius: 4px;
-          margin-bottom: 8px;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-        .parameter code {
-          background: #e5e7eb;
-          padding: 2px 6px;
-          border-radius: 3px;
-          font-size: 0.875rem;
-        }
-        .required {
-          font-size: 0.75rem;
-          padding: 2px 6px;
-          border-radius: 3px;
-          font-weight: 500;
-        }
-        .required-true {
-          background: #fecaca;
-          color: #991b1b;
-        }
-        .required-false {
-          background: #d1fae5;
-          color: #065f46;
-        }
-        .param-type {
-          color: #6b7280;
-          font-size: 0.875rem;
-        }
-        .response {
-          background: #f9fafb;
-          padding: 8px 12px;
-          border-radius: 4px;
-          margin-bottom: 8px;
-        }
-        .response-code {
-          font-weight: 600;
-          color: #1f2937;
-        }
-        .loading, .error {
-          text-align: center;
-          padding: 40px;
-          color: #6b7280;
-        }
-        .error {
-          color: #dc2626;
-        }
-      `}</style>
-
-      <div className="header">
-        <h1 className="title">{spec.info.title}</h1>
-        <span className="version">v{spec.info.version}</span>
-        {spec.info.description && (
-          <p className="description">{spec.info.description}</p>
-        )}
+    <div style={{
+      display: 'flex',
+      minHeight: '100vh',
+      background: '#fafafa',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    }}>
+      {/* Sidebar Navigation */}
+      <div style={{
+        width: '300px',
+        background: 'white',
+        borderRight: '1px solid #e1e5e9',
+        position: 'fixed',
+        height: '100vh',
+        overflowY: 'auto',
+        zIndex: 100
+      }}>
+        <div style={{
+          padding: '24px',
+          borderBottom: '1px solid #e1e5e9',
+          background: '#263238',
+          color: 'white'
+        }}>
+          <h1 style={{
+            fontSize: '1.25rem',
+            fontWeight: '600',
+            margin: '0 0 8px 0'
+          }}>
+            {spec.info.title}
+          </h1>
+          <span style={{
+            background: 'rgba(255, 255, 255, 0.2)',
+            padding: '2px 8px',
+            borderRadius: '12px',
+            fontSize: '0.75rem',
+            display: 'inline-block'
+          }}>
+            v{spec.info.version}
+          </span>
+        </div>
+        
+        {Object.entries(endpointsByTag).map(([tag, endpoints]) => (
+          <div key={tag} style={{
+            padding: '16px 0',
+            borderBottom: '1px solid #f1f1f1'
+          }}>
+            <div style={{
+              padding: '8px 24px',
+              fontWeight: '600',
+              color: '#263238',
+              fontSize: '0.875rem',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px'
+            }}>
+              {tag}
+            </div>
+            {endpoints.map((endpoint, index) => {
+              const endpointId = `${endpoint.path}-${endpoint.method}-${index}`;
+              return (
+                <div
+                  key={endpointId}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: '8px 24px',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    borderLeft: '3px solid transparent'
+                  }}
+                  onClick={() => scrollToSection(endpointId)}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = '#f5f5f5';
+                    e.currentTarget.style.borderLeftColor = '#34a853';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'transparent';
+                    e.currentTarget.style.borderLeftColor = 'transparent';
+                  }}
+                >
+                  <span style={{
+                    display: 'inline-block',
+                    width: '50px',
+                    padding: '2px 6px',
+                    borderRadius: '3px',
+                    fontSize: '0.75rem',
+                    fontWeight: '600',
+                    textAlign: 'center',
+                    color: 'white',
+                    marginRight: '12px',
+                    backgroundColor: getMethodColor(endpoint.method)
+                  }}>
+                    {endpoint.method}
+                  </span>
+                  <span style={{
+                    fontFamily: 'Monaco, Menlo, monospace',
+                    fontSize: '0.875rem',
+                    color: '#263238'
+                  }}>
+                    {endpoint.path}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        ))}
       </div>
 
-      {Object.entries(endpointsByTag).map(([tag, endpoints]) => (
-        <div key={tag} className="section">
-          <h2 className="section-title">{tag}</h2>
-          
-          {endpoints.map((endpoint, index) => (
-            <div key={`${endpoint.path}-${endpoint.method}-${index}`} className="endpoint">
-              <div className="endpoint-header">
-                <span 
-                  className="method" 
-                  style={{ backgroundColor: getMethodColor(endpoint.method) }}
-                >
-                  {endpoint.method}
-                </span>
-                <code className="path">{endpoint.path}</code>
-                <span className="summary">{endpoint.summary}</span>
-              </div>
-              
-              <div className="endpoint-body">
-                {endpoint.description && (
-                  <p className="description-text">{endpoint.description}</p>
-                )}
-                
-                {endpoint.parameters && endpoint.parameters.length > 0 && (
-                  <div className="subsection">
-                    <h4 className="subsection-title">Parameters</h4>
-                    {endpoint.parameters.map(renderParameter)}
-                  </div>
-                )}
-                
-                <div className="subsection">
-                  <h4 className="subsection-title">Responses</h4>
-                  {Object.entries(endpoint.responses).map(([code, response]: [string, Response]) => (
-                    <div key={code} className="response">
-                      <span className="response-code">{code}</span>
-                      {response.description && <span> - {response.description}</span>}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
+      {/* Main Content */}
+      <div style={{
+        flex: 1,
+        marginLeft: '300px',
+        padding: '40px',
+        maxWidth: 'calc(100vw - 300px)'
+      }}>
+        <div style={{ marginBottom: '40px' }}>
+          <h1 style={{
+            fontSize: '2.5rem',
+            fontWeight: '300',
+            color: '#263238',
+            margin: '0 0 16px 0'
+          }}>
+            {spec.info.title}
+          </h1>
+          <span style={{
+            background: '#34a853',
+            color: 'white',
+            padding: '6px 12px',
+            borderRadius: '16px',
+            fontSize: '0.875rem',
+            fontWeight: '500',
+            display: 'inline-block',
+            marginBottom: '16px'
+          }}>
+            v{spec.info.version}
+          </span>
+          {spec.info.description && (
+            <p style={{
+              color: '#637381',
+              fontSize: '1.125rem',
+              lineHeight: '1.6'
+            }}>
+              {spec.info.description}
+            </p>
+          )}
         </div>
-      ))}
+
+        {Object.entries(endpointsByTag).map(([tag, endpoints]) => (
+          <div key={tag} style={{ marginBottom: '60px' }}>
+            <h2 style={{
+              fontSize: '1.75rem',
+              fontWeight: '400',
+              color: '#263238',
+              marginBottom: '32px',
+              paddingBottom: '16px',
+              borderBottom: '2px solid #e1e5e9'
+            }} id={tag}>
+              {tag}
+            </h2>
+            
+            {endpoints.map((endpoint, index) => {
+              const endpointId = `${endpoint.path}-${endpoint.method}-${index}`;
+              const isExpanded = expandedEndpoints.has(endpointId);
+              const allParams = [...(endpoint.parameters || []), ...(endpoint.requestBodyParams || [])];
+              
+              return (
+                <div key={endpointId} id={endpointId} style={{
+                  background: 'white',
+                  borderRadius: '8px',
+                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+                  marginBottom: '24px',
+                  overflow: 'hidden',
+                  border: '1px solid #e1e5e9'
+                }}>
+                  <div
+                    style={{
+                      padding: '20px 24px',
+                      background: '#fafbfc',
+                      borderBottom: '1px solid #e1e5e9',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '16px',
+                      transition: 'background-color 0.2s ease'
+                    }}
+                    onClick={() => toggleEndpoint(endpointId)}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = '#f5f6f7';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = '#fafbfc';
+                    }}
+                  >
+                    <span style={{
+                      padding: '6px 12px',
+                      borderRadius: '4px',
+                      fontWeight: '600',
+                      fontSize: '0.75rem',
+                      color: 'white',
+                      minWidth: '70px',
+                      textAlign: 'center',
+                      textTransform: 'uppercase',
+                      backgroundColor: getMethodColor(endpoint.method)
+                    }}>
+                      {endpoint.method}
+                    </span>
+                    <code style={{
+                      fontFamily: 'Monaco, Menlo, monospace',
+                      fontWeight: '500',
+                      color: '#263238',
+                      fontSize: '1rem'
+                    }}>
+                      {endpoint.path}
+                    </code>
+                    <span style={{
+                      color: '#637381',
+                      marginLeft: 'auto',
+                      fontSize: '0.875rem'
+                    }}>
+                      {endpoint.summary}
+                    </span>
+                    <span style={{
+                      marginLeft: '12px',
+                      transition: 'transform 0.2s ease',
+                      color: '#637381',
+                      transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)'
+                    }}>
+                      ▼
+                    </span>
+                  </div>
+                  
+                  {isExpanded && (
+                    <div style={{
+                      padding: '24px',
+                      borderTop: '1px solid #f1f1f1'
+                    }}>
+                      {endpoint.description && (
+                        <p style={{
+                          color: '#263238',
+                          marginBottom: '24px',
+                          fontSize: '1rem',
+                          lineHeight: '1.6'
+                        }}>
+                          {endpoint.description}
+                        </p>
+                      )}
+                      
+                      {allParams.length > 0 && (
+                        <div style={{
+                          marginBottom: '32px',
+                          width: '100%',
+                          maxWidth: '100%',
+                          overflow: 'hidden'
+                        }}>
+                          <h4 style={{
+                            fontWeight: '600',
+                            color: '#263238',
+                            marginBottom: '16px',
+                            fontSize: '1.125rem'
+                          }}>
+                            Parameters
+                          </h4>
+                          {allParams.map(renderParameter)}
+                        </div>
+                      )}
+                      
+                      <div style={{
+                        marginBottom: '32px',
+                        width: '100%',
+                        maxWidth: '100%',
+                        overflow: 'hidden'
+                      }}>
+                        <h4 style={{
+                          fontWeight: '600',
+                          color: '#263238',
+                          marginBottom: '16px',
+                          fontSize: '1.125rem'
+                        }}>
+                          Responses
+                        </h4>
+                        <div style={{
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '8px'
+                        }}>
+                          {Object.entries(endpoint.responses).map(([code, response]: [string, Response]) => {
+                            const responseType = getResponseType(code);
+                            return (
+                              <div key={code} style={{
+                                background: responseType === 'error' ? '#fef2f2' : '#f8f9fa',
+                                padding: '12px 16px',
+                                borderRadius: '6px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '12px',
+                                minHeight: '40px',
+                                maxHeight: '60px',
+                                overflow: 'hidden',
+                                border: '1px solid #e1e5e9',
+                                borderLeft: `4px solid ${getResponseCodeColor(responseType)}`
+                              }}>
+                                <div style={{
+                                  fontWeight: '600',
+                                  fontFamily: 'Monaco, Menlo, monospace',
+                                  color: 'white',
+                                  padding: '4px 8px',
+                                  borderRadius: '4px',
+                                  display: 'inline-block',
+                                  marginRight: '12px',
+                                  flexShrink: 0,
+                                  minWidth: '50px',
+                                  textAlign: 'center',
+                                  backgroundColor: getResponseCodeColor(responseType)
+                                }}>
+                                  {code}
+                                </div>
+                                <div style={{
+                                  color: '#637381',
+                                  display: 'inline',
+                                  flex: 1
+                                }}>
+                                  {response.description || 'No description provided'}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
     </div>
   );
 } 
