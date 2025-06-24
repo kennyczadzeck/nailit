@@ -47,39 +47,34 @@ frontend:
         - cat .env.production || echo "No .env.production file created"
         - echo "=== BUILDING NEXT.JS APPLICATION ==="
         - npm run build
-        - echo "Build completed. Checking for required files..."
-        - ls -la .next/required-server-files.json || echo "❌ required-server-files.json NOT FOUND after build"
-        - ls -la .next/BUILD_ID || echo "❌ BUILD_ID NOT FOUND after build"
-        - ls -la .next/build-manifest.json || echo "❌ build-manifest.json NOT FOUND after build"
+        - echo "Build completed. Checking standalone output..."
+        - ls -la .next/standalone/ || echo "❌ standalone directory NOT FOUND"
+        - ls -la .next/required-server-files.json || echo "❌ required-server-files.json NOT FOUND"
         - echo "=== DEPLOYMENT OPTIMIZATION ==="
-        - echo "Creating clean deployment directory..."
+        - echo "Using Next.js standalone output for optimal deployment..."
         - rm -rf ./deploy
         - mkdir -p ./deploy
-        - echo "Copying complete .next directory first..."
-        - cp -r .next ./deploy/
-        - echo "Copying required files to deployment root for Amplify..."
+        - echo "Copying standalone application..."
+        - cp -r .next/standalone/* ./deploy/
+        - echo "Copying static assets..."
+        - cp -r .next/static ./deploy/.next/
+        - cp -r public ./deploy/ 2>/dev/null || echo "No public directory"
+        - echo "Copying required Amplify files to root..."
         - cp .next/required-server-files.json ./deploy/
         - cp .next/BUILD_ID ./deploy/
         - cp .next/prerender-manifest.json ./deploy/ 2>/dev/null || echo "No prerender-manifest.json"
-        - echo "Verifying required files were copied to root..."
-        - ls -la ./deploy/required-server-files.json || echo "❌ required-server-files.json NOT in deploy root"
-        - ls -la ./deploy/BUILD_ID || echo "❌ BUILD_ID NOT in deploy root"
-        - echo "Cleaning up unnecessary files from .next..."
-        - rm -rf ./deploy/.next/cache
-        - rm -rf ./deploy/.next/trace
-        - find ./deploy/.next -name "*.map" -delete 2>/dev/null || echo "No source maps to delete"
-        - echo "Copying public assets..."
-        - cp -r public ./deploy/ 2>/dev/null || echo "No public directory"
-        - echo "Creating minimal package.json..."
-        - echo '{"name":"nailit","type":"module"}' > ./deploy/package.json
         - echo "=== FINAL VERIFICATION ==="
-        - echo "Checking for required Next.js files in deployment root:"
-        - ls -la ./deploy/required-server-files.json || echo "⚠️ required-server-files.json not found in deploy root"
-        - ls -la ./deploy/BUILD_ID || echo "⚠️ BUILD_ID not found in deploy root"
+        - echo "Deployment structure:"
+        - ls -la ./deploy
+        - echo "Required files check:"
+        - ls -la ./deploy/required-server-files.json || echo "⚠️ required-server-files.json missing"
+        - ls -la ./deploy/BUILD_ID || echo "⚠️ BUILD_ID missing"
+        - echo "Server.js check:"
+        - ls -la ./deploy/server.js || echo "⚠️ server.js missing"
+        - echo "Static files check:"
+        - ls -la ./deploy/.next/static/ | head -5 || echo "⚠️ static files missing"
         - echo "Total deployment size:"
         - du -sh ./deploy
-        - echo "Deployment directory contents:"
-        - ls -la ./deploy
   artifacts:
     baseDirectory: deploy
     files:
