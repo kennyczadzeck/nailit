@@ -46,7 +46,23 @@ frontend:
         - echo "Contents of .env.production:"
         - cat .env.production || echo "No .env.production file created"
         - npm run build -- --no-lint
+        - echo "Cleaning up build artifacts to reduce deployment size..."
+        - rm -rf .next/cache
+        - find .next -name "*.map" -delete
+        - echo "Build output size after cleanup:"
+        - du -sh .next
   artifacts:
     baseDirectory: .next
     files:
-      - '**/*' 
+      - 'static/**/*'
+      - 'server/**/*'
+      - 'BUILD_ID'
+      - 'app-build-manifest.json'
+      - 'build-manifest.json'
+      - 'export-marker.json'
+      - 'next-server.js.nft.json'
+      - 'package.json'
+      - 'prerender-manifest.json'
+      - 'required-server-files.json'
+      - 'routes-manifest.json'
+      - 'trace' 
