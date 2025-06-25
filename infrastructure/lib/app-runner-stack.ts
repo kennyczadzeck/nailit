@@ -106,7 +106,7 @@ export class AppRunnerStack extends cdk.Stack {
       instanceConfiguration: {
         cpu: '0.25 vCPU',
         memory: '0.5 GB',
-        instanceRoleArn: instanceRole.roleArn,
+        // instanceRoleArn: instanceRole.roleArn, // Temporarily removed to test
       },
     });
 

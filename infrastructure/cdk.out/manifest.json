@@ -480,7 +480,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-deploy-role-207091906248-us-east-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-cfn-exec-role-207091906248-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/b8daba26e8ab1dd58e4a07d18c5982aa97b53a9d1a3e6a32ae5b2bf10038c1fe.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/00cbdfca0b5f53d9a640256ff48e7fc6d4649a731823ad5311f10c430bcfe155.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -523,22 +523,16 @@
             ]
           }
         ],
-        "/AppRunner-dev/AppRunnerServiceRole/Resource": [
+        "/AppRunner-dev/AppRunnerInstanceRole/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "AppRunnerServiceRole41659487"
+            "data": "AppRunnerInstanceRole96A5A063"
           }
         ],
-        "/AppRunner-dev/AppRunnerServiceRole/DefaultPolicy/Resource": [
+        "/AppRunner-dev/AppRunnerInstanceRole/DefaultPolicy/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "AppRunnerServiceRoleDefaultPolicy8918F6D8"
-          }
-        ],
-        "/AppRunner-dev/NailItECRRepository/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "NailItECRRepositoryE770C414"
+            "data": "AppRunnerInstanceRoleDefaultPolicy35195718"
           }
         ],
         "/AppRunner-dev/NailItAppRunnerService": [

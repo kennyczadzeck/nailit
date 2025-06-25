@@ -1399,13 +1399,13 @@
         "id": "AppRunner-dev",
         "path": "AppRunner-dev",
         "children": {
-          "AppRunnerServiceRole": {
-            "id": "AppRunnerServiceRole",
-            "path": "AppRunner-dev/AppRunnerServiceRole",
+          "AppRunnerInstanceRole": {
+            "id": "AppRunnerInstanceRole",
+            "path": "AppRunner-dev/AppRunnerInstanceRole",
             "children": {
-              "ImportAppRunnerServiceRole": {
-                "id": "ImportAppRunnerServiceRole",
-                "path": "AppRunner-dev/AppRunnerServiceRole/ImportAppRunnerServiceRole",
+              "ImportAppRunnerInstanceRole": {
+                "id": "ImportAppRunnerInstanceRole",
+                "path": "AppRunner-dev/AppRunnerInstanceRole/ImportAppRunnerInstanceRole",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.Resource",
                   "version": "2.80.0"
@@ -1413,7 +1413,7 @@
               },
               "Resource": {
                 "id": "Resource",
-                "path": "AppRunner-dev/AppRunnerServiceRole/Resource",
+                "path": "AppRunner-dev/AppRunnerInstanceRole/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::IAM::Role",
                   "aws:cdk:cloudformation:props": {
@@ -1429,7 +1429,7 @@
                       ],
                       "Version": "2012-10-17"
                     },
-                    "description": "IAM role for App Runner service",
+                    "description": "IAM role for App Runner service instances",
                     "tags": [
                       {
                         "key": "DatabaseProvider",
@@ -1461,11 +1461,11 @@
               },
               "DefaultPolicy": {
                 "id": "DefaultPolicy",
-                "path": "AppRunner-dev/AppRunnerServiceRole/DefaultPolicy",
+                "path": "AppRunner-dev/AppRunnerInstanceRole/DefaultPolicy",
                 "children": {
                   "Resource": {
                     "id": "Resource",
-                    "path": "AppRunner-dev/AppRunnerServiceRole/DefaultPolicy/Resource",
+                    "path": "AppRunner-dev/AppRunnerInstanceRole/DefaultPolicy/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
                       "aws:cdk:cloudformation:props": {
@@ -1473,39 +1473,20 @@
                           "Statement": [
                             {
                               "Action": [
+                                "logs:CreateLogGroup",
                                 "logs:CreateLogStream",
-                                "logs:PutLogEvents",
-                                "logs:CreateLogGroup"
+                                "logs:PutLogEvents"
                               ],
-                              "Effect": "Allow",
-                              "Resource": "*"
-                            },
-                            {
-                              "Action": [
-                                "ecr:BatchCheckLayerAvailability",
-                                "ecr:GetDownloadUrlForLayer",
-                                "ecr:BatchGetImage"
-                              ],
-                              "Effect": "Allow",
-                              "Resource": {
-                                "Fn::GetAtt": [
-                                  "NailItECRRepositoryE770C414",
-                                  "Arn"
-                                ]
-                              }
-                            },
-                            {
-                              "Action": "ecr:GetAuthorizationToken",
                               "Effect": "Allow",
                               "Resource": "*"
                             }
                           ],
                           "Version": "2012-10-17"
                         },
-                        "policyName": "AppRunnerServiceRoleDefaultPolicy8918F6D8",
+                        "policyName": "AppRunnerInstanceRoleDefaultPolicy35195718",
                         "roles": [
                           {
-                            "Ref": "AppRunnerServiceRole41659487"
+                            "Ref": "AppRunnerInstanceRole96A5A063"
                           }
                         ]
                       }
@@ -1524,53 +1505,6 @@
             },
             "constructInfo": {
               "fqn": "aws-cdk-lib.aws_iam.Role",
-              "version": "2.80.0"
-            }
-          },
-          "NailItECRRepository": {
-            "id": "NailItECRRepository",
-            "path": "AppRunner-dev/NailItECRRepository",
-            "children": {
-              "Resource": {
-                "id": "Resource",
-                "path": "AppRunner-dev/NailItECRRepository/Resource",
-                "attributes": {
-                  "aws:cdk:cloudformation:type": "AWS::ECR::Repository",
-                  "aws:cdk:cloudformation:props": {
-                    "imageTagMutability": "MUTABLE",
-                    "repositoryName": "nailit-dev",
-                    "tags": [
-                      {
-                        "key": "DatabaseProvider",
-                        "value": "Neon"
-                      },
-                      {
-                        "key": "Environment",
-                        "value": "development"
-                      },
-                      {
-                        "key": "HostingProvider",
-                        "value": "AppRunner"
-                      },
-                      {
-                        "key": "ManagedBy",
-                        "value": "CDK"
-                      },
-                      {
-                        "key": "Project",
-                        "value": "NailIt"
-                      }
-                    ]
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_ecr.CfnRepository",
-                  "version": "2.80.0"
-                }
-              }
-            },
-            "constructInfo": {
-              "fqn": "aws-cdk-lib.aws_ecr.Repository",
               "version": "2.80.0"
             }
           },
@@ -1601,7 +1535,7 @@
                   "memory": "0.5 GB",
                   "instanceRoleArn": {
                     "Fn::GetAtt": [
-                      "AppRunnerServiceRole41659487",
+                      "AppRunnerInstanceRole96A5A063",
                       "Arn"
                     ]
                   }

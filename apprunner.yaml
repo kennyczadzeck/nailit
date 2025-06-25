@@ -3,16 +3,9 @@ runtime: nodejs22
 build:
   commands:
     build:
-      - echo "=== App Runner Build Process Starting ==="
-      - echo "Node version:" && node --version
-      - echo "NPM version:" && npm --version
-      - echo "=== Installing dependencies (without postinstall) ==="
       - npm ci --ignore-scripts --legacy-peer-deps
-      - echo "=== Running Prisma generate manually ==="
       - npx prisma generate
-      - echo "=== Building Next.js application with dummy env vars ==="
       - DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" NEXTAUTH_SECRET="dummy-secret-for-build" NEXTAUTH_URL="http://localhost:3000" NODE_ENV="production" npm run build
-      - echo "=== Build completed successfully ==="
 run:
   runtime-version: nodejs22
   command: npm start
@@ -28,7 +21,7 @@ run:
     - name: NEXTAUTH_SECRET
       value: "+hP31rrZgohD7u3uHr/ASb1WE9j3MYjxHtTBmaaU+3M="
     - name: NEXTAUTH_URL
-      value: "https://krkvn7z28m.us-east-1.awsapprunner.com"
+      value: "http://localhost:3000"
     - name: GOOGLE_CLIENT_ID
       value: "442433418686-sahpnrfagrs9lfs1pdee2m06e4g2ukdc.apps.googleusercontent.com"
     - name: GOOGLE_CLIENT_SECRET

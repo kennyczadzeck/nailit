@@ -1,6 +1,6 @@
 {
  "Resources": {
-  "AppRunnerServiceRole41659487": {
+  "AppRunnerInstanceRole96A5A063": {
    "Type": "AWS::IAM::Role",
    "Properties": {
     "AssumeRolePolicyDocument": {
@@ -15,7 +15,7 @@
      ],
      "Version": "2012-10-17"
     },
-    "Description": "IAM role for App Runner service",
+    "Description": "IAM role for App Runner service instances",
     "Tags": [
      {
       "Key": "DatabaseProvider",
@@ -40,88 +40,35 @@
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "AppRunner-dev/AppRunnerServiceRole/Resource"
+    "aws:cdk:path": "AppRunner-dev/AppRunnerInstanceRole/Resource"
    }
   },
-  "AppRunnerServiceRoleDefaultPolicy8918F6D8": {
+  "AppRunnerInstanceRoleDefaultPolicy35195718": {
    "Type": "AWS::IAM::Policy",
    "Properties": {
     "PolicyDocument": {
      "Statement": [
       {
        "Action": [
+        "logs:CreateLogGroup",
         "logs:CreateLogStream",
-        "logs:PutLogEvents",
-        "logs:CreateLogGroup"
+        "logs:PutLogEvents"
        ],
-       "Effect": "Allow",
-       "Resource": "*"
-      },
-      {
-       "Action": [
-        "ecr:BatchCheckLayerAvailability",
-        "ecr:GetDownloadUrlForLayer",
-        "ecr:BatchGetImage"
-       ],
-       "Effect": "Allow",
-       "Resource": {
-        "Fn::GetAtt": [
-         "NailItECRRepositoryE770C414",
-         "Arn"
-        ]
-       }
-      },
-      {
-       "Action": "ecr:GetAuthorizationToken",
        "Effect": "Allow",
        "Resource": "*"
       }
      ],
      "Version": "2012-10-17"
     },
-    "PolicyName": "AppRunnerServiceRoleDefaultPolicy8918F6D8",
+    "PolicyName": "AppRunnerInstanceRoleDefaultPolicy35195718",
     "Roles": [
      {
-      "Ref": "AppRunnerServiceRole41659487"
+      "Ref": "AppRunnerInstanceRole96A5A063"
      }
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "AppRunner-dev/AppRunnerServiceRole/DefaultPolicy/Resource"
-   }
-  },
-  "NailItECRRepositoryE770C414": {
-   "Type": "AWS::ECR::Repository",
-   "Properties": {
-    "ImageTagMutability": "MUTABLE",
-    "RepositoryName": "nailit-dev",
-    "Tags": [
-     {
-      "Key": "DatabaseProvider",
-      "Value": "Neon"
-     },
-     {
-      "Key": "Environment",
-      "Value": "development"
-     },
-     {
-      "Key": "HostingProvider",
-      "Value": "AppRunner"
-     },
-     {
-      "Key": "ManagedBy",
-      "Value": "CDK"
-     },
-     {
-      "Key": "Project",
-      "Value": "NailIt"
-     }
-    ]
-   },
-   "UpdateReplacePolicy": "Delete",
-   "DeletionPolicy": "Delete",
-   "Metadata": {
-    "aws:cdk:path": "AppRunner-dev/NailItECRRepository/Resource"
+    "aws:cdk:path": "AppRunner-dev/AppRunnerInstanceRole/DefaultPolicy/Resource"
    }
   },
   "NailItAppRunnerService": {
@@ -147,7 +94,7 @@
      "Cpu": "0.25 vCPU",
      "InstanceRoleArn": {
       "Fn::GetAtt": [
-       "AppRunnerServiceRole41659487",
+       "AppRunnerInstanceRole96A5A063",
        "Arn"
       ]
      },
@@ -184,7 +131,7 @@
   "CDKMetadata": {
    "Type": "AWS::CDK::Metadata",
    "Properties": {
-    "Analytics": "v2:deflate64:H4sIAAAAAAAA/0WMTQ7CIBCFz9I9HSsL474H0NADGKTTZPoDZIA2hnB3Y1m4+t5P3pNw76Br9BFaMy7tSm/IQ9RmEfoIr0x6g6zciqKf7MmnW8l8fraqItAwZIXeBYqOz+rvitDec7IWGfrJDsg7GSxCYXCJzfn7SNGnWHc1LcK6EWEOl11KuN6ga+ZA1HKykTYEVfkFfJ6OGr0AAAA="
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/y2MTQrDIBSEz5K9ebUuSvc5QIs5QLHmBV5iVPxJKOLdS01X38wHMwLuHHinjtjrae0NvaGMSemVqSO+CqkNinQG2TDbxqczpD+/eqbKlPchW4sBhtmOGHbSWJnE6HLQbfjIyefULv62MusmhCVediHgegPeLZGoD9km2hDkyS/Q0WibngAAAA=="
    },
    "Metadata": {
     "aws:cdk:path": "AppRunner-dev/CDKMetadata/Default"
