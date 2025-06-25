@@ -12,6 +12,12 @@ interface AppRunnerStackProps extends cdk.StackProps {
     resourceSuffix: string;
   };
   githubConnectionArn?: string; // Optional GitHub connection ARN
+  secretArns?: {
+    databaseSecretArn: string;
+    authSecretArn: string;
+    googleSecretArn: string;
+    apiKeysSecretArn: string;
+  };
 }
 
 export class AppRunnerStack extends cdk.Stack {
@@ -20,7 +26,7 @@ export class AppRunnerStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: AppRunnerStackProps) {
     super(scope, id, props);
 
-    const { environment, envConfig } = props;
+    const { environment, envConfig, secretArns } = props;
     const accountId = props.env?.account || this.account;
     const region = props.env?.region || 'us-east-1';
 
@@ -100,6 +106,22 @@ export class AppRunnerStack extends cdk.Stack {
                 `arn:aws:logs:${region}:${accountId}:log-group:/nailit/${environment}/*:*`,
               ],
             }),
+            // Secrets Manager access for secure credentials
+            ...(secretArns ? [
+              new iam.PolicyStatement({
+                effect: iam.Effect.ALLOW,
+                actions: [
+                  'secretsmanager:GetSecretValue',
+                  'kms:Decrypt',
+                ],
+                resources: [
+                  secretArns.databaseSecretArn,
+                  secretArns.authSecretArn,
+                  secretArns.googleSecretArn,
+                  secretArns.apiKeysSecretArn,
+                ],
+              }),
+            ] : []),
           ],
         }),
       },

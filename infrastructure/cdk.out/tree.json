@@ -4,6 +4,228 @@
     "id": "App",
     "path": "",
     "children": {
+      "Secrets-dev": {
+        "id": "Secrets-dev",
+        "path": "Secrets-dev",
+        "children": {
+          "DatabaseCredentials": {
+            "id": "DatabaseCredentials",
+            "path": "Secrets-dev/DatabaseCredentials",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "Secrets-dev/DatabaseCredentials/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::SecretsManager::Secret",
+                  "aws:cdk:cloudformation:props": {
+                    "description": "Database connection string for NailIt application",
+                    "name": "nailit-database-development",
+                    "secretString": "postgresql://neondb_owner:npg_avELx8uqOAc0@ep-still-paper-a5tgtem8-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_secretsmanager.CfnSecret",
+                  "version": "2.80.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_secretsmanager.Secret",
+              "version": "2.80.0"
+            }
+          },
+          "AuthCredentials": {
+            "id": "AuthCredentials",
+            "path": "Secrets-dev/AuthCredentials",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "Secrets-dev/AuthCredentials/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::SecretsManager::Secret",
+                  "aws:cdk:cloudformation:props": {
+                    "description": "NextAuth secret and URL for NailIt application",
+                    "name": "nailit-auth-development",
+                    "secretString": "{\"NEXTAUTH_SECRET\":\"+hP31rrZgohD7u3uHr/ASb1WE9j3MYjxHtTBmaaU+3M=\",\"NEXTAUTH_URL\":\"https://krkvn7z28m.us-east-1.awsapprunner.com\"}"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_secretsmanager.CfnSecret",
+                  "version": "2.80.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_secretsmanager.Secret",
+              "version": "2.80.0"
+            }
+          },
+          "GoogleCredentials": {
+            "id": "GoogleCredentials",
+            "path": "Secrets-dev/GoogleCredentials",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "Secrets-dev/GoogleCredentials/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::SecretsManager::Secret",
+                  "aws:cdk:cloudformation:props": {
+                    "description": "Google OAuth credentials for NailIt application",
+                    "name": "nailit-google-development",
+                    "secretString": "{\"GOOGLE_CLIENT_ID\":\"442433418686-sahpnrfagrs9lfs1pdee2m06e4g2ukdc.apps.googleusercontent.com\",\"GOOGLE_CLIENT_SECRET\":\"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\"}"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_secretsmanager.CfnSecret",
+                  "version": "2.80.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_secretsmanager.Secret",
+              "version": "2.80.0"
+            }
+          },
+          "ApiKeys": {
+            "id": "ApiKeys",
+            "path": "Secrets-dev/ApiKeys",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "Secrets-dev/ApiKeys/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::SecretsManager::Secret",
+                  "aws:cdk:cloudformation:props": {
+                    "description": "API keys for NailIt application",
+                    "name": "nailit-apikeys-development",
+                    "secretString": "{\"NEXT_PUBLIC_GOOGLE_MAPS_API_KEY\":\"AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0\"}"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_secretsmanager.CfnSecret",
+                  "version": "2.80.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_secretsmanager.Secret",
+              "version": "2.80.0"
+            }
+          },
+          "DatabaseSecretArn": {
+            "id": "DatabaseSecretArn",
+            "path": "Secrets-dev/DatabaseSecretArn",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.80.0"
+            }
+          },
+          "AuthSecretArn": {
+            "id": "AuthSecretArn",
+            "path": "Secrets-dev/AuthSecretArn",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.80.0"
+            }
+          },
+          "GoogleSecretArn": {
+            "id": "GoogleSecretArn",
+            "path": "Secrets-dev/GoogleSecretArn",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.80.0"
+            }
+          },
+          "ApiKeysSecretArn": {
+            "id": "ApiKeysSecretArn",
+            "path": "Secrets-dev/ApiKeysSecretArn",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.80.0"
+            }
+          },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "Secrets-dev/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "Secrets-dev/CDKMetadata/Default",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.80.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.4.2"
+            }
+          },
+          "Exports": {
+            "id": "Exports",
+            "path": "Secrets-dev/Exports",
+            "children": {
+              "Output{\"Ref\":\"DatabaseCredentials8547B3E7\"}": {
+                "id": "Output{\"Ref\":\"DatabaseCredentials8547B3E7\"}",
+                "path": "Secrets-dev/Exports/Output{\"Ref\":\"DatabaseCredentials8547B3E7\"}",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.80.0"
+                }
+              },
+              "Output{\"Ref\":\"AuthCredentialsAD91009B\"}": {
+                "id": "Output{\"Ref\":\"AuthCredentialsAD91009B\"}",
+                "path": "Secrets-dev/Exports/Output{\"Ref\":\"AuthCredentialsAD91009B\"}",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.80.0"
+                }
+              },
+              "Output{\"Ref\":\"GoogleCredentials673A28DD\"}": {
+                "id": "Output{\"Ref\":\"GoogleCredentials673A28DD\"}",
+                "path": "Secrets-dev/Exports/Output{\"Ref\":\"GoogleCredentials673A28DD\"}",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.80.0"
+                }
+              },
+              "Output{\"Ref\":\"ApiKeys3BB3983D\"}": {
+                "id": "Output{\"Ref\":\"ApiKeys3BB3983D\"}",
+                "path": "Secrets-dev/Exports/Output{\"Ref\":\"ApiKeys3BB3983D\"}",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.80.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.4.2"
+            }
+          },
+          "BootstrapVersion": {
+            "id": "BootstrapVersion",
+            "path": "Secrets-dev/BootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnParameter",
+              "version": "2.80.0"
+            }
+          },
+          "CheckBootstrapVersion": {
+            "id": "CheckBootstrapVersion",
+            "path": "Secrets-dev/CheckBootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnRule",
+              "version": "2.80.0"
+            }
+          }
+        },
+        "constructInfo": {
+          "fqn": "aws-cdk-lib.Stack",
+          "version": "2.80.0"
+        }
+      },
       "NailIt-dev": {
         "id": "NailIt-dev",
         "path": "NailIt-dev",
@@ -1251,6 +1473,27 @@
                                 "arn:aws:logs:us-east-1:207091906248:log-group:/nailit/development/*",
                                 "arn:aws:logs:us-east-1:207091906248:log-group:/nailit/development/*:*"
                               ]
+                            },
+                            {
+                              "Action": [
+                                "secretsmanager:GetSecretValue",
+                                "kms:Decrypt"
+                              ],
+                              "Effect": "Allow",
+                              "Resource": [
+                                {
+                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefDatabaseCredentials8547B3E729671DA7"
+                                },
+                                {
+                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefAuthCredentialsAD91009BC8F492B2"
+                                },
+                                {
+                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleCredentials673A28DD18C6129F"
+                                },
+                                {
+                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefApiKeys3BB3983D8BCC0B1D"
+                                }
+                              ]
                             }
                           ],
                           "Version": "2012-10-17"
@@ -1480,9 +1723,19 @@
               "aws:cdk:cloudformation:type": "AWS::AppRunner::Service",
               "aws:cdk:cloudformation:props": {
                 "sourceConfiguration": {
-                  "imageRepository": {
-                    "imageIdentifier": "public.ecr.aws/aws-containers/hello-app-runner:latest",
-                    "imageRepositoryType": "ECR_PUBLIC"
+                  "autoDeploymentsEnabled": true,
+                  "authenticationConfiguration": {
+                    "connectionArn": "arn:aws:apprunner:us-east-1:207091906248:connection/nailit-github-connection/8527b12a3e654bb2b41e4b30f9ca1f5a"
+                  },
+                  "codeRepository": {
+                    "repositoryUrl": "https://github.com/kennyczadzeck/nailit",
+                    "sourceCodeVersion": {
+                      "type": "BRANCH",
+                      "value": "app-runner-deploy"
+                    },
+                    "codeConfiguration": {
+                      "configurationSource": "REPOSITORY"
+                    }
                   }
                 },
                 "instanceConfiguration": {

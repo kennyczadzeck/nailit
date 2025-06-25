@@ -28,13 +28,16 @@ run:
       value: production
     - name: PORT
       value: "3000"
+  secrets:
     - name: DATABASE_URL
-      value: "postgresql://neondb_owner:npg_avELx8uqOAc0@ep-still-paper-a5tgtem8-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require"
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-database-development-k22f6u"
     - name: NEXTAUTH_SECRET
-      value: "+hP31rrZgohD7u3uHr/ASb1WE9j3MYjxHtTBmaaU+3M="
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-auth-development-hc0ThB:NEXTAUTH_SECRET::"
     - name: NEXTAUTH_URL
-      value: "https://krkvn7z28m.us-east-1.awsapprunner.com"
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-auth-development-hc0ThB:NEXTAUTH_URL::"
     - name: GOOGLE_CLIENT_ID
-      value: "442433418686-sahpnrfagrs9lfs1pdee2m06e4g2ukdc.apps.googleusercontent.com"
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-google-development-5eESr6:GOOGLE_CLIENT_ID::"
     - name: GOOGLE_CLIENT_SECRET
-      value: "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" 
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-google-development-5eESr6:GOOGLE_CLIENT_SECRET::"
+    - name: NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-apikeys-development-GyhBrL:NEXT_PUBLIC_GOOGLE_MAPS_API_KEY::" 

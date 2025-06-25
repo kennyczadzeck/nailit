@@ -4,6 +4,7 @@ import * as cdk from 'aws-cdk-lib';
 import { NailItInfrastructureStack } from '../lib/nailit-infrastructure-stack';
 import { LoggingStack } from '../lib/logging-stack';
 import { AppRunnerStack } from '../lib/app-runner-stack';
+import { SecretsStack } from '../lib/secrets-stack';
 
 const app = new cdk.App();
 
@@ -37,6 +38,18 @@ if (!envConfig) {
   throw new Error(`Unknown environment: ${environment}. Must be one of: ${Object.keys(environments).join(', ')}`);
 }
 
+// GitHub connection ARN from our previous successful deployment
+const githubConnectionArn = 'arn:aws:apprunner:us-east-1:207091906248:connection/nailit-github-connection/8527b12a3e654bb2b41e4b30f9ca1f5a';
+
+// Deploy secrets stack first (other stacks depend on it)
+const secretsStack = new SecretsStack(app, `Secrets-${envConfig.resourceSuffix}`, {
+  env: {
+    account: accountId,
+    region: region,
+  },
+  environment: environment,
+});
+
 // Deploy main infrastructure stack
 new NailItInfrastructureStack(app, `NailIt-${envConfig.resourceSuffix}`, {
   env: {
@@ -57,7 +70,7 @@ new LoggingStack(app, `LoggingStack-${envConfig.resourceSuffix}`, {
   envConfig: envConfig,
 });
 
-// Deploy App Runner stack
+// Deploy App Runner stack with secrets and GitHub connection
 new AppRunnerStack(app, `AppRunner-${envConfig.resourceSuffix}`, {
   env: {
     account: accountId,
@@ -65,6 +78,13 @@ new AppRunnerStack(app, `AppRunner-${envConfig.resourceSuffix}`, {
   },
   environment: environment,
   envConfig: envConfig,
+  githubConnectionArn: githubConnectionArn,
+  secretArns: {
+    databaseSecretArn: secretsStack.databaseSecretArn,
+    authSecretArn: secretsStack.authSecretArn,
+    googleSecretArn: secretsStack.googleSecretArn,
+    apiKeysSecretArn: secretsStack.apiKeysSecretArn,
+  },
 });
 
 app.synth(); 
