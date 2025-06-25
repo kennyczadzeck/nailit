@@ -27,4 +27,14 @@ run:
     - name: NODE_ENV
       value: production
     - name: PORT
-      value: "3000" 
+      value: "3000"
+    - name: DATABASE_URL
+      value: "postgresql://nailit_dev_user:sWCHU9LtWm7U!@ep-morning-silence-a5h2m95z.us-east-1.aws.neon.tech/nailit_dev?sslmode=require"
+    - name: NEXTAUTH_SECRET
+      value: "super-secret-nextauth-secret-key-for-production"
+    - name: NEXTAUTH_URL
+      value: "https://krkvn7z28m.us-east-1.awsapprunner.com"
+    - name: GOOGLE_CLIENT_ID
+      value: "your-google-client-id"
+    - name: GOOGLE_CLIENT_SECRET
+      value: "your-google-client-secret" 
