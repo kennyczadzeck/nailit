@@ -54,24 +54,24 @@ export class AppRunnerStack extends cdk.Stack {
       resources: ['*'],
     }));
 
-    // TODO: Add secrets manager permissions when we re-enable secrets
-    // if (secretArns) {
-    //   instanceRole.addToPolicy(new iam.PolicyStatement({
-    //     effect: iam.Effect.ALLOW,
-    //     actions: [
-    //       'secretsmanager:GetSecretValue',
-    //       'kms:Decrypt',
-    //     ],
-    //     resources: [
-    //       secretArns.databaseSecretArn,
-    //       secretArns.nextauthSecretArn,
-    //       secretArns.nextauthUrlArn,
-    //       secretArns.googleClientIdArn,
-    //       secretArns.googleClientSecretArn,
-    //       secretArns.apiKeysSecretArn,
-    //     ],
-    //   }));
-    // }
+    // Add secrets manager permissions for our individual secrets
+    if (secretArns) {
+      instanceRole.addToPolicy(new iam.PolicyStatement({
+        effect: iam.Effect.ALLOW,
+        actions: [
+          'secretsmanager:GetSecretValue',
+          'kms:Decrypt',
+        ],
+        resources: [
+          secretArns.databaseSecretArn,
+          secretArns.nextauthSecretArn,
+          secretArns.nextauthUrlArn,
+          secretArns.googleClientIdArn,
+          secretArns.googleClientSecretArn,
+          secretArns.apiKeysSecretArn,
+        ],
+      }));
+    }
 
     // =================================
     // APP RUNNER SERVICE
@@ -106,7 +106,7 @@ export class AppRunnerStack extends cdk.Stack {
       instanceConfiguration: {
         cpu: '0.25 vCPU',
         memory: '0.5 GB',
-        // instanceRoleArn: instanceRole.roleArn, // Temporarily removed to test
+        instanceRoleArn: instanceRole.roleArn,
       },
     });
 
