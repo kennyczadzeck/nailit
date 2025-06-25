@@ -230,64 +230,6 @@
               "version": "10.4.2"
             }
           },
-          "Exports": {
-            "id": "Exports",
-            "path": "Secrets-dev/Exports",
-            "children": {
-              "Output{\"Ref\":\"DatabaseCredentials8547B3E7\"}": {
-                "id": "Output{\"Ref\":\"DatabaseCredentials8547B3E7\"}",
-                "path": "Secrets-dev/Exports/Output{\"Ref\":\"DatabaseCredentials8547B3E7\"}",
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.CfnOutput",
-                  "version": "2.80.0"
-                }
-              },
-              "Output{\"Ref\":\"NextAuthSecret21484E9E\"}": {
-                "id": "Output{\"Ref\":\"NextAuthSecret21484E9E\"}",
-                "path": "Secrets-dev/Exports/Output{\"Ref\":\"NextAuthSecret21484E9E\"}",
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.CfnOutput",
-                  "version": "2.80.0"
-                }
-              },
-              "Output{\"Ref\":\"NextAuthUrl03CEB3B7\"}": {
-                "id": "Output{\"Ref\":\"NextAuthUrl03CEB3B7\"}",
-                "path": "Secrets-dev/Exports/Output{\"Ref\":\"NextAuthUrl03CEB3B7\"}",
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.CfnOutput",
-                  "version": "2.80.0"
-                }
-              },
-              "Output{\"Ref\":\"GoogleClientIdDF771C4D\"}": {
-                "id": "Output{\"Ref\":\"GoogleClientIdDF771C4D\"}",
-                "path": "Secrets-dev/Exports/Output{\"Ref\":\"GoogleClientIdDF771C4D\"}",
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.CfnOutput",
-                  "version": "2.80.0"
-                }
-              },
-              "Output{\"Ref\":\"GoogleClientSecret7356BEB4\"}": {
-                "id": "Output{\"Ref\":\"GoogleClientSecret7356BEB4\"}",
-                "path": "Secrets-dev/Exports/Output{\"Ref\":\"GoogleClientSecret7356BEB4\"}",
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.CfnOutput",
-                  "version": "2.80.0"
-                }
-              },
-              "Output{\"Ref\":\"ApiKeys3BB3983D\"}": {
-                "id": "Output{\"Ref\":\"ApiKeys3BB3983D\"}",
-                "path": "Secrets-dev/Exports/Output{\"Ref\":\"ApiKeys3BB3983D\"}",
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.CfnOutput",
-                  "version": "2.80.0"
-                }
-              }
-            },
-            "constructInfo": {
-              "fqn": "constructs.Construct",
-              "version": "10.4.2"
-            }
-          },
           "BootstrapVersion": {
             "id": "BootstrapVersion",
             "path": "Secrets-dev/BootstrapVersion",
@@ -1457,13 +1399,13 @@
         "id": "AppRunner-dev",
         "path": "AppRunner-dev",
         "children": {
-          "AppRunnerInstanceRole": {
-            "id": "AppRunnerInstanceRole",
-            "path": "AppRunner-dev/AppRunnerInstanceRole",
+          "AppRunnerServiceRole": {
+            "id": "AppRunnerServiceRole",
+            "path": "AppRunner-dev/AppRunnerServiceRole",
             "children": {
-              "ImportAppRunnerInstanceRole": {
-                "id": "ImportAppRunnerInstanceRole",
-                "path": "AppRunner-dev/AppRunnerInstanceRole/ImportAppRunnerInstanceRole",
+              "ImportAppRunnerServiceRole": {
+                "id": "ImportAppRunnerServiceRole",
+                "path": "AppRunner-dev/AppRunnerServiceRole/ImportAppRunnerServiceRole",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.Resource",
                   "version": "2.80.0"
@@ -1471,7 +1413,7 @@
               },
               "Resource": {
                 "id": "Resource",
-                "path": "AppRunner-dev/AppRunnerInstanceRole/Resource",
+                "path": "AppRunner-dev/AppRunnerServiceRole/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::IAM::Role",
                   "aws:cdk:cloudformation:props": {
@@ -1487,190 +1429,7 @@
                       ],
                       "Version": "2012-10-17"
                     },
-                    "managedPolicyArns": [
-                      {
-                        "Fn::Join": [
-                          "",
-                          [
-                            "arn:",
-                            {
-                              "Ref": "AWS::Partition"
-                            },
-                            ":iam::aws:policy/CloudWatchLogsFullAccess"
-                          ]
-                        ]
-                      }
-                    ],
-                    "policies": [
-                      {
-                        "policyName": "NailItServiceAccess",
-                        "policyDocument": {
-                          "Statement": [
-                            {
-                              "Action": [
-                                "s3:GetObject",
-                                "s3:PutObject",
-                                "s3:DeleteObject",
-                                "s3:ListBucket"
-                              ],
-                              "Effect": "Allow",
-                              "Resource": [
-                                "arn:aws:s3:::nailit-dev-emails-207091906248",
-                                "arn:aws:s3:::nailit-dev-emails-207091906248/*"
-                              ]
-                            },
-                            {
-                              "Action": [
-                                "sqs:SendMessage",
-                                "sqs:ReceiveMessage",
-                                "sqs:DeleteMessage",
-                                "sqs:GetQueueAttributes",
-                                "sqs:GetQueueUrl"
-                              ],
-                              "Effect": "Allow",
-                              "Resource": [
-                                "arn:aws:sqs:us-east-1:207091906248:nailit-dev-email-queue",
-                                "arn:aws:sqs:us-east-1:207091906248:nailit-dev-ai-queue",
-                                "arn:aws:sqs:us-east-1:207091906248:nailit-dev-email-ingestion-queue",
-                                "arn:aws:sqs:us-east-1:207091906248:nailit-dev-email-assignment-queue",
-                                "arn:aws:sqs:us-east-1:207091906248:nailit-dev-email-flagging-queue"
-                              ]
-                            },
-                            {
-                              "Action": [
-                                "sns:Publish",
-                                "sns:GetTopicAttributes"
-                              ],
-                              "Effect": "Allow",
-                              "Resource": "arn:aws:sns:us-east-1:207091906248:nailit-dev-notifications"
-                            },
-                            {
-                              "Action": [
-                                "logs:CreateLogGroup",
-                                "logs:CreateLogStream",
-                                "logs:PutLogEvents",
-                                "logs:DescribeLogGroups",
-                                "logs:DescribeLogStreams"
-                              ],
-                              "Effect": "Allow",
-                              "Resource": [
-                                "arn:aws:logs:us-east-1:207091906248:log-group:/nailit/development/*",
-                                "arn:aws:logs:us-east-1:207091906248:log-group:/nailit/development/*:*"
-                              ]
-                            },
-                            {
-                              "Action": [
-                                "secretsmanager:GetSecretValue",
-                                "kms:Decrypt"
-                              ],
-                              "Effect": "Allow",
-                              "Resource": [
-                                {
-                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefDatabaseCredentials8547B3E729671DA7"
-                                },
-                                {
-                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefNextAuthSecret21484E9E77FF9A4C"
-                                },
-                                {
-                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefNextAuthUrl03CEB3B75A8AF779"
-                                },
-                                {
-                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientIdDF771C4D6A4E26E7"
-                                },
-                                {
-                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientSecret7356BEB4E9294748"
-                                },
-                                {
-                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefApiKeys3BB3983D8BCC0B1D"
-                                }
-                              ]
-                            }
-                          ],
-                          "Version": "2012-10-17"
-                        }
-                      }
-                    ],
-                    "roleName": "nailit-dev-apprunner-instance",
-                    "tags": [
-                      {
-                        "key": "DatabaseProvider",
-                        "value": "Neon"
-                      },
-                      {
-                        "key": "Environment",
-                        "value": "development"
-                      },
-                      {
-                        "key": "HostingProvider",
-                        "value": "AppRunner"
-                      },
-                      {
-                        "key": "ManagedBy",
-                        "value": "CDK"
-                      },
-                      {
-                        "key": "Project",
-                        "value": "NailIt"
-                      }
-                    ]
-                  }
-                },
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.aws_iam.CfnRole",
-                  "version": "2.80.0"
-                }
-              }
-            },
-            "constructInfo": {
-              "fqn": "aws-cdk-lib.aws_iam.Role",
-              "version": "2.80.0"
-            }
-          },
-          "AppRunnerAccessRole": {
-            "id": "AppRunnerAccessRole",
-            "path": "AppRunner-dev/AppRunnerAccessRole",
-            "children": {
-              "ImportAppRunnerAccessRole": {
-                "id": "ImportAppRunnerAccessRole",
-                "path": "AppRunner-dev/AppRunnerAccessRole/ImportAppRunnerAccessRole",
-                "constructInfo": {
-                  "fqn": "aws-cdk-lib.Resource",
-                  "version": "2.80.0"
-                }
-              },
-              "Resource": {
-                "id": "Resource",
-                "path": "AppRunner-dev/AppRunnerAccessRole/Resource",
-                "attributes": {
-                  "aws:cdk:cloudformation:type": "AWS::IAM::Role",
-                  "aws:cdk:cloudformation:props": {
-                    "assumeRolePolicyDocument": {
-                      "Statement": [
-                        {
-                          "Action": "sts:AssumeRole",
-                          "Effect": "Allow",
-                          "Principal": {
-                            "Service": "build.apprunner.amazonaws.com"
-                          }
-                        }
-                      ],
-                      "Version": "2012-10-17"
-                    },
-                    "managedPolicyArns": [
-                      {
-                        "Fn::Join": [
-                          "",
-                          [
-                            "arn:",
-                            {
-                              "Ref": "AWS::Partition"
-                            },
-                            ":iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess"
-                          ]
-                        ]
-                      }
-                    ],
-                    "roleName": "nailit-dev-apprunner-access",
+                    "description": "IAM role for App Runner service",
                     "tags": [
                       {
                         "key": "DatabaseProvider",
@@ -1702,16 +1461,25 @@
               },
               "DefaultPolicy": {
                 "id": "DefaultPolicy",
-                "path": "AppRunner-dev/AppRunnerAccessRole/DefaultPolicy",
+                "path": "AppRunner-dev/AppRunnerServiceRole/DefaultPolicy",
                 "children": {
                   "Resource": {
                     "id": "Resource",
-                    "path": "AppRunner-dev/AppRunnerAccessRole/DefaultPolicy/Resource",
+                    "path": "AppRunner-dev/AppRunnerServiceRole/DefaultPolicy/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
                       "aws:cdk:cloudformation:props": {
                         "policyDocument": {
                           "Statement": [
+                            {
+                              "Action": [
+                                "logs:CreateLogStream",
+                                "logs:PutLogEvents",
+                                "logs:CreateLogGroup"
+                              ],
+                              "Effect": "Allow",
+                              "Resource": "*"
+                            },
                             {
                               "Action": [
                                 "ecr:BatchCheckLayerAvailability",
@@ -1734,10 +1502,10 @@
                           ],
                           "Version": "2012-10-17"
                         },
-                        "policyName": "AppRunnerAccessRoleDefaultPolicy4FF2CFAF",
+                        "policyName": "AppRunnerServiceRoleDefaultPolicy8918F6D8",
                         "roles": [
                           {
-                            "Ref": "AppRunnerAccessRoleC89E5843"
+                            "Ref": "AppRunnerServiceRole41659487"
                           }
                         ]
                       }
@@ -1833,7 +1601,7 @@
                   "memory": "0.5 GB",
                   "instanceRoleArn": {
                     "Fn::GetAtt": [
-                      "AppRunnerInstanceRole96A5A063",
+                      "AppRunnerServiceRole41659487",
                       "Arn"
                     ]
                   }

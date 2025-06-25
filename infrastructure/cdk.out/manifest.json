@@ -17,7 +17,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-deploy-role-207091906248-us-east-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-cfn-exec-role-207091906248-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/37e69cc3502410e70a05f02293887fb96d717655e4700bd5343fc6bfb4eef2a2.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/3ddd4cc60e55bd82127b9f7c56749d7973b868e51178581e6873bf73947153cf.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -109,42 +109,6 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "CDKMetadata"
-          }
-        ],
-        "/Secrets-dev/Exports/Output{\"Ref\":\"DatabaseCredentials8547B3E7\"}": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "ExportsOutputRefDatabaseCredentials8547B3E729671DA7"
-          }
-        ],
-        "/Secrets-dev/Exports/Output{\"Ref\":\"NextAuthSecret21484E9E\"}": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "ExportsOutputRefNextAuthSecret21484E9E77FF9A4C"
-          }
-        ],
-        "/Secrets-dev/Exports/Output{\"Ref\":\"NextAuthUrl03CEB3B7\"}": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "ExportsOutputRefNextAuthUrl03CEB3B75A8AF779"
-          }
-        ],
-        "/Secrets-dev/Exports/Output{\"Ref\":\"GoogleClientIdDF771C4D\"}": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "ExportsOutputRefGoogleClientIdDF771C4D6A4E26E7"
-          }
-        ],
-        "/Secrets-dev/Exports/Output{\"Ref\":\"GoogleClientSecret7356BEB4\"}": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "ExportsOutputRefGoogleClientSecret7356BEB4E9294748"
-          }
-        ],
-        "/Secrets-dev/Exports/Output{\"Ref\":\"ApiKeys3BB3983D\"}": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "ExportsOutputRefApiKeys3BB3983D8BCC0B1D"
           }
         ],
         "/Secrets-dev/BootstrapVersion": [
@@ -516,7 +480,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-deploy-role-207091906248-us-east-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-cfn-exec-role-207091906248-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/88a2c32ff7492a351040ed01c1f874e721a06e2a5c86d6c992a9c5b0ed47e219.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/b8daba26e8ab1dd58e4a07d18c5982aa97b53a9d1a3e6a32ae5b2bf10038c1fe.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -529,7 +493,6 @@
         }
       },
       "dependencies": [
-        "Secrets-dev",
         "AppRunner-dev.assets"
       ],
       "metadata": {
@@ -560,22 +523,16 @@
             ]
           }
         ],
-        "/AppRunner-dev/AppRunnerInstanceRole/Resource": [
+        "/AppRunner-dev/AppRunnerServiceRole/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "AppRunnerInstanceRole96A5A063"
+            "data": "AppRunnerServiceRole41659487"
           }
         ],
-        "/AppRunner-dev/AppRunnerAccessRole/Resource": [
+        "/AppRunner-dev/AppRunnerServiceRole/DefaultPolicy/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "AppRunnerAccessRoleC89E5843"
-          }
-        ],
-        "/AppRunner-dev/AppRunnerAccessRole/DefaultPolicy/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "AppRunnerAccessRoleDefaultPolicy4FF2CFAF"
+            "data": "AppRunnerServiceRoleDefaultPolicy8918F6D8"
           }
         ],
         "/AppRunner-dev/NailItECRRepository/Resource": [

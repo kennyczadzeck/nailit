@@ -1,6 +1,6 @@
 {
  "Resources": {
-  "AppRunnerInstanceRole96A5A063": {
+  "AppRunnerServiceRole41659487": {
    "Type": "AWS::IAM::Role",
    "Properties": {
     "AssumeRolePolicyDocument": {
@@ -15,110 +15,7 @@
      ],
      "Version": "2012-10-17"
     },
-    "ManagedPolicyArns": [
-     {
-      "Fn::Join": [
-       "",
-       [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":iam::aws:policy/CloudWatchLogsFullAccess"
-       ]
-      ]
-     }
-    ],
-    "Policies": [
-     {
-      "PolicyDocument": {
-       "Statement": [
-        {
-         "Action": [
-          "s3:GetObject",
-          "s3:PutObject",
-          "s3:DeleteObject",
-          "s3:ListBucket"
-         ],
-         "Effect": "Allow",
-         "Resource": [
-          "arn:aws:s3:::nailit-dev-emails-207091906248",
-          "arn:aws:s3:::nailit-dev-emails-207091906248/*"
-         ]
-        },
-        {
-         "Action": [
-          "sqs:SendMessage",
-          "sqs:ReceiveMessage",
-          "sqs:DeleteMessage",
-          "sqs:GetQueueAttributes",
-          "sqs:GetQueueUrl"
-         ],
-         "Effect": "Allow",
-         "Resource": [
-          "arn:aws:sqs:us-east-1:207091906248:nailit-dev-email-queue",
-          "arn:aws:sqs:us-east-1:207091906248:nailit-dev-ai-queue",
-          "arn:aws:sqs:us-east-1:207091906248:nailit-dev-email-ingestion-queue",
-          "arn:aws:sqs:us-east-1:207091906248:nailit-dev-email-assignment-queue",
-          "arn:aws:sqs:us-east-1:207091906248:nailit-dev-email-flagging-queue"
-         ]
-        },
-        {
-         "Action": [
-          "sns:Publish",
-          "sns:GetTopicAttributes"
-         ],
-         "Effect": "Allow",
-         "Resource": "arn:aws:sns:us-east-1:207091906248:nailit-dev-notifications"
-        },
-        {
-         "Action": [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents",
-          "logs:DescribeLogGroups",
-          "logs:DescribeLogStreams"
-         ],
-         "Effect": "Allow",
-         "Resource": [
-          "arn:aws:logs:us-east-1:207091906248:log-group:/nailit/development/*",
-          "arn:aws:logs:us-east-1:207091906248:log-group:/nailit/development/*:*"
-         ]
-        },
-        {
-         "Action": [
-          "secretsmanager:GetSecretValue",
-          "kms:Decrypt"
-         ],
-         "Effect": "Allow",
-         "Resource": [
-          {
-           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefDatabaseCredentials8547B3E729671DA7"
-          },
-          {
-           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefNextAuthSecret21484E9E77FF9A4C"
-          },
-          {
-           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefNextAuthUrl03CEB3B75A8AF779"
-          },
-          {
-           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientIdDF771C4D6A4E26E7"
-          },
-          {
-           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientSecret7356BEB4E9294748"
-          },
-          {
-           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefApiKeys3BB3983D8BCC0B1D"
-          }
-         ]
-        }
-       ],
-       "Version": "2012-10-17"
-      },
-      "PolicyName": "NailItServiceAccess"
-     }
-    ],
-    "RoleName": "nailit-dev-apprunner-instance",
+    "Description": "IAM role for App Runner service",
     "Tags": [
      {
       "Key": "DatabaseProvider",
@@ -143,71 +40,23 @@
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "AppRunner-dev/AppRunnerInstanceRole/Resource"
+    "aws:cdk:path": "AppRunner-dev/AppRunnerServiceRole/Resource"
    }
   },
-  "AppRunnerAccessRoleC89E5843": {
-   "Type": "AWS::IAM::Role",
-   "Properties": {
-    "AssumeRolePolicyDocument": {
-     "Statement": [
-      {
-       "Action": "sts:AssumeRole",
-       "Effect": "Allow",
-       "Principal": {
-        "Service": "build.apprunner.amazonaws.com"
-       }
-      }
-     ],
-     "Version": "2012-10-17"
-    },
-    "ManagedPolicyArns": [
-     {
-      "Fn::Join": [
-       "",
-       [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess"
-       ]
-      ]
-     }
-    ],
-    "RoleName": "nailit-dev-apprunner-access",
-    "Tags": [
-     {
-      "Key": "DatabaseProvider",
-      "Value": "Neon"
-     },
-     {
-      "Key": "Environment",
-      "Value": "development"
-     },
-     {
-      "Key": "HostingProvider",
-      "Value": "AppRunner"
-     },
-     {
-      "Key": "ManagedBy",
-      "Value": "CDK"
-     },
-     {
-      "Key": "Project",
-      "Value": "NailIt"
-     }
-    ]
-   },
-   "Metadata": {
-    "aws:cdk:path": "AppRunner-dev/AppRunnerAccessRole/Resource"
-   }
-  },
-  "AppRunnerAccessRoleDefaultPolicy4FF2CFAF": {
+  "AppRunnerServiceRoleDefaultPolicy8918F6D8": {
    "Type": "AWS::IAM::Policy",
    "Properties": {
     "PolicyDocument": {
      "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogStream",
+        "logs:PutLogEvents",
+        "logs:CreateLogGroup"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      },
       {
        "Action": [
         "ecr:BatchCheckLayerAvailability",
@@ -230,15 +79,15 @@
      ],
      "Version": "2012-10-17"
     },
-    "PolicyName": "AppRunnerAccessRoleDefaultPolicy4FF2CFAF",
+    "PolicyName": "AppRunnerServiceRoleDefaultPolicy8918F6D8",
     "Roles": [
      {
-      "Ref": "AppRunnerAccessRoleC89E5843"
+      "Ref": "AppRunnerServiceRole41659487"
      }
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "AppRunner-dev/AppRunnerAccessRole/DefaultPolicy/Resource"
+    "aws:cdk:path": "AppRunner-dev/AppRunnerServiceRole/DefaultPolicy/Resource"
    }
   },
   "NailItECRRepositoryE770C414": {
@@ -298,7 +147,7 @@
      "Cpu": "0.25 vCPU",
      "InstanceRoleArn": {
       "Fn::GetAtt": [
-       "AppRunnerInstanceRole96A5A063",
+       "AppRunnerServiceRole41659487",
        "Arn"
       ]
      },

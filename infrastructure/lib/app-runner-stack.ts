@@ -1,7 +1,6 @@
 import * as cdk from 'aws-cdk-lib';
 import * as apprunner from 'aws-cdk-lib/aws-apprunner';
 import * as iam from 'aws-cdk-lib/aws-iam';
-import * as ecr from 'aws-cdk-lib/aws-ecr';
 import { Construct } from 'constructs';
 
 interface AppRunnerStackProps extends cdk.StackProps {
@@ -29,37 +28,35 @@ export class AppRunnerStack extends cdk.Stack {
     super(scope, id, props);
 
     const { environment, envConfig, secretArns } = props;
-    const accountId = props.env?.account || this.account;
-    const region = props.env?.region || 'us-east-1';
 
     // Get GitHub connection ARN from context or props
     const githubConnectionArn = props.githubConnectionArn || 
                                this.node.tryGetContext('githubConnectionArn');
 
     // =================================
-    // IAM ROLE FOR APP RUNNER
+    // IAM ROLE FOR APP RUNNER INSTANCE
     // =================================
 
-    // Create the IAM role for App Runner service
-    const appRunnerRole = new iam.Role(this, 'AppRunnerServiceRole', {
+    // Instance role for App Runner service - this is the correct role for GitHub sources
+    const instanceRole = new iam.Role(this, 'AppRunnerInstanceRole', {
       assumedBy: new iam.ServicePrincipal('tasks.apprunner.amazonaws.com'),
-      description: 'IAM role for App Runner service',
+      description: 'IAM role for App Runner service instances',
     });
 
-    // Add CloudWatch Logs permissions
-    appRunnerRole.addToPolicy(new iam.PolicyStatement({
+    // Add basic CloudWatch Logs permissions
+    instanceRole.addToPolicy(new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
       actions: [
+        'logs:CreateLogGroup',
         'logs:CreateLogStream',
         'logs:PutLogEvents',
-        'logs:CreateLogGroup',
       ],
       resources: ['*'],
     }));
 
-    // TODO: Re-enable secrets manager permissions when secrets integration is working
+    // TODO: Add secrets manager permissions when we re-enable secrets
     // if (secretArns) {
-    //   appRunnerRole.addToPolicy(new iam.PolicyStatement({
+    //   instanceRole.addToPolicy(new iam.PolicyStatement({
     //     effect: iam.Effect.ALLOW,
     //     actions: [
     //       'secretsmanager:GetSecretValue',
@@ -75,20 +72,6 @@ export class AppRunnerStack extends cdk.Stack {
     //     ],
     //   }));
     // }
-
-    // =================================
-    // ECR REPOSITORY
-    // =================================
-
-    // Create ECR repository for the app
-    const ecrRepository = new ecr.Repository(this, 'NailItECRRepository', {
-      repositoryName: `nailit-${envConfig.resourceSuffix}`,
-      removalPolicy: cdk.RemovalPolicy.DESTROY, // For development - change for production
-      imageTagMutability: ecr.TagMutability.MUTABLE,
-    });
-
-    // Grant access role to pull from ECR
-    ecrRepository.grantPull(appRunnerRole);
 
     // =================================
     // APP RUNNER SERVICE
@@ -114,7 +97,7 @@ export class AppRunnerStack extends cdk.Stack {
           },
         },
       } : {
-        // ECR fallback configuration
+        // Fallback configuration - this shouldn't be used
         imageRepository: {
           imageIdentifier: 'public.ecr.aws/aws-containers/hello-app-runner:latest',
           imageRepositoryType: 'ECR_PUBLIC',
@@ -123,7 +106,7 @@ export class AppRunnerStack extends cdk.Stack {
       instanceConfiguration: {
         cpu: '0.25 vCPU',
         memory: '0.5 GB',
-        instanceRoleArn: appRunnerRole.roleArn,
+        instanceRoleArn: instanceRole.roleArn,
       },
     });
 
