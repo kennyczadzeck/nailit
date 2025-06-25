@@ -35,8 +35,7 @@
     "deploy:prod": "npm run test:ci:all && npm run build",
     "db:seed": "tsx prisma/seed.ts",
     "db:reset": "npx prisma db push --force-reset && npm run db:seed",
-    "db:studio": "npx prisma studio",
-    "postinstall": "prisma generate"
+    "db:studio": "npx prisma studio"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

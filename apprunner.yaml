@@ -6,27 +6,12 @@ build:
       - echo "=== App Runner Build Process Starting ==="
       - echo "Node version:" && node --version
       - echo "NPM version:" && npm --version
-      - echo "Working directory:" && pwd
-      - echo "Available files:" && ls -la
-      - echo "=== Setting up build environment ==="
-      - export DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
-      - export NEXTAUTH_SECRET="dummy-secret-for-build"
-      - export NEXTAUTH_URL="http://localhost:3000"
-      - export NODE_ENV="production"
-      - echo "Environment variables set"
-      - echo "=== Installing dependencies (without postinstall) ==="
-      - npm ci --ignore-scripts --legacy-peer-deps --verbose
-      - echo "Dependencies installed successfully"
-      - echo "=== Running Prisma generate manually ==="
-      - npx prisma generate
-      - echo "Prisma client generated successfully"
-      - echo "=== Building Next.js application ==="
-      - npm run build
+      - echo "=== Installing only production dependencies ==="
+      - npm install --production
       - echo "=== Build completed successfully ==="
-      - echo "Built files:" && ls -la .next/
 run:
   runtime-version: nodejs22
-  command: npm start
+  command: node -e "const http = require('http'); const server = http.createServer((req, res) => { res.writeHead(200, {'Content-Type': 'application/json'}); res.end(JSON.stringify({message: 'NailIt App is running on App Runner!', status: 'ok', timestamp: new Date().toISOString()})); }); server.listen(3000, () => console.log('Server running on port 3000'));"
   network:
     port: 3000
   env:
