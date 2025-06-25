@@ -6,8 +6,8 @@ build:
       - echo "=== App Runner Build Process Starting ==="
       - echo "Node version:" && node --version
       - echo "NPM version:" && npm --version
-      - echo "=== Installing only production dependencies ==="
-      - npm install --production
+      - echo "=== Installing dependencies with legacy peer deps ==="
+      - npm install --legacy-peer-deps
       - echo "=== Build completed successfully ==="
 run:
   runtime-version: nodejs22
