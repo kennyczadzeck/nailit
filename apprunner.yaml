@@ -5,6 +5,8 @@ build:
     build:
       - echo "Installing dependencies..."
       - npm install --legacy-peer-deps
+      - echo "Setting up build environment..."
+      - export DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
       - echo "Running Prisma generate..."
       - npx prisma generate
       - echo "Building Next.js application..."
