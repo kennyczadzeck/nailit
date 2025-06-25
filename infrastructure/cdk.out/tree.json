@@ -162,6 +162,48 @@
               "version": "10.4.2"
             }
           },
+          "Exports": {
+            "id": "Exports",
+            "path": "Secrets-dev/Exports",
+            "children": {
+              "Output{\"Ref\":\"DatabaseCredentials8547B3E7\"}": {
+                "id": "Output{\"Ref\":\"DatabaseCredentials8547B3E7\"}",
+                "path": "Secrets-dev/Exports/Output{\"Ref\":\"DatabaseCredentials8547B3E7\"}",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.80.0"
+                }
+              },
+              "Output{\"Ref\":\"AuthCredentialsAD91009B\"}": {
+                "id": "Output{\"Ref\":\"AuthCredentialsAD91009B\"}",
+                "path": "Secrets-dev/Exports/Output{\"Ref\":\"AuthCredentialsAD91009B\"}",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.80.0"
+                }
+              },
+              "Output{\"Ref\":\"GoogleCredentials673A28DD\"}": {
+                "id": "Output{\"Ref\":\"GoogleCredentials673A28DD\"}",
+                "path": "Secrets-dev/Exports/Output{\"Ref\":\"GoogleCredentials673A28DD\"}",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.80.0"
+                }
+              },
+              "Output{\"Ref\":\"ApiKeys3BB3983D\"}": {
+                "id": "Output{\"Ref\":\"ApiKeys3BB3983D\"}",
+                "path": "Secrets-dev/Exports/Output{\"Ref\":\"ApiKeys3BB3983D\"}",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.80.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.4.2"
+            }
+          },
           "BootstrapVersion": {
             "id": "BootstrapVersion",
             "path": "Secrets-dev/BootstrapVersion",
@@ -1430,6 +1472,27 @@
                               "Resource": [
                                 "arn:aws:logs:us-east-1:207091906248:log-group:/nailit/development/*",
                                 "arn:aws:logs:us-east-1:207091906248:log-group:/nailit/development/*:*"
+                              ]
+                            },
+                            {
+                              "Action": [
+                                "secretsmanager:GetSecretValue",
+                                "kms:Decrypt"
+                              ],
+                              "Effect": "Allow",
+                              "Resource": [
+                                {
+                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefDatabaseCredentials8547B3E729671DA7"
+                                },
+                                {
+                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefAuthCredentialsAD91009BC8F492B2"
+                                },
+                                {
+                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleCredentials673A28DD18C6129F"
+                                },
+                                {
+                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefApiKeys3BB3983D8BCC0B1D"
+                                }
                               ]
                             }
                           ],

@@ -84,6 +84,27 @@
           "arn:aws:logs:us-east-1:207091906248:log-group:/nailit/development/*",
           "arn:aws:logs:us-east-1:207091906248:log-group:/nailit/development/*:*"
          ]
+        },
+        {
+         "Action": [
+          "secretsmanager:GetSecretValue",
+          "kms:Decrypt"
+         ],
+         "Effect": "Allow",
+         "Resource": [
+          {
+           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefDatabaseCredentials8547B3E729671DA7"
+          },
+          {
+           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefAuthCredentialsAD91009BC8F492B2"
+          },
+          {
+           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleCredentials673A28DD18C6129F"
+          },
+          {
+           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefApiKeys3BB3983D8BCC0B1D"
+          }
+         ]
         }
        ],
        "Version": "2012-10-17"
