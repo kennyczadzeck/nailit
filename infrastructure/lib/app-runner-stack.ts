@@ -43,13 +43,15 @@ export class AppRunnerStack extends cdk.Stack {
       description: 'IAM role for App Runner service instances',
     });
 
-    // Add basic CloudWatch Logs permissions
+    // Add comprehensive CloudWatch Logs permissions
     instanceRole.addToPolicy(new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
       actions: [
         'logs:CreateLogGroup',
         'logs:CreateLogStream',
         'logs:PutLogEvents',
+        'logs:DescribeLogGroups',
+        'logs:DescribeLogStreams',
       ],
       resources: ['*'],
     }));
@@ -93,7 +95,8 @@ export class AppRunnerStack extends cdk.Stack {
             value: envConfig.amplifyBranch, // develop, staging, or main
           },
           codeConfiguration: {
-            configurationSource: 'REPOSITORY', // Use apprunner.yaml from repo
+            configurationSource: 'API', // Use inline configuration
+            codeConfigurationValues: this.getCodeConfiguration(environment, envConfig, secretArns),
           },
         },
       } : {
@@ -126,6 +129,44 @@ export class AppRunnerStack extends cdk.Stack {
     cdk.Tags.of(this).add('ManagedBy', 'CDK');
     cdk.Tags.of(this).add('DatabaseProvider', 'Neon');
     cdk.Tags.of(this).add('HostingProvider', 'AppRunner');
+  }
+
+  private getCodeConfiguration(environment: string, envConfig: { resourceSuffix: string }, secretArns?: {
+    databaseSecretArn: string;
+    nextauthSecretArn: string;
+    nextauthUrlArn: string;
+    googleClientIdArn: string;
+    googleClientSecretArn: string;
+    apiKeysSecretArn: string;
+  }): apprunner.CfnService.CodeConfigurationValuesProperty {
+    const envVars = [
+      { name: 'NODE_ENV', value: 'production' },
+      { name: 'PORT', value: '3000' },
+      { name: 'AWS_REGION', value: 'us-east-1' },
+      { name: 'NAILIT_ENVIRONMENT', value: environment },
+    ];
+
+    const secrets: apprunner.CfnService.KeyValuePairProperty[] = [];
+
+    // Add secrets if provided
+    if (secretArns) {
+      secrets.push(
+        { name: 'DATABASE_URL', value: secretArns.databaseSecretArn },
+        { name: 'NEXTAUTH_SECRET', value: secretArns.nextauthSecretArn },
+        { name: 'NEXTAUTH_URL', value: secretArns.nextauthUrlArn },
+        { name: 'GOOGLE_CLIENT_ID', value: secretArns.googleClientIdArn },
+        { name: 'GOOGLE_CLIENT_SECRET', value: secretArns.googleClientSecretArn },
+        { name: 'NEXT_PUBLIC_GOOGLE_MAPS_API_KEY', value: secretArns.apiKeysSecretArn },
+      );
+    }
+
+    return {
+      runtime: 'NODEJS_22',
+      buildCommand: 'npm ci --ignore-scripts --legacy-peer-deps && npx prisma generate && DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" NEXTAUTH_SECRET="dummy-secret-for-build" NEXTAUTH_URL="http://localhost:3000" NODE_ENV="production" npm run build',
+      startCommand: 'npm start',
+      runtimeEnvironmentVariables: envVars,
+      runtimeEnvironmentSecrets: secrets,
+    };
   }
 
   private addOutputs(envConfig: { resourceSuffix: string }) {
