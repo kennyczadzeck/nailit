@@ -17,7 +17,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-deploy-role-207091906248-us-east-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-cfn-exec-role-207091906248-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/d9ce3fd69e72027d1b45422e723463753aa0a42c567a0167b841ac804c607365.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/e8f87f6334b51c4ff4e7d6cc296af07c23b343f803f8b235e3eb63cec7dbe0ad.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -85,30 +85,6 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "CDKMetadata"
-          }
-        ],
-        "/Secrets-dev/Exports/Output{\"Ref\":\"DatabaseCredentials8547B3E7\"}": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "ExportsOutputRefDatabaseCredentials8547B3E729671DA7"
-          }
-        ],
-        "/Secrets-dev/Exports/Output{\"Ref\":\"AuthCredentialsAD91009B\"}": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "ExportsOutputRefAuthCredentialsAD91009BC8F492B2"
-          }
-        ],
-        "/Secrets-dev/Exports/Output{\"Ref\":\"GoogleCredentials673A28DD\"}": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "ExportsOutputRefGoogleCredentials673A28DD18C6129F"
-          }
-        ],
-        "/Secrets-dev/Exports/Output{\"Ref\":\"ApiKeys3BB3983D\"}": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "ExportsOutputRefApiKeys3BB3983D8BCC0B1D"
           }
         ],
         "/Secrets-dev/BootstrapVersion": [
@@ -480,7 +456,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-deploy-role-207091906248-us-east-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-cfn-exec-role-207091906248-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/090acda32466d4ecde334058d8f3a64e14bdd8c91195d48cc1eeb468f568cb62.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/6a9495238eaa459a0667422751bf2272da3ffd407304500f209e2cd411bbebc9.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -493,7 +469,6 @@
         }
       },
       "dependencies": [
-        "Secrets-dev",
         "AppRunner-dev.assets"
       ],
       "metadata": {

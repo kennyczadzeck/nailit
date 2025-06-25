@@ -3,14 +3,16 @@ runtime: nodejs22
 build:
   commands:
     build:
-      - echo "=== Simple App Runner Build Process ==="
+      - echo "=== App Runner Build Process Starting ==="
       - echo "Node version:" && node --version
       - echo "NPM version:" && npm --version
+      - echo "=== Installing dependencies (without postinstall) ==="
       - npm ci --ignore-scripts --legacy-peer-deps
+      - echo "=== Running Prisma generate manually ==="
       - npx prisma generate
-      - echo "Building with dummy env vars for static generation"
+      - echo "=== Building Next.js application with dummy env vars ==="
       - DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" NEXTAUTH_SECRET="dummy-secret-for-build" NEXTAUTH_URL="http://localhost:3000" NODE_ENV="production" npm run build
-      - echo "=== Build completed ==="
+      - echo "=== Build completed successfully ==="
 run:
   runtime-version: nodejs22
   command: npm start
@@ -21,15 +23,16 @@ run:
       value: production
     - name: PORT
       value: "3000"
+  secrets:
     - name: DATABASE_URL
-      value: "postgresql://neondb_owner:npg_avELx8uqOAc0@ep-still-paper-a5tgtem8-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require"
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-database-development-k22f6u"
     - name: NEXTAUTH_SECRET
-      value: "+hP31rrZgohD7u3uHr/ASb1WE9j3MYjxHtTBmaaU+3M="
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-auth-development-hc0ThB:NEXTAUTH_SECRET::"
     - name: NEXTAUTH_URL
-      value: "https://placeholder-will-update-after-deployment.com"
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-auth-development-hc0ThB:NEXTAUTH_URL::"
     - name: GOOGLE_CLIENT_ID
-      value: "442433418686-sahpnrfagrs9lfs1pdee2m06e4g2ukdc.apps.googleusercontent.com"
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-google-development-5eESr6:GOOGLE_CLIENT_ID::"
     - name: GOOGLE_CLIENT_SECRET
-      value: "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"
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-google-development-5eESr6:GOOGLE_CLIENT_SECRET::"
     - name: NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-      value: "AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0" 
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-apikeys-development-GyhBrL:NEXT_PUBLIC_GOOGLE_MAPS_API_KEY::" 
