@@ -29,12 +29,12 @@ run:
     - name: PORT
       value: "3000"
     - name: DATABASE_URL
-      value: "postgresql://nailit_dev_user:sWCHU9LtWm7U!@ep-morning-silence-a5h2m95z.us-east-1.aws.neon.tech/nailit_dev?sslmode=require"
+      value: "postgresql://neondb_owner:npg_avELx8uqOAc0@ep-still-paper-a5tgtem8-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require"
     - name: NEXTAUTH_SECRET
-      value: "super-secret-nextauth-secret-key-for-production"
+      value: "+hP31rrZgohD7u3uHr/ASb1WE9j3MYjxHtTBmaaU+3M="
     - name: NEXTAUTH_URL
       value: "https://krkvn7z28m.us-east-1.awsapprunner.com"
     - name: GOOGLE_CLIENT_ID
-      value: "your-google-client-id"
+      value: "442433418686-sahpnrfagrs9lfs1pdee2m06e4g2ukdc.apps.googleusercontent.com"
     - name: GOOGLE_CLIENT_SECRET
-      value: "your-google-client-secret" 
+      value: "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" 
