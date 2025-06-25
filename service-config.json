@@ -1,0 +1,23 @@
+{
+  "ServiceName": "nailit-dev-simple",
+  "SourceConfiguration": {
+    "CodeRepository": {
+      "RepositoryUrl": "https://github.com/kennyczadzeck/nailit",
+      "SourceCodeVersion": {
+        "Type": "BRANCH",
+        "Value": "develop"
+      },
+      "CodeConfiguration": {
+        "ConfigurationSource": "REPOSITORY"
+      }
+    },
+    "AutoDeploymentsEnabled": true,
+    "AuthenticationConfiguration": {
+      "ConnectionArn": "arn:aws:apprunner:us-east-1:207091906248:connection/nailit-github-connection/23d2ed4413bd4d85be23be027a1d401a"
+    }
+  },
+  "InstanceConfiguration": {
+    "Cpu": "0.25 vCPU",
+    "Memory": "0.5 GB"
+  }
+} 

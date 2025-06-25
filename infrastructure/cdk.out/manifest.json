@@ -332,6 +332,141 @@
       },
       "displayName": "LoggingStack-dev"
     },
+    "AppRunner-dev.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "AppRunner-dev.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "AppRunner-dev": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://207091906248/us-east-1",
+      "properties": {
+        "templateFile": "AppRunner-dev.template.json",
+        "tags": {
+          "DatabaseProvider": "Neon",
+          "Environment": "development",
+          "HostingProvider": "AppRunner",
+          "ManagedBy": "CDK",
+          "Project": "NailIt"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-deploy-role-207091906248-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-cfn-exec-role-207091906248-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/615abb95f79283990223031d5a2576d61917dda94ca5a20939725c3b5dcf2c6c.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "AppRunner-dev.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-lookup-role-207091906248-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "AppRunner-dev.assets"
+      ],
+      "metadata": {
+        "/AppRunner-dev": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "DatabaseProvider",
+                "Value": "Neon"
+              },
+              {
+                "Key": "Environment",
+                "Value": "development"
+              },
+              {
+                "Key": "HostingProvider",
+                "Value": "AppRunner"
+              },
+              {
+                "Key": "ManagedBy",
+                "Value": "CDK"
+              },
+              {
+                "Key": "Project",
+                "Value": "NailIt"
+              }
+            ]
+          }
+        ],
+        "/AppRunner-dev/AppRunnerInstanceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AppRunnerInstanceRole96A5A063"
+          }
+        ],
+        "/AppRunner-dev/AppRunnerAccessRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AppRunnerAccessRoleC89E5843"
+          }
+        ],
+        "/AppRunner-dev/AppRunnerAccessRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AppRunnerAccessRoleDefaultPolicy4FF2CFAF"
+          }
+        ],
+        "/AppRunner-dev/NailItECRRepository/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NailItECRRepositoryE770C414"
+          }
+        ],
+        "/AppRunner-dev/NailItAppRunnerService": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NailItAppRunnerService"
+          }
+        ],
+        "/AppRunner-dev/AppRunnerServiceUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AppRunnerServiceUrl"
+          }
+        ],
+        "/AppRunner-dev/AppRunnerServiceArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AppRunnerServiceArn"
+          }
+        ],
+        "/AppRunner-dev/AppRunnerServiceId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AppRunnerServiceId"
+          }
+        ],
+        "/AppRunner-dev/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/AppRunner-dev/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/AppRunner-dev/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "AppRunner-dev"
+    },
     "Tree": {
       "type": "cdk:tree",
       "properties": {

@@ -1,6 +1,7 @@
 import * as cdk from 'aws-cdk-lib';
 import * as apprunner from 'aws-cdk-lib/aws-apprunner';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import * as ecr from 'aws-cdk-lib/aws-ecr';
 import { Construct } from 'constructs';
 
 interface AppRunnerStackProps extends cdk.StackProps {
@@ -10,6 +11,7 @@ interface AppRunnerStackProps extends cdk.StackProps {
     databaseBranch: string;
     resourceSuffix: string;
   };
+  githubConnectionArn?: string; // Optional GitHub connection ARN
 }
 
 export class AppRunnerStack extends cdk.Stack {
@@ -21,6 +23,10 @@ export class AppRunnerStack extends cdk.Stack {
     const { environment, envConfig } = props;
     const accountId = props.env?.account || this.account;
     const region = props.env?.region || 'us-east-1';
+
+    // Get GitHub connection ARN from context or props
+    const githubConnectionArn = props.githubConnectionArn || 
+                               this.node.tryGetContext('githubConnectionArn');
 
     // =================================
     // IAM ROLE FOR APP RUNNER
@@ -109,14 +115,32 @@ export class AppRunnerStack extends cdk.Stack {
     });
 
     // =================================
+    // ECR REPOSITORY
+    // =================================
+
+    // Create ECR repository for the app
+    const ecrRepository = new ecr.Repository(this, 'NailItECRRepository', {
+      repositoryName: `nailit-${envConfig.resourceSuffix}`,
+      removalPolicy: cdk.RemovalPolicy.DESTROY, // For development - change for production
+      imageTagMutability: ecr.TagMutability.MUTABLE,
+    });
+
+    // Grant access role to pull from ECR
+    ecrRepository.grantPull(accessRole);
+
+    // =================================
     // APP RUNNER SERVICE
     // =================================
 
     // App Runner service configuration
     this.appRunnerService = new apprunner.CfnService(this, 'NailItAppRunnerService', {
       serviceName: `nailit-${envConfig.resourceSuffix}`,
-      sourceConfiguration: {
+      sourceConfiguration: githubConnectionArn ? {
+        // GitHub source configuration
         autoDeploymentsEnabled: true,
+        authenticationConfiguration: {
+          connectionArn: githubConnectionArn,
+        },
         codeRepository: {
           repositoryUrl: 'https://github.com/kennyczadzeck/nailit',
           sourceCodeVersion: {
@@ -127,25 +151,22 @@ export class AppRunnerStack extends cdk.Stack {
             configurationSource: 'REPOSITORY', // Use apprunner.yaml from repo
           },
         },
+      } : {
+        // ECR fallback configuration
+        imageRepository: {
+          imageIdentifier: 'public.ecr.aws/aws-containers/hello-app-runner:latest',
+          imageRepositoryType: 'ECR_PUBLIC',
+        },
       },
       instanceConfiguration: {
-        cpu: environment === 'production' ? '1 vCPU' : '0.25 vCPU',
-        memory: environment === 'production' ? '2 GB' : '0.5 GB',
+        cpu: '0.25 vCPU',
+        memory: '0.5 GB',
         instanceRoleArn: instanceRole.roleArn,
       },
-      healthCheckConfiguration: {
-        protocol: 'HTTP',
-        path: '/api/health',
-        interval: 10,
-        timeout: 5,
-        healthyThreshold: 1,
-        unhealthyThreshold: 5,
-      },
-      autoScalingConfigurationArn: this.createAutoScalingConfiguration(envConfig.resourceSuffix, environment),
     });
 
     // =================================
-    // AUTO SCALING CONFIGURATION
+    // OUTPUTS
     // =================================
 
     // Add outputs
@@ -161,21 +182,6 @@ export class AppRunnerStack extends cdk.Stack {
     cdk.Tags.of(this).add('DatabaseProvider', 'Neon');
     cdk.Tags.of(this).add('HostingProvider', 'AppRunner');
   }
-
-  private createAutoScalingConfiguration(resourceSuffix: string, environment: string): string {
-    const autoScalingConfig = new apprunner.CfnAutoScalingConfiguration(this, 'AutoScalingConfig', {
-      autoScalingConfigurationName: `nailit-${resourceSuffix}-autoscaling`,
-      maxConcurrency: environment === 'production' ? 100 : 25,
-      maxSize: environment === 'production' ? 10 : 3,
-      minSize: environment === 'production' ? 2 : 1,
-    });
-
-    return autoScalingConfig.attrAutoScalingConfigurationArn;
-  }
-
-  // =================================
-  // OUTPUTS
-  // =================================
 
   private addOutputs(envConfig: { resourceSuffix: string }) {
     new cdk.CfnOutput(this, 'AppRunnerServiceUrl', {

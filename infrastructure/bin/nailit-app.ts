@@ -65,6 +65,7 @@ new AppRunnerStack(app, `AppRunner-${envConfig.resourceSuffix}`, {
   },
   environment: environment,
   envConfig: envConfig,
+  githubConnectionArn: app.node.tryGetContext('githubConnectionArn'),
 });
 
 app.synth(); 

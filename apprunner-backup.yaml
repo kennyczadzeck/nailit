@@ -1,0 +1,29 @@
+version: 1.0
+runtime: nodejs22
+build:
+  commands:
+    build:
+      - echo "=== App Runner Build Process Starting ==="
+      - echo "Node version:" && node --version
+      - echo "NPM version:" && npm --version
+      - echo "=== Setting up build environment ==="
+      - export DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
+      - export NEXTAUTH_SECRET="dummy-secret-for-build"
+      - export NEXTAUTH_URL="http://localhost:3000"
+      - echo "=== Installing dependencies (without postinstall) ==="
+      - npm ci --ignore-scripts --legacy-peer-deps
+      - echo "=== Running Prisma generate manually ==="
+      - npx prisma generate
+      - echo "=== Building Next.js application ==="
+      - npm run build
+      - echo "=== Build completed successfully ==="
+run:
+  runtime-version: nodejs22
+  command: npm start
+  network:
+    port: 3000
+  env:
+    - name: NODE_ENV
+      value: production
+    - name: PORT
+      value: "3000" 
