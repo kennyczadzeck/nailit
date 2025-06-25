@@ -1532,13 +1532,7 @@
                 },
                 "instanceConfiguration": {
                   "cpu": "0.25 vCPU",
-                  "memory": "0.5 GB",
-                  "instanceRoleArn": {
-                    "Fn::GetAtt": [
-                      "AppRunnerInstanceRole96A5A063",
-                      "Arn"
-                    ]
-                  }
+                  "memory": "0.5 GB"
                 },
                 "serviceName": "nailit-dev",
                 "tags": [

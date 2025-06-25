@@ -38,8 +38,8 @@ if (!envConfig) {
   throw new Error(`Unknown environment: ${environment}. Must be one of: ${Object.keys(environments).join(', ')}`);
 }
 
-// GitHub connection ARN from our previous successful deployment
-const githubConnectionArn = 'arn:aws:apprunner:us-east-1:207091906248:connection/nailit-github-connection/8527b12a3e654bb2b41e4b30f9ca1f5a';
+// GitHub connection ARN from our correct active connection
+const githubConnectionArn = 'arn:aws:apprunner:us-east-1:207091906248:connection/nailit-github-connection/23d2ed4413bd4d85be23be027a1d401a';
 
 // Deploy secrets stack first (other stacks depend on it)
 const secretsStack = new SecretsStack(app, `Secrets-${envConfig.resourceSuffix}`, {
