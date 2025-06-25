@@ -15,7 +15,7 @@ const region = app.node.tryGetContext('region') || 'us-east-1';
 // Environment-specific configurations
 const environments = {
   development: {
-    amplifyBranch: 'develop',
+    amplifyBranch: 'app-runner-deploy',
     databaseBranch: 'br-still-paper-a5tgtem8',
     resourceSuffix: 'dev'
   },

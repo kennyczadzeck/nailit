@@ -1,0 +1,20 @@
+{
+  "version": "31.0.0",
+  "files": {
+    "c01ef95a2879d4b0187083a033b1b4b1f2b1c1bf1d6b8f757f719fb62715e81c": {
+      "source": {
+        "path": "AppRunner-dev.template.json",
+        "packaging": "file"
+      },
+      "destinations": {
+        "207091906248-us-east-1": {
+          "bucketName": "cdk-hnb659fds-assets-207091906248-us-east-1",
+          "objectKey": "c01ef95a2879d4b0187083a033b1b4b1f2b1c1bf1d6b8f757f719fb62715e81c.json",
+          "region": "us-east-1",
+          "assumeRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-file-publishing-role-207091906248-us-east-1"
+        }
+      }
+    }
+  },
+  "dockerImages": {}
+}
