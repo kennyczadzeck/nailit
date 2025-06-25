@@ -26,7 +26,7 @@ run:
     - name: NEXTAUTH_SECRET
       value: "+hP31rrZgohD7u3uHr/ASb1WE9j3MYjxHtTBmaaU+3M="
     - name: NEXTAUTH_URL
-      value: "https://se3mrrqqv8.us-east-1.awsapprunner.com"
+      value: "https://placeholder-will-update-after-deployment.com"
     - name: GOOGLE_CLIENT_ID
       value: "442433418686-sahpnrfagrs9lfs1pdee2m06e4g2ukdc.apps.googleusercontent.com"
     - name: GOOGLE_CLIENT_SECRET

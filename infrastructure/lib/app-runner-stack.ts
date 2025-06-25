@@ -106,7 +106,7 @@ export class AppRunnerStack extends cdk.Stack {
                 `arn:aws:logs:${region}:${accountId}:log-group:/nailit/${environment}/*:*`,
               ],
             }),
-            // Secrets Manager access for secure credentials
+            // Secrets Manager access for secure credentials (only if secretArns provided)
             ...(secretArns ? [
               new iam.PolicyStatement({
                 effect: iam.Effect.ALLOW,

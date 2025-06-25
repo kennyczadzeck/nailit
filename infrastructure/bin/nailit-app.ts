@@ -70,7 +70,7 @@ new LoggingStack(app, `LoggingStack-${envConfig.resourceSuffix}`, {
   envConfig: envConfig,
 });
 
-// Deploy App Runner stack with secrets and GitHub connection
+// Deploy App Runner stack with GitHub connection but without secrets (temporarily)
 new AppRunnerStack(app, `AppRunner-${envConfig.resourceSuffix}`, {
   env: {
     account: accountId,
@@ -79,12 +79,13 @@ new AppRunnerStack(app, `AppRunner-${envConfig.resourceSuffix}`, {
   environment: environment,
   envConfig: envConfig,
   githubConnectionArn: githubConnectionArn,
-  secretArns: {
-    databaseSecretArn: secretsStack.databaseSecretArn,
-    authSecretArn: secretsStack.authSecretArn,
-    googleSecretArn: secretsStack.googleSecretArn,
-    apiKeysSecretArn: secretsStack.apiKeysSecretArn,
-  },
+  // Temporarily commenting out secrets to debug GitHub connection
+  // secretArns: {
+  //   databaseSecretArn: secretsStack.databaseSecretArn,
+  //   authSecretArn: secretsStack.authSecretArn,
+  //   googleSecretArn: secretsStack.googleSecretArn,
+  //   apiKeysSecretArn: secretsStack.apiKeysSecretArn,
+  // },
 });
 
 app.synth(); 
