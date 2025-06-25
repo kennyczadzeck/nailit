@@ -1,18 +1,24 @@
 version: 1.0
-runtime: nodejs18
+runtime: nodejs20
 build:
   commands:
     build:
-      - echo "Installing dependencies..."
-      - npm install --legacy-peer-deps
-      - echo "Setting up build environment..."
+      - echo "=== App Runner Build Process Starting ==="
+      - echo "Node version:" && node --version
+      - echo "NPM version:" && npm --version
+      - echo "=== Installing dependencies ==="
+      - npm ci --legacy-peer-deps
+      - echo "=== Setting up build environment ==="
       - export DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
-      - echo "Running Prisma generate..."
+      - export NEXTAUTH_SECRET="dummy-secret-for-build"
+      - export NEXTAUTH_URL="http://localhost:3000"
+      - echo "=== Running Prisma generate ==="
       - npx prisma generate
-      - echo "Building Next.js application..."
+      - echo "=== Building Next.js application ==="
       - npm run build
+      - echo "=== Build completed successfully ==="
 run:
-  runtime-version: nodejs18
+  runtime-version: nodejs20
   command: npm start
   network:
     port: 3000
