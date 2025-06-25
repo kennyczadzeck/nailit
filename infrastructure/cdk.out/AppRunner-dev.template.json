@@ -252,9 +252,19 @@
    "Type": "AWS::AppRunner::Service",
    "Properties": {
     "SourceConfiguration": {
-     "ImageRepository": {
-      "ImageIdentifier": "public.ecr.aws/aws-containers/hello-app-runner:latest",
-      "ImageRepositoryType": "ECR_PUBLIC"
+     "AuthenticationConfiguration": {
+      "ConnectionArn": "arn:aws:apprunner:us-east-1:207091906248:connection/nailit-github-connection/23d2ed4413bd4d85be23be027a1d401a"
+     },
+     "AutoDeploymentsEnabled": true,
+     "CodeRepository": {
+      "CodeConfiguration": {
+       "ConfigurationSource": "REPOSITORY"
+      },
+      "RepositoryUrl": "https://github.com/kennyczadzeck/nailit",
+      "SourceCodeVersion": {
+       "Type": "BRANCH",
+       "Value": "app-runner-deploy"
+      }
      }
     },
     "InstanceConfiguration": {
