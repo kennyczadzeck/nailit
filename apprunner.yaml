@@ -1,5 +1,5 @@
 version: 1.0
-runtime: nodejs20
+runtime: nodejs22
 build:
   commands:
     build:
@@ -18,7 +18,7 @@ build:
       - npm run build
       - echo "=== Build completed successfully ==="
 run:
-  runtime-version: nodejs20
+  runtime-version: nodejs22
   command: npm start
   network:
     port: 3000
