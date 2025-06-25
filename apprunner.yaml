@@ -6,12 +6,25 @@ build:
       - echo "=== App Runner Build Process Starting ==="
       - echo "Node version:" && node --version
       - echo "NPM version:" && npm --version
-      - echo "=== Installing dependencies with legacy peer deps ==="
-      - npm install --legacy-peer-deps
+      - echo "=== Setting up build environment ==="
+      - export DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"
+      - export NEXTAUTH_SECRET="dummy-secret-for-build"
+      - export NEXTAUTH_URL="http://localhost:3000"
+      - export NODE_ENV="production"
+      - echo "Environment variables set"
+      - echo "=== Installing dependencies (without postinstall) ==="
+      - npm ci --ignore-scripts --legacy-peer-deps
+      - echo "Dependencies installed successfully"
+      - echo "=== Running Prisma generate manually ==="
+      - npx prisma generate
+      - echo "Prisma client generated successfully"
+      - echo "=== Building Next.js application ==="
+      - npm run build
       - echo "=== Build completed successfully ==="
+      - echo "Built files:" && ls -la .next/
 run:
   runtime-version: nodejs22
-  command: node start-simple.js
+  command: npm start
   network:
     port: 3000
   env:
