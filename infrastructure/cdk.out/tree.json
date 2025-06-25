@@ -230,6 +230,64 @@
               "version": "10.4.2"
             }
           },
+          "Exports": {
+            "id": "Exports",
+            "path": "Secrets-dev/Exports",
+            "children": {
+              "Output{\"Ref\":\"DatabaseCredentials8547B3E7\"}": {
+                "id": "Output{\"Ref\":\"DatabaseCredentials8547B3E7\"}",
+                "path": "Secrets-dev/Exports/Output{\"Ref\":\"DatabaseCredentials8547B3E7\"}",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.80.0"
+                }
+              },
+              "Output{\"Ref\":\"NextAuthSecret21484E9E\"}": {
+                "id": "Output{\"Ref\":\"NextAuthSecret21484E9E\"}",
+                "path": "Secrets-dev/Exports/Output{\"Ref\":\"NextAuthSecret21484E9E\"}",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.80.0"
+                }
+              },
+              "Output{\"Ref\":\"NextAuthUrl03CEB3B7\"}": {
+                "id": "Output{\"Ref\":\"NextAuthUrl03CEB3B7\"}",
+                "path": "Secrets-dev/Exports/Output{\"Ref\":\"NextAuthUrl03CEB3B7\"}",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.80.0"
+                }
+              },
+              "Output{\"Ref\":\"GoogleClientIdDF771C4D\"}": {
+                "id": "Output{\"Ref\":\"GoogleClientIdDF771C4D\"}",
+                "path": "Secrets-dev/Exports/Output{\"Ref\":\"GoogleClientIdDF771C4D\"}",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.80.0"
+                }
+              },
+              "Output{\"Ref\":\"GoogleClientSecret7356BEB4\"}": {
+                "id": "Output{\"Ref\":\"GoogleClientSecret7356BEB4\"}",
+                "path": "Secrets-dev/Exports/Output{\"Ref\":\"GoogleClientSecret7356BEB4\"}",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.80.0"
+                }
+              },
+              "Output{\"Ref\":\"ApiKeys3BB3983D\"}": {
+                "id": "Output{\"Ref\":\"ApiKeys3BB3983D\"}",
+                "path": "Secrets-dev/Exports/Output{\"Ref\":\"ApiKeys3BB3983D\"}",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.80.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.4.2"
+            }
+          },
           "BootstrapVersion": {
             "id": "BootstrapVersion",
             "path": "Secrets-dev/BootstrapVersion",
@@ -1479,6 +1537,33 @@
                               ],
                               "Effect": "Allow",
                               "Resource": "*"
+                            },
+                            {
+                              "Action": [
+                                "secretsmanager:GetSecretValue",
+                                "kms:Decrypt"
+                              ],
+                              "Effect": "Allow",
+                              "Resource": [
+                                {
+                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefDatabaseCredentials8547B3E729671DA7"
+                                },
+                                {
+                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefNextAuthSecret21484E9E77FF9A4C"
+                                },
+                                {
+                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefNextAuthUrl03CEB3B75A8AF779"
+                                },
+                                {
+                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientIdDF771C4D6A4E26E7"
+                                },
+                                {
+                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientSecret7356BEB4E9294748"
+                                },
+                                {
+                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefApiKeys3BB3983D8BCC0B1D"
+                                }
+                              ]
                             }
                           ],
                           "Version": "2012-10-17"
@@ -1532,7 +1617,13 @@
                 },
                 "instanceConfiguration": {
                   "cpu": "0.25 vCPU",
-                  "memory": "0.5 GB"
+                  "memory": "0.5 GB",
+                  "instanceRoleArn": {
+                    "Fn::GetAtt": [
+                      "AppRunnerInstanceRole96A5A063",
+                      "Arn"
+                    ]
+                  }
                 },
                 "serviceName": "nailit-dev",
                 "tags": [
