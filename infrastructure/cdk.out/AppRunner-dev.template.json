@@ -96,10 +96,16 @@
            "Fn::ImportValue": "Secrets-dev:ExportsOutputRefDatabaseCredentials8547B3E729671DA7"
           },
           {
-           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefAuthCredentialsAD91009BC8F492B2"
+           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefNextAuthSecret21484E9E77FF9A4C"
           },
           {
-           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleCredentials673A28DD18C6129F"
+           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefNextAuthUrl03CEB3B75A8AF779"
+          },
+          {
+           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientIdDF771C4D6A4E26E7"
+          },
+          {
+           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientSecret7356BEB4E9294748"
           },
           {
            "Fn::ImportValue": "Secrets-dev:ExportsOutputRefApiKeys3BB3983D8BCC0B1D"

@@ -81,8 +81,10 @@ new AppRunnerStack(app, `AppRunner-${envConfig.resourceSuffix}`, {
   githubConnectionArn: githubConnectionArn,
   secretArns: {
     databaseSecretArn: secretsStack.databaseSecretArn,
-    authSecretArn: secretsStack.authSecretArn,
-    googleSecretArn: secretsStack.googleSecretArn,
+    nextauthSecretArn: secretsStack.nextauthSecretArn,
+    nextauthUrlArn: secretsStack.nextauthUrlArn,
+    googleClientIdArn: secretsStack.googleClientIdArn,
+    googleClientSecretArn: secretsStack.googleClientSecretArn,
     apiKeysSecretArn: secretsStack.apiKeysSecretArn,
   },
 });

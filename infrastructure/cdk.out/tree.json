@@ -34,19 +34,19 @@
               "version": "2.80.0"
             }
           },
-          "AuthCredentials": {
-            "id": "AuthCredentials",
-            "path": "Secrets-dev/AuthCredentials",
+          "NextAuthSecret": {
+            "id": "NextAuthSecret",
+            "path": "Secrets-dev/NextAuthSecret",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "Secrets-dev/AuthCredentials/Resource",
+                "path": "Secrets-dev/NextAuthSecret/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::SecretsManager::Secret",
                   "aws:cdk:cloudformation:props": {
-                    "description": "NextAuth secret and URL for NailIt application",
-                    "name": "nailit-auth-development",
-                    "secretString": "{\"NEXTAUTH_SECRET\":\"+hP31rrZgohD7u3uHr/ASb1WE9j3MYjxHtTBmaaU+3M=\",\"NEXTAUTH_URL\":\"https://krkvn7z28m.us-east-1.awsapprunner.com\"}"
+                    "description": "NextAuth secret for NailIt application",
+                    "name": "nailit-nextauth-secret-development",
+                    "secretString": "+hP31rrZgohD7u3uHr/ASb1WE9j3MYjxHtTBmaaU+3M="
                   }
                 },
                 "constructInfo": {
@@ -60,19 +60,71 @@
               "version": "2.80.0"
             }
           },
-          "GoogleCredentials": {
-            "id": "GoogleCredentials",
-            "path": "Secrets-dev/GoogleCredentials",
+          "NextAuthUrl": {
+            "id": "NextAuthUrl",
+            "path": "Secrets-dev/NextAuthUrl",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "Secrets-dev/GoogleCredentials/Resource",
+                "path": "Secrets-dev/NextAuthUrl/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::SecretsManager::Secret",
                   "aws:cdk:cloudformation:props": {
-                    "description": "Google OAuth credentials for NailIt application",
-                    "name": "nailit-google-development",
-                    "secretString": "{\"GOOGLE_CLIENT_ID\":\"442433418686-sahpnrfagrs9lfs1pdee2m06e4g2ukdc.apps.googleusercontent.com\",\"GOOGLE_CLIENT_SECRET\":\"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\"}"
+                    "description": "NextAuth URL for NailIt application",
+                    "name": "nailit-nextauth-url-development",
+                    "secretString": "https://krkvn7z28m.us-east-1.awsapprunner.com"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_secretsmanager.CfnSecret",
+                  "version": "2.80.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_secretsmanager.Secret",
+              "version": "2.80.0"
+            }
+          },
+          "GoogleClientId": {
+            "id": "GoogleClientId",
+            "path": "Secrets-dev/GoogleClientId",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "Secrets-dev/GoogleClientId/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::SecretsManager::Secret",
+                  "aws:cdk:cloudformation:props": {
+                    "description": "Google OAuth Client ID for NailIt application",
+                    "name": "nailit-google-client-id-development",
+                    "secretString": "442433418686-sahpnrfagrs9lfs1pdee2m06e4g2ukdc.apps.googleusercontent.com"
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_secretsmanager.CfnSecret",
+                  "version": "2.80.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_secretsmanager.Secret",
+              "version": "2.80.0"
+            }
+          },
+          "GoogleClientSecret": {
+            "id": "GoogleClientSecret",
+            "path": "Secrets-dev/GoogleClientSecret",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "Secrets-dev/GoogleClientSecret/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::SecretsManager::Secret",
+                  "aws:cdk:cloudformation:props": {
+                    "description": "Google OAuth Client Secret for NailIt application",
+                    "name": "nailit-google-client-secret-development",
+                    "secretString": "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"
                   }
                 },
                 "constructInfo": {
@@ -96,9 +148,9 @@
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::SecretsManager::Secret",
                   "aws:cdk:cloudformation:props": {
-                    "description": "API keys for NailIt application",
-                    "name": "nailit-apikeys-development",
-                    "secretString": "{\"NEXT_PUBLIC_GOOGLE_MAPS_API_KEY\":\"AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0\"}"
+                    "description": "Google Maps API key for NailIt application",
+                    "name": "nailit-google-maps-api-key-development",
+                    "secretString": "AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0"
                   }
                 },
                 "constructInfo": {
@@ -120,17 +172,33 @@
               "version": "2.80.0"
             }
           },
-          "AuthSecretArn": {
-            "id": "AuthSecretArn",
-            "path": "Secrets-dev/AuthSecretArn",
+          "NextAuthSecretArn": {
+            "id": "NextAuthSecretArn",
+            "path": "Secrets-dev/NextAuthSecretArn",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.80.0"
             }
           },
-          "GoogleSecretArn": {
-            "id": "GoogleSecretArn",
-            "path": "Secrets-dev/GoogleSecretArn",
+          "NextAuthUrlArn": {
+            "id": "NextAuthUrlArn",
+            "path": "Secrets-dev/NextAuthUrlArn",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.80.0"
+            }
+          },
+          "GoogleClientIdArn": {
+            "id": "GoogleClientIdArn",
+            "path": "Secrets-dev/GoogleClientIdArn",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnOutput",
+              "version": "2.80.0"
+            }
+          },
+          "GoogleClientSecretArn": {
+            "id": "GoogleClientSecretArn",
+            "path": "Secrets-dev/GoogleClientSecretArn",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.80.0"
@@ -174,17 +242,33 @@
                   "version": "2.80.0"
                 }
               },
-              "Output{\"Ref\":\"AuthCredentialsAD91009B\"}": {
-                "id": "Output{\"Ref\":\"AuthCredentialsAD91009B\"}",
-                "path": "Secrets-dev/Exports/Output{\"Ref\":\"AuthCredentialsAD91009B\"}",
+              "Output{\"Ref\":\"NextAuthSecret21484E9E\"}": {
+                "id": "Output{\"Ref\":\"NextAuthSecret21484E9E\"}",
+                "path": "Secrets-dev/Exports/Output{\"Ref\":\"NextAuthSecret21484E9E\"}",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnOutput",
                   "version": "2.80.0"
                 }
               },
-              "Output{\"Ref\":\"GoogleCredentials673A28DD\"}": {
-                "id": "Output{\"Ref\":\"GoogleCredentials673A28DD\"}",
-                "path": "Secrets-dev/Exports/Output{\"Ref\":\"GoogleCredentials673A28DD\"}",
+              "Output{\"Ref\":\"NextAuthUrl03CEB3B7\"}": {
+                "id": "Output{\"Ref\":\"NextAuthUrl03CEB3B7\"}",
+                "path": "Secrets-dev/Exports/Output{\"Ref\":\"NextAuthUrl03CEB3B7\"}",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.80.0"
+                }
+              },
+              "Output{\"Ref\":\"GoogleClientIdDF771C4D\"}": {
+                "id": "Output{\"Ref\":\"GoogleClientIdDF771C4D\"}",
+                "path": "Secrets-dev/Exports/Output{\"Ref\":\"GoogleClientIdDF771C4D\"}",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnOutput",
+                  "version": "2.80.0"
+                }
+              },
+              "Output{\"Ref\":\"GoogleClientSecret7356BEB4\"}": {
+                "id": "Output{\"Ref\":\"GoogleClientSecret7356BEB4\"}",
+                "path": "Secrets-dev/Exports/Output{\"Ref\":\"GoogleClientSecret7356BEB4\"}",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnOutput",
                   "version": "2.80.0"
@@ -1485,10 +1569,16 @@
                                   "Fn::ImportValue": "Secrets-dev:ExportsOutputRefDatabaseCredentials8547B3E729671DA7"
                                 },
                                 {
-                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefAuthCredentialsAD91009BC8F492B2"
+                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefNextAuthSecret21484E9E77FF9A4C"
                                 },
                                 {
-                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleCredentials673A28DD18C6129F"
+                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefNextAuthUrl03CEB3B75A8AF779"
+                                },
+                                {
+                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientIdDF771C4D6A4E26E7"
+                                },
+                                {
+                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientSecret7356BEB4E9294748"
                                 },
                                 {
                                   "Fn::ImportValue": "Secrets-dev:ExportsOutputRefApiKeys3BB3983D8BCC0B1D"

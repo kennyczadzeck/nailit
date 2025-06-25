@@ -8,8 +8,10 @@ export interface SecretsStackProps extends cdk.StackProps {
 
 export class SecretsStack extends cdk.Stack {
   public readonly databaseSecretArn: string;
-  public readonly authSecretArn: string;
-  public readonly googleSecretArn: string;
+  public readonly nextauthSecretArn: string;
+  public readonly nextauthUrlArn: string;
+  public readonly googleClientIdArn: string;
+  public readonly googleClientSecretArn: string;
   public readonly apiKeysSecretArn: string;
 
   constructor(scope: Construct, id: string, props: SecretsStackProps) {
@@ -24,39 +26,43 @@ export class SecretsStack extends cdk.Stack {
       ),
     });
 
-    // NextAuth credentials secret
-    const authSecret = new secretsmanager.Secret(this, 'AuthCredentials', {
-      secretName: `nailit-auth-${props.environment}`,
-      description: 'NextAuth secret and URL for NailIt application',
-      secretObjectValue: {
-        NEXTAUTH_SECRET: cdk.SecretValue.unsafePlainText('+hP31rrZgohD7u3uHr/ASb1WE9j3MYjxHtTBmaaU+3M='),
-        NEXTAUTH_URL: cdk.SecretValue.unsafePlainText('https://krkvn7z28m.us-east-1.awsapprunner.com'),
-      },
+    // Individual secrets for better App Runner compatibility
+    const nextauthSecret = new secretsmanager.Secret(this, 'NextAuthSecret', {
+      secretName: `nailit-nextauth-secret-${props.environment}`,
+      description: 'NextAuth secret for NailIt application',
+      secretStringValue: cdk.SecretValue.unsafePlainText('+hP31rrZgohD7u3uHr/ASb1WE9j3MYjxHtTBmaaU+3M='),
     });
 
-    // Google OAuth credentials secret
-    const googleSecret = new secretsmanager.Secret(this, 'GoogleCredentials', {
-      secretName: `nailit-google-${props.environment}`,
-      description: 'Google OAuth credentials for NailIt application',
-      secretObjectValue: {
-        GOOGLE_CLIENT_ID: cdk.SecretValue.unsafePlainText('442433418686-sahpnrfagrs9lfs1pdee2m06e4g2ukdc.apps.googleusercontent.com'),
-        GOOGLE_CLIENT_SECRET: cdk.SecretValue.unsafePlainText('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'),
-      },
+    const nextauthUrl = new secretsmanager.Secret(this, 'NextAuthUrl', {
+      secretName: `nailit-nextauth-url-${props.environment}`,
+      description: 'NextAuth URL for NailIt application',
+      secretStringValue: cdk.SecretValue.unsafePlainText('https://krkvn7z28m.us-east-1.awsapprunner.com'),
     });
 
-    // API Keys secret (for public-facing keys that aren't as sensitive)
+    const googleClientId = new secretsmanager.Secret(this, 'GoogleClientId', {
+      secretName: `nailit-google-client-id-${props.environment}`,
+      description: 'Google OAuth Client ID for NailIt application',
+      secretStringValue: cdk.SecretValue.unsafePlainText('442433418686-sahpnrfagrs9lfs1pdee2m06e4g2ukdc.apps.googleusercontent.com'),
+    });
+
+    const googleClientSecret = new secretsmanager.Secret(this, 'GoogleClientSecret', {
+      secretName: `nailit-google-client-secret-${props.environment}`,
+      description: 'Google OAuth Client Secret for NailIt application',
+      secretStringValue: cdk.SecretValue.unsafePlainText('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'),
+    });
+
     const apiKeysSecret = new secretsmanager.Secret(this, 'ApiKeys', {
-      secretName: `nailit-apikeys-${props.environment}`,
-      description: 'API keys for NailIt application',
-      secretObjectValue: {
-        NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: cdk.SecretValue.unsafePlainText('AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0'),
-      },
+      secretName: `nailit-google-maps-api-key-${props.environment}`,
+      description: 'Google Maps API key for NailIt application',
+      secretStringValue: cdk.SecretValue.unsafePlainText('AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0'),
     });
 
     // Export ARNs for use in App Runner stack
     this.databaseSecretArn = databaseSecret.secretArn;
-    this.authSecretArn = authSecret.secretArn;
-    this.googleSecretArn = googleSecret.secretArn;
+    this.nextauthSecretArn = nextauthSecret.secretArn;
+    this.nextauthUrlArn = nextauthUrl.secretArn;
+    this.googleClientIdArn = googleClientId.secretArn;
+    this.googleClientSecretArn = googleClientSecret.secretArn;
     this.apiKeysSecretArn = apiKeysSecret.secretArn;
 
     // Output the ARNs
@@ -65,14 +71,24 @@ export class SecretsStack extends cdk.Stack {
       description: 'ARN of the database credentials secret',
     });
 
-    new cdk.CfnOutput(this, 'AuthSecretArn', {
-      value: this.authSecretArn,
-      description: 'ARN of the auth credentials secret',
+    new cdk.CfnOutput(this, 'NextAuthSecretArn', {
+      value: this.nextauthSecretArn,
+      description: 'ARN of the NextAuth secret',
     });
 
-    new cdk.CfnOutput(this, 'GoogleSecretArn', {
-      value: this.googleSecretArn,
-      description: 'ARN of the Google OAuth credentials secret',
+    new cdk.CfnOutput(this, 'NextAuthUrlArn', {
+      value: this.nextauthUrlArn,
+      description: 'ARN of the NextAuth URL secret',
+    });
+
+    new cdk.CfnOutput(this, 'GoogleClientIdArn', {
+      value: this.googleClientIdArn,
+      description: 'ARN of the Google Client ID secret',
+    });
+
+    new cdk.CfnOutput(this, 'GoogleClientSecretArn', {
+      value: this.googleClientSecretArn,
+      description: 'ARN of the Google Client Secret',
     });
 
     new cdk.CfnOutput(this, 'ApiKeysSecretArn', {

@@ -17,7 +17,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-deploy-role-207091906248-us-east-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-cfn-exec-role-207091906248-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/d9ce3fd69e72027d1b45422e723463753aa0a42c567a0167b841ac804c607365.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/37e69cc3502410e70a05f02293887fb96d717655e4700bd5343fc6bfb4eef2a2.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -39,16 +39,28 @@
             "data": "DatabaseCredentials8547B3E7"
           }
         ],
-        "/Secrets-dev/AuthCredentials/Resource": [
+        "/Secrets-dev/NextAuthSecret/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "AuthCredentialsAD91009B"
+            "data": "NextAuthSecret21484E9E"
           }
         ],
-        "/Secrets-dev/GoogleCredentials/Resource": [
+        "/Secrets-dev/NextAuthUrl/Resource": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "GoogleCredentials673A28DD"
+            "data": "NextAuthUrl03CEB3B7"
+          }
+        ],
+        "/Secrets-dev/GoogleClientId/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GoogleClientIdDF771C4D"
+          }
+        ],
+        "/Secrets-dev/GoogleClientSecret/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GoogleClientSecret7356BEB4"
           }
         ],
         "/Secrets-dev/ApiKeys/Resource": [
@@ -63,16 +75,28 @@
             "data": "DatabaseSecretArn"
           }
         ],
-        "/Secrets-dev/AuthSecretArn": [
+        "/Secrets-dev/NextAuthSecretArn": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "AuthSecretArn"
+            "data": "NextAuthSecretArn"
           }
         ],
-        "/Secrets-dev/GoogleSecretArn": [
+        "/Secrets-dev/NextAuthUrlArn": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "GoogleSecretArn"
+            "data": "NextAuthUrlArn"
+          }
+        ],
+        "/Secrets-dev/GoogleClientIdArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GoogleClientIdArn"
+          }
+        ],
+        "/Secrets-dev/GoogleClientSecretArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GoogleClientSecretArn"
           }
         ],
         "/Secrets-dev/ApiKeysSecretArn": [
@@ -93,16 +117,28 @@
             "data": "ExportsOutputRefDatabaseCredentials8547B3E729671DA7"
           }
         ],
-        "/Secrets-dev/Exports/Output{\"Ref\":\"AuthCredentialsAD91009B\"}": [
+        "/Secrets-dev/Exports/Output{\"Ref\":\"NextAuthSecret21484E9E\"}": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "ExportsOutputRefAuthCredentialsAD91009BC8F492B2"
+            "data": "ExportsOutputRefNextAuthSecret21484E9E77FF9A4C"
           }
         ],
-        "/Secrets-dev/Exports/Output{\"Ref\":\"GoogleCredentials673A28DD\"}": [
+        "/Secrets-dev/Exports/Output{\"Ref\":\"NextAuthUrl03CEB3B7\"}": [
           {
             "type": "aws:cdk:logicalId",
-            "data": "ExportsOutputRefGoogleCredentials673A28DD18C6129F"
+            "data": "ExportsOutputRefNextAuthUrl03CEB3B75A8AF779"
+          }
+        ],
+        "/Secrets-dev/Exports/Output{\"Ref\":\"GoogleClientIdDF771C4D\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefGoogleClientIdDF771C4D6A4E26E7"
+          }
+        ],
+        "/Secrets-dev/Exports/Output{\"Ref\":\"GoogleClientSecret7356BEB4\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefGoogleClientSecret7356BEB4E9294748"
           }
         ],
         "/Secrets-dev/Exports/Output{\"Ref\":\"ApiKeys3BB3983D\"}": [
@@ -480,7 +516,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-deploy-role-207091906248-us-east-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-cfn-exec-role-207091906248-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/090acda32466d4ecde334058d8f3a64e14bdd8c91195d48cc1eeb468f568cb62.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/88a2c32ff7492a351040ed01c1f874e721a06e2a5c86d6c992a9c5b0ed47e219.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [

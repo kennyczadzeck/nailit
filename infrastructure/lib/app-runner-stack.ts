@@ -14,8 +14,10 @@ interface AppRunnerStackProps extends cdk.StackProps {
   githubConnectionArn?: string; // Optional GitHub connection ARN
   secretArns?: {
     databaseSecretArn: string;
-    authSecretArn: string;
-    googleSecretArn: string;
+    nextauthSecretArn: string;
+    nextauthUrlArn: string;
+    googleClientIdArn: string;
+    googleClientSecretArn: string;
     apiKeysSecretArn: string;
   };
 }
@@ -116,8 +118,10 @@ export class AppRunnerStack extends cdk.Stack {
                 ],
                 resources: [
                   secretArns.databaseSecretArn,
-                  secretArns.authSecretArn,
-                  secretArns.googleSecretArn,
+                  secretArns.nextauthSecretArn,
+                  secretArns.nextauthUrlArn,
+                  secretArns.googleClientIdArn,
+                  secretArns.googleClientSecretArn,
                   secretArns.apiKeysSecretArn,
                 ],
               }),

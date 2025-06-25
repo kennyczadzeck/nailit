@@ -27,12 +27,12 @@ run:
     - name: DATABASE_URL
       value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-database-development-k22f6u"
     - name: NEXTAUTH_SECRET
-      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-auth-development-hc0ThB:NEXTAUTH_SECRET"
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-nextauth-secret-development-G08ATz"
     - name: NEXTAUTH_URL
-      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-auth-development-hc0ThB:NEXTAUTH_URL"
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-nextauth-url-development-AnciEL"
     - name: GOOGLE_CLIENT_ID
-      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-google-development-5eESr6:GOOGLE_CLIENT_ID"
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-google-client-id-development-t6S8Q8"
     - name: GOOGLE_CLIENT_SECRET
-      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-google-development-5eESr6:GOOGLE_CLIENT_SECRET"
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-google-client-secret-development-UHnnsp"
     - name: NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-apikeys-development-GyhBrL:NEXT_PUBLIC_GOOGLE_MAPS_API_KEY" 
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-google-maps-api-key-development-b9W7rj" 
