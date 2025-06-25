@@ -40,105 +40,41 @@ export class AppRunnerStack extends cdk.Stack {
     // IAM ROLE FOR APP RUNNER
     // =================================
 
-    // Instance Role for App Runner service
-    const instanceRole = new iam.Role(this, 'AppRunnerInstanceRole', {
-      roleName: `nailit-${envConfig.resourceSuffix}-apprunner-instance`,
+    // Create the IAM role for App Runner service
+    const appRunnerRole = new iam.Role(this, 'AppRunnerServiceRole', {
       assumedBy: new iam.ServicePrincipal('tasks.apprunner.amazonaws.com'),
-      managedPolicies: [
-        iam.ManagedPolicy.fromAwsManagedPolicyName('CloudWatchLogsFullAccess'),
-      ],
-      inlinePolicies: {
-        NailItServiceAccess: new iam.PolicyDocument({
-          statements: [
-            // S3 bucket access for email storage
-            new iam.PolicyStatement({
-              effect: iam.Effect.ALLOW,
-              actions: [
-                's3:GetObject',
-                's3:PutObject',
-                's3:DeleteObject',
-                's3:ListBucket',
-              ],
-              resources: [
-                `arn:aws:s3:::nailit-${envConfig.resourceSuffix}-emails-${accountId}`,
-                `arn:aws:s3:::nailit-${envConfig.resourceSuffix}-emails-${accountId}/*`,
-              ],
-            }),
-            // SQS queue access
-            new iam.PolicyStatement({
-              effect: iam.Effect.ALLOW,
-              actions: [
-                'sqs:SendMessage',
-                'sqs:ReceiveMessage',
-                'sqs:DeleteMessage',
-                'sqs:GetQueueAttributes',
-                'sqs:GetQueueUrl',
-              ],
-              resources: [
-                `arn:aws:sqs:${region}:${accountId}:nailit-${envConfig.resourceSuffix}-email-queue`,
-                `arn:aws:sqs:${region}:${accountId}:nailit-${envConfig.resourceSuffix}-ai-queue`,
-                `arn:aws:sqs:${region}:${accountId}:nailit-${envConfig.resourceSuffix}-email-ingestion-queue`,
-                `arn:aws:sqs:${region}:${accountId}:nailit-${envConfig.resourceSuffix}-email-assignment-queue`,
-                `arn:aws:sqs:${region}:${accountId}:nailit-${envConfig.resourceSuffix}-email-flagging-queue`,
-              ],
-            }),
-            // SNS topic access
-            new iam.PolicyStatement({
-              effect: iam.Effect.ALLOW,
-              actions: [
-                'sns:Publish',
-                'sns:GetTopicAttributes',
-              ],
-              resources: [
-                `arn:aws:sns:${region}:${accountId}:nailit-${envConfig.resourceSuffix}-notifications`,
-              ],
-            }),
-            // CloudWatch Logs access for application logging
-            new iam.PolicyStatement({
-              effect: iam.Effect.ALLOW,
-              actions: [
-                'logs:CreateLogGroup',
-                'logs:CreateLogStream',
-                'logs:PutLogEvents',
-                'logs:DescribeLogGroups',
-                'logs:DescribeLogStreams',
-              ],
-              resources: [
-                `arn:aws:logs:${region}:${accountId}:log-group:/nailit/${environment}/*`,
-                `arn:aws:logs:${region}:${accountId}:log-group:/nailit/${environment}/*:*`,
-              ],
-            }),
-            // Secrets Manager access for secure credentials (only if secretArns provided)
-            ...(secretArns ? [
-              new iam.PolicyStatement({
-                effect: iam.Effect.ALLOW,
-                actions: [
-                  'secretsmanager:GetSecretValue',
-                  'kms:Decrypt',
-                ],
-                resources: [
-                  secretArns.databaseSecretArn,
-                  secretArns.nextauthSecretArn,
-                  secretArns.nextauthUrlArn,
-                  secretArns.googleClientIdArn,
-                  secretArns.googleClientSecretArn,
-                  secretArns.apiKeysSecretArn,
-                ],
-              }),
-            ] : []),
-          ],
-        }),
-      },
+      description: 'IAM role for App Runner service',
     });
 
-    // Access Role for App Runner to access GitHub (ECR would be different)
-    const accessRole = new iam.Role(this, 'AppRunnerAccessRole', {
-      roleName: `nailit-${envConfig.resourceSuffix}-apprunner-access`,
-      assumedBy: new iam.ServicePrincipal('build.apprunner.amazonaws.com'),
-      managedPolicies: [
-        iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSAppRunnerServicePolicyForECRAccess'),
+    // Add CloudWatch Logs permissions
+    appRunnerRole.addToPolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      actions: [
+        'logs:CreateLogStream',
+        'logs:PutLogEvents',
+        'logs:CreateLogGroup',
       ],
-    });
+      resources: ['*'],
+    }));
+
+    // TODO: Re-enable secrets manager permissions when secrets integration is working
+    // if (secretArns) {
+    //   appRunnerRole.addToPolicy(new iam.PolicyStatement({
+    //     effect: iam.Effect.ALLOW,
+    //     actions: [
+    //       'secretsmanager:GetSecretValue',
+    //       'kms:Decrypt',
+    //     ],
+    //     resources: [
+    //       secretArns.databaseSecretArn,
+    //       secretArns.nextauthSecretArn,
+    //       secretArns.nextauthUrlArn,
+    //       secretArns.googleClientIdArn,
+    //       secretArns.googleClientSecretArn,
+    //       secretArns.apiKeysSecretArn,
+    //     ],
+    //   }));
+    // }
 
     // =================================
     // ECR REPOSITORY
@@ -152,7 +88,7 @@ export class AppRunnerStack extends cdk.Stack {
     });
 
     // Grant access role to pull from ECR
-    ecrRepository.grantPull(accessRole);
+    ecrRepository.grantPull(appRunnerRole);
 
     // =================================
     // APP RUNNER SERVICE
@@ -187,7 +123,7 @@ export class AppRunnerStack extends cdk.Stack {
       instanceConfiguration: {
         cpu: '0.25 vCPU',
         memory: '0.5 GB',
-        instanceRoleArn: instanceRole.roleArn,
+        instanceRoleArn: appRunnerRole.roleArn,
       },
     });
 

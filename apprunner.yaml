@@ -23,6 +23,8 @@ run:
       value: production
     - name: PORT
       value: "3000"
+    - name: DATABASE_URL
+      value: "postgresql://neondb_owner:npg_avELx8uqOAc0@ep-still-paper-a5tgtem8-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require"
     - name: NEXTAUTH_SECRET
       value: "+hP31rrZgohD7u3uHr/ASb1WE9j3MYjxHtTBmaaU+3M="
     - name: NEXTAUTH_URL
@@ -32,7 +34,4 @@ run:
     - name: GOOGLE_CLIENT_SECRET
       value: "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"
     - name: NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-      value: "AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0"
-  secrets:
-    - name: DATABASE_URL
-      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-database-development-k22f6u" 
+      value: "AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0" 
