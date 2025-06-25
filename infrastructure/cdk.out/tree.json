@@ -1517,7 +1517,7 @@
                 "sourceConfiguration": {
                   "autoDeploymentsEnabled": true,
                   "authenticationConfiguration": {
-                    "connectionArn": "arn:aws:apprunner:us-east-1:207091906248:connection/nailit-github-connection/8527b12a3e654bb2b41e4b30f9ca1f5a"
+                    "connectionArn": "arn:aws:apprunner:us-east-1:207091906248:connection/nailit-github-connection/23d2ed4413bd4d85be23be027a1d401a"
                   },
                   "codeRepository": {
                     "repositoryUrl": "https://github.com/kennyczadzeck/nailit",
