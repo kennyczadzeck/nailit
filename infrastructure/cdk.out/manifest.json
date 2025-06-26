@@ -1,27 +1,27 @@
 {
   "version": "31.0.0",
   "artifacts": {
-    "Secrets-dev.assets": {
+    "Secrets-staging.assets": {
       "type": "cdk:asset-manifest",
       "properties": {
-        "file": "Secrets-dev.assets.json",
+        "file": "Secrets-staging.assets.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
       }
     },
-    "Secrets-dev": {
+    "Secrets-staging": {
       "type": "aws:cloudformation:stack",
       "environment": "aws://207091906248/us-east-1",
       "properties": {
-        "templateFile": "Secrets-dev.template.json",
+        "templateFile": "Secrets-staging.template.json",
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-deploy-role-207091906248-us-east-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-cfn-exec-role-207091906248-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/37e69cc3502410e70a05f02293887fb96d717655e4700bd5343fc6bfb4eef2a2.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/8fe8efda15f4db1f46a560e61b0d4cca94fa9274d87080e53aa07b36d0ac9790.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
-          "Secrets-dev.assets"
+          "Secrets-staging.assets"
         ],
         "lookupRole": {
           "arn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-lookup-role-207091906248-us-east-1",
@@ -30,154 +30,154 @@
         }
       },
       "dependencies": [
-        "Secrets-dev.assets"
+        "Secrets-staging.assets"
       ],
       "metadata": {
-        "/Secrets-dev/DatabaseCredentials/Resource": [
+        "/Secrets-staging/DatabaseCredentials/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "DatabaseCredentials8547B3E7"
           }
         ],
-        "/Secrets-dev/NextAuthSecret/Resource": [
+        "/Secrets-staging/NextAuthSecret/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "NextAuthSecret21484E9E"
           }
         ],
-        "/Secrets-dev/NextAuthUrl/Resource": [
+        "/Secrets-staging/NextAuthUrl/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "NextAuthUrl03CEB3B7"
           }
         ],
-        "/Secrets-dev/GoogleClientId/Resource": [
+        "/Secrets-staging/GoogleClientId/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "GoogleClientIdDF771C4D"
           }
         ],
-        "/Secrets-dev/GoogleClientSecret/Resource": [
+        "/Secrets-staging/GoogleClientSecret/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "GoogleClientSecret7356BEB4"
           }
         ],
-        "/Secrets-dev/ApiKeys/Resource": [
+        "/Secrets-staging/ApiKeys/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "ApiKeys3BB3983D"
           }
         ],
-        "/Secrets-dev/DatabaseSecretArn": [
+        "/Secrets-staging/DatabaseSecretArn": [
           {
             "type": "aws:cdk:logicalId",
             "data": "DatabaseSecretArn"
           }
         ],
-        "/Secrets-dev/NextAuthSecretArn": [
+        "/Secrets-staging/NextAuthSecretArn": [
           {
             "type": "aws:cdk:logicalId",
             "data": "NextAuthSecretArn"
           }
         ],
-        "/Secrets-dev/NextAuthUrlArn": [
+        "/Secrets-staging/NextAuthUrlArn": [
           {
             "type": "aws:cdk:logicalId",
             "data": "NextAuthUrlArn"
           }
         ],
-        "/Secrets-dev/GoogleClientIdArn": [
+        "/Secrets-staging/GoogleClientIdArn": [
           {
             "type": "aws:cdk:logicalId",
             "data": "GoogleClientIdArn"
           }
         ],
-        "/Secrets-dev/GoogleClientSecretArn": [
+        "/Secrets-staging/GoogleClientSecretArn": [
           {
             "type": "aws:cdk:logicalId",
             "data": "GoogleClientSecretArn"
           }
         ],
-        "/Secrets-dev/ApiKeysSecretArn": [
+        "/Secrets-staging/ApiKeysSecretArn": [
           {
             "type": "aws:cdk:logicalId",
             "data": "ApiKeysSecretArn"
           }
         ],
-        "/Secrets-dev/CDKMetadata/Default": [
+        "/Secrets-staging/CDKMetadata/Default": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CDKMetadata"
           }
         ],
-        "/Secrets-dev/Exports/Output{\"Ref\":\"DatabaseCredentials8547B3E7\"}": [
+        "/Secrets-staging/Exports/Output{\"Ref\":\"DatabaseCredentials8547B3E7\"}": [
           {
             "type": "aws:cdk:logicalId",
             "data": "ExportsOutputRefDatabaseCredentials8547B3E729671DA7"
           }
         ],
-        "/Secrets-dev/Exports/Output{\"Ref\":\"NextAuthSecret21484E9E\"}": [
+        "/Secrets-staging/Exports/Output{\"Ref\":\"NextAuthSecret21484E9E\"}": [
           {
             "type": "aws:cdk:logicalId",
             "data": "ExportsOutputRefNextAuthSecret21484E9E77FF9A4C"
           }
         ],
-        "/Secrets-dev/Exports/Output{\"Ref\":\"NextAuthUrl03CEB3B7\"}": [
+        "/Secrets-staging/Exports/Output{\"Ref\":\"NextAuthUrl03CEB3B7\"}": [
           {
             "type": "aws:cdk:logicalId",
             "data": "ExportsOutputRefNextAuthUrl03CEB3B75A8AF779"
           }
         ],
-        "/Secrets-dev/Exports/Output{\"Ref\":\"GoogleClientIdDF771C4D\"}": [
+        "/Secrets-staging/Exports/Output{\"Ref\":\"GoogleClientIdDF771C4D\"}": [
           {
             "type": "aws:cdk:logicalId",
             "data": "ExportsOutputRefGoogleClientIdDF771C4D6A4E26E7"
           }
         ],
-        "/Secrets-dev/Exports/Output{\"Ref\":\"GoogleClientSecret7356BEB4\"}": [
+        "/Secrets-staging/Exports/Output{\"Ref\":\"GoogleClientSecret7356BEB4\"}": [
           {
             "type": "aws:cdk:logicalId",
             "data": "ExportsOutputRefGoogleClientSecret7356BEB4E9294748"
           }
         ],
-        "/Secrets-dev/Exports/Output{\"Ref\":\"ApiKeys3BB3983D\"}": [
+        "/Secrets-staging/Exports/Output{\"Ref\":\"ApiKeys3BB3983D\"}": [
           {
             "type": "aws:cdk:logicalId",
             "data": "ExportsOutputRefApiKeys3BB3983D8BCC0B1D"
           }
         ],
-        "/Secrets-dev/BootstrapVersion": [
+        "/Secrets-staging/BootstrapVersion": [
           {
             "type": "aws:cdk:logicalId",
             "data": "BootstrapVersion"
           }
         ],
-        "/Secrets-dev/CheckBootstrapVersion": [
+        "/Secrets-staging/CheckBootstrapVersion": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CheckBootstrapVersion"
           }
         ]
       },
-      "displayName": "Secrets-dev"
+      "displayName": "Secrets-staging"
     },
-    "NailIt-dev.assets": {
+    "NailIt-staging.assets": {
       "type": "cdk:asset-manifest",
       "properties": {
-        "file": "NailIt-dev.assets.json",
+        "file": "NailIt-staging.assets.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
       }
     },
-    "NailIt-dev": {
+    "NailIt-staging": {
       "type": "aws:cloudformation:stack",
       "environment": "aws://207091906248/us-east-1",
       "properties": {
-        "templateFile": "NailIt-dev.template.json",
+        "templateFile": "NailIt-staging.template.json",
         "tags": {
           "DatabaseProvider": "Neon",
-          "Environment": "development",
+          "Environment": "staging",
           "HostingProvider": "Amplify",
           "ManagedBy": "CDK",
           "Project": "NailIt"
@@ -185,11 +185,11 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-deploy-role-207091906248-us-east-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-cfn-exec-role-207091906248-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/9072a4f50509dbd0a2d2a2913280eca796d3f89b1e6a4e790ef67deeaced2de9.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/c846b3b705ba2ba83c414183971ccc6958687199d0a28f1e8c354f9547013051.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
-          "NailIt-dev.assets"
+          "NailIt-staging.assets"
         ],
         "lookupRole": {
           "arn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-lookup-role-207091906248-us-east-1",
@@ -198,10 +198,10 @@
         }
       },
       "dependencies": [
-        "NailIt-dev.assets"
+        "NailIt-staging.assets"
       ],
       "metadata": {
-        "/NailIt-dev": [
+        "/NailIt-staging": [
           {
             "type": "aws:cdk:stack-tags",
             "data": [
@@ -211,7 +211,7 @@
               },
               {
                 "Key": "Environment",
-                "Value": "development"
+                "Value": "staging"
               },
               {
                 "Key": "HostingProvider",
@@ -228,180 +228,180 @@
             ]
           }
         ],
-        "/NailIt-dev/EmailStorageBucket/Resource": [
+        "/NailIt-staging/EmailStorageBucket/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "EmailStorageBucket61C70CE5"
           }
         ],
-        "/NailIt-dev/EmailProcessingDLQ/Resource": [
+        "/NailIt-staging/EmailProcessingDLQ/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "EmailProcessingDLQ47CD13DA"
           }
         ],
-        "/NailIt-dev/EmailProcessingQueue/Resource": [
+        "/NailIt-staging/EmailProcessingQueue/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "EmailProcessingQueue467E1B82"
           }
         ],
-        "/NailIt-dev/AIProcessingDLQ/Resource": [
+        "/NailIt-staging/AIProcessingDLQ/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "AIProcessingDLQCB23727F"
           }
         ],
-        "/NailIt-dev/AIProcessingQueue/Resource": [
+        "/NailIt-staging/AIProcessingQueue/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "AIProcessingQueue59FC2ECB"
           }
         ],
-        "/NailIt-dev/EmailIngestionDLQ/Resource": [
+        "/NailIt-staging/EmailIngestionDLQ/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "EmailIngestionDLQ9CFE0F2F"
           }
         ],
-        "/NailIt-dev/EmailIngestionQueue/Resource": [
+        "/NailIt-staging/EmailIngestionQueue/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "EmailIngestionQueue38CE5AC2"
           }
         ],
-        "/NailIt-dev/EmailAssignmentDLQ/Resource": [
+        "/NailIt-staging/EmailAssignmentDLQ/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "EmailAssignmentDLQ0B1639EA"
           }
         ],
-        "/NailIt-dev/EmailAssignmentQueue/Resource": [
+        "/NailIt-staging/EmailAssignmentQueue/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "EmailAssignmentQueue2E1F6B02"
           }
         ],
-        "/NailIt-dev/EmailFlaggingDLQ/Resource": [
+        "/NailIt-staging/EmailFlaggingDLQ/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "EmailFlaggingDLQ30BD2187"
           }
         ],
-        "/NailIt-dev/EmailFlaggingQueue/Resource": [
+        "/NailIt-staging/EmailFlaggingQueue/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "EmailFlaggingQueue8A88E9BD"
           }
         ],
-        "/NailIt-dev/NotificationTopic/Resource": [
+        "/NailIt-staging/NotificationTopic/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "NotificationTopicEB7A0DF1"
           }
         ],
-        "/NailIt-dev/LambdaExecutionRole/Resource": [
+        "/NailIt-staging/LambdaExecutionRole/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "LambdaExecutionRoleD5C26073"
           }
         ],
-        "/NailIt-dev/EmailBucketName": [
+        "/NailIt-staging/EmailBucketName": [
           {
             "type": "aws:cdk:logicalId",
             "data": "EmailBucketName"
           }
         ],
-        "/NailIt-dev/EmailQueueUrl": [
+        "/NailIt-staging/EmailQueueUrl": [
           {
             "type": "aws:cdk:logicalId",
             "data": "EmailQueueUrl"
           }
         ],
-        "/NailIt-dev/AIQueueUrl": [
+        "/NailIt-staging/AIQueueUrl": [
           {
             "type": "aws:cdk:logicalId",
             "data": "AIQueueUrl"
           }
         ],
-        "/NailIt-dev/EmailIngestionQueueUrl": [
+        "/NailIt-staging/EmailIngestionQueueUrl": [
           {
             "type": "aws:cdk:logicalId",
             "data": "EmailIngestionQueueUrl"
           }
         ],
-        "/NailIt-dev/EmailAssignmentQueueUrl": [
+        "/NailIt-staging/EmailAssignmentQueueUrl": [
           {
             "type": "aws:cdk:logicalId",
             "data": "EmailAssignmentQueueUrl"
           }
         ],
-        "/NailIt-dev/EmailFlaggingQueueUrl": [
+        "/NailIt-staging/EmailFlaggingQueueUrl": [
           {
             "type": "aws:cdk:logicalId",
             "data": "EmailFlaggingQueueUrl"
           }
         ],
-        "/NailIt-dev/NotificationTopicArn": [
+        "/NailIt-staging/NotificationTopicArn": [
           {
             "type": "aws:cdk:logicalId",
             "data": "NotificationTopicArn"
           }
         ],
-        "/NailIt-dev/LambdaExecutionRoleArn": [
+        "/NailIt-staging/LambdaExecutionRoleArn": [
           {
             "type": "aws:cdk:logicalId",
             "data": "LambdaExecutionRoleArn"
           }
         ],
-        "/NailIt-dev/CDKMetadata/Default": [
+        "/NailIt-staging/CDKMetadata/Default": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CDKMetadata"
           }
         ],
-        "/NailIt-dev/BootstrapVersion": [
+        "/NailIt-staging/BootstrapVersion": [
           {
             "type": "aws:cdk:logicalId",
             "data": "BootstrapVersion"
           }
         ],
-        "/NailIt-dev/CheckBootstrapVersion": [
+        "/NailIt-staging/CheckBootstrapVersion": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CheckBootstrapVersion"
           }
         ]
       },
-      "displayName": "NailIt-dev"
+      "displayName": "NailIt-staging"
     },
-    "LoggingStack-dev.assets": {
+    "LoggingStack-staging.assets": {
       "type": "cdk:asset-manifest",
       "properties": {
-        "file": "LoggingStack-dev.assets.json",
+        "file": "LoggingStack-staging.assets.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
       }
     },
-    "LoggingStack-dev": {
+    "LoggingStack-staging": {
       "type": "aws:cloudformation:stack",
       "environment": "aws://207091906248/us-east-1",
       "properties": {
-        "templateFile": "LoggingStack-dev.template.json",
+        "templateFile": "LoggingStack-staging.template.json",
         "tags": {
           "Component": "Logging",
-          "Environment": "development",
+          "Environment": "staging",
           "ManagedBy": "CDK",
           "Project": "NailIt"
         },
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-deploy-role-207091906248-us-east-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-cfn-exec-role-207091906248-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/b1ab9ad32a3bc713116e2be7a999a06fe5c7e1ec1d1eecd560fc1a560744a61e.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/11f6fca3a496a80bcd6e374e297b8c76170edd911088ccca0902094a7686f4c4.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
-          "LoggingStack-dev.assets"
+          "LoggingStack-staging.assets"
         ],
         "lookupRole": {
           "arn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-lookup-role-207091906248-us-east-1",
@@ -410,10 +410,10 @@
         }
       },
       "dependencies": [
-        "LoggingStack-dev.assets"
+        "LoggingStack-staging.assets"
       ],
       "metadata": {
-        "/LoggingStack-dev": [
+        "/LoggingStack-staging": [
           {
             "type": "aws:cdk:stack-tags",
             "data": [
@@ -423,7 +423,7 @@
               },
               {
                 "Key": "Environment",
-                "Value": "development"
+                "Value": "staging"
               },
               {
                 "Key": "ManagedBy",
@@ -436,79 +436,91 @@
             ]
           }
         ],
-        "/LoggingStack-dev/ApplicationLogGroup/Resource": [
+        "/LoggingStack-staging/ApplicationLogGroup/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "ApplicationLogGroupE33FCF9B"
           }
         ],
-        "/LoggingStack-dev/ErrorRateMetricFilter/Resource": [
+        "/LoggingStack-staging/AmplifyServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AmplifyServiceRole1EB3E935"
+          }
+        ],
+        "/LoggingStack-staging/AmplifyServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AmplifyServiceRoleDefaultPolicyA4A29B19"
+          }
+        ],
+        "/LoggingStack-staging/ErrorRateMetricFilter/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "ErrorRateMetricFilterA5350FAC"
           }
         ],
-        "/LoggingStack-dev/SecurityEventsMetricFilter/Resource": [
+        "/LoggingStack-staging/SecurityEventsMetricFilter/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "SecurityEventsMetricFilter44F75AD5"
           }
         ],
-        "/LoggingStack-dev/SlowRequestsMetricFilter/Resource": [
+        "/LoggingStack-staging/SlowRequestsMetricFilter/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "SlowRequestsMetricFilterB6959B7C"
           }
         ],
-        "/LoggingStack-dev/ApplicationLogGroupName": [
+        "/LoggingStack-staging/ApplicationLogGroupName": [
           {
             "type": "aws:cdk:logicalId",
             "data": "ApplicationLogGroupName"
           }
         ],
-        "/LoggingStack-dev/LoggingRoleArn": [
+        "/LoggingStack-staging/LoggingRoleArn": [
           {
             "type": "aws:cdk:logicalId",
             "data": "LoggingRoleArn"
           }
         ],
-        "/LoggingStack-dev/CDKMetadata/Default": [
+        "/LoggingStack-staging/CDKMetadata/Default": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CDKMetadata"
           }
         ],
-        "/LoggingStack-dev/BootstrapVersion": [
+        "/LoggingStack-staging/BootstrapVersion": [
           {
             "type": "aws:cdk:logicalId",
             "data": "BootstrapVersion"
           }
         ],
-        "/LoggingStack-dev/CheckBootstrapVersion": [
+        "/LoggingStack-staging/CheckBootstrapVersion": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CheckBootstrapVersion"
           }
         ]
       },
-      "displayName": "LoggingStack-dev"
+      "displayName": "LoggingStack-staging"
     },
-    "AppRunner-dev.assets": {
+    "AppRunner-staging.assets": {
       "type": "cdk:asset-manifest",
       "properties": {
-        "file": "AppRunner-dev.assets.json",
+        "file": "AppRunner-staging.assets.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
       }
     },
-    "AppRunner-dev": {
+    "AppRunner-staging": {
       "type": "aws:cloudformation:stack",
       "environment": "aws://207091906248/us-east-1",
       "properties": {
-        "templateFile": "AppRunner-dev.template.json",
+        "templateFile": "AppRunner-staging.template.json",
         "tags": {
           "DatabaseProvider": "Neon",
-          "Environment": "development",
+          "Environment": "staging",
           "HostingProvider": "AppRunner",
           "ManagedBy": "CDK",
           "Project": "NailIt"
@@ -516,11 +528,11 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-deploy-role-207091906248-us-east-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-cfn-exec-role-207091906248-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/7bd1f2645cbb8063f3040140e23a6c757863d963b4e5c73895690e7456f2ca71.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/40fe1e8916cfef6c0ac4d47ba44cc0f6be6cdfae04f63b595183d61bfb875219.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
-          "AppRunner-dev.assets"
+          "AppRunner-staging.assets"
         ],
         "lookupRole": {
           "arn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-lookup-role-207091906248-us-east-1",
@@ -529,11 +541,11 @@
         }
       },
       "dependencies": [
-        "Secrets-dev",
-        "AppRunner-dev.assets"
+        "Secrets-staging",
+        "AppRunner-staging.assets"
       ],
       "metadata": {
-        "/AppRunner-dev": [
+        "/AppRunner-staging": [
           {
             "type": "aws:cdk:stack-tags",
             "data": [
@@ -543,7 +555,7 @@
               },
               {
                 "Key": "Environment",
-                "Value": "development"
+                "Value": "staging"
               },
               {
                 "Key": "HostingProvider",
@@ -560,62 +572,62 @@
             ]
           }
         ],
-        "/AppRunner-dev/AppRunnerInstanceRole/Resource": [
+        "/AppRunner-staging/AppRunnerInstanceRole/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "AppRunnerInstanceRole96A5A063"
           }
         ],
-        "/AppRunner-dev/AppRunnerInstanceRole/DefaultPolicy/Resource": [
+        "/AppRunner-staging/AppRunnerInstanceRole/DefaultPolicy/Resource": [
           {
             "type": "aws:cdk:logicalId",
             "data": "AppRunnerInstanceRoleDefaultPolicy35195718"
           }
         ],
-        "/AppRunner-dev/NailItAppRunnerService": [
+        "/AppRunner-staging/NailItAppRunnerService": [
           {
             "type": "aws:cdk:logicalId",
             "data": "NailItAppRunnerService"
           }
         ],
-        "/AppRunner-dev/AppRunnerServiceUrl": [
+        "/AppRunner-staging/AppRunnerServiceUrl": [
           {
             "type": "aws:cdk:logicalId",
             "data": "AppRunnerServiceUrl"
           }
         ],
-        "/AppRunner-dev/AppRunnerServiceArn": [
+        "/AppRunner-staging/AppRunnerServiceArn": [
           {
             "type": "aws:cdk:logicalId",
             "data": "AppRunnerServiceArn"
           }
         ],
-        "/AppRunner-dev/AppRunnerServiceId": [
+        "/AppRunner-staging/AppRunnerServiceId": [
           {
             "type": "aws:cdk:logicalId",
             "data": "AppRunnerServiceId"
           }
         ],
-        "/AppRunner-dev/CDKMetadata/Default": [
+        "/AppRunner-staging/CDKMetadata/Default": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CDKMetadata"
           }
         ],
-        "/AppRunner-dev/BootstrapVersion": [
+        "/AppRunner-staging/BootstrapVersion": [
           {
             "type": "aws:cdk:logicalId",
             "data": "BootstrapVersion"
           }
         ],
-        "/AppRunner-dev/CheckBootstrapVersion": [
+        "/AppRunner-staging/CheckBootstrapVersion": [
           {
             "type": "aws:cdk:logicalId",
             "data": "CheckBootstrapVersion"
           }
         ]
       },
-      "displayName": "AppRunner-dev"
+      "displayName": "AppRunner-staging"
     },
     "Tree": {
       "type": "cdk:tree",

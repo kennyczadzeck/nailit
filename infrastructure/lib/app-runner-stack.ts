@@ -95,7 +95,7 @@ export class AppRunnerStack extends cdk.Stack {
             value: envConfig.amplifyBranch, // develop, staging, or main
           },
           codeConfiguration: {
-            configurationSource: 'API', // Use inline configuration
+            configurationSource: 'API', // Use inline configuration for environment-specific settings
             codeConfigurationValues: this.getCodeConfiguration(environment, envConfig, secretArns),
           },
         },
@@ -151,12 +151,12 @@ export class AppRunnerStack extends cdk.Stack {
     // Add secrets if provided
     if (secretArns) {
       secrets.push(
-        { name: 'DATABASE_URL', value: secretArns.databaseSecretArn },
-        { name: 'NEXTAUTH_SECRET', value: secretArns.nextauthSecretArn },
-        { name: 'NEXTAUTH_URL', value: secretArns.nextauthUrlArn },
-        { name: 'GOOGLE_CLIENT_ID', value: secretArns.googleClientIdArn },
-        { name: 'GOOGLE_CLIENT_SECRET', value: secretArns.googleClientSecretArn },
-        { name: 'NEXT_PUBLIC_GOOGLE_MAPS_API_KEY', value: secretArns.apiKeysSecretArn },
+        { name: 'DATABASE_URL', value: `${secretArns.databaseSecretArn}` },
+        { name: 'NEXTAUTH_SECRET', value: `${secretArns.nextauthSecretArn}` },
+        { name: 'NEXTAUTH_URL', value: `${secretArns.nextauthUrlArn}` },
+        { name: 'GOOGLE_CLIENT_ID', value: `${secretArns.googleClientIdArn}` },
+        { name: 'GOOGLE_CLIENT_SECRET', value: `${secretArns.googleClientSecretArn}` },
+        { name: 'NEXT_PUBLIC_GOOGLE_MAPS_API_KEY', value: `${secretArns.apiKeysSecretArn}` },
       );
     }
 
