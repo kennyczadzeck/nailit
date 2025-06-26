@@ -190,26 +190,73 @@ app/api/<feature-name>/
 - **Zod**: Input validation for all API endpoints
 - **Prisma**: Type-safe database operations
 
+### **Enum Usage Protocol**
+To prevent a common class of runtime errors, the following protocol for using database enums is **MANDATORY**:
+
+1.  **Always Import the Enum Type**: When interacting with a model field that is an enum (e.g., `TimelineCategory`, `TeamMemberRole`), you **must** import the specific enum type from `@prisma/client`.
+    ```typescript
+    import { TimelineCategory } from '@prisma/client'
+    ```
+
+2.  **Never Use Raw Strings**: Do not use "magic strings" in your code to represent an enum value. This bypasses all type safety and will break if the enum definition changes.
+
+    *   **INCORRECT ⛔**:
+        ```typescript
+        // This will cause a runtime error if 'GENERAL_UPDATE' is not a valid enum member.
+        const category = 'GENERAL_UPDATE'; 
+        ```
+
+    *   **CORRECT ✅**:
+        ```typescript
+        // This is type-safe. The compiler will fail if the enum member does not exist.
+        const category = TimelineCategory.GENERAL_UPDATE;
+        ```
+
 ---
 
-## 🗄️ **Phase 4: Database Changes (When Needed)**
+## 🗄️ **Phase 4: Database Schema Management Protocol**
+
+### **The Golden Rule: `prisma/schema.prisma` is the Single Source of Truth**
+The root of all database health is treating our schema definition as the absolute, unquestionable source of truth. Schema drift, where the actual database differs from the schema history, is our primary enemy and must be avoided at all costs.
 
 ### **Schema Change Workflow**
-**I will automatically:**
+**ALL** schema changes must follow this exact workflow:
+1.  **Modify the Schema File**: Make all desired changes directly in `prisma/schema.prisma`.
+2.  **Generate a Migration**: Run `npx prisma migrate dev --name <descriptive-migration-name>`.
+    *   **Good Name:** `add-user-avatars`
+    *   **Bad Name:** `migration` or `update`
+3.  **Review the Migration File**: The generated `.sql` file in `prisma/migrations/` must be reviewed with the same care as application code. It becomes a permanent part of our history.
+4.  **Commit Both Files**: Commit both the updated `prisma/schema.prisma` and the new migration directory to Git.
 
-1. **Check if database changes needed** (based on user stories)
-2. **Update `prisma/schema.prisma`** according to requirements
-3. **Generate migration**: `npx prisma migrate dev --name <feature-name>`
-4. **Update seed data** if needed
-5. **Create database tests** for new schema
+**⛔ Under no circumstances should developers manually alter the database schema** using a DB client like `psql` or TablePlus. Manual changes will cause schema drift and break the migration history for the entire team.
 
-**Database Branch Strategy:**
-- Development: Use `npx prisma db push` for rapid iteration
-- Staging/Production: Use formal migrations only
+### **CI Guardrail: Automated Drift Detection**
+To enforce this protocol, a new CI check will be added to all Pull Requests targeting `develop` and `staging`. This check runs `npx prisma migrate diff` to compare the live database schema against the migration history. If drift is detected, the CI check will fail, blocking the PR until the drift is resolved. This is our automated safety net.
 
 ---
 
-## 📖 **Phase 5: Documentation (Automatic)**
+## 🌎 **Phase 5: Environment Strategy & Reset Policies**
+
+A clear environment strategy prevents confusion and ensures we can move quickly and safely.
+
+*   **Development (`develop` branch):**
+    *   **Role:** Active development and integration.
+    *   **Status:** **DISPOSABLE**.
+    *   **Rule:** Any developer can and should feel safe running `npx prisma migrate reset` to rebuild the database if it becomes unstable or to test the full migration history. The `prisma/seed.ts` script is the source of truth for test data.
+
+*   **Staging (`staging` branch):**
+    *   **Role:** Pre-production replica for QA and user acceptance testing.
+    *   **Status:** **PRECIOUS**.
+    *   **Rule:** Data should be preserved as much as possible. Migrations are applied in a forward-only direction using `npx prisma migrate deploy`. **Database resets are strictly forbidden.**
+
+*   **Production (`main` branch):**
+    *   **Role:** Live user-facing application.
+    *   **Status:** **SACRED**.
+    *   **Rule:** Migrations are only applied via `npx prisma migrate deploy` as part of a formal, reviewed, and tagged deployment process. **Database resets are forbidden.**
+
+---
+
+## 📖 **Phase 6: Documentation (Automatic)**
 
 ### **Documentation Updates**
 **I will automatically update:**
@@ -227,7 +274,7 @@ app/api/<feature-name>/
 
 ---
 
-## 🔍 **Phase 6: Quality Assurance (Automatic)**
+## 🔍 **Phase 7: Quality Assurance (Automatic)**
 
 ### **Pre-Commit Checklist**
 **I will automatically run:**
@@ -255,7 +302,7 @@ npm run build                       # Production build test
 
 ---
 
-## 🚀 **Phase 7: Pull Request Workflow (Automatic)**
+## 🚀 **Phase 8: Pull Request Workflow (Automatic)**
 
 ### **PR Creation Pattern**
 **I will automatically:**
@@ -309,7 +356,7 @@ npm run build                       # Production build test
 
 ---
 
-## 🌍 **Phase 8: Environment Promotion (Automatic)**
+## 🌍 **Phase 9: Environment Promotion (Automatic)**
 
 ### **Deployment Pipeline**
 **I will follow this progression:**

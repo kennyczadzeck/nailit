@@ -1,0 +1,13 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+The agent should respect the following development workflow.
+
+- Check out a new feature branch
+- Commit changes to feature branch
+- Open a PR to merge feature branch into develop branch, so tests/CI/CD can run
+- PRs should only be merged into develop branch if all tests pass
+- to promote develop to staging, a PR needs to be opened and all CI/CD tests need to pass before merging
+- to promote staging to main, a PR needs to be opened and all CI/CD tests need to pass before merging

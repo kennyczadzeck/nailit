@@ -61,7 +61,7 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchProjects = async () => {
+  const fetchProjects = React.useCallback(async () => {
     if (!session) {
       setLoading(false);
       return;
@@ -97,7 +97,7 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
     } finally {
       setLoading(false);
     }
-  };
+  }, [session]);
 
   const switchProject = (projectId: string) => {
     const project = projects.find(p => p.id === projectId);
@@ -113,7 +113,7 @@ export const ProjectProvider: React.FC<ProjectProviderProps> = ({ children }) =>
 
   useEffect(() => {
     fetchProjects();
-  }, [session]);
+  }, [session, fetchProjects]);
 
   const contextValue: ProjectContextType = {
     currentProject,

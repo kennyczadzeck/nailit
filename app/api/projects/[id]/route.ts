@@ -4,6 +4,67 @@ import { authOptions } from '../../auth/[...nextauth]/route'
 import { prisma } from '../../../lib/prisma'
 import { ProjectStatus } from '@prisma/client'
 
+/**
+ * @swagger
+ * /api/projects/{id}:
+ *   patch:
+ *     summary: Update a project
+ *     description: Update project details, team members, or status
+ *     tags:
+ *       - Projects
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Project ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               address:
+ *                 type: string
+ *               budget:
+ *                 type: number
+ *               startDate:
+ *                 type: string
+ *                 format: date
+ *               endDate:
+ *                 type: string
+ *                 format: date
+ *               status:
+ *                 type: string
+ *                 enum: [ACTIVE, ARCHIVED]
+ *               teamMembers:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     name:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     role:
+ *                       type: string
+ *                       enum: [GENERAL_CONTRACTOR, ARCHITECT_DESIGNER, PROJECT_MANAGER]
+ *     responses:
+ *       200:
+ *         description: Project updated successfully
+ *       400:
+ *         description: Bad request - validation error
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Project not found
+ */
 // PATCH /api/projects/[id] - Update project (including archiving)
 export async function PATCH(
   request: NextRequest,
@@ -110,6 +171,31 @@ export async function PATCH(
   }
 }
 
+/**
+ * @swagger
+ * /api/projects/{id}:
+ *   delete:
+ *     summary: Delete a project
+ *     description: Permanently delete a project and all associated data
+ *     tags:
+ *       - Projects
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Project ID
+ *     responses:
+ *       200:
+ *         description: Project deleted successfully
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Project not found
+ *       500:
+ *         description: Internal server error
+ */
 // DELETE /api/projects/[id] - Delete project
 export async function DELETE(
   request: NextRequest,

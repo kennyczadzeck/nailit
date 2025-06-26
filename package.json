@@ -35,8 +35,7 @@
     "deploy:prod": "npm run test:ci:all && npm run build",
     "db:seed": "tsx prisma/seed.ts",
     "db:reset": "npx prisma db push --force-reset && npm run db:seed",
-    "db:studio": "npx prisma studio",
-    "postinstall": "prisma generate"
+    "db:studio": "npx prisma studio"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -53,6 +52,7 @@
     "date-fns": "^3.0.0",
     "next": "15.4.0-canary.51",
     "next-auth": "^4.24.11",
+    "next-swagger-doc": "^0.4.1",
     "pg": "^8.16.0",
     "prisma": "^6.8.2",
     "react": "19.1.0",
@@ -62,6 +62,9 @@
     "winston": "^3.17.0"
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.25.3",
+    "@babel/preset-react": "^7.24.7",
+    "@babel/preset-typescript": "^7.24.7",
     "@eslint/eslintrc": "^3",
     "@playwright/test": "^1.52.0",
     "@testing-library/dom": "^10.4.0",
@@ -77,12 +80,14 @@
     "eslint-config-next": "15.4.0-canary.51",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^30.0.0-beta.3",
+    "jest-mock-extended": "^4.0.0",
     "msw": "^2.8.7",
     "node-mocks-http": "^1.17.2",
     "postcss": "^8.4.32",
     "tailwindcss": "^3.4.0",
     "ts-jest": "^29.3.4",
     "tsx": "^4.19.4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "whatwg-fetch": "^3.6.20"
   }
 }

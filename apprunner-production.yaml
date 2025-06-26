@@ -1,0 +1,35 @@
+version: 1.0
+runtime: nodejs22
+build:
+  commands:
+    build:
+      - npm ci --ignore-scripts --legacy-peer-deps
+      - npx prisma generate
+      - DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" NEXTAUTH_SECRET="dummy-secret-for-build" NEXTAUTH_URL="http://localhost:3000" NODE_ENV="production" npm run build
+run:
+  runtime-version: nodejs22
+  command: npm start
+  network:
+    port: 3000
+  env:
+    - name: NODE_ENV
+      value: production
+    - name: NAILIT_ENVIRONMENT
+      value: production
+    - name: AWS_REGION
+      value: us-east-1
+    - name: PORT
+      value: "3000"
+  secrets:
+    - name: DATABASE_URL
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-database-production-PLACEHOLDER"
+    - name: NEXTAUTH_SECRET
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-nextauth-secret-production-PLACEHOLDER"
+    - name: NEXTAUTH_URL
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-nextauth-url-production-PLACEHOLDER"
+    - name: GOOGLE_CLIENT_ID
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-google-client-id-production-PLACEHOLDER"
+    - name: GOOGLE_CLIENT_SECRET
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-google-client-secret-production-PLACEHOLDER"
+    - name: NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-google-maps-api-key-production-PLACEHOLDER" 

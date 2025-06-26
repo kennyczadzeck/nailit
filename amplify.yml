@@ -5,7 +5,7 @@ frontend:
       commands:
         - echo "Environment variables check..."
         - echo "DATABASE_URL exists:" $DATABASE_URL
-        - echo "DATABASE_MIGRATION_URL exists:" $DATABASE_MIGRATION_URL
+        - echo "DATABASE_MIGRATION_URL exists:" $DATABASE_URL
         - echo "NEXTAUTH_URL exists:" $NEXTAUTH_URL
         - |
           if [[ "$DATABASE_URL" == *"misty-frog"* ]]; then
@@ -22,6 +22,8 @@ frontend:
             export ENVIRONMENT="production"
           fi
         - npm install --legacy-peer-deps
+        - echo "Running schema drift check..."
+        - npx prisma migrate diff --from-migrations ./prisma/migrations --to-schema-datamodel ./prisma/schema.prisma --shadow-database-url "$DATABASE_URL" --exit-code
         - |
           if [[ "$ENVIRONMENT" == "development" ]]; then
             echo "Pushing schema changes to development database..."
@@ -43,8 +45,59 @@ frontend:
         - env | grep -e DISABLE_CLOUDWATCH_LOGS >> .env.production || echo "DISABLE_CLOUDWATCH_LOGS not set"
         - echo "Contents of .env.production:"
         - cat .env.production || echo "No .env.production file created"
-        - npm run build -- --no-lint
+        - echo "=== BUILDING NEXT.JS APPLICATION ==="
+        - npm run build
+        - echo "=== AMPLIFY-COMPATIBLE DEPLOYMENT ==="
+        - echo "Creating deployment structure that matches Amplify expectations..."
+        - rm -rf ./deploy
+        - mkdir -p ./deploy
+        - echo "Copying complete .next directory..."
+        - cp -r .next ./deploy/
+        - echo "Copying public assets..."
+        - cp -r public ./deploy/ 2>/dev/null || echo "No public directory"
+        - echo "Creating package.json..."
+        - echo '{"name":"nailit","type":"module"}' > ./deploy/package.json
+        - echo "Copying required-server-files.json to deployment root..."
+        - cp ./deploy/.next/required-server-files.json ./deploy/
+        - echo "Updating required-server-files.json appDir to be relative..."
+        - node -e "const fs = require('fs'); const path = './deploy/required-server-files.json'; const config = JSON.parse(fs.readFileSync(path, 'utf8')); config.appDir = process.env.PWD + '/deploy'; fs.writeFileSync(path, JSON.stringify(config, null, 2)); console.log('Updated appDir to:', config.appDir);"
+        - echo "=== TRACE FILES ANALYSIS ==="
+        - echo "Analyzing trace file distribution before cleanup..."
+        - find ./deploy -name "*.nft.json" | wc -l | xargs echo "Total trace files before cleanup:"
+        - echo "Trace files in server directory:"
+        - find ./deploy/.next/server -name "*.nft.json" | wc -l || echo "0"
+        - echo "Trace files in standalone directory:"
+        - find ./deploy/.next/standalone -name "*.nft.json" 2>/dev/null | wc -l || echo "0"
+        - echo "=== SELECTIVE CLEANUP (preserving trace files) ==="
+        - echo "Extracting any trace files from standalone before removal..."
+        - mkdir -p ./deploy/.next/server-backup 2>/dev/null || echo "Backup dir exists"
+        - find ./deploy/.next/standalone -name "*.nft.json" -exec cp {} ./deploy/.next/server-backup/ \; 2>/dev/null || echo "No standalone trace files to backup"
+        - echo "Removing source maps, cache, and standalone directory..."
+        - find ./deploy/.next -name "*.map" -delete 2>/dev/null || echo "No source maps"
+        - find ./deploy/.next -name "cache" -type d -exec rm -rf {} + 2>/dev/null || echo "No cache dirs"
+        - rm -rf ./deploy/.next/cache 2>/dev/null || echo "No .next/cache"
+        - rm -rf ./deploy/.next/standalone 2>/dev/null || echo "No standalone directory"
+        - echo "Restoring any backed up trace files..."
+        - find ./deploy/.next/server-backup -name "*.nft.json" -exec cp {} ./deploy/.next/server/ \; 2>/dev/null || echo "No trace files to restore"
+        - rm -rf ./deploy/.next/server-backup 2>/dev/null || echo "No backup to clean"
+        - echo "=== FINAL VERIFICATION ==="
+        - echo "Deployment structure:"
+        - ls -la ./deploy
+        - echo "Essential Next.js files:"
+        - ls -la ./deploy/.next/ | head -10
+        - echo "Trace files verification:"
+        - find ./deploy -name "*.nft.json" | wc -l | xargs echo "Total trace files after cleanup:"
+        - echo "Sample trace files:"
+        - find ./deploy -name "*.nft.json" | head -5 || echo "No trace files found"
+        - echo "Required server files check (root):"
+        - ls -la ./deploy/required-server-files.json || echo "⚠️ required-server-files.json missing from root"
+        - echo "Required server files check (.next):"
+        - ls -la ./deploy/.next/required-server-files.json || echo "⚠️ required-server-files.json missing from .next"
+        - echo "Total deployment size:"
+        - du -sh ./deploy
+        - echo "Size breakdown:"
+        - du -sh ./deploy/* 2>/dev/null || echo "No subdirectories"
   artifacts:
-    baseDirectory: .next
+    baseDirectory: deploy
     files:
       - '**/*' 
