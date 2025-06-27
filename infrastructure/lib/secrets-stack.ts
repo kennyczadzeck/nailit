@@ -17,13 +17,32 @@ export class SecretsStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: SecretsStackProps) {
     super(scope, id, props);
 
+    // Environment-specific configuration
+    const envConfigs = {
+      development: {
+        databaseUrl: 'postgresql://neondb_owner:npg_avELx8uqOAc0@ep-still-paper-a5tgtem8-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require',
+        nextauthUrl: 'https://d3pvc5dn43.us-east-1.awsapprunner.com',
+      },
+      staging: {
+        databaseUrl: 'postgresql://neondb_owner:npg_avELx8uqOAc0@ep-raspy-sound-a5eg97xu-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require',
+        nextauthUrl: 'https://ubfybdadun.us-east-1.awsapprunner.com',
+      },
+      production: {
+        databaseUrl: 'postgresql://neondb_owner:npg_avELx8uqOAc0@ep-misty-frog-a5pcr9pt-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require',
+        nextauthUrl: 'https://ijj2mc7dhz.us-east-1.awsapprunner.com',
+      },
+    };
+
+    const config = envConfigs[props.environment as keyof typeof envConfigs];
+    if (!config) {
+      throw new Error(`Unknown environment: ${props.environment}. Must be one of: ${Object.keys(envConfigs).join(', ')}`);
+    }
+
     // Database credentials secret
     const databaseSecret = new secretsmanager.Secret(this, 'DatabaseCredentials', {
       secretName: `nailit-database-${props.environment}`,
       description: 'Database connection string for NailIt application',
-      secretStringValue: cdk.SecretValue.unsafePlainText(
-        'postgresql://neondb_owner:npg_avELx8uqOAc0@ep-still-paper-a5tgtem8-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require'
-      ),
+      secretStringValue: cdk.SecretValue.unsafePlainText(config.databaseUrl),
     });
 
     // Individual secrets for better App Runner compatibility
@@ -36,7 +55,7 @@ export class SecretsStack extends cdk.Stack {
     const nextauthUrl = new secretsmanager.Secret(this, 'NextAuthUrl', {
       secretName: `nailit-nextauth-url-${props.environment}`,
       description: 'NextAuth URL for NailIt application',
-      secretStringValue: cdk.SecretValue.unsafePlainText('https://krkvn7z28m.us-east-1.awsapprunner.com'),
+      secretStringValue: cdk.SecretValue.unsafePlainText(config.nextauthUrl),
     });
 
     const googleClientId = new secretsmanager.Secret(this, 'GoogleClientId', {
