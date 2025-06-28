@@ -23,7 +23,7 @@
      },
      {
       "Key": "Environment",
-      "Value": "development"
+      "Value": "production"
      },
      {
       "Key": "HostingProvider",
@@ -40,7 +40,7 @@
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "AppRunner-dev/AppRunnerInstanceRole/Resource"
+    "aws:cdk:path": "AppRunner-prod/AppRunnerInstanceRole/Resource"
    }
   },
   "AppRunnerInstanceRoleDefaultPolicy35195718": {
@@ -67,22 +67,22 @@
        "Effect": "Allow",
        "Resource": [
         {
-         "Fn::ImportValue": "Secrets-dev:ExportsOutputRefDatabaseCredentials8547B3E729671DA7"
+         "Fn::ImportValue": "Secrets-prod:ExportsOutputRefDatabaseCredentials8547B3E729671DA7"
         },
         {
-         "Fn::ImportValue": "Secrets-dev:ExportsOutputRefNextAuthSecret21484E9E77FF9A4C"
+         "Fn::ImportValue": "Secrets-prod:ExportsOutputRefNextAuthSecret21484E9E77FF9A4C"
         },
         {
-         "Fn::ImportValue": "Secrets-dev:ExportsOutputRefNextAuthUrl03CEB3B75A8AF779"
+         "Fn::ImportValue": "Secrets-prod:ExportsOutputRefNextAuthUrl03CEB3B75A8AF779"
         },
         {
-         "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientIdDF771C4D6A4E26E7"
+         "Fn::ImportValue": "Secrets-prod:ExportsOutputRefGoogleClientIdDF771C4D6A4E26E7"
         },
         {
-         "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientSecret7356BEB4E9294748"
+         "Fn::ImportValue": "Secrets-prod:ExportsOutputRefGoogleClientSecret7356BEB4E9294748"
         },
         {
-         "Fn::ImportValue": "Secrets-dev:ExportsOutputRefApiKeys3BB3983D8BCC0B1D"
+         "Fn::ImportValue": "Secrets-prod:ExportsOutputRefApiKeys3BB3983D8BCC0B1D"
         }
        ]
       }
@@ -97,7 +97,7 @@
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "AppRunner-dev/AppRunnerInstanceRole/DefaultPolicy/Resource"
+    "aws:cdk:path": "AppRunner-prod/AppRunnerInstanceRole/DefaultPolicy/Resource"
    }
   },
   "NailItAppRunnerService": {
@@ -117,37 +117,37 @@
          {
           "Name": "DATABASE_URL",
           "Value": {
-           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefDatabaseCredentials8547B3E729671DA7"
+           "Fn::ImportValue": "Secrets-prod:ExportsOutputRefDatabaseCredentials8547B3E729671DA7"
           }
          },
          {
           "Name": "NEXTAUTH_SECRET",
           "Value": {
-           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefNextAuthSecret21484E9E77FF9A4C"
+           "Fn::ImportValue": "Secrets-prod:ExportsOutputRefNextAuthSecret21484E9E77FF9A4C"
           }
          },
          {
           "Name": "NEXTAUTH_URL",
           "Value": {
-           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefNextAuthUrl03CEB3B75A8AF779"
+           "Fn::ImportValue": "Secrets-prod:ExportsOutputRefNextAuthUrl03CEB3B75A8AF779"
           }
          },
          {
           "Name": "GOOGLE_CLIENT_ID",
           "Value": {
-           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientIdDF771C4D6A4E26E7"
+           "Fn::ImportValue": "Secrets-prod:ExportsOutputRefGoogleClientIdDF771C4D6A4E26E7"
           }
          },
          {
           "Name": "GOOGLE_CLIENT_SECRET",
           "Value": {
-           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientSecret7356BEB4E9294748"
+           "Fn::ImportValue": "Secrets-prod:ExportsOutputRefGoogleClientSecret7356BEB4E9294748"
           }
          },
          {
           "Name": "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY",
           "Value": {
-           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefApiKeys3BB3983D8BCC0B1D"
+           "Fn::ImportValue": "Secrets-prod:ExportsOutputRefApiKeys3BB3983D8BCC0B1D"
           }
          }
         ],
@@ -166,7 +166,7 @@
          },
          {
           "Name": "NAILIT_ENVIRONMENT",
-          "Value": "development"
+          "Value": "production"
          }
         ],
         "StartCommand": "npm start"
@@ -176,7 +176,7 @@
       "RepositoryUrl": "https://github.com/kennyczadzeck/nailit",
       "SourceCodeVersion": {
        "Type": "BRANCH",
-       "Value": "develop"
+       "Value": "main"
       }
      }
     },
@@ -190,7 +190,7 @@
      },
      "Memory": "0.5 GB"
     },
-    "ServiceName": "nailit-dev",
+    "ServiceName": "nailit-prod",
     "Tags": [
      {
       "Key": "DatabaseProvider",
@@ -198,7 +198,7 @@
      },
      {
       "Key": "Environment",
-      "Value": "development"
+      "Value": "production"
      },
      {
       "Key": "HostingProvider",
@@ -215,7 +215,7 @@
     ]
    },
    "Metadata": {
-    "aws:cdk:path": "AppRunner-dev/NailItAppRunnerService"
+    "aws:cdk:path": "AppRunner-prod/NailItAppRunnerService"
    }
   },
   "CDKMetadata": {
@@ -224,7 +224,7 @@
     "Analytics": "v2:deflate64:H4sIAAAAAAAA/y2MTQrDIBSEz5K9ebUuSvc5QIs5QLHmBV5iVPxJKOLdS01X38wHMwLuHHinjtjrae0NvaGMSemVqSO+CqkNinQG2TDbxqczpD+/eqbKlPchW4sBhtmOGHbSWJnE6HLQbfjIyefULv62MusmhCVediHgegPeLZGoD9km2hDkyS/Q0WibngAAAA=="
    },
    "Metadata": {
-    "aws:cdk:path": "AppRunner-dev/CDKMetadata/Default"
+    "aws:cdk:path": "AppRunner-prod/CDKMetadata/Default"
    }
   }
  },
@@ -246,7 +246,7 @@
     ]
    },
    "Export": {
-    "Name": "NailIt-dev-AppRunnerUrl"
+    "Name": "NailIt-prod-AppRunnerUrl"
    }
   },
   "AppRunnerServiceArn": {
@@ -258,7 +258,7 @@
     ]
    },
    "Export": {
-    "Name": "NailIt-dev-AppRunnerArn"
+    "Name": "NailIt-prod-AppRunnerArn"
    }
   },
   "AppRunnerServiceId": {
@@ -270,7 +270,7 @@
     ]
    },
    "Export": {
-    "Name": "NailIt-dev-AppRunnerServiceId"
+    "Name": "NailIt-prod-AppRunnerServiceId"
    }
   }
  },

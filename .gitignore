@@ -35,6 +35,10 @@ yarn-error.log*why
 .env*
 .githubauth
 
+# Gmail OAuth credentials and tokens (email testing utility)
+gmail-contractor-credentials.json
+gmail-contractor-tokens.json
+
 # vercel
 .vercel
 

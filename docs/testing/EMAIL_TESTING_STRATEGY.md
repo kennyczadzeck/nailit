@@ -225,6 +225,328 @@ export const sendTestEmails = {
 
 ---
 
+## 🔧 **Gmail API OAuth Setup for Automated Email Sending**
+
+### ⚠️ **Important: Email Testing Utility Credentials**
+
+This section covers OAuth setup for the **Email Testing Utility** only. These credentials are completely separate from your main application's OAuth credentials.
+
+**Email Testing Utility** (This Section):
+- **Purpose**: Automated email sending from contractor test account
+- **Usage**: Development and testing only
+- **OAuth Client**: Desktop application type
+- **Scopes**: `gmail.send` only
+- **Storage**: Local `.env.local` and GitHub Secrets
+
+**Production NailIt Application** (Separate):
+- **Purpose**: User authentication in deployed app
+- **OAuth Client**: Web application type
+- **Scopes**: `openid`, `email`, `profile`, `gmail.readonly`, `gmail.modify`
+- **Storage**: AWS Secrets Manager (managed by infrastructure)
+
+**📖 For detailed credential management, see:** [`docs/testing/GMAIL_CREDENTIALS_MANAGEMENT.md`](./GMAIL_CREDENTIALS_MANAGEMENT.md)
+
+---
+
+To enable fully automated email testing, we use the Gmail API with OAuth 2.0 to programmatically send emails from the contractor test account (`nailit.test.contractor@gmail.com`) to the homeowner account (`nailit.test.homeowner@gmail.com`).
+
+### **OAuth Configuration Requirements**
+
+#### **1. Google Cloud Project Setup**
+Create a separate OAuth configuration in your existing Google Cloud project:
+
+```
+Project: Your existing NailIt project
+OAuth Client Type: Desktop Application
+Scopes Required:
+- https://www.googleapis.com/auth/gmail.send
+- https://www.googleapis.com/auth/gmail.compose (optional, for drafts)
+```
+
+#### **2. OAuth Client Configuration**
+```json
+{
+  "installed": {
+    "client_id": "YOUR_CONTRACTOR_CLIENT_ID",
+    "project_id": "your-project-id", 
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "client_secret": "YOUR_CONTRACTOR_CLIENT_SECRET",
+    "redirect_uris": ["http://localhost"]
+  }
+}
+```
+
+#### **3. Environment Variables (Testing Utility Only)**
+Add to your `.env.local` (these are NOT production app credentials):
+```bash
+# ============================================
+# EMAIL TESTING UTILITY CREDENTIALS ONLY
+# (NOT for production application)
+# ============================================
+
+# Gmail API for automated email testing (contractor account)
+GMAIL_CONTRACTOR_CLIENT_ID="your_contractor_client_id"
+GMAIL_CONTRACTOR_CLIENT_SECRET="your_contractor_client_secret" 
+GMAIL_CONTRACTOR_REFRESH_TOKEN="your_contractor_refresh_token"
+GMAIL_CONTRACTOR_EMAIL="nailit.test.contractor@gmail.com"
+
+# ============================================
+# PRODUCTION APPLICATION CREDENTIALS
+# (Managed separately in AWS Secrets Manager)
+# ============================================
+# These are handled by infrastructure and should NOT be in .env.local:
+# - GOOGLE_CLIENT_ID (for app authentication)
+# - GOOGLE_CLIENT_SECRET (for app authentication)
+# - Database connection strings
+# - Other production secrets
+```
+
+### **Implementation Components**
+
+#### **1. OAuth Authorization Script**
+```typescript
+// scripts/gmail-oauth-setup.ts
+import { google } from 'googleapis';
+
+const CLIENT_ID = process.env.GMAIL_CONTRACTOR_CLIENT_ID;
+const CLIENT_SECRET = process.env.GMAIL_CONTRACTOR_CLIENT_SECRET;
+const REDIRECT_URI = 'http://localhost';
+
+const oauth2Client = new google.auth.OAuth2(CLIENT_ID, CLIENT_SECRET, REDIRECT_URI);
+
+const SCOPES = ['https://www.googleapis.com/auth/gmail.send'];
+
+// Generate authorization URL
+const authUrl = oauth2Client.generateAuthUrl({
+  access_type: 'offline',
+  prompt: 'consent',
+  scope: SCOPES
+});
+
+console.log('Authorize contractor account by visiting:', authUrl);
+// Paste authorization code to get refresh token
+```
+
+#### **2. Email Sending Utility**
+```typescript
+// tests/integration/gmail-sender.ts
+import { google } from 'googleapis';
+import nodemailer from 'nodemailer';
+
+export class GmailTestSender {
+  private oauth2Client: any;
+  
+  constructor() {
+    this.oauth2Client = new google.auth.OAuth2(
+      process.env.GMAIL_CONTRACTOR_CLIENT_ID,
+      process.env.GMAIL_CONTRACTOR_CLIENT_SECRET,
+      'http://localhost'
+    );
+    
+    this.oauth2Client.setCredentials({
+      refresh_token: process.env.GMAIL_CONTRACTOR_REFRESH_TOKEN
+    });
+  }
+
+  async sendConstructionEmail(emailType: string, customContent?: any) {
+    const accessToken = await this.oauth2Client.getAccessToken();
+    
+    const transporter = nodemailer.createTransporter({
+      service: 'gmail',
+      auth: {
+        type: 'OAuth2',
+        user: process.env.GMAIL_CONTRACTOR_EMAIL,
+        clientId: process.env.GMAIL_CONTRACTOR_CLIENT_ID,
+        clientSecret: process.env.GMAIL_CONTRACTOR_CLIENT_SECRET,
+        refreshToken: process.env.GMAIL_CONTRACTOR_REFRESH_TOKEN,
+        accessToken: accessToken.token,
+      },
+    });
+
+    const emailTemplates = {
+      quote: {
+        subject: 'Kitchen Renovation Quote - Final Version',
+        html: this.getQuoteEmailTemplate(customContent),
+      },
+      permit: {
+        subject: 'Building Permit Update - Action Required',
+        html: this.getPermitEmailTemplate(customContent),
+      },
+      inspection: {
+        subject: 'URGENT: Inspection Scheduled for Tomorrow',
+        html: this.getInspectionEmailTemplate(customContent),
+      },
+      delivery: {
+        subject: 'Material Delivery Confirmation',
+        html: this.getDeliveryEmailTemplate(customContent),
+      }
+    };
+
+    const template = emailTemplates[emailType];
+    if (!template) throw new Error(`Unknown email type: ${emailType}`);
+
+    const mailOptions = {
+      from: `Mike Johnson - GC Pro <${process.env.GMAIL_CONTRACTOR_EMAIL}>`,
+      to: 'nailit.test.homeowner@gmail.com',
+      subject: template.subject,
+      html: template.html,
+      // Add realistic headers
+      headers: {
+        'X-Mailer': 'Contractor Management System v2.1',
+        'X-Priority': emailType === 'inspection' ? '1' : '3'
+      }
+    };
+
+    const result = await transporter.sendMail(mailOptions);
+    console.log(`✅ Sent ${emailType} email:`, result.messageId);
+    return result;
+  }
+
+  private getQuoteEmailTemplate(content?: any) {
+    return `
+      <h2>Kitchen Renovation Quote</h2>
+      <p>Hi Sarah,</p>
+      <p>Please find the final quote for your kitchen renovation project:</p>
+      
+      <table border="1" style="border-collapse: collapse;">
+        <tr><td><strong>Total Cost:</strong></td><td>$${content?.cost || '45,000'}</td></tr>
+        <tr><td><strong>Timeline:</strong></td><td>${content?.timeline || '6-8 weeks'}</td></tr>
+        <tr><td><strong>Start Date:</strong></td><td>${content?.startDate || 'December 1st'}</td></tr>
+      </table>
+      
+      <p>This quote includes all materials and labor. Please let me know if you have any questions.</p>
+      
+      <p>Best regards,<br>
+      Mike Johnson<br>
+      General Contractor Pro<br>
+      (555) 123-4567</p>
+    `;
+  }
+
+  private getInspectionEmailTemplate(content?: any) {
+    return `
+      <h2 style="color: red;">URGENT: Inspection Scheduled</h2>
+      <p>Hi Sarah,</p>
+      <p><strong>Important:</strong> The city inspector will be coming tomorrow at ${content?.time || '10:00 AM'} for the electrical inspection.</p>
+      
+      <p><strong>Requirements:</strong></p>
+      <ul>
+        <li>All electrical work must be complete</li>
+        <li>Work area must be clean and accessible</li>
+        <li>Someone must be present during inspection</li>
+      </ul>
+      
+      <p>Please confirm you'll be available.</p>
+      
+      <p>Mike Johnson<br>
+      General Contractor Pro</p>
+    `;
+  }
+
+  // Additional email templates...
+}
+```
+
+#### **3. Test Integration**
+```typescript
+// tests/integration/automated-email-tests.ts
+import { GmailTestSender } from './gmail-sender';
+
+describe('Automated Email Testing', () => {
+  const emailSender = new GmailTestSender();
+
+  test('should send and process construction emails end-to-end', async () => {
+    // 1. Send test email from contractor
+    await emailSender.sendConstructionEmail('quote', { cost: '47,500' });
+    
+    // 2. Wait for webhook processing
+    await new Promise(resolve => setTimeout(resolve, 30000));
+    
+    // 3. Verify email was received and processed
+    const processedEmails = await prisma.emailMessage.findMany({
+      where: {
+        sender: 'nailit.test.contractor@gmail.com',
+        subject: { contains: 'Kitchen Renovation Quote' }
+      }
+    });
+    
+    expect(processedEmails).toHaveLength(1);
+    expect(processedEmails[0].urgencyLevel).toBe('medium');
+    expect(processedEmails[0].relevanceScore).toBeGreaterThan(0.8);
+  });
+
+  test('should handle urgent inspection emails', async () => {
+    await emailSender.sendConstructionEmail('inspection', { time: '9:00 AM' });
+    
+    // Wait and verify urgent processing
+    await new Promise(resolve => setTimeout(resolve, 10000));
+    
+    const urgentEmails = await prisma.emailMessage.findMany({
+      where: {
+        urgencyLevel: 'high',
+        subject: { contains: 'URGENT' }
+      }
+    });
+    
+    expect(urgentEmails).toHaveLength(1);
+  });
+});
+```
+
+### **Setup Commands**
+
+Add to `package.json`:
+```json
+{
+  "scripts": {
+    "test:gmail:setup": "tsx scripts/gmail-oauth-setup.ts",
+    "test:gmail:send": "tsx tests/integration/send-test-emails.ts",
+    "test:email:automated": "jest tests/integration/automated-email-tests.ts",
+    "test:email:full": "npm run test:email:db && npm run test:gmail:send && npm run test:email:automated"
+  }
+}
+```
+
+### **Workflow Integration**
+
+#### **Development Workflow**
+```bash
+# 1. One-time OAuth setup (contractor account)
+npm run test:gmail:setup
+
+# 2. Daily testing - send automated emails
+npm run test:gmail:send
+
+# 3. Full end-to-end testing
+npm run test:email:full
+```
+
+#### **CI/CD Integration**
+```yaml
+# .github/workflows/email-testing.yml
+- name: Run Automated Email Tests
+  run: |
+    npm run test:email:db           # Load historical data
+    npm run test:gmail:send         # Send real emails  
+    npm run test:email:automated    # Verify processing
+  env:
+    GMAIL_CONTRACTOR_CLIENT_ID: ${{ secrets.GMAIL_CONTRACTOR_CLIENT_ID }}
+    GMAIL_CONTRACTOR_CLIENT_SECRET: ${{ secrets.GMAIL_CONTRACTOR_CLIENT_SECRET }}
+    GMAIL_CONTRACTOR_REFRESH_TOKEN: ${{ secrets.GMAIL_CONTRACTOR_REFRESH_TOKEN }}
+```
+
+### **Benefits of This Approach**
+
+✅ **Fully Automated**: No manual email sending required  
+✅ **Realistic Testing**: Actual emails between real test accounts  
+✅ **End-to-End Validation**: Tests complete Gmail webhook pipeline  
+✅ **Repeatable**: Consistent test scenarios every time  
+✅ **CI/CD Ready**: Can run in automated pipelines  
+✅ **Flexible**: Easy to add new email types and scenarios
+
+---
+
 ## 🎯 **Success Criteria**
 
 ### **Performance Benchmarks**

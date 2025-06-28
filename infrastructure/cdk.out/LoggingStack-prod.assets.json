@@ -1,7 +1,7 @@
 {
   "version": "31.0.0",
   "files": {
-    "3e16acc7cd2e1be53c16ea6b639f2b88c7029cde197252555ff129bac79c9043": {
+    "987e2a623e65d457f56f2bcd2c3284b1ade10c4977233068f22af1c020f5241c": {
       "source": {
         "path": "LoggingStack-prod.template.json",
         "packaging": "file"
@@ -9,7 +9,7 @@
       "destinations": {
         "207091906248-us-east-1": {
           "bucketName": "cdk-hnb659fds-assets-207091906248-us-east-1",
-          "objectKey": "3e16acc7cd2e1be53c16ea6b639f2b88c7029cde197252555ff129bac79c9043.json",
+          "objectKey": "987e2a623e65d457f56f2bcd2c3284b1ade10c4977233068f22af1c020f5241c.json",
           "region": "us-east-1",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-file-publishing-role-207091906248-us-east-1"
         }

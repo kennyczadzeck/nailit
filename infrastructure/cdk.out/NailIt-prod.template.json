@@ -213,6 +213,240 @@
     "aws:cdk:path": "NailIt-prod/AIProcessingQueue/Resource"
    }
   },
+  "EmailIngestionDLQ9CFE0F2F": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 1209600,
+    "QueueName": "nailit-prod-email-ingestion-dlq",
+    "Tags": [
+     {
+      "Key": "DatabaseProvider",
+      "Value": "Neon"
+     },
+     {
+      "Key": "Environment",
+      "Value": "production"
+     },
+     {
+      "Key": "HostingProvider",
+      "Value": "Amplify"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "NailIt"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "NailIt-prod/EmailIngestionDLQ/Resource"
+   }
+  },
+  "EmailIngestionQueue38CE5AC2": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 1209600,
+    "QueueName": "nailit-prod-email-ingestion-queue",
+    "RedrivePolicy": {
+     "deadLetterTargetArn": {
+      "Fn::GetAtt": [
+       "EmailIngestionDLQ9CFE0F2F",
+       "Arn"
+      ]
+     },
+     "maxReceiveCount": 3
+    },
+    "Tags": [
+     {
+      "Key": "DatabaseProvider",
+      "Value": "Neon"
+     },
+     {
+      "Key": "Environment",
+      "Value": "production"
+     },
+     {
+      "Key": "HostingProvider",
+      "Value": "Amplify"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "NailIt"
+     }
+    ],
+    "VisibilityTimeout": 180
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "NailIt-prod/EmailIngestionQueue/Resource"
+   }
+  },
+  "EmailAssignmentDLQ0B1639EA": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 1209600,
+    "QueueName": "nailit-prod-email-assignment-dlq",
+    "Tags": [
+     {
+      "Key": "DatabaseProvider",
+      "Value": "Neon"
+     },
+     {
+      "Key": "Environment",
+      "Value": "production"
+     },
+     {
+      "Key": "HostingProvider",
+      "Value": "Amplify"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "NailIt"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "NailIt-prod/EmailAssignmentDLQ/Resource"
+   }
+  },
+  "EmailAssignmentQueue2E1F6B02": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 1209600,
+    "QueueName": "nailit-prod-email-assignment-queue",
+    "RedrivePolicy": {
+     "deadLetterTargetArn": {
+      "Fn::GetAtt": [
+       "EmailAssignmentDLQ0B1639EA",
+       "Arn"
+      ]
+     },
+     "maxReceiveCount": 3
+    },
+    "Tags": [
+     {
+      "Key": "DatabaseProvider",
+      "Value": "Neon"
+     },
+     {
+      "Key": "Environment",
+      "Value": "production"
+     },
+     {
+      "Key": "HostingProvider",
+      "Value": "Amplify"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "NailIt"
+     }
+    ],
+    "VisibilityTimeout": 300
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "NailIt-prod/EmailAssignmentQueue/Resource"
+   }
+  },
+  "EmailFlaggingDLQ30BD2187": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 1209600,
+    "QueueName": "nailit-prod-email-flagging-dlq",
+    "Tags": [
+     {
+      "Key": "DatabaseProvider",
+      "Value": "Neon"
+     },
+     {
+      "Key": "Environment",
+      "Value": "production"
+     },
+     {
+      "Key": "HostingProvider",
+      "Value": "Amplify"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "NailIt"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "NailIt-prod/EmailFlaggingDLQ/Resource"
+   }
+  },
+  "EmailFlaggingQueue8A88E9BD": {
+   "Type": "AWS::SQS::Queue",
+   "Properties": {
+    "MessageRetentionPeriod": 1209600,
+    "QueueName": "nailit-prod-email-flagging-queue",
+    "RedrivePolicy": {
+     "deadLetterTargetArn": {
+      "Fn::GetAtt": [
+       "EmailFlaggingDLQ30BD2187",
+       "Arn"
+      ]
+     },
+     "maxReceiveCount": 3
+    },
+    "Tags": [
+     {
+      "Key": "DatabaseProvider",
+      "Value": "Neon"
+     },
+     {
+      "Key": "Environment",
+      "Value": "production"
+     },
+     {
+      "Key": "HostingProvider",
+      "Value": "Amplify"
+     },
+     {
+      "Key": "ManagedBy",
+      "Value": "CDK"
+     },
+     {
+      "Key": "Project",
+      "Value": "NailIt"
+     }
+    ],
+    "VisibilityTimeout": 480
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "NailIt-prod/EmailFlaggingQueue/Resource"
+   }
+  },
   "NotificationTopicEB7A0DF1": {
    "Type": "AWS::SNS::Topic",
    "Properties": {
@@ -328,6 +562,24 @@
             "AIProcessingQueue59FC2ECB",
             "Arn"
            ]
+          },
+          {
+           "Fn::GetAtt": [
+            "EmailIngestionQueue38CE5AC2",
+            "Arn"
+           ]
+          },
+          {
+           "Fn::GetAtt": [
+            "EmailAssignmentQueue2E1F6B02",
+            "Arn"
+           ]
+          },
+          {
+           "Fn::GetAtt": [
+            "EmailFlaggingQueue8A88E9BD",
+            "Arn"
+           ]
           }
          ]
         },
@@ -337,6 +589,20 @@
          "Resource": {
           "Ref": "NotificationTopicEB7A0DF1"
          }
+        },
+        {
+         "Action": [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+          "logs:DescribeLogGroups",
+          "logs:DescribeLogStreams"
+         ],
+         "Effect": "Allow",
+         "Resource": [
+          "arn:aws:logs:*:*:log-group:/nailit/production/*",
+          "arn:aws:logs:*:*:log-group:/nailit/production/*:*"
+         ]
         }
        ],
        "Version": "2012-10-17"
@@ -408,6 +674,33 @@
    },
    "Export": {
     "Name": "NailIt-prod-AIQueue"
+   }
+  },
+  "EmailIngestionQueueUrl": {
+   "Description": "SQS queue URL for enhanced email ingestion",
+   "Value": {
+    "Ref": "EmailIngestionQueue38CE5AC2"
+   },
+   "Export": {
+    "Name": "NailIt-prod-EmailIngestionQueue"
+   }
+  },
+  "EmailAssignmentQueueUrl": {
+   "Description": "SQS queue URL for email project assignment",
+   "Value": {
+    "Ref": "EmailAssignmentQueue2E1F6B02"
+   },
+   "Export": {
+    "Name": "NailIt-prod-EmailAssignmentQueue"
+   }
+  },
+  "EmailFlaggingQueueUrl": {
+   "Description": "SQS queue URL for email flagging integration",
+   "Value": {
+    "Ref": "EmailFlaggingQueue8A88E9BD"
+   },
+   "Export": {
+    "Name": "NailIt-prod-EmailFlaggingQueue"
    }
   },
   "NotificationTopicArn": {

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { logger } from '../../../../lib/logger'
 import { prisma } from '../../../../lib/prisma'
+import { createGmailProcessor } from '../../../../lib/email/gmail-processor'
 
 /**
  * @swagger
@@ -86,81 +87,83 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing notification fields' }, { status: 400 })
     }
 
-    logger.info('Processing Gmail notification', {
-      emailAddress,
-      historyId,
-      messageId: googleMessageId
-    })
+    logger.info('Processing Gmail notification', { emailAddress, historyId })
 
-    // Find the user associated with this email address
-    const user = await prisma.user.findUnique({
-      where: { email: emailAddress },
+    // Find user by connected email address
+    const user = await prisma.user.findFirst({
+      where: {
+        projects: {
+          some: {
+            emailSettings: {
+              gmailConnected: true,
+              monitoringEnabled: true
+            }
+          }
+        }
+      },
       include: {
         projects: {
+          where: {
+            emailSettings: {
+              gmailConnected: true,
+              monitoringEnabled: true
+            }
+          },
           include: {
-            emailSettings: true,
-            teamMembers: true
+            emailSettings: true
           }
         }
       }
     })
 
     if (!user) {
-      logger.warn('Gmail notification for unknown user', { emailAddress })
-      return NextResponse.json({ message: 'User not found' }, { status: 200 })
+      logger.warn('No user found with Gmail monitoring enabled', { emailAddress })
+      return NextResponse.json({ error: 'No monitored user found' }, { status: 404 })
     }
 
-    // Find projects with active email monitoring
-    const activeProjects = user.projects.filter(
-      project => project.emailSettings?.gmailConnected && project.emailSettings?.monitoringEnabled
+    const activeProjects = user.projects.filter(p => p.emailSettings?.monitoringEnabled)
+    if (activeProjects.length === 0) {
+      logger.warn('No active projects found for user', { userId: user.id, emailAddress })
+      return NextResponse.json({ error: 'No active projects' }, { status: 404 })
+    }
+
+    // Create Gmail processor for this user
+    const gmailProcessor = await createGmailProcessor(user.id)
+    if (!gmailProcessor) {
+      logger.error('Failed to create Gmail processor', { userId: user.id })
+      return NextResponse.json({ error: 'Gmail processor creation failed' }, { status: 500 })
+    }
+
+    // Process the webhook notification with team member filtering
+    const processingResults = await gmailProcessor.processWebhookNotification(
+      user.id,
+      historyId,
+      emailAddress
     )
 
-    if (activeProjects.length === 0) {
-      logger.info('No active email monitoring for user', { emailAddress, userId: user.id })
-      return NextResponse.json({ message: 'No active monitoring' }, { status: 200 })
-    }
+    // Log results
+    const successCount = processingResults.filter(r => r.success).length
+    const filteredCount = processingResults.filter(r => r.filteredOut).length
+    const errorCount = processingResults.filter(r => !r.success).length
 
-    // Queue email processing for each active project
-    // For now, we'll create a simple queue entry - later this will use SQS
-    for (const project of activeProjects) {
-      logger.info('Queueing email processing', {
-        userId: user.id,
-        projectId: project.id,
-        emailAddress,
-        historyId
-      })
-
-      // For Phase 1, we'll create a placeholder EmailMessage record
-      // that will be processed by the ingestion pipeline
-      await prisma.emailMessage.create({
-        data: {
-          messageId: `temp-${historyId}-${Date.now()}`, // Temporary until we fetch the actual email
-          provider: 'gmail',
-          sender: emailAddress, // Temporary - will be updated when we fetch actual email
-          recipients: [emailAddress],
-          sentAt: new Date(),
-          ingestionStatus: 'pending',
-          analysisStatus: 'pending',
-          assignmentStatus: 'pending',
-          userId: user.id,
-          projectId: project.id,
-          providerData: {
-            historyId,
-            originalEmailAddress: emailAddress,
-            webhookMessageId: googleMessageId
-          }
-        }
-      })
-    }
-
-    logger.info('Gmail webhook processed successfully', {
+    logger.info('Gmail webhook processing completed', {
       emailAddress,
       historyId,
+      totalProcessed: processingResults.length,
+      successful: successCount,
+      filtered: filteredCount,
+      errors: errorCount,
       projectsProcessed: activeProjects.length
     })
 
     return NextResponse.json({ 
       message: 'Webhook processed successfully',
+      results: {
+        totalProcessed: processingResults.length,
+        successful: successCount,
+        filteredByTeamMember: filteredCount,
+        errors: errorCount
+      },
       projectsProcessed: activeProjects.length
     })
 
