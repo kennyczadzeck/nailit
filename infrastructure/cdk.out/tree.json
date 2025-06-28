@@ -4,23 +4,23 @@
     "id": "App",
     "path": "",
     "children": {
-      "Secrets-prod": {
-        "id": "Secrets-prod",
-        "path": "Secrets-prod",
+      "Secrets-dev": {
+        "id": "Secrets-dev",
+        "path": "Secrets-dev",
         "children": {
           "DatabaseCredentials": {
             "id": "DatabaseCredentials",
-            "path": "Secrets-prod/DatabaseCredentials",
+            "path": "Secrets-dev/DatabaseCredentials",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "Secrets-prod/DatabaseCredentials/Resource",
+                "path": "Secrets-dev/DatabaseCredentials/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::SecretsManager::Secret",
                   "aws:cdk:cloudformation:props": {
                     "description": "Database connection string for NailIt application",
-                    "name": "nailit-database-production",
-                    "secretString": "postgresql://neondb_owner:npg_avELx8uqOAc0@ep-misty-frog-a5pcr9pt-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require"
+                    "name": "nailit-database-development",
+                    "secretString": "postgresql://neondb_owner:npg_avELx8uqOAc0@ep-still-paper-a5tgtem8-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require"
                   }
                 },
                 "constructInfo": {
@@ -36,16 +36,16 @@
           },
           "NextAuthSecret": {
             "id": "NextAuthSecret",
-            "path": "Secrets-prod/NextAuthSecret",
+            "path": "Secrets-dev/NextAuthSecret",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "Secrets-prod/NextAuthSecret/Resource",
+                "path": "Secrets-dev/NextAuthSecret/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::SecretsManager::Secret",
                   "aws:cdk:cloudformation:props": {
                     "description": "NextAuth secret for NailIt application",
-                    "name": "nailit-nextauth-secret-production",
+                    "name": "nailit-nextauth-secret-development",
                     "secretString": "+hP31rrZgohD7u3uHr/ASb1WE9j3MYjxHtTBmaaU+3M="
                   }
                 },
@@ -62,17 +62,17 @@
           },
           "NextAuthUrl": {
             "id": "NextAuthUrl",
-            "path": "Secrets-prod/NextAuthUrl",
+            "path": "Secrets-dev/NextAuthUrl",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "Secrets-prod/NextAuthUrl/Resource",
+                "path": "Secrets-dev/NextAuthUrl/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::SecretsManager::Secret",
                   "aws:cdk:cloudformation:props": {
                     "description": "NextAuth URL for NailIt application",
-                    "name": "nailit-nextauth-url-production",
-                    "secretString": "https://ijj2mc7dhz.us-east-1.awsapprunner.com"
+                    "name": "nailit-nextauth-url-development",
+                    "secretString": "https://d3pvc5dn43.us-east-1.awsapprunner.com"
                   }
                 },
                 "constructInfo": {
@@ -88,16 +88,16 @@
           },
           "GoogleClientId": {
             "id": "GoogleClientId",
-            "path": "Secrets-prod/GoogleClientId",
+            "path": "Secrets-dev/GoogleClientId",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "Secrets-prod/GoogleClientId/Resource",
+                "path": "Secrets-dev/GoogleClientId/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::SecretsManager::Secret",
                   "aws:cdk:cloudformation:props": {
                     "description": "Google OAuth Client ID for NailIt application",
-                    "name": "nailit-google-client-id-production",
+                    "name": "nailit-google-client-id-development",
                     "secretString": "442433418686-sahpnrfagrs9lfs1pdee2m06e4g2ukdc.apps.googleusercontent.com"
                   }
                 },
@@ -114,16 +114,16 @@
           },
           "GoogleClientSecret": {
             "id": "GoogleClientSecret",
-            "path": "Secrets-prod/GoogleClientSecret",
+            "path": "Secrets-dev/GoogleClientSecret",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "Secrets-prod/GoogleClientSecret/Resource",
+                "path": "Secrets-dev/GoogleClientSecret/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::SecretsManager::Secret",
                   "aws:cdk:cloudformation:props": {
                     "description": "Google OAuth Client Secret for NailIt application",
-                    "name": "nailit-google-client-secret-production",
+                    "name": "nailit-google-client-secret-development",
                     "secretString": "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"
                   }
                 },
@@ -140,16 +140,16 @@
           },
           "ApiKeys": {
             "id": "ApiKeys",
-            "path": "Secrets-prod/ApiKeys",
+            "path": "Secrets-dev/ApiKeys",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "Secrets-prod/ApiKeys/Resource",
+                "path": "Secrets-dev/ApiKeys/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::SecretsManager::Secret",
                   "aws:cdk:cloudformation:props": {
                     "description": "Google Maps API key for NailIt application",
-                    "name": "nailit-google-maps-api-key-production",
+                    "name": "nailit-google-maps-api-key-development",
                     "secretString": "AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0"
                   }
                 },
@@ -166,7 +166,7 @@
           },
           "DatabaseSecretArn": {
             "id": "DatabaseSecretArn",
-            "path": "Secrets-prod/DatabaseSecretArn",
+            "path": "Secrets-dev/DatabaseSecretArn",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.80.0"
@@ -174,7 +174,7 @@
           },
           "NextAuthSecretArn": {
             "id": "NextAuthSecretArn",
-            "path": "Secrets-prod/NextAuthSecretArn",
+            "path": "Secrets-dev/NextAuthSecretArn",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.80.0"
@@ -182,7 +182,7 @@
           },
           "NextAuthUrlArn": {
             "id": "NextAuthUrlArn",
-            "path": "Secrets-prod/NextAuthUrlArn",
+            "path": "Secrets-dev/NextAuthUrlArn",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.80.0"
@@ -190,7 +190,7 @@
           },
           "GoogleClientIdArn": {
             "id": "GoogleClientIdArn",
-            "path": "Secrets-prod/GoogleClientIdArn",
+            "path": "Secrets-dev/GoogleClientIdArn",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.80.0"
@@ -198,7 +198,7 @@
           },
           "GoogleClientSecretArn": {
             "id": "GoogleClientSecretArn",
-            "path": "Secrets-prod/GoogleClientSecretArn",
+            "path": "Secrets-dev/GoogleClientSecretArn",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.80.0"
@@ -206,7 +206,7 @@
           },
           "ApiKeysSecretArn": {
             "id": "ApiKeysSecretArn",
-            "path": "Secrets-prod/ApiKeysSecretArn",
+            "path": "Secrets-dev/ApiKeysSecretArn",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.80.0"
@@ -214,11 +214,11 @@
           },
           "CDKMetadata": {
             "id": "CDKMetadata",
-            "path": "Secrets-prod/CDKMetadata",
+            "path": "Secrets-dev/CDKMetadata",
             "children": {
               "Default": {
                 "id": "Default",
-                "path": "Secrets-prod/CDKMetadata/Default",
+                "path": "Secrets-dev/CDKMetadata/Default",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnResource",
                   "version": "2.80.0"
@@ -232,11 +232,11 @@
           },
           "Exports": {
             "id": "Exports",
-            "path": "Secrets-prod/Exports",
+            "path": "Secrets-dev/Exports",
             "children": {
               "Output{\"Ref\":\"DatabaseCredentials8547B3E7\"}": {
                 "id": "Output{\"Ref\":\"DatabaseCredentials8547B3E7\"}",
-                "path": "Secrets-prod/Exports/Output{\"Ref\":\"DatabaseCredentials8547B3E7\"}",
+                "path": "Secrets-dev/Exports/Output{\"Ref\":\"DatabaseCredentials8547B3E7\"}",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnOutput",
                   "version": "2.80.0"
@@ -244,7 +244,7 @@
               },
               "Output{\"Ref\":\"NextAuthSecret21484E9E\"}": {
                 "id": "Output{\"Ref\":\"NextAuthSecret21484E9E\"}",
-                "path": "Secrets-prod/Exports/Output{\"Ref\":\"NextAuthSecret21484E9E\"}",
+                "path": "Secrets-dev/Exports/Output{\"Ref\":\"NextAuthSecret21484E9E\"}",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnOutput",
                   "version": "2.80.0"
@@ -252,7 +252,7 @@
               },
               "Output{\"Ref\":\"NextAuthUrl03CEB3B7\"}": {
                 "id": "Output{\"Ref\":\"NextAuthUrl03CEB3B7\"}",
-                "path": "Secrets-prod/Exports/Output{\"Ref\":\"NextAuthUrl03CEB3B7\"}",
+                "path": "Secrets-dev/Exports/Output{\"Ref\":\"NextAuthUrl03CEB3B7\"}",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnOutput",
                   "version": "2.80.0"
@@ -260,7 +260,7 @@
               },
               "Output{\"Ref\":\"GoogleClientIdDF771C4D\"}": {
                 "id": "Output{\"Ref\":\"GoogleClientIdDF771C4D\"}",
-                "path": "Secrets-prod/Exports/Output{\"Ref\":\"GoogleClientIdDF771C4D\"}",
+                "path": "Secrets-dev/Exports/Output{\"Ref\":\"GoogleClientIdDF771C4D\"}",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnOutput",
                   "version": "2.80.0"
@@ -268,7 +268,7 @@
               },
               "Output{\"Ref\":\"GoogleClientSecret7356BEB4\"}": {
                 "id": "Output{\"Ref\":\"GoogleClientSecret7356BEB4\"}",
-                "path": "Secrets-prod/Exports/Output{\"Ref\":\"GoogleClientSecret7356BEB4\"}",
+                "path": "Secrets-dev/Exports/Output{\"Ref\":\"GoogleClientSecret7356BEB4\"}",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnOutput",
                   "version": "2.80.0"
@@ -276,7 +276,7 @@
               },
               "Output{\"Ref\":\"ApiKeys3BB3983D\"}": {
                 "id": "Output{\"Ref\":\"ApiKeys3BB3983D\"}",
-                "path": "Secrets-prod/Exports/Output{\"Ref\":\"ApiKeys3BB3983D\"}",
+                "path": "Secrets-dev/Exports/Output{\"Ref\":\"ApiKeys3BB3983D\"}",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnOutput",
                   "version": "2.80.0"
@@ -290,7 +290,7 @@
           },
           "BootstrapVersion": {
             "id": "BootstrapVersion",
-            "path": "Secrets-prod/BootstrapVersion",
+            "path": "Secrets-dev/BootstrapVersion",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnParameter",
               "version": "2.80.0"
@@ -298,7 +298,7 @@
           },
           "CheckBootstrapVersion": {
             "id": "CheckBootstrapVersion",
-            "path": "Secrets-prod/CheckBootstrapVersion",
+            "path": "Secrets-dev/CheckBootstrapVersion",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnRule",
               "version": "2.80.0"
@@ -310,21 +310,21 @@
           "version": "2.80.0"
         }
       },
-      "NailIt-prod": {
-        "id": "NailIt-prod",
-        "path": "NailIt-prod",
+      "NailIt-dev": {
+        "id": "NailIt-dev",
+        "path": "NailIt-dev",
         "children": {
           "EmailStorageBucket": {
             "id": "EmailStorageBucket",
-            "path": "NailIt-prod/EmailStorageBucket",
+            "path": "NailIt-dev/EmailStorageBucket",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "NailIt-prod/EmailStorageBucket/Resource",
+                "path": "NailIt-dev/EmailStorageBucket/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
                   "aws:cdk:cloudformation:props": {
-                    "bucketName": "nailit-prod-emails-207091906248",
+                    "bucketName": "nailit-dev-emails-207091906248",
                     "lifecycleConfiguration": {
                       "rules": [
                         {
@@ -353,7 +353,7 @@
                       },
                       {
                         "key": "Environment",
-                        "value": "production"
+                        "value": "development"
                       },
                       {
                         "key": "HostingProvider",
@@ -386,16 +386,16 @@
           },
           "EmailProcessingDLQ": {
             "id": "EmailProcessingDLQ",
-            "path": "NailIt-prod/EmailProcessingDLQ",
+            "path": "NailIt-dev/EmailProcessingDLQ",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "NailIt-prod/EmailProcessingDLQ/Resource",
+                "path": "NailIt-dev/EmailProcessingDLQ/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::SQS::Queue",
                   "aws:cdk:cloudformation:props": {
                     "messageRetentionPeriod": 1209600,
-                    "queueName": "nailit-prod-email-dlq",
+                    "queueName": "nailit-dev-email-dlq",
                     "tags": [
                       {
                         "key": "DatabaseProvider",
@@ -403,7 +403,7 @@
                       },
                       {
                         "key": "Environment",
-                        "value": "production"
+                        "value": "development"
                       },
                       {
                         "key": "HostingProvider",
@@ -433,16 +433,16 @@
           },
           "EmailProcessingQueue": {
             "id": "EmailProcessingQueue",
-            "path": "NailIt-prod/EmailProcessingQueue",
+            "path": "NailIt-dev/EmailProcessingQueue",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "NailIt-prod/EmailProcessingQueue/Resource",
+                "path": "NailIt-dev/EmailProcessingQueue/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::SQS::Queue",
                   "aws:cdk:cloudformation:props": {
                     "messageRetentionPeriod": 1209600,
-                    "queueName": "nailit-prod-email-queue",
+                    "queueName": "nailit-dev-email-queue",
                     "redrivePolicy": {
                       "deadLetterTargetArn": {
                         "Fn::GetAtt": [
@@ -459,7 +459,7 @@
                       },
                       {
                         "key": "Environment",
-                        "value": "production"
+                        "value": "development"
                       },
                       {
                         "key": "HostingProvider",
@@ -490,16 +490,16 @@
           },
           "AIProcessingDLQ": {
             "id": "AIProcessingDLQ",
-            "path": "NailIt-prod/AIProcessingDLQ",
+            "path": "NailIt-dev/AIProcessingDLQ",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "NailIt-prod/AIProcessingDLQ/Resource",
+                "path": "NailIt-dev/AIProcessingDLQ/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::SQS::Queue",
                   "aws:cdk:cloudformation:props": {
                     "messageRetentionPeriod": 1209600,
-                    "queueName": "nailit-prod-ai-dlq",
+                    "queueName": "nailit-dev-ai-dlq",
                     "tags": [
                       {
                         "key": "DatabaseProvider",
@@ -507,7 +507,7 @@
                       },
                       {
                         "key": "Environment",
-                        "value": "production"
+                        "value": "development"
                       },
                       {
                         "key": "HostingProvider",
@@ -537,16 +537,16 @@
           },
           "AIProcessingQueue": {
             "id": "AIProcessingQueue",
-            "path": "NailIt-prod/AIProcessingQueue",
+            "path": "NailIt-dev/AIProcessingQueue",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "NailIt-prod/AIProcessingQueue/Resource",
+                "path": "NailIt-dev/AIProcessingQueue/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::SQS::Queue",
                   "aws:cdk:cloudformation:props": {
                     "messageRetentionPeriod": 1209600,
-                    "queueName": "nailit-prod-ai-queue",
+                    "queueName": "nailit-dev-ai-queue",
                     "redrivePolicy": {
                       "deadLetterTargetArn": {
                         "Fn::GetAtt": [
@@ -563,7 +563,7 @@
                       },
                       {
                         "key": "Environment",
-                        "value": "production"
+                        "value": "development"
                       },
                       {
                         "key": "HostingProvider",
@@ -594,16 +594,16 @@
           },
           "EmailIngestionDLQ": {
             "id": "EmailIngestionDLQ",
-            "path": "NailIt-prod/EmailIngestionDLQ",
+            "path": "NailIt-dev/EmailIngestionDLQ",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "NailIt-prod/EmailIngestionDLQ/Resource",
+                "path": "NailIt-dev/EmailIngestionDLQ/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::SQS::Queue",
                   "aws:cdk:cloudformation:props": {
                     "messageRetentionPeriod": 1209600,
-                    "queueName": "nailit-prod-email-ingestion-dlq",
+                    "queueName": "nailit-dev-email-ingestion-dlq",
                     "tags": [
                       {
                         "key": "DatabaseProvider",
@@ -611,7 +611,7 @@
                       },
                       {
                         "key": "Environment",
-                        "value": "production"
+                        "value": "development"
                       },
                       {
                         "key": "HostingProvider",
@@ -641,16 +641,16 @@
           },
           "EmailIngestionQueue": {
             "id": "EmailIngestionQueue",
-            "path": "NailIt-prod/EmailIngestionQueue",
+            "path": "NailIt-dev/EmailIngestionQueue",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "NailIt-prod/EmailIngestionQueue/Resource",
+                "path": "NailIt-dev/EmailIngestionQueue/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::SQS::Queue",
                   "aws:cdk:cloudformation:props": {
                     "messageRetentionPeriod": 1209600,
-                    "queueName": "nailit-prod-email-ingestion-queue",
+                    "queueName": "nailit-dev-email-ingestion-queue",
                     "redrivePolicy": {
                       "deadLetterTargetArn": {
                         "Fn::GetAtt": [
@@ -667,7 +667,7 @@
                       },
                       {
                         "key": "Environment",
-                        "value": "production"
+                        "value": "development"
                       },
                       {
                         "key": "HostingProvider",
@@ -698,16 +698,16 @@
           },
           "EmailAssignmentDLQ": {
             "id": "EmailAssignmentDLQ",
-            "path": "NailIt-prod/EmailAssignmentDLQ",
+            "path": "NailIt-dev/EmailAssignmentDLQ",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "NailIt-prod/EmailAssignmentDLQ/Resource",
+                "path": "NailIt-dev/EmailAssignmentDLQ/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::SQS::Queue",
                   "aws:cdk:cloudformation:props": {
                     "messageRetentionPeriod": 1209600,
-                    "queueName": "nailit-prod-email-assignment-dlq",
+                    "queueName": "nailit-dev-email-assignment-dlq",
                     "tags": [
                       {
                         "key": "DatabaseProvider",
@@ -715,7 +715,7 @@
                       },
                       {
                         "key": "Environment",
-                        "value": "production"
+                        "value": "development"
                       },
                       {
                         "key": "HostingProvider",
@@ -745,16 +745,16 @@
           },
           "EmailAssignmentQueue": {
             "id": "EmailAssignmentQueue",
-            "path": "NailIt-prod/EmailAssignmentQueue",
+            "path": "NailIt-dev/EmailAssignmentQueue",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "NailIt-prod/EmailAssignmentQueue/Resource",
+                "path": "NailIt-dev/EmailAssignmentQueue/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::SQS::Queue",
                   "aws:cdk:cloudformation:props": {
                     "messageRetentionPeriod": 1209600,
-                    "queueName": "nailit-prod-email-assignment-queue",
+                    "queueName": "nailit-dev-email-assignment-queue",
                     "redrivePolicy": {
                       "deadLetterTargetArn": {
                         "Fn::GetAtt": [
@@ -771,7 +771,7 @@
                       },
                       {
                         "key": "Environment",
-                        "value": "production"
+                        "value": "development"
                       },
                       {
                         "key": "HostingProvider",
@@ -802,16 +802,16 @@
           },
           "EmailFlaggingDLQ": {
             "id": "EmailFlaggingDLQ",
-            "path": "NailIt-prod/EmailFlaggingDLQ",
+            "path": "NailIt-dev/EmailFlaggingDLQ",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "NailIt-prod/EmailFlaggingDLQ/Resource",
+                "path": "NailIt-dev/EmailFlaggingDLQ/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::SQS::Queue",
                   "aws:cdk:cloudformation:props": {
                     "messageRetentionPeriod": 1209600,
-                    "queueName": "nailit-prod-email-flagging-dlq",
+                    "queueName": "nailit-dev-email-flagging-dlq",
                     "tags": [
                       {
                         "key": "DatabaseProvider",
@@ -819,7 +819,7 @@
                       },
                       {
                         "key": "Environment",
-                        "value": "production"
+                        "value": "development"
                       },
                       {
                         "key": "HostingProvider",
@@ -849,16 +849,16 @@
           },
           "EmailFlaggingQueue": {
             "id": "EmailFlaggingQueue",
-            "path": "NailIt-prod/EmailFlaggingQueue",
+            "path": "NailIt-dev/EmailFlaggingQueue",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "NailIt-prod/EmailFlaggingQueue/Resource",
+                "path": "NailIt-dev/EmailFlaggingQueue/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::SQS::Queue",
                   "aws:cdk:cloudformation:props": {
                     "messageRetentionPeriod": 1209600,
-                    "queueName": "nailit-prod-email-flagging-queue",
+                    "queueName": "nailit-dev-email-flagging-queue",
                     "redrivePolicy": {
                       "deadLetterTargetArn": {
                         "Fn::GetAtt": [
@@ -875,7 +875,7 @@
                       },
                       {
                         "key": "Environment",
-                        "value": "production"
+                        "value": "development"
                       },
                       {
                         "key": "HostingProvider",
@@ -906,15 +906,15 @@
           },
           "NotificationTopic": {
             "id": "NotificationTopic",
-            "path": "NailIt-prod/NotificationTopic",
+            "path": "NailIt-dev/NotificationTopic",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "NailIt-prod/NotificationTopic/Resource",
+                "path": "NailIt-dev/NotificationTopic/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::SNS::Topic",
                   "aws:cdk:cloudformation:props": {
-                    "displayName": "NailIt production Notifications",
+                    "displayName": "NailIt development Notifications",
                     "tags": [
                       {
                         "key": "DatabaseProvider",
@@ -922,7 +922,7 @@
                       },
                       {
                         "key": "Environment",
-                        "value": "production"
+                        "value": "development"
                       },
                       {
                         "key": "HostingProvider",
@@ -937,7 +937,7 @@
                         "value": "NailIt"
                       }
                     ],
-                    "topicName": "nailit-prod-notifications"
+                    "topicName": "nailit-dev-notifications"
                   }
                 },
                 "constructInfo": {
@@ -953,11 +953,11 @@
           },
           "LambdaExecutionRole": {
             "id": "LambdaExecutionRole",
-            "path": "NailIt-prod/LambdaExecutionRole",
+            "path": "NailIt-dev/LambdaExecutionRole",
             "children": {
               "ImportLambdaExecutionRole": {
                 "id": "ImportLambdaExecutionRole",
-                "path": "NailIt-prod/LambdaExecutionRole/ImportLambdaExecutionRole",
+                "path": "NailIt-dev/LambdaExecutionRole/ImportLambdaExecutionRole",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.Resource",
                   "version": "2.80.0"
@@ -965,7 +965,7 @@
               },
               "Resource": {
                 "id": "Resource",
-                "path": "NailIt-prod/LambdaExecutionRole/Resource",
+                "path": "NailIt-dev/LambdaExecutionRole/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::IAM::Role",
                   "aws:cdk:cloudformation:props": {
@@ -1088,8 +1088,8 @@
                               ],
                               "Effect": "Allow",
                               "Resource": [
-                                "arn:aws:logs:*:*:log-group:/nailit/production/*",
-                                "arn:aws:logs:*:*:log-group:/nailit/production/*:*"
+                                "arn:aws:logs:*:*:log-group:/nailit/development/*",
+                                "arn:aws:logs:*:*:log-group:/nailit/development/*:*"
                               ]
                             }
                           ],
@@ -1097,7 +1097,7 @@
                         }
                       }
                     ],
-                    "roleName": "nailit-prod-lambda-execution",
+                    "roleName": "nailit-dev-lambda-execution",
                     "tags": [
                       {
                         "key": "DatabaseProvider",
@@ -1105,7 +1105,7 @@
                       },
                       {
                         "key": "Environment",
-                        "value": "production"
+                        "value": "development"
                       },
                       {
                         "key": "HostingProvider",
@@ -1135,7 +1135,7 @@
           },
           "EmailBucketName": {
             "id": "EmailBucketName",
-            "path": "NailIt-prod/EmailBucketName",
+            "path": "NailIt-dev/EmailBucketName",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.80.0"
@@ -1143,7 +1143,7 @@
           },
           "EmailQueueUrl": {
             "id": "EmailQueueUrl",
-            "path": "NailIt-prod/EmailQueueUrl",
+            "path": "NailIt-dev/EmailQueueUrl",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.80.0"
@@ -1151,7 +1151,7 @@
           },
           "AIQueueUrl": {
             "id": "AIQueueUrl",
-            "path": "NailIt-prod/AIQueueUrl",
+            "path": "NailIt-dev/AIQueueUrl",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.80.0"
@@ -1159,7 +1159,7 @@
           },
           "EmailIngestionQueueUrl": {
             "id": "EmailIngestionQueueUrl",
-            "path": "NailIt-prod/EmailIngestionQueueUrl",
+            "path": "NailIt-dev/EmailIngestionQueueUrl",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.80.0"
@@ -1167,7 +1167,7 @@
           },
           "EmailAssignmentQueueUrl": {
             "id": "EmailAssignmentQueueUrl",
-            "path": "NailIt-prod/EmailAssignmentQueueUrl",
+            "path": "NailIt-dev/EmailAssignmentQueueUrl",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.80.0"
@@ -1175,7 +1175,7 @@
           },
           "EmailFlaggingQueueUrl": {
             "id": "EmailFlaggingQueueUrl",
-            "path": "NailIt-prod/EmailFlaggingQueueUrl",
+            "path": "NailIt-dev/EmailFlaggingQueueUrl",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.80.0"
@@ -1183,7 +1183,7 @@
           },
           "NotificationTopicArn": {
             "id": "NotificationTopicArn",
-            "path": "NailIt-prod/NotificationTopicArn",
+            "path": "NailIt-dev/NotificationTopicArn",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.80.0"
@@ -1191,7 +1191,7 @@
           },
           "LambdaExecutionRoleArn": {
             "id": "LambdaExecutionRoleArn",
-            "path": "NailIt-prod/LambdaExecutionRoleArn",
+            "path": "NailIt-dev/LambdaExecutionRoleArn",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.80.0"
@@ -1199,11 +1199,11 @@
           },
           "CDKMetadata": {
             "id": "CDKMetadata",
-            "path": "NailIt-prod/CDKMetadata",
+            "path": "NailIt-dev/CDKMetadata",
             "children": {
               "Default": {
                 "id": "Default",
-                "path": "NailIt-prod/CDKMetadata/Default",
+                "path": "NailIt-dev/CDKMetadata/Default",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnResource",
                   "version": "2.80.0"
@@ -1217,7 +1217,7 @@
           },
           "BootstrapVersion": {
             "id": "BootstrapVersion",
-            "path": "NailIt-prod/BootstrapVersion",
+            "path": "NailIt-dev/BootstrapVersion",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnParameter",
               "version": "2.80.0"
@@ -1225,7 +1225,7 @@
           },
           "CheckBootstrapVersion": {
             "id": "CheckBootstrapVersion",
-            "path": "NailIt-prod/CheckBootstrapVersion",
+            "path": "NailIt-dev/CheckBootstrapVersion",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnRule",
               "version": "2.80.0"
@@ -1237,22 +1237,22 @@
           "version": "2.80.0"
         }
       },
-      "LoggingStack-prod": {
-        "id": "LoggingStack-prod",
-        "path": "LoggingStack-prod",
+      "LoggingStack-dev": {
+        "id": "LoggingStack-dev",
+        "path": "LoggingStack-dev",
         "children": {
           "ApplicationLogGroup": {
             "id": "ApplicationLogGroup",
-            "path": "LoggingStack-prod/ApplicationLogGroup",
+            "path": "LoggingStack-dev/ApplicationLogGroup",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "LoggingStack-prod/ApplicationLogGroup/Resource",
+                "path": "LoggingStack-dev/ApplicationLogGroup/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::Logs::LogGroup",
                   "aws:cdk:cloudformation:props": {
-                    "logGroupName": "/nailit/production/application",
-                    "retentionInDays": 30,
+                    "logGroupName": "/nailit/development/application",
+                    "retentionInDays": 14,
                     "tags": [
                       {
                         "key": "Component",
@@ -1260,7 +1260,7 @@
                       },
                       {
                         "key": "Environment",
-                        "value": "production"
+                        "value": "development"
                       },
                       {
                         "key": "ManagedBy",
@@ -1286,7 +1286,7 @@
           },
           "AmplifyServiceRole": {
             "id": "AmplifyServiceRole",
-            "path": "LoggingStack-prod/AmplifyServiceRole",
+            "path": "LoggingStack-dev/AmplifyServiceRole",
             "constructInfo": {
               "fqn": "aws-cdk-lib.Resource",
               "version": "2.80.0"
@@ -1294,11 +1294,11 @@
           },
           "ErrorRateMetricFilter": {
             "id": "ErrorRateMetricFilter",
-            "path": "LoggingStack-prod/ErrorRateMetricFilter",
+            "path": "LoggingStack-dev/ErrorRateMetricFilter",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "LoggingStack-prod/ErrorRateMetricFilter/Resource",
+                "path": "LoggingStack-dev/ErrorRateMetricFilter/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::Logs::MetricFilter",
                   "aws:cdk:cloudformation:props": {
@@ -1329,11 +1329,11 @@
           },
           "SecurityEventsMetricFilter": {
             "id": "SecurityEventsMetricFilter",
-            "path": "LoggingStack-prod/SecurityEventsMetricFilter",
+            "path": "LoggingStack-dev/SecurityEventsMetricFilter",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "LoggingStack-prod/SecurityEventsMetricFilter/Resource",
+                "path": "LoggingStack-dev/SecurityEventsMetricFilter/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::Logs::MetricFilter",
                   "aws:cdk:cloudformation:props": {
@@ -1364,11 +1364,11 @@
           },
           "SlowRequestsMetricFilter": {
             "id": "SlowRequestsMetricFilter",
-            "path": "LoggingStack-prod/SlowRequestsMetricFilter",
+            "path": "LoggingStack-dev/SlowRequestsMetricFilter",
             "children": {
               "Resource": {
                 "id": "Resource",
-                "path": "LoggingStack-prod/SlowRequestsMetricFilter/Resource",
+                "path": "LoggingStack-dev/SlowRequestsMetricFilter/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::Logs::MetricFilter",
                   "aws:cdk:cloudformation:props": {
@@ -1399,7 +1399,7 @@
           },
           "ApplicationLogGroupName": {
             "id": "ApplicationLogGroupName",
-            "path": "LoggingStack-prod/ApplicationLogGroupName",
+            "path": "LoggingStack-dev/ApplicationLogGroupName",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.80.0"
@@ -1407,7 +1407,7 @@
           },
           "LoggingRoleArn": {
             "id": "LoggingRoleArn",
-            "path": "LoggingStack-prod/LoggingRoleArn",
+            "path": "LoggingStack-dev/LoggingRoleArn",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.80.0"
@@ -1415,11 +1415,11 @@
           },
           "CDKMetadata": {
             "id": "CDKMetadata",
-            "path": "LoggingStack-prod/CDKMetadata",
+            "path": "LoggingStack-dev/CDKMetadata",
             "children": {
               "Default": {
                 "id": "Default",
-                "path": "LoggingStack-prod/CDKMetadata/Default",
+                "path": "LoggingStack-dev/CDKMetadata/Default",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnResource",
                   "version": "2.80.0"
@@ -1433,7 +1433,7 @@
           },
           "BootstrapVersion": {
             "id": "BootstrapVersion",
-            "path": "LoggingStack-prod/BootstrapVersion",
+            "path": "LoggingStack-dev/BootstrapVersion",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnParameter",
               "version": "2.80.0"
@@ -1441,7 +1441,7 @@
           },
           "CheckBootstrapVersion": {
             "id": "CheckBootstrapVersion",
-            "path": "LoggingStack-prod/CheckBootstrapVersion",
+            "path": "LoggingStack-dev/CheckBootstrapVersion",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnRule",
               "version": "2.80.0"
@@ -1453,17 +1453,17 @@
           "version": "2.80.0"
         }
       },
-      "AppRunner-prod": {
-        "id": "AppRunner-prod",
-        "path": "AppRunner-prod",
+      "AppRunner-dev": {
+        "id": "AppRunner-dev",
+        "path": "AppRunner-dev",
         "children": {
           "AppRunnerInstanceRole": {
             "id": "AppRunnerInstanceRole",
-            "path": "AppRunner-prod/AppRunnerInstanceRole",
+            "path": "AppRunner-dev/AppRunnerInstanceRole",
             "children": {
               "ImportAppRunnerInstanceRole": {
                 "id": "ImportAppRunnerInstanceRole",
-                "path": "AppRunner-prod/AppRunnerInstanceRole/ImportAppRunnerInstanceRole",
+                "path": "AppRunner-dev/AppRunnerInstanceRole/ImportAppRunnerInstanceRole",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.Resource",
                   "version": "2.80.0"
@@ -1471,7 +1471,7 @@
               },
               "Resource": {
                 "id": "Resource",
-                "path": "AppRunner-prod/AppRunnerInstanceRole/Resource",
+                "path": "AppRunner-dev/AppRunnerInstanceRole/Resource",
                 "attributes": {
                   "aws:cdk:cloudformation:type": "AWS::IAM::Role",
                   "aws:cdk:cloudformation:props": {
@@ -1495,7 +1495,7 @@
                       },
                       {
                         "key": "Environment",
-                        "value": "production"
+                        "value": "development"
                       },
                       {
                         "key": "HostingProvider",
@@ -1519,11 +1519,11 @@
               },
               "DefaultPolicy": {
                 "id": "DefaultPolicy",
-                "path": "AppRunner-prod/AppRunnerInstanceRole/DefaultPolicy",
+                "path": "AppRunner-dev/AppRunnerInstanceRole/DefaultPolicy",
                 "children": {
                   "Resource": {
                     "id": "Resource",
-                    "path": "AppRunner-prod/AppRunnerInstanceRole/DefaultPolicy/Resource",
+                    "path": "AppRunner-dev/AppRunnerInstanceRole/DefaultPolicy/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
                       "aws:cdk:cloudformation:props": {
@@ -1548,22 +1548,22 @@
                               "Effect": "Allow",
                               "Resource": [
                                 {
-                                  "Fn::ImportValue": "Secrets-prod:ExportsOutputRefDatabaseCredentials8547B3E729671DA7"
+                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefDatabaseCredentials8547B3E729671DA7"
                                 },
                                 {
-                                  "Fn::ImportValue": "Secrets-prod:ExportsOutputRefNextAuthSecret21484E9E77FF9A4C"
+                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefNextAuthSecret21484E9E77FF9A4C"
                                 },
                                 {
-                                  "Fn::ImportValue": "Secrets-prod:ExportsOutputRefNextAuthUrl03CEB3B75A8AF779"
+                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefNextAuthUrl03CEB3B75A8AF779"
                                 },
                                 {
-                                  "Fn::ImportValue": "Secrets-prod:ExportsOutputRefGoogleClientIdDF771C4D6A4E26E7"
+                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientIdDF771C4D6A4E26E7"
                                 },
                                 {
-                                  "Fn::ImportValue": "Secrets-prod:ExportsOutputRefGoogleClientSecret7356BEB4E9294748"
+                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientSecret7356BEB4E9294748"
                                 },
                                 {
-                                  "Fn::ImportValue": "Secrets-prod:ExportsOutputRefApiKeys3BB3983D8BCC0B1D"
+                                  "Fn::ImportValue": "Secrets-dev:ExportsOutputRefApiKeys3BB3983D8BCC0B1D"
                                 }
                               ]
                             }
@@ -1597,7 +1597,7 @@
           },
           "NailItAppRunnerService": {
             "id": "NailItAppRunnerService",
-            "path": "AppRunner-prod/NailItAppRunnerService",
+            "path": "AppRunner-dev/NailItAppRunnerService",
             "attributes": {
               "aws:cdk:cloudformation:type": "AWS::AppRunner::Service",
               "aws:cdk:cloudformation:props": {
@@ -1610,7 +1610,7 @@
                     "repositoryUrl": "https://github.com/kennyczadzeck/nailit",
                     "sourceCodeVersion": {
                       "type": "BRANCH",
-                      "value": "main"
+                      "value": "develop"
                     },
                     "codeConfiguration": {
                       "configurationSource": "API",
@@ -1633,44 +1633,44 @@
                           },
                           {
                             "name": "NAILIT_ENVIRONMENT",
-                            "value": "production"
+                            "value": "development"
                           }
                         ],
                         "runtimeEnvironmentSecrets": [
                           {
                             "name": "DATABASE_URL",
                             "value": {
-                              "Fn::ImportValue": "Secrets-prod:ExportsOutputRefDatabaseCredentials8547B3E729671DA7"
+                              "Fn::ImportValue": "Secrets-dev:ExportsOutputRefDatabaseCredentials8547B3E729671DA7"
                             }
                           },
                           {
                             "name": "NEXTAUTH_SECRET",
                             "value": {
-                              "Fn::ImportValue": "Secrets-prod:ExportsOutputRefNextAuthSecret21484E9E77FF9A4C"
+                              "Fn::ImportValue": "Secrets-dev:ExportsOutputRefNextAuthSecret21484E9E77FF9A4C"
                             }
                           },
                           {
                             "name": "NEXTAUTH_URL",
                             "value": {
-                              "Fn::ImportValue": "Secrets-prod:ExportsOutputRefNextAuthUrl03CEB3B75A8AF779"
+                              "Fn::ImportValue": "Secrets-dev:ExportsOutputRefNextAuthUrl03CEB3B75A8AF779"
                             }
                           },
                           {
                             "name": "GOOGLE_CLIENT_ID",
                             "value": {
-                              "Fn::ImportValue": "Secrets-prod:ExportsOutputRefGoogleClientIdDF771C4D6A4E26E7"
+                              "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientIdDF771C4D6A4E26E7"
                             }
                           },
                           {
                             "name": "GOOGLE_CLIENT_SECRET",
                             "value": {
-                              "Fn::ImportValue": "Secrets-prod:ExportsOutputRefGoogleClientSecret7356BEB4E9294748"
+                              "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientSecret7356BEB4E9294748"
                             }
                           },
                           {
                             "name": "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY",
                             "value": {
-                              "Fn::ImportValue": "Secrets-prod:ExportsOutputRefApiKeys3BB3983D8BCC0B1D"
+                              "Fn::ImportValue": "Secrets-dev:ExportsOutputRefApiKeys3BB3983D8BCC0B1D"
                             }
                           }
                         ]
@@ -1688,7 +1688,7 @@
                     ]
                   }
                 },
-                "serviceName": "nailit-prod",
+                "serviceName": "nailit-dev",
                 "tags": [
                   {
                     "key": "DatabaseProvider",
@@ -1696,7 +1696,7 @@
                   },
                   {
                     "key": "Environment",
-                    "value": "production"
+                    "value": "development"
                   },
                   {
                     "key": "HostingProvider",
@@ -1720,7 +1720,7 @@
           },
           "AppRunnerServiceUrl": {
             "id": "AppRunnerServiceUrl",
-            "path": "AppRunner-prod/AppRunnerServiceUrl",
+            "path": "AppRunner-dev/AppRunnerServiceUrl",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.80.0"
@@ -1728,7 +1728,7 @@
           },
           "AppRunnerServiceArn": {
             "id": "AppRunnerServiceArn",
-            "path": "AppRunner-prod/AppRunnerServiceArn",
+            "path": "AppRunner-dev/AppRunnerServiceArn",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.80.0"
@@ -1736,7 +1736,7 @@
           },
           "AppRunnerServiceId": {
             "id": "AppRunnerServiceId",
-            "path": "AppRunner-prod/AppRunnerServiceId",
+            "path": "AppRunner-dev/AppRunnerServiceId",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnOutput",
               "version": "2.80.0"
@@ -1744,11 +1744,11 @@
           },
           "CDKMetadata": {
             "id": "CDKMetadata",
-            "path": "AppRunner-prod/CDKMetadata",
+            "path": "AppRunner-dev/CDKMetadata",
             "children": {
               "Default": {
                 "id": "Default",
-                "path": "AppRunner-prod/CDKMetadata/Default",
+                "path": "AppRunner-dev/CDKMetadata/Default",
                 "constructInfo": {
                   "fqn": "aws-cdk-lib.CfnResource",
                   "version": "2.80.0"
@@ -1762,7 +1762,7 @@
           },
           "BootstrapVersion": {
             "id": "BootstrapVersion",
-            "path": "AppRunner-prod/BootstrapVersion",
+            "path": "AppRunner-dev/BootstrapVersion",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnParameter",
               "version": "2.80.0"
@@ -1770,7 +1770,7 @@
           },
           "CheckBootstrapVersion": {
             "id": "CheckBootstrapVersion",
-            "path": "AppRunner-prod/CheckBootstrapVersion",
+            "path": "AppRunner-dev/CheckBootstrapVersion",
             "constructInfo": {
               "fqn": "aws-cdk-lib.CfnRule",
               "version": "2.80.0"
