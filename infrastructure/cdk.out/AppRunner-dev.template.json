@@ -22,6 +22,10 @@
       "Value": "Neon"
      },
      {
+      "Key": "DeploymentMode",
+      "Value": "source"
+     },
+     {
       "Key": "Environment",
       "Value": "development"
      },
@@ -191,6 +195,10 @@
       "Value": "Neon"
      },
      {
+      "Key": "DeploymentMode",
+      "Value": "source"
+     },
+     {
       "Key": "Environment",
       "Value": "development"
      },
@@ -265,6 +273,13 @@
    },
    "Export": {
     "Name": "NailIt-dev-AppRunnerServiceId"
+   }
+  },
+  "DeploymentMode": {
+   "Description": "App Runner deployment mode (source or docker)",
+   "Value": "source",
+   "Export": {
+    "Name": "NailIt-dev-DeploymentMode"
    }
   }
  },

@@ -1,6 +1,106 @@
 {
   "version": "31.0.0",
   "artifacts": {
+    "ECR-dev.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "ECR-dev.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "ECR-dev": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://207091906248/us-east-1",
+      "properties": {
+        "templateFile": "ECR-dev.template.json",
+        "tags": {
+          "Component": "ECR",
+          "Environment": "development",
+          "ManagedBy": "CDK",
+          "Project": "NailIt"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-deploy-role-207091906248-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-cfn-exec-role-207091906248-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/e549a556ea90dd4b2c10321d296aee257c51c008b23a5b79482ce7ddf7f1380e.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "ECR-dev.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-lookup-role-207091906248-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "ECR-dev.assets"
+      ],
+      "metadata": {
+        "/ECR-dev": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "Component",
+                "Value": "ECR"
+              },
+              {
+                "Key": "Environment",
+                "Value": "development"
+              },
+              {
+                "Key": "ManagedBy",
+                "Value": "CDK"
+              },
+              {
+                "Key": "Project",
+                "Value": "NailIt"
+              }
+            ]
+          }
+        ],
+        "/ECR-dev/NailItRepository/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NailItRepository12755FD0"
+          }
+        ],
+        "/ECR-dev/RepositoryUri": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RepositoryUri"
+          }
+        ],
+        "/ECR-dev/RepositoryArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "RepositoryArn"
+          }
+        ],
+        "/ECR-dev/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/ECR-dev/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/ECR-dev/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "ECR-dev"
+    },
     "Secrets-dev.assets": {
       "type": "cdk:asset-manifest",
       "properties": {
@@ -508,6 +608,7 @@
         "templateFile": "AppRunner-dev.template.json",
         "tags": {
           "DatabaseProvider": "Neon",
+          "DeploymentMode": "source",
           "Environment": "development",
           "HostingProvider": "AppRunner",
           "ManagedBy": "CDK",
@@ -516,7 +617,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-deploy-role-207091906248-us-east-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-cfn-exec-role-207091906248-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/c73c56094e82669e88810cfce848075d70cfb2c59b597d8bcb6d0deab217427c.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/f3c22351a11068287bc1f0348daff7fddd9ae683849661cbe4603b323674567f.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -540,6 +641,10 @@
               {
                 "Key": "DatabaseProvider",
                 "Value": "Neon"
+              },
+              {
+                "Key": "DeploymentMode",
+                "Value": "source"
               },
               {
                 "Key": "Environment",
@@ -594,6 +699,12 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "AppRunnerServiceId"
+          }
+        ],
+        "/AppRunner-dev/DeploymentMode": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeploymentMode"
           }
         ],
         "/AppRunner-dev/CDKMetadata/Default": [

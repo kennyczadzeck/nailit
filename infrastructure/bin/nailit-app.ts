@@ -5,6 +5,7 @@ import { NailItInfrastructureStack } from '../lib/nailit-infrastructure-stack';
 import { LoggingStack } from '../lib/logging-stack';
 import { AppRunnerStack } from '../lib/app-runner-stack';
 import { SecretsStack } from '../lib/secrets-stack';
+import { EcrStack } from '../lib/ecr-stack';
 
 const app = new cdk.App();
 
@@ -41,7 +42,17 @@ if (!envConfig) {
 // GitHub connection ARN from our correct active connection
 const githubConnectionArn = 'arn:aws:apprunner:us-east-1:207091906248:connection/nailit-github-connection/23d2ed4413bd4d85be23be027a1d401a';
 
-// Deploy secrets stack first (other stacks depend on it)
+// Deploy ECR stack first (for Docker images)
+const ecrStack = new EcrStack(app, `ECR-${envConfig.resourceSuffix}`, {
+  env: {
+    account: accountId,
+    region: region,
+  },
+  environment: environment,
+  envConfig: envConfig,
+});
+
+// Deploy secrets stack (other stacks depend on it)
 const secretsStack = new SecretsStack(app, `Secrets-${envConfig.resourceSuffix}`, {
   env: {
     account: accountId,
@@ -70,7 +81,7 @@ new LoggingStack(app, `LoggingStack-${envConfig.resourceSuffix}`, {
   envConfig: envConfig,
 });
 
-// Deploy App Runner stack with secrets and GitHub connection
+// Deploy App Runner stack with secrets, GitHub connection, and ECR repository
 new AppRunnerStack(app, `AppRunner-${envConfig.resourceSuffix}`, {
   env: {
     account: accountId,
@@ -79,6 +90,7 @@ new AppRunnerStack(app, `AppRunner-${envConfig.resourceSuffix}`, {
   environment: environment,
   envConfig: envConfig,
   githubConnectionArn: githubConnectionArn,
+  ecrRepositoryUri: ecrStack.repository.repositoryUri,
   secretArns: {
     databaseSecretArn: secretsStack.databaseSecretArn,
     nextauthSecretArn: secretsStack.nextauthSecretArn,

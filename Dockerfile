@@ -15,11 +15,25 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# Accept build arguments for NEXT_PUBLIC environment variables
+ARG NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+ARG NEXT_PUBLIC_BUILD_TIME
+ARG NAILIT_ENVIRONMENT=production
+
+# Set environment variables from build arguments (these will be embedded in the Next.js bundle)
+ENV NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=$NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+ENV NEXT_PUBLIC_BUILD_TIME=$NEXT_PUBLIC_BUILD_TIME
+ENV NAILIT_ENVIRONMENT=$NAILIT_ENVIRONMENT
+
 # Generate Prisma client
 RUN npx prisma generate
 
-# Build Next.js
-RUN npm run build
+# Build Next.js application with environment variables available
+RUN DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" \
+    NEXTAUTH_SECRET="dummy-secret-for-build" \
+    NEXTAUTH_URL="http://localhost:3000" \
+    NODE_ENV="production" \
+    npm run build
 
 # Production image, copy all the files and run next
 FROM base AS runner
