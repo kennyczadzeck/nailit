@@ -111,7 +111,7 @@
      "CodeRepository": {
       "CodeConfiguration": {
        "CodeConfigurationValues": {
-        "BuildCommand": "export NEXT_PUBLIC_BUILD_TIME=$(date -u +\"%Y-%m-%dT%H:%M:%S.%3NZ\") && export NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=$(aws secretsmanager get-secret-value --secret-id nailit-google-maps-api-key-development --query SecretString --output text --region us-east-1) && npm ci --ignore-scripts --legacy-peer-deps && npx prisma generate && DATABASE_URL=\"postgresql://dummy:dummy@localhost:5432/dummy\" NEXTAUTH_SECRET=\"dummy-secret-for-build\" NEXTAUTH_URL=\"http://localhost:3000\" NODE_ENV=\"production\" npm run build",
+        "BuildCommand": "npm ci --ignore-scripts --legacy-peer-deps && npx prisma generate && echo \"=== DEBUG: Environment Variables During Build ===\" && node debug-env.js && echo \"=== DEBUG: About to run npm build with NEXT_PUBLIC vars ===\" && NEXT_PUBLIC_BUILD_TIME=$(date -u +\"%Y-%m-%dT%H:%M:%S.%3NZ\") NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=\"AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0\" DATABASE_URL=\"postgresql://dummy:dummy@localhost:5432/dummy\" NEXTAUTH_SECRET=\"dummy-secret-for-build\" NEXTAUTH_URL=\"http://localhost:3000\" NODE_ENV=\"production\" npm run build",
         "Runtime": "NODEJS_22",
         "RuntimeEnvironmentSecrets": [
          {
@@ -142,12 +142,6 @@
           "Name": "GOOGLE_CLIENT_SECRET",
           "Value": {
            "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientSecret7356BEB4E9294748"
-          }
-         },
-         {
-          "Name": "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY",
-          "Value": {
-           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefApiKeys3BB3983D8BCC0B1D"
           }
          }
         ],

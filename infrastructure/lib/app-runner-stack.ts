@@ -144,8 +144,7 @@ export class AppRunnerStack extends cdk.Stack {
       { name: 'PORT', value: '3000' },
       { name: 'AWS_REGION', value: 'us-east-1' },
       { name: 'NAILIT_ENVIRONMENT', value: environment },
-      // Google Maps API key as build-time environment variable (needed for client-side Next.js)
-      { name: 'NEXT_PUBLIC_GOOGLE_MAPS_API_KEY', value: 'AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0' },
+      // Note: NEXT_PUBLIC_GOOGLE_MAPS_API_KEY is set in buildCommand, not runtime
     ];
 
     const secrets: apprunner.CfnService.KeyValuePairProperty[] = [];
@@ -161,8 +160,15 @@ export class AppRunnerStack extends cdk.Stack {
       );
     }
 
-    // Simplified build command - environment variables are available during build
-    const buildCommand = 'export NEXT_PUBLIC_BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ") && npm ci --ignore-scripts --legacy-peer-deps && npx prisma generate && DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" NEXTAUTH_SECRET="dummy-secret-for-build" NEXTAUTH_URL="http://localhost:3000" NODE_ENV="production" npm run build';
+    // Build command with NEXT_PUBLIC environment variables properly set for Next.js build-time embedding
+    const buildCommand = [
+      'npm ci --ignore-scripts --legacy-peer-deps',
+      'npx prisma generate',
+      'echo "=== DEBUG: Environment Variables During Build ==="',
+      'node debug-env.js',
+      'echo "=== DEBUG: About to run npm build with NEXT_PUBLIC vars ==="',
+      'NEXT_PUBLIC_BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ") NEXT_PUBLIC_GOOGLE_MAPS_API_KEY="AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0" DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" NEXTAUTH_SECRET="dummy-secret-for-build" NEXTAUTH_URL="http://localhost:3000" NODE_ENV="production" npm run build'
+    ].join(' && ');
 
     return {
       runtime: 'NODEJS_22',
