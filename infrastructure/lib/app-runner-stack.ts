@@ -110,6 +110,14 @@ export class AppRunnerStack extends cdk.Stack {
         memory: '0.5 GB',
         instanceRoleArn: instanceRole.roleArn,
       },
+      healthCheckConfiguration: {
+        protocol: 'HTTP',
+        path: '/',
+        interval: 20,
+        timeout: 10,
+        healthyThreshold: 1,
+        unhealthyThreshold: 3,
+      },
     });
 
     // =================================
