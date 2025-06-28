@@ -163,7 +163,7 @@ export class AppRunnerStack extends cdk.Stack {
 
     return {
       runtime: 'NODEJS_22',
-      buildCommand: 'npm ci --ignore-scripts --legacy-peer-deps && npx prisma generate && DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" NEXTAUTH_SECRET="dummy-secret-for-build" NEXTAUTH_URL="http://localhost:3000" NEXT_PUBLIC_GOOGLE_MAPS_API_KEY="AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0" NODE_ENV="production" npm run build',
+      buildCommand: 'npm ci --ignore-scripts --legacy-peer-deps && npx prisma generate && export DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" && export NEXTAUTH_SECRET="dummy-secret-for-build" && export NEXTAUTH_URL="http://localhost:3000" && export NEXT_PUBLIC_GOOGLE_MAPS_API_KEY="AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0" && export NODE_ENV="production" && npm run build',
       startCommand: 'npm start',
       runtimeEnvironmentVariables: envVars,
       runtimeEnvironmentSecrets: secrets,
