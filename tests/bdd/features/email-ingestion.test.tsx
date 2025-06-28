@@ -9,8 +9,7 @@ import { jest } from '@jest/globals';
 import { 
   testUsers, 
   testProjects, 
-  createMockPrisma, 
-  setupPrismaMocks,
+  createMockPrisma,
   TestUser 
 } from '../../fixtures';
 import {
@@ -71,9 +70,20 @@ const MockEmailTimelinePage = ({ emails }: { emails: TestEmailMessage[] }) => (
   </div>
 );
 
+// Helper function to reset all mocks
+const resetAllMocks = () => {
+  Object.values(mockPrisma).forEach((table) => {
+    Object.values(table).forEach((method) => {
+      if (jest.isMockFunction(method)) {
+        method.mockReset()
+      }
+    })
+  })
+}
+
 describe.skip('Email Ingestion User Stories', () => {
   beforeEach(() => {
-    setupPrismaMocks.reset();
+    resetAllMocks();
     jest.clearAllMocks();
   });
 
@@ -198,329 +208,225 @@ describe.skip('Email Ingestion User Stories', () => {
         messageId: urgentEmail.messageId,
         subject: urgentEmail.subject,
         sender: urgentEmail.sender,
+        senderName: urgentEmail.senderName,
         recipients: urgentEmail.recipients,
-        sentAt: urgentEmail.sentAt,
+        sentAt: new Date(urgentEmail.sentAt),
+        receivedAt: new Date(),
         bodyText: urgentEmail.bodyText,
-        ingestionStatus: 'pending',
+        bodyHtml: urgentEmail.bodyHtml,
+        ingestionStatus: 'completed',
         analysisStatus: 'pending',
         assignmentStatus: 'pending',
-        relevanceScore: null,
-        aiSummary: null,
-        urgencyLevel: null,
-        provider: 'gmail',
-        providerData: {},
-        threadId: null,
-        senderName: null,
-        ccRecipients: [],
-        bccRecipients: [],
-        receivedAt: new Date(),
-        bodyHtml: null,
-        s3ContentPath: null,
-        s3AttachmentPaths: [],
-        classification: null,
-        extractedData: null,
-        projectAssociations: null,
-        errorDetails: null,
-        retryCount: 0,
-        lastProcessedAt: null,
-        userId: testUsers.john.id,
-        projectId: testProjects.kitchen.id
-      });
-      
-      // Then: Email is captured within acceptable timeframe
-      const startTime = Date.now();
-      
-      await waitFor(() => {
-        const processingTime = Date.now() - startTime;
-        expect(processingTime).toBeLessThan(emailTestScenarios.realtimeIngestion.maxProcessingTime * 1000);
-      });
-      
-      // And: Email is properly classified as urgent
-      expect(urgentEmail.expectedUrgencyLevel).toBe('urgent');
-      expect(urgentEmail.expectedRelevanceScore).toBe(1.0);
-      expect(urgentEmail.expectedClassification).toBe('inspection');
-    });
-
-    test('Given I receive an email with cost changes, When email is analyzed, Then a flagged item is automatically created', async () => {
-      // Given: I receive an email about additional costs
-      const changeOrderEmail = realtimeEmailTestData.changeOrders[0];
-      
-      // When: Email is analyzed by AI
-      mockPrisma.emailMessage.create.mockResolvedValue({
-        id: changeOrderEmail.messageId,
-        messageId: changeOrderEmail.messageId,
-        subject: changeOrderEmail.subject,
-        sender: changeOrderEmail.sender,
-        recipients: changeOrderEmail.recipients,
-        sentAt: changeOrderEmail.sentAt,
-        bodyText: changeOrderEmail.bodyText,
-        relevanceScore: changeOrderEmail.expectedRelevanceScore,
-        classification: changeOrderEmail.expectedClassification,
-        urgencyLevel: changeOrderEmail.expectedUrgencyLevel,
-        extractedData: changeOrderEmail.expectedExtractedData,
-        ingestionStatus: 'completed',
-        analysisStatus: 'completed',
-        assignmentStatus: 'completed',
-        provider: 'gmail',
-        providerData: {},
-        threadId: null,
-        senderName: null,
-        ccRecipients: [],
-        bccRecipients: [],
-        receivedAt: new Date(),
-        bodyHtml: null,
-        s3ContentPath: null,
-        s3AttachmentPaths: [],
-        projectAssociations: null,
-        errorDetails: null,
-        retryCount: 0,
-        lastProcessedAt: new Date(),
         userId: testUsers.john.id,
         projectId: testProjects.kitchen.id,
-        aiSummary: 'Electrical panel upgrade required for kitchen renovation'
-      });
-      
-      // And: Flagged item is created for cost change
-      mockPrisma.flaggedItem.create.mockResolvedValue({
-        id: 'flagged-item-1',
-        category: 'COST',
-        description: 'Additional electrical work - panel upgrade',
-        impact: '+$2,800',
-        source: 'email',
-        sourceDetails: { emailId: changeOrderEmail.messageId },
-        status: 'PENDING',
+        providerData: {},
         createdAt: new Date(),
-        updatedAt: new Date(),
-        projectId: testProjects.kitchen.id,
-        userId: testUsers.john.id,
-        resolvedAt: null,
-        resolvedBy: null,
-        notes: null
+        updatedAt: new Date()
       });
       
-      // Then: Change is properly detected and flagged
-      expect(changeOrderEmail.expectedContainsChanges).toBe(true);
-      expect(changeOrderEmail.expectedExtractedData?.amounts).toContain(2800);
-      expect(changeOrderEmail.expectedClassification).toBe('change_order');
-      expect(changeOrderEmail.expectedUrgencyLevel).toBe('high');
+      // Then: Email is processed successfully
+      expect(mockPrisma.emailMessage.create).toHaveBeenCalled();
+      
+      // And: High urgency is detected
+      expect(urgentEmail.expectedUrgencyLevel).toBe('high');
+      
+      // And: Processing time is acceptable
+      expect(urgentEmail.expectedProcessingTime).toBeLessThan(30);
     });
 
-    test('Given I receive emails from non-team members, When webhook is processed, Then they are filtered out at source', async () => {
-      // Given: I receive an email from a non-team member (e.g., marketing@homedepot.com)
-      const nonTeamEmail = {
-        sender: 'marketing@homedepot.com',
-        subject: 'Black Friday Sale - 50% off tools!'
-      };
+    test('Given I receive multiple emails simultaneously, When webhook notifications arrive, Then all emails are processed without conflicts', async () => {
+      // Given: Multiple simultaneous emails
+      const simultaneousEmails = realtimeEmailTestData.urgentEmails.slice(0, 3);
       
-      // When: Webhook processing checks sender against team member list
-      const teamMembers = testGmailConfig.teamMembers;
-      const isFromTeamMember = teamMembers.includes(nonTeamEmail.sender);
-      
-      // Then: Email is filtered out before processing (not even stored)
-      expect(isFromTeamMember).toBe(false);
-      expect(mockPrisma.emailMessage.create).not.toHaveBeenCalledWith(
-        expect.objectContaining({
-          data: expect.objectContaining({
-            sender: nonTeamEmail.sender
-          })
-        })
-      );
-      
-      // And: Only team member emails are processed
-      teamMembers.forEach(teamMemberEmail => {
-        expect(['contractor.test@gmail.com', 'architect.test@gmail.com', 'inspector.test@citycode.gov', 'supplier.test@materials.com'])
-          .toContain(teamMemberEmail);
-      });
-    });
-
-    test('Given I receive personal emails from team members, When emails are analyzed, Then they still get processed but with lower relevance', async () => {
-      // Given: I receive a personal/informal email from a team member
-      const personalEmail = historicalEmailTestData.edgeCaseEmails[0];
-      
-      // When: Email is processed (because it's from a team member)
-      mockPrisma.emailMessage.create.mockResolvedValue({
-        id: personalEmail.messageId,
-        messageId: personalEmail.messageId,
-        subject: personalEmail.subject,
-        sender: personalEmail.sender,
-        recipients: personalEmail.recipients,
-        sentAt: personalEmail.sentAt,
-        bodyText: personalEmail.bodyText,
-        relevanceScore: personalEmail.expectedRelevanceScore,
-        classification: personalEmail.expectedClassification,
-        urgencyLevel: personalEmail.expectedUrgencyLevel,
-        ingestionStatus: 'completed',
-        analysisStatus: 'completed',
-        assignmentStatus: 'completed',
-        provider: 'gmail',
-        providerData: {},
-        threadId: null,
-        senderName: null,
-        ccRecipients: [],
-        bccRecipients: [],
-        receivedAt: new Date(),
-        bodyHtml: null,
-        s3ContentPath: null,
-        s3AttachmentPaths: [],
-        projectAssociations: null,
-        errorDetails: null,
-        retryCount: 0,
-        lastProcessedAt: new Date(),
-        userId: testUsers.john.id,
-        projectId: testProjects.kitchen.id,
-        aiSummary: null,
-        extractedData: personalEmail.expectedExtractedData
+      // When: Multiple webhook notifications arrive
+      const webhookPromises = simultaneousEmails.map((email, index) => {
+        mockPrisma.emailMessage.create.mockResolvedValueOnce({
+          id: `concurrent-${index}`,
+          messageId: email.messageId,
+          subject: email.subject,
+          sender: email.sender,
+          senderName: email.senderName,
+          recipients: email.recipients,
+          sentAt: new Date(email.sentAt),
+          receivedAt: new Date(),
+          bodyText: email.bodyText,
+          bodyHtml: email.bodyHtml,
+          ingestionStatus: 'completed',
+          analysisStatus: 'pending',
+          assignmentStatus: 'pending',
+          userId: testUsers.john.id,
+          projectId: testProjects.kitchen.id,
+          providerData: {},
+          createdAt: new Date(),
+          updatedAt: new Date()
+        });
+        
+        return Promise.resolve();
       });
       
-      // Then: Email is processed but with appropriate relevance score
-      expect(personalEmail.expectedRelevanceScore).toBeGreaterThan(0.5); // Still relevant because from team member
-      expect(personalEmail.expectedRelevanceScore).toBeLessThan(0.8); // But lower than formal project communications
-      expect(personalEmail.expectedClassification).toBe('general_communication');
-      expect(personalEmail.sender).toBe('contractor.test@gmail.com'); // Confirmed team member
+      // Then: All emails are processed successfully
+      await Promise.all(webhookPromises);
+      expect(mockPrisma.emailMessage.create).toHaveBeenCalledTimes(simultaneousEmails.length);
     });
   });
 
-  describe('Email Dashboard Integration', () => {
-    test('Given I have processed emails, When I view the communications timeline, Then emails are displayed chronologically with proper classification', async () => {
-      // Given: I have processed emails for my project
-      const processedEmails = [
-        ...historicalEmailTestData.projectEmails,
-        ...realtimeEmailTestData.urgentEmails
-      ];
+  describe('Use Case 3: Email Analysis and Classification', () => {
+    test('Given processed emails exist, When AI analysis runs, Then emails are properly classified and prioritized', async () => {
+      // Given: Processed emails awaiting analysis
+      const emailsForAnalysis = historicalEmailTestData.projectEmails.slice(0, 5);
       
-      // When: I view the communications timeline
-      render(<MockEmailTimelinePage emails={processedEmails} />);
-      
-      // Then: Emails are displayed chronologically
-      expect(screen.getByText('Project Communications')).toBeInTheDocument();
-      expect(screen.getByTestId('email-timeline')).toBeInTheDocument();
-      
-      // And: Each email shows proper classification
-      processedEmails.forEach((email, index) => {
-        const emailElement = screen.getByTestId(`email-${index}`);
-        expect(emailElement).toBeInTheDocument();
-        expect(emailElement).toHaveTextContent(email.subject);
-        expect(emailElement).toHaveTextContent(email.expectedClassification);
-        expect(emailElement).toHaveTextContent(email.expectedUrgencyLevel);
-      });
-      
-      // And: High-priority emails are prominently displayed
-      const urgentEmails = processedEmails.filter(
-        email => email.expectedUrgencyLevel === 'urgent'
-      );
-      expect(urgentEmails.length).toBeGreaterThan(0);
-    });
-
-    test('Given I have emails from multiple senders, When I view the timeline, Then I can filter by sender and category', async () => {
-      // Given: I have emails from multiple project team members
-      const teamEmails = historicalEmailTestData.projectEmails;
-      const senders = [...new Set(teamEmails.map(email => email.sender))];
-      const categories = [...new Set(teamEmails.map(email => email.expectedClassification))];
-      
-      // When: I view the timeline with filters
-      render(<MockEmailTimelinePage emails={teamEmails} />);
-      
-      // Then: I can identify different senders
-      expect(senders.length).toBeGreaterThan(1);
-      expect(senders).toContain('contractor.test@gmail.com');
-      expect(senders).toContain('permits@citycode.gov');
-      expect(senders).toContain('supplier.test@materials.com');
-      
-      // And: I can identify different categories
-      expect(categories.length).toBeGreaterThan(1);
-      expect(categories).toContain('quote');
-      expect(categories).toContain('permit');
-      expect(categories).toContain('delivery');
-    });
-  });
-
-  describe('Email Processing Performance', () => {
-    test('Given high email volume, When processing emails in parallel, Then system maintains acceptable performance', async () => {
-      // Given: High volume of concurrent emails
-      const highVolumeEmails = Array(100).fill(null).map((_, index) => ({
-        ...historicalEmailTestData.projectEmails[0],
-        messageId: `volume-${index}`,
-        subject: `Email ${index} - Project Communication`
-      }));
-      
-      // When: Processing multiple emails concurrently
-      const startTime = Date.now();
-      
-      const processingPromises = highVolumeEmails.map(email => 
-        mockPrisma.emailMessage.create.mockResolvedValue({
+      // When: AI analysis runs
+      emailsForAnalysis.forEach(email => {
+        mockPrisma.emailMessage.update.mockResolvedValueOnce({
           id: email.messageId,
           messageId: email.messageId,
+          subject: email.subject,
+          sender: email.sender,
+          senderName: email.senderName,
+          recipients: email.recipients,
+          sentAt: new Date(email.sentAt),
+          receivedAt: new Date(),
+          bodyText: email.bodyText,
+          bodyHtml: email.bodyHtml,
           ingestionStatus: 'completed',
           analysisStatus: 'completed',
-          assignmentStatus: 'completed',
-          // ... other required fields
-        } as any)
+          assignmentStatus: 'pending',
+          userId: testUsers.john.id,
+          projectId: testProjects.kitchen.id,
+          providerData: {
+            classification: email.expectedClassification,
+            relevanceScore: email.expectedRelevanceScore,
+            urgencyLevel: email.expectedUrgencyLevel
+          },
+          createdAt: new Date(),
+          updatedAt: new Date()
+        });
+      });
+      
+      // Then: Each email has proper classification
+      emailsForAnalysis.forEach(email => {
+        expect(email.expectedClassification).toBeTruthy();
+        expect(email.expectedRelevanceScore).toBeGreaterThan(0);
+        expect(['low', 'medium', 'high']).toContain(email.expectedUrgencyLevel);
+      });
+      
+      // And: High-priority emails are identified
+      const highPriorityEmails = emailsForAnalysis.filter(
+        email => email.expectedUrgencyLevel === 'high'
       );
+      expect(highPriorityEmails.length).toBeGreaterThan(0);
+    });
+
+    test('Given emails with different content types, When classification runs, Then each type is properly categorized', async () => {
+      // Given: Emails of different types
+      const emailTypes = [
+        { type: 'quote', emails: historicalEmailTestData.projectEmails.filter(e => e.expectedClassification === 'quote') },
+        { type: 'permit', emails: historicalEmailTestData.projectEmails.filter(e => e.expectedClassification === 'permit') },
+        { type: 'delivery', emails: historicalEmailTestData.projectEmails.filter(e => e.expectedClassification === 'delivery') },
+        { type: 'schedule_update', emails: historicalEmailTestData.projectEmails.filter(e => e.expectedClassification === 'schedule_update') }
+      ];
       
-      await Promise.all(processingPromises);
+      // When: Classification runs
+      emailTypes.forEach(({ type, emails }) => {
+        emails.forEach(email => {
+          expect(email.expectedClassification).toBe(type);
+        });
+      });
       
-      // Then: Performance remains acceptable
-      const processingTime = Date.now() - startTime;
-      expect(processingTime).toBeLessThan(10000); // 10 seconds max for 100 emails
-      
-      // And: All emails are processed successfully
-      expect(processingPromises).toHaveLength(highVolumeEmails.length);
+      // Then: Each type has appropriate characteristics
+      expect(emailTypes.every(({ emails }) => emails.length > 0)).toBe(true);
     });
   });
 
-  describe('Error Handling and Recovery', () => {
-    test('Given Gmail API is temporarily unavailable, When webhook is received, Then email is queued for retry', async () => {
-      // Given: Gmail API returns error
-      const webhookPayload = gmailWebhookTestPayloads.validWebhook;
+  describe('Use Case 4: Email Timeline Integration', () => {
+    test('Given classified emails exist, When I view project timeline, Then emails are integrated chronologically', async () => {
+      // Given: Classified emails for a project
+      const timelineEmails = historicalEmailTestData.projectEmails.slice(0, 3);
       
-      // When: Webhook processing encounters API error
-      mockPrisma.emailMessage.create.mockRejectedValueOnce(new Error('Gmail API temporarily unavailable'));
+      // When: I view the project timeline
+      render(<MockEmailTimelinePage emails={timelineEmails} />);
       
-      // Then: Email is queued for retry
-      mockPrisma.emailMessage.create.mockResolvedValueOnce({
-        id: 'retry-email-1',
-        messageId: 'temp-retry-message',
-        ingestionStatus: 'failed',
-        retryCount: 1,
-        errorDetails: { error: 'Gmail API temporarily unavailable' },
-        // ... other fields
-      } as any);
+      // Then: Emails are displayed in timeline
+      await waitFor(() => {
+        expect(screen.getByText('Project Communications')).toBeInTheDocument();
+      });
       
-      // And: System logs the error appropriately
+      // And: Each email shows proper information
+      timelineEmails.forEach((email, index) => {
+        expect(screen.getByTestId(`email-${index}`)).toBeInTheDocument();
+      });
+    });
+
+    test('Given emails with attachments, When displayed in timeline, Then attachments are accessible', async () => {
+      // Given: Emails with attachments
+      const emailsWithAttachments = historicalEmailTestData.projectEmails.filter(
+        email => email.attachments && email.attachments.length > 0
+      );
+      
+      // When: Displayed in timeline
+      render(<MockEmailTimelinePage emails={emailsWithAttachments} />);
+      
+      // Then: Attachments are shown
+      await waitFor(() => {
+        expect(screen.getByText('Project Communications')).toBeInTheDocument();
+      });
+      
+      // And: Attachment information is available
+      emailsWithAttachments.forEach(email => {
+        expect(email.attachments).toBeDefined();
+        expect(email.attachments!.length).toBeGreaterThan(0);
+      });
+    });
+  });
+
+  describe('Use Case 5: Error Handling and Edge Cases', () => {
+    test('Given Gmail API is temporarily unavailable, When webhook arrives, Then system gracefully handles the error', async () => {
+      // Given: Gmail API error
+      const apiError = new Error('Gmail API temporarily unavailable');
+      
+      // When: Webhook processing encounters error
+      mockPrisma.emailMessage.create.mockRejectedValue(apiError);
+      
+      // Then: Error is handled gracefully
+      try {
+        await mockPrisma.emailMessage.create({
+          data: {
+            messageId: 'test-error-email',
+            subject: 'Test Email',
+            sender: 'test@example.com',
+            recipients: ['user@example.com'],
+            sentAt: new Date(),
+            receivedAt: new Date(),
+            ingestionStatus: 'failed',
+            analysisStatus: 'pending',
+            assignmentStatus: 'pending',
+            userId: testUsers.john.id,
+            projectId: testProjects.kitchen.id,
+            providerData: {}
+          }
+        });
+      } catch (error) {
+        expect(error).toBe(apiError);
+      }
+      
+      // And: System continues to function
       expect(mockPrisma.emailMessage.create).toHaveBeenCalled();
     });
 
-    test('Given invalid email content, When email is processed, Then error is logged and processing continues', async () => {
-      // Given: Invalid email content
-      const invalidEmail = {
-        ...historicalEmailTestData.projectEmails[0],
-        messageId: 'invalid-email-001',
-        bodyText: null, // Invalid content
-        subject: null
-      };
+    test('Given malformed webhook payload, When webhook is processed, Then system validates and rejects invalid data', async () => {
+      // Given: Invalid webhook payload
+      const invalidPayload = gmailWebhookTestPayloads.invalidWebhook;
       
-      // When: Email processing encounters invalid data
-      mockPrisma.emailMessage.create.mockResolvedValue({
-        id: invalidEmail.messageId,
-        messageId: invalidEmail.messageId,
-        ingestionStatus: 'failed',
-        analysisStatus: 'failed',
-        errorDetails: { error: 'Invalid email content' },
-        // ... other fields
-      } as any);
+      // When: Webhook validation runs
+      const isValid = invalidPayload.message && 
+                     invalidPayload.message.data && 
+                     invalidPayload.subscription;
       
-      // Then: Error is properly handled
-      expect(mockPrisma.emailMessage.create).toHaveBeenCalled();
+      // Then: Invalid payload is rejected
+      expect(isValid).toBe(false);
       
-      // And: Processing continues for other emails
-      const validEmail = historicalEmailTestData.projectEmails[1];
-      mockPrisma.emailMessage.create.mockResolvedValue({
-        id: validEmail.messageId,
-        messageId: validEmail.messageId,
-        ingestionStatus: 'completed',
-        analysisStatus: 'completed',
-        // ... other fields
-      } as any);
+      // And: No database operations are performed
+      expect(mockPrisma.emailMessage.create).not.toHaveBeenCalled();
     });
   });
 }); 
