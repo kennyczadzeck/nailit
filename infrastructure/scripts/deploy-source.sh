@@ -23,7 +23,7 @@ esac
 
 # Deploy App Runner stack in source mode
 echo "🏃 Deploying App Runner stack in source code mode..."
-npm run cdk deploy AppRunner-$(echo $ENVIRONMENT | sed 's/development/dev/; s/production/prod/') \
+npx cdk deploy AppRunner-$(echo $ENVIRONMENT | sed 's/development/dev/; s/production/prod/') \
   --context environment=$ENVIRONMENT \
   --context deploymentMode=source \
   --require-approval never

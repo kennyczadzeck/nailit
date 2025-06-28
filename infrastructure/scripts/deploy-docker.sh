@@ -23,14 +23,14 @@ esac
 
 # Deploy ECR stack first
 echo "📦 Deploying ECR stack..."
-npm run cdk deploy ECR-$(echo $ENVIRONMENT | sed 's/development/dev/; s/production/prod/') \
+npx cdk deploy ECR-$(echo $ENVIRONMENT | sed 's/development/dev/; s/production/prod/') \
   --context environment=$ENVIRONMENT \
   --context deploymentMode=docker \
   --require-approval never
 
 # Deploy App Runner stack in Docker mode
 echo "🏃 Deploying App Runner stack in Docker mode..."
-npm run cdk deploy AppRunner-$(echo $ENVIRONMENT | sed 's/development/dev/; s/production/prod/') \
+npx cdk deploy AppRunner-$(echo $ENVIRONMENT | sed 's/development/dev/; s/production/prod/') \
   --context environment=$ENVIRONMENT \
   --context deploymentMode=docker \
   --require-approval never

@@ -9,7 +9,7 @@ import { AddressAutocomplete } from '@/app/components/ui/AddressAutocomplete';
 import { CurrencyInput } from '@/app/components/ui/CurrencyInput';
 import { TrashIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { checkEnvironmentVariable } from '@/app/lib/utils';
-import { BUILD_INFO, logBuildInfo } from '@/app/lib/build-info';
+import { logBuildInfo } from '@/app/lib/build-info';
 
 interface TeamMember {
   name: string;

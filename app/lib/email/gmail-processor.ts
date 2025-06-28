@@ -1,7 +1,7 @@
-import { google } from 'googleapis'
-import { prisma } from '../prisma'
-import { logger } from '../logger'
+import { google, gmail_v1 } from 'googleapis'
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
+import { prisma } from '@/app/lib/prisma'
+import { logger } from '@/app/lib/logger'
 
 interface EmailProcessingResult {
   success: boolean
@@ -11,13 +11,8 @@ interface EmailProcessingResult {
   error?: string
 }
 
-interface TeamMemberConfig {
-  projectId: string
-  teamMembers: string[]
-}
-
 export class GmailProcessor {
-  private gmail: any
+  private gmail: gmail_v1.Gmail
   private s3Client: S3Client
 
   constructor(accessToken: string) {
@@ -111,7 +106,14 @@ export class GmailProcessor {
   /**
    * Process a single email message with team member filtering
    */
-  private async processMessage(messageId: string, projects: any[]): Promise<EmailProcessingResult> {
+  private async processMessage(messageId: string, projects: Array<{
+    id: string
+    name: string
+    userId: string
+    emailSettings: {
+      teamMembers: string[]
+    } | null
+  }>): Promise<EmailProcessingResult> {
     try {
       // Fetch the full message from Gmail
       const messageResponse = await this.gmail.users.messages.get({
@@ -207,10 +209,14 @@ export class GmailProcessor {
       logger.info('Email processed and stored', { 
         messageId, 
         projectCount: relevantProjects.length,
-        s3Stored: !!s3ContentPath 
+        emailRecordIds: emailRecords.map(r => r.id)
       })
 
-      return { success: true, messageId }
+      return { 
+        success: true, 
+        messageId,
+        reason: `Processed for ${relevantProjects.length} project(s)` 
+      }
 
     } catch (error) {
       logger.error('Error processing message', { messageId, error })
@@ -223,44 +229,48 @@ export class GmailProcessor {
   }
 
   /**
-   * Find projects where the sender is a team member
+   * Find projects where the sender email is in the team member list
    */
-  private findRelevantProjects(senderEmail: string, projects: any[]): any[] {
+  private findRelevantProjects(senderEmail: string, projects: Array<{
+    id: string
+    name: string
+    userId: string
+    emailSettings: {
+      teamMembers: string[]
+    } | null
+  }>): Array<{
+    id: string
+    name: string
+    userId: string
+    emailSettings: {
+      teamMembers: string[]
+    } | null
+  }> {
     return projects.filter(project => {
-      // TODO: Get team members from project settings
-      // For now, use hardcoded team member list
-      const teamMembers = [
-        'contractor.test@gmail.com',
-        'architect.test@gmail.com',
-        'inspector.test@citycode.gov',
-        'supplier.test@materials.com',
-        'nailit.test.contractor@gmail.com', // For testing
-        'nailit.test.homeowner@gmail.com'   // For testing
-      ]
+      if (!project.emailSettings?.teamMembers) {
+        return false
+      }
       
-      return teamMembers.includes(senderEmail.toLowerCase())
+      // Check if sender email is in the team member list (case insensitive)
+      return project.emailSettings.teamMembers.some(teamEmail => 
+        teamEmail.toLowerCase() === senderEmail.toLowerCase()
+      )
     })
   }
 
   /**
-   * Extract email content from Gmail payload
+   * Extract text and HTML content from Gmail message payload
    */
-  private extractEmailContent(payload: any): { bodyText: string | null, bodyHtml: string | null } {
+  private extractEmailContent(payload: gmail_v1.Schema$MessagePart | undefined): { bodyText: string | null, bodyHtml: string | null } {
+    if (!payload) {
+      return { bodyText: null, bodyHtml: null }
+    }
+
     let bodyText: string | null = null
     let bodyHtml: string | null = null
 
-    if (payload.body?.data) {
-      // Single part message
-      const mimeType = payload.mimeType || ''
-      const content = Buffer.from(payload.body.data, 'base64').toString('utf-8')
-      
-      if (mimeType.includes('text/plain')) {
-        bodyText = content
-      } else if (mimeType.includes('text/html')) {
-        bodyHtml = content
-      }
-    } else if (payload.parts) {
-      // Multi-part message
+    // Handle multipart messages
+    if (payload.parts) {
       for (const part of payload.parts) {
         if (part.mimeType === 'text/plain' && part.body?.data) {
           bodyText = Buffer.from(part.body.data, 'base64').toString('utf-8')
@@ -268,77 +278,105 @@ export class GmailProcessor {
           bodyHtml = Buffer.from(part.body.data, 'base64').toString('utf-8')
         }
       }
+    } else if (payload.body?.data) {
+      // Handle single part messages
+      const content = Buffer.from(payload.body.data, 'base64').toString('utf-8')
+      if (payload.mimeType === 'text/plain') {
+        bodyText = content
+      } else if (payload.mimeType === 'text/html') {
+        bodyHtml = content
+      }
     }
 
     return { bodyText, bodyHtml }
   }
 
   /**
-   * Store large email content in S3
+   * Store large email content in S3 and return the path
    */
-  private async storeEmailContentInS3(messageId: string, emailData: any): Promise<string> {
-    const s3Key = `emails/${messageId}/content.json`
+  private async storeEmailContentInS3(messageId: string, emailData: {
+    headers: gmail_v1.Schema$MessagePartHeader[]
+    bodyText: string | null
+    bodyHtml: string | null
+    payload: gmail_v1.Schema$MessagePart | undefined
+  }): Promise<string> {
+    const key = `emails/${messageId}.json`
     
-    await this.s3Client.send(new PutObjectCommand({
-      Bucket: process.env.AWS_S3_BUCKET_NAME || 'nailit-email-storage',
-      Key: s3Key,
+    const command = new PutObjectCommand({
+      Bucket: process.env.S3_EMAIL_BUCKET || 'nailit-emails',
+      Key: key,
       Body: JSON.stringify(emailData),
-      ContentType: 'application/json',
-      ServerSideEncryption: 'AES256'
-    }))
+      ContentType: 'application/json'
+    })
 
-    return s3Key
+    await this.s3Client.send(command)
+    return key
   }
 
   /**
-   * Helper methods for email parsing
+   * Get header value by name
    */
-  private getHeader(headers: any[], name: string): string | undefined {
+  private getHeader(headers: gmail_v1.Schema$MessagePartHeader[], name: string): string | undefined {
     const header = headers.find(h => h.name?.toLowerCase() === name.toLowerCase())
     return header?.value
   }
 
+  /**
+   * Extract email address from "Name <email@domain.com>" format
+   */
   private extractEmailAddress(fromHeader: string): string | null {
     const emailMatch = fromHeader.match(/<([^>]+)>/)
     if (emailMatch) {
-      return emailMatch[1].toLowerCase()
+      return emailMatch[1]
     }
     
-    // If no angle brackets, assume the whole string is an email
-    const simpleEmailMatch = fromHeader.match(/([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/)
-    return simpleEmailMatch ? simpleEmailMatch[1].toLowerCase() : null
+    // If no angle brackets, assume the whole string is the email
+    if (fromHeader.includes('@')) {
+      return fromHeader.trim()
+    }
+    
+    return null
   }
 
+  /**
+   * Extract sender name from "Name <email@domain.com>" format
+   */
   private extractSenderName(fromHeader: string): string | null {
     const nameMatch = fromHeader.match(/^([^<]+)</)
-    return nameMatch ? nameMatch[1].trim().replace(/"/g, '') : null
+    if (nameMatch) {
+      return nameMatch[1].trim()
+    }
+    
+    // If no angle brackets, return null (use email as fallback)
+    return null
   }
 }
 
 /**
- * Factory function to create Gmail processor with user's access token
+ * Create a Gmail processor instance for a user
  */
 export async function createGmailProcessor(userId: string): Promise<GmailProcessor | null> {
   try {
-    // Get user's Gmail access token
+    // Get user's Gmail access token from database
     const user = await prisma.user.findUnique({
       where: { id: userId },
-      include: {
-        projects: {
-          include: {
-            emailSettings: true
+      select: {
+        emailSettings: {
+          select: {
+            gmailAccessToken: true,
+            gmailConnected: true
           }
         }
       }
     })
 
-    const emailSettings = user?.projects.find(p => p.emailSettings?.gmailConnected)?.emailSettings
-    if (!emailSettings?.gmailAccessToken) {
+    if (!user?.emailSettings?.gmailAccessToken || !user.emailSettings.gmailConnected) {
       logger.warn('No Gmail access token found for user', { userId })
       return null
     }
 
-    return new GmailProcessor(emailSettings.gmailAccessToken)
+    return new GmailProcessor(user.emailSettings.gmailAccessToken)
+    
   } catch (error) {
     logger.error('Error creating Gmail processor', { userId, error })
     return null
