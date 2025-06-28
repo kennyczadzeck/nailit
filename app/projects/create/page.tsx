@@ -89,7 +89,17 @@ export default function CreateProject() {
   };
 
   // Google Maps API key - you'll need to set this in your environment
+  console.log('=== GOOGLE MAPS API KEY DEBUG ===');
+  console.log('typeof process:', typeof process);
+  console.log('process exists:', !!process);
+  console.log('process.env exists:', !!(process && process.env));
+  console.log('All NEXT_PUBLIC env vars:', Object.keys(process?.env || {}).filter(key => key.startsWith('NEXT_PUBLIC_')));
+  console.log('NEXT_PUBLIC_GOOGLE_MAPS_API_KEY value:', process?.env?.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY);
+  console.log('NEXT_PUBLIC_GOOGLE_MAPS_API_KEY length:', process?.env?.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY?.length);
   const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
+  console.log('Final GOOGLE_MAPS_API_KEY:', GOOGLE_MAPS_API_KEY);
+  console.log('Final GOOGLE_MAPS_API_KEY length:', GOOGLE_MAPS_API_KEY.length);
+  console.log('=== END DEBUG ===');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
