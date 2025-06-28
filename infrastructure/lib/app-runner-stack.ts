@@ -156,14 +156,18 @@ export class AppRunnerStack extends cdk.Stack {
         { name: 'NEXTAUTH_URL', value: `${secretArns.nextauthUrlArn}` },
         { name: 'GOOGLE_CLIENT_ID', value: `${secretArns.googleClientIdArn}` },
         { name: 'GOOGLE_CLIENT_SECRET', value: `${secretArns.googleClientSecretArn}` },
-        // Google Maps API key from secrets (the secret contains the full API key value)
         { name: 'NEXT_PUBLIC_GOOGLE_MAPS_API_KEY', value: `${secretArns.apiKeysSecretArn}` },
       );
     }
 
+    // Build command that retrieves Google Maps API key from secrets during build
+    const buildCommand = secretArns 
+      ? `export NEXT_PUBLIC_COMMIT_HASH=$(git rev-parse --short HEAD) && export NEXT_PUBLIC_BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ") && export NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=$(aws secretsmanager get-secret-value --secret-id nailit-google-maps-api-key-${environment} --query SecretString --output text --region us-east-1) && npm ci --ignore-scripts --legacy-peer-deps && npx prisma generate && DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" NEXTAUTH_SECRET="dummy-secret-for-build" NEXTAUTH_URL="http://localhost:3000" NODE_ENV="production" npm run build`
+      : 'export NEXT_PUBLIC_COMMIT_HASH=$(git rev-parse --short HEAD) && export NEXT_PUBLIC_BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ") && npm ci --ignore-scripts --legacy-peer-deps && npx prisma generate && DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" NEXTAUTH_SECRET="dummy-secret-for-build" NEXTAUTH_URL="http://localhost:3000" NODE_ENV="production" npm run build';
+
     return {
       runtime: 'NODEJS_22',
-      buildCommand: 'npm ci --ignore-scripts --legacy-peer-deps && npx prisma generate && DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" NEXTAUTH_SECRET="dummy-secret-for-build" NEXTAUTH_URL="http://localhost:3000" NODE_ENV="production" npm run build',
+      buildCommand,
       startCommand: 'npm start',
       runtimeEnvironmentVariables: envVars,
       runtimeEnvironmentSecrets: secrets,
