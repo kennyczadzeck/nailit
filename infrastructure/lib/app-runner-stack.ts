@@ -144,11 +144,13 @@ export class AppRunnerStack extends cdk.Stack {
       { name: 'PORT', value: '3000' },
       { name: 'AWS_REGION', value: 'us-east-1' },
       { name: 'NAILIT_ENVIRONMENT', value: environment },
+      // Add Google Maps API key as environment variable (needed at build time for Next.js)
+      { name: 'NEXT_PUBLIC_GOOGLE_MAPS_API_KEY', value: 'AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0' },
     ];
 
     const secrets: apprunner.CfnService.KeyValuePairProperty[] = [];
 
-    // Add secrets if provided
+    // Add secrets if provided (excluding Google Maps API key which is now an env var)
     if (secretArns) {
       secrets.push(
         { name: 'DATABASE_URL', value: `${secretArns.databaseSecretArn}` },
@@ -156,13 +158,12 @@ export class AppRunnerStack extends cdk.Stack {
         { name: 'NEXTAUTH_URL', value: `${secretArns.nextauthUrlArn}` },
         { name: 'GOOGLE_CLIENT_ID', value: `${secretArns.googleClientIdArn}` },
         { name: 'GOOGLE_CLIENT_SECRET', value: `${secretArns.googleClientSecretArn}` },
-        { name: 'NEXT_PUBLIC_GOOGLE_MAPS_API_KEY', value: `${secretArns.apiKeysSecretArn}` },
       );
     }
 
     return {
       runtime: 'NODEJS_22',
-      buildCommand: 'npm ci --ignore-scripts --legacy-peer-deps && npx prisma generate && DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" NEXTAUTH_SECRET="dummy-secret-for-build" NEXTAUTH_URL="http://localhost:3000" NODE_ENV="production" npm run build',
+      buildCommand: 'npm ci --ignore-scripts --legacy-peer-deps && npx prisma generate && DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" NEXTAUTH_SECRET="dummy-secret-for-build" NEXTAUTH_URL="http://localhost:3000" NEXT_PUBLIC_GOOGLE_MAPS_API_KEY="AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0" NODE_ENV="production" npm run build',
       startCommand: 'npm start',
       runtimeEnvironmentVariables: envVars,
       runtimeEnvironmentSecrets: secrets,
