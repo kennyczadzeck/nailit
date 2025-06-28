@@ -1,15 +1,15 @@
 {
   "version": "31.0.0",
   "files": {
-    "71c0dc676619ac626efe2c115730bff20e134e97daf81f2dd4e7ab86e72aad1c": {
+    "9c7d2fa2ba95a48d2217be8ce41cc15fd94919ad75c59af6a1e01d27a97e5468": {
       "source": {
-        "path": "AppRunner-prod.template.json",
+        "path": "ECR-prod.template.json",
         "packaging": "file"
       },
       "destinations": {
         "207091906248-us-east-1": {
           "bucketName": "cdk-hnb659fds-assets-207091906248-us-east-1",
-          "objectKey": "71c0dc676619ac626efe2c115730bff20e134e97daf81f2dd4e7ab86e72aad1c.json",
+          "objectKey": "9c7d2fa2ba95a48d2217be8ce41cc15fd94919ad75c59af6a1e01d27a97e5468.json",
           "region": "us-east-1",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-file-publishing-role-207091906248-us-east-1"
         }

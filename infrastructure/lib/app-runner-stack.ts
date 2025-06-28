@@ -62,18 +62,20 @@ export class AppRunnerStack extends cdk.Stack {
       resources: ['*'],
     }));
 
-    // Add ECR permissions for Docker deployment mode
+    // =================================
+    // ACCESS ROLE FOR ECR (DOCKER MODE)
+    // =================================
+
+    // Access role for ECR (required for Docker deployment)
+    let accessRole: iam.Role | undefined;
     if (deploymentMode === 'docker' && ecrRepositoryUri) {
-      instanceRole.addToPolicy(new iam.PolicyStatement({
-        effect: iam.Effect.ALLOW,
-        actions: [
-          'ecr:GetAuthorizationToken',
-          'ecr:BatchCheckLayerAvailability',
-          'ecr:GetDownloadUrlForLayer',
-          'ecr:BatchGetImage',
+      accessRole = new iam.Role(this, 'AppRunnerAccessRole', {
+        assumedBy: new iam.ServicePrincipal('build.apprunner.amazonaws.com'),
+        description: 'Access role for App Runner to pull from ECR',
+        managedPolicies: [
+          iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AWSAppRunnerServicePolicyForECRAccess'),
         ],
-        resources: ['*'],
-      }));
+      });
     }
 
     // Add secrets manager permissions for our individual secrets
@@ -102,7 +104,7 @@ export class AppRunnerStack extends cdk.Stack {
     // App Runner service configuration
     this.appRunnerService = new apprunner.CfnService(this, 'NailItAppRunnerService', {
       serviceName: `nailit-${envConfig.resourceSuffix}`,
-      sourceConfiguration: this.getSourceConfiguration(deploymentMode, githubConnectionArn, ecrRepositoryUri, environment, envConfig, secretArns),
+      sourceConfiguration: this.getSourceConfiguration(deploymentMode, githubConnectionArn, ecrRepositoryUri, environment, envConfig, secretArns, accessRole),
       instanceConfiguration: {
         cpu: '0.25 vCPU',
         memory: '0.5 GB',
@@ -142,10 +144,11 @@ export class AppRunnerStack extends cdk.Stack {
       googleClientIdArn: string;
       googleClientSecretArn: string;
       apiKeysSecretArn: string;
-    }
+    },
+    accessRole?: iam.Role
   ): apprunner.CfnService.SourceConfigurationProperty {
     
-    if (deploymentMode === 'docker' && ecrRepositoryUri) {
+    if (deploymentMode === 'docker' && ecrRepositoryUri && accessRole) {
       // Docker-based deployment
       return {
         imageRepository: {
@@ -156,6 +159,9 @@ export class AppRunnerStack extends cdk.Stack {
             runtimeEnvironmentVariables: this.getRuntimeEnvironmentVariables(environment),
             runtimeEnvironmentSecrets: this.getRuntimeEnvironmentSecrets(secretArns),
           },
+        },
+        authenticationConfiguration: {
+          accessRoleArn: accessRole.roleArn,
         },
         autoDeploymentsEnabled: false, // Manual deployment via GitHub Actions
       };
