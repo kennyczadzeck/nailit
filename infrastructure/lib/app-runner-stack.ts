@@ -144,11 +144,13 @@ export class AppRunnerStack extends cdk.Stack {
       { name: 'PORT', value: '3000' },
       { name: 'AWS_REGION', value: 'us-east-1' },
       { name: 'NAILIT_ENVIRONMENT', value: environment },
+      // Google Maps API key as build-time environment variable (needed for client-side Next.js)
+      { name: 'NEXT_PUBLIC_GOOGLE_MAPS_API_KEY', value: 'AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0' },
     ];
 
     const secrets: apprunner.CfnService.KeyValuePairProperty[] = [];
 
-    // Add secrets if provided
+    // Add secrets if provided (server-side only - no client-side secrets)
     if (secretArns) {
       secrets.push(
         { name: 'DATABASE_URL', value: `${secretArns.databaseSecretArn}` },
@@ -156,14 +158,11 @@ export class AppRunnerStack extends cdk.Stack {
         { name: 'NEXTAUTH_URL', value: `${secretArns.nextauthUrlArn}` },
         { name: 'GOOGLE_CLIENT_ID', value: `${secretArns.googleClientIdArn}` },
         { name: 'GOOGLE_CLIENT_SECRET', value: `${secretArns.googleClientSecretArn}` },
-        { name: 'NEXT_PUBLIC_GOOGLE_MAPS_API_KEY', value: `${secretArns.apiKeysSecretArn}` },
       );
     }
 
-    // Build command that retrieves Google Maps API key from secrets during build
-    const buildCommand = secretArns 
-      ? `export NEXT_PUBLIC_BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ") && export NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=$(aws secretsmanager get-secret-value --secret-id nailit-google-maps-api-key-${environment} --query SecretString --output text --region us-east-1) && npm ci --ignore-scripts --legacy-peer-deps && npx prisma generate && DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" NEXTAUTH_SECRET="dummy-secret-for-build" NEXTAUTH_URL="http://localhost:3000" NODE_ENV="production" npm run build`
-      : 'export NEXT_PUBLIC_BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ") && npm ci --ignore-scripts --legacy-peer-deps && npx prisma generate && DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" NEXTAUTH_SECRET="dummy-secret-for-build" NEXTAUTH_URL="http://localhost:3000" NODE_ENV="production" npm run build';
+    // Simplified build command - environment variables are available during build
+    const buildCommand = 'export NEXT_PUBLIC_BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ") && npm ci --ignore-scripts --legacy-peer-deps && npx prisma generate && DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" NEXTAUTH_SECRET="dummy-secret-for-build" NEXTAUTH_URL="http://localhost:3000" NODE_ENV="production" npm run build';
 
     return {
       runtime: 'NODEJS_22',
