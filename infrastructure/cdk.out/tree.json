@@ -1889,38 +1889,7 @@
                           "value": "development"
                         }
                       ],
-                      "runtimeEnvironmentSecrets": [
-                        {
-                          "name": "DATABASE_URL",
-                          "value": {
-                            "Fn::ImportValue": "Secrets-dev:ExportsOutputRefDatabaseCredentials8547B3E729671DA7"
-                          }
-                        },
-                        {
-                          "name": "NEXTAUTH_SECRET",
-                          "value": {
-                            "Fn::ImportValue": "Secrets-dev:ExportsOutputRefNextAuthSecret21484E9E77FF9A4C"
-                          }
-                        },
-                        {
-                          "name": "NEXTAUTH_URL",
-                          "value": {
-                            "Fn::ImportValue": "Secrets-dev:ExportsOutputRefNextAuthUrl03CEB3B75A8AF779"
-                          }
-                        },
-                        {
-                          "name": "GOOGLE_CLIENT_ID",
-                          "value": {
-                            "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientIdDF771C4D6A4E26E7"
-                          }
-                        },
-                        {
-                          "name": "GOOGLE_CLIENT_SECRET",
-                          "value": {
-                            "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientSecret7356BEB4E9294748"
-                          }
-                        }
-                      ]
+                      "runtimeEnvironmentSecrets": []
                     }
                   },
                   "authenticationConfiguration": {
@@ -1935,11 +1904,11 @@
                 },
                 "healthCheckConfiguration": {
                   "protocol": "HTTP",
-                  "path": "/api/health",
-                  "interval": 10,
-                  "timeout": 5,
+                  "path": "/",
+                  "interval": 20,
+                  "timeout": 10,
                   "healthyThreshold": 1,
-                  "unhealthyThreshold": 5
+                  "unhealthyThreshold": 3
                 },
                 "instanceConfiguration": {
                   "cpu": "0.25 vCPU",

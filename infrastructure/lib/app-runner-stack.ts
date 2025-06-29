@@ -218,15 +218,19 @@ export class AppRunnerStack extends cdk.Stack {
     googleClientSecretArn: string;
     apiKeysSecretArn: string;
   }): apprunner.CfnService.KeyValuePairProperty[] {
-    if (!secretArns) return [];
+    // Temporarily return empty array for testing
+    return [];
+    
+    // Original code commented out for testing
+    // if (!secretArns) return [];
 
-    return [
-      { name: 'DATABASE_URL', value: `${secretArns.databaseSecretArn}` },
-      { name: 'NEXTAUTH_SECRET', value: `${secretArns.nextauthSecretArn}` },
-      { name: 'NEXTAUTH_URL', value: `${secretArns.nextauthUrlArn}` },
-      { name: 'GOOGLE_CLIENT_ID', value: `${secretArns.googleClientIdArn}` },
-      { name: 'GOOGLE_CLIENT_SECRET', value: `${secretArns.googleClientSecretArn}` },
-    ];
+    // return [
+    //   { name: 'DATABASE_URL', value: `${secretArns.databaseSecretArn}` },
+    //   { name: 'NEXTAUTH_SECRET', value: `${secretArns.nextauthSecretArn}` },
+    //   { name: 'NEXTAUTH_URL', value: `${secretArns.nextauthUrlArn}` },
+    //   { name: 'GOOGLE_CLIENT_ID', value: `${secretArns.googleClientIdArn}` },
+    //   { name: 'GOOGLE_CLIENT_SECRET', value: `${secretArns.googleClientSecretArn}` },
+    // ];
   }
 
   private addOutputs(envConfig: { resourceSuffix: string }, deploymentMode: string) {
