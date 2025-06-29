@@ -14,6 +14,13 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   
+  // Explicitly define environment variables for client-side access
+  // This ensures NEXT_PUBLIC_ variables are properly embedded during build
+  env: {
+    NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+    NEXT_PUBLIC_BUILD_TIME: process.env.NEXT_PUBLIC_BUILD_TIME,
+  },
+  
   /* config options here */
 };
 
