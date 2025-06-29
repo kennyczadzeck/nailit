@@ -21,7 +21,7 @@ export class SecretsStack extends cdk.Stack {
     const envConfigs = {
       development: {
         databaseUrl: 'postgresql://neondb_owner:npg_avELx8uqOAc0@ep-still-paper-a5tgtem8-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require',
-        nextauthUrl: 'https://d3pvc5dn43.us-east-1.awsapprunner.com',
+        nextauthUrl: 'https://u9eack5h4f.us-east-1.awsapprunner.com',
       },
       staging: {
         databaseUrl: 'postgresql://neondb_owner:npg_avELx8uqOAc0@ep-raspy-sound-a5eg97xu-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require',
