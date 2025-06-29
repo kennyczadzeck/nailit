@@ -96,6 +96,14 @@ export default function CreateProject() {
   // Log build information for debugging (secure)
   useEffect(() => {
     logBuildInfo();
+    
+    // Debug environment variable access
+    console.log('🔍 Client-side environment variable debugging:');
+    console.log('process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY:', process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY);
+    console.log('GOOGLE_MAPS_API_KEY constant:', GOOGLE_MAPS_API_KEY);
+    console.log('typeof process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY:', typeof process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY);
+    console.log('All process.env keys:', Object.keys(process.env || {}));
+    console.log('NEXT_PUBLIC keys:', Object.keys(process.env || {}).filter(k => k.startsWith('NEXT_PUBLIC_')));
   }, []);
   
   // Check if API key is configured (without exposing the value)
