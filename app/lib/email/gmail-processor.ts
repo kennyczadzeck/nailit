@@ -1,6 +1,3 @@
-import { gmail_v1 } from 'googleapis'
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
-import { prisma } from '../prisma'
 import { logger } from '../logger'
 
 interface EmailProcessingResult {
@@ -16,14 +13,14 @@ interface EmailProcessingResult {
  * Temporarily disabled due to type mismatches - TODO: Fix types and re-enable
  */
 export class GmailProcessor {
-  constructor(accessToken: string) {
+  constructor(_accessToken: string) {
     // Temporarily disabled
   }
 
   async processWebhookNotification(
-    userId: string,
-    historyId: string,
-    userEmail: string
+    _userId: string,
+    _historyId: string,
+    _userEmail: string
   ): Promise<EmailProcessingResult[]> {
     // Temporarily disabled - return placeholder
     return [{ success: false, error: 'Gmail processor temporarily disabled' }]

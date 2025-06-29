@@ -3,11 +3,23 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '../auth/[...nextauth]/route'
 import { prisma } from '../../lib/prisma'
 
+interface DebugInfo {
+  sessionExists: boolean
+  sessionUser: {
+    id: string
+    email: string | null | undefined
+    name: string | null | undefined
+  } | null
+  timestamp: string
+  dbUser?: unknown
+  projectCount?: number
+}
+
 export async function GET() {
   try {
     const session = await getServerSession(authOptions)
     
-    const debugInfo: any = {
+    const debugInfo: DebugInfo = {
       sessionExists: !!session,
       sessionUser: session?.user ? {
         id: session.user.id,
