@@ -49,6 +49,8 @@ RUN echo "🚀 Starting Next.js build process..." && \
     NEXTAUTH_SECRET="dummy-secret-for-build" \
     NEXTAUTH_URL="http://localhost:3000" \
     NODE_ENV="production" \
+    NEXT_PUBLIC_GOOGLE_MAPS_API_KEY="$NEXT_PUBLIC_GOOGLE_MAPS_API_KEY" \
+    NEXT_PUBLIC_BUILD_TIME="$NEXT_PUBLIC_BUILD_TIME" \
     npm run build && \
     echo "✅ Next.js build completed"
 
