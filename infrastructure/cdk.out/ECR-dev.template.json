@@ -111,6 +111,25 @@
    "Export": {
     "Name": "NailIt-dev-RepositoryArn"
    }
+  },
+  "ExportsOutputFnGetAttNailItRepository12755FD0Arn93FE8976": {
+   "Value": {
+    "Fn::GetAtt": [
+     "NailItRepository12755FD0",
+     "Arn"
+    ]
+   },
+   "Export": {
+    "Name": "ECR-dev:ExportsOutputFnGetAttNailItRepository12755FD0Arn93FE8976"
+   }
+  },
+  "ExportsOutputRefNailItRepository12755FD050ABDCA0": {
+   "Value": {
+    "Ref": "NailItRepository12755FD0"
+   },
+   "Export": {
+    "Name": "ECR-dev:ExportsOutputRefNailItRepository12755FD050ABDCA0"
+   }
   }
  },
  "Parameters": {

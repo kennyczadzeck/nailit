@@ -7,7 +7,7 @@ export async function GET() {
   try {
     const session = await getServerSession(authOptions)
     
-    const debugInfo = {
+    const debugInfo: any = {
       sessionExists: !!session,
       sessionUser: session?.user ? {
         id: session.user.id,

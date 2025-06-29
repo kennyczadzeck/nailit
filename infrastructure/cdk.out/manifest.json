@@ -23,7 +23,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-deploy-role-207091906248-us-east-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-cfn-exec-role-207091906248-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/e549a556ea90dd4b2c10321d296aee257c51c008b23a5b79482ce7ddf7f1380e.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/bbc9b34f288f24d3d8417e2b5758c39cd1cfa494fd2922151a6d5ed6bf9a3fdb.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -84,6 +84,18 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "CDKMetadata"
+          }
+        ],
+        "/ECR-dev/Exports/Output{\"Fn::GetAtt\":[\"NailItRepository12755FD0\",\"Arn\"]}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputFnGetAttNailItRepository12755FD0Arn93FE8976"
+          }
+        ],
+        "/ECR-dev/Exports/Output{\"Ref\":\"NailItRepository12755FD0\"}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ExportsOutputRefNailItRepository12755FD050ABDCA0"
           }
         ],
         "/ECR-dev/BootstrapVersion": [
@@ -608,7 +620,7 @@
         "templateFile": "AppRunner-dev.template.json",
         "tags": {
           "DatabaseProvider": "Neon",
-          "DeploymentMode": "source",
+          "DeploymentMode": "docker",
           "Environment": "development",
           "HostingProvider": "AppRunner",
           "ManagedBy": "CDK",
@@ -617,7 +629,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-deploy-role-207091906248-us-east-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-cfn-exec-role-207091906248-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/f3c22351a11068287bc1f0348daff7fddd9ae683849661cbe4603b323674567f.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/dd67aaca3727c179fd165123b45ab3d702a9de42e4aec692f2536459e43c5881.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -631,6 +643,7 @@
       },
       "dependencies": [
         "Secrets-dev",
+        "ECR-dev",
         "AppRunner-dev.assets"
       ],
       "metadata": {
@@ -644,7 +657,7 @@
               },
               {
                 "Key": "DeploymentMode",
-                "Value": "source"
+                "Value": "docker"
               },
               {
                 "Key": "Environment",
@@ -675,6 +688,12 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "AppRunnerInstanceRoleDefaultPolicy35195718"
+          }
+        ],
+        "/AppRunner-dev/AppRunnerAccessRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AppRunnerAccessRoleC89E5843"
           }
         ],
         "/AppRunner-dev/NailItAppRunnerService": [
