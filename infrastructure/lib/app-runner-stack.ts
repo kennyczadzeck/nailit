@@ -164,7 +164,7 @@ export class AppRunnerStack extends cdk.Stack {
           imageRepositoryType: 'ECR',
           imageConfiguration: {
             port: '3000',
-            runtimeEnvironmentVariables: this.getRuntimeEnvironmentVariables(environment),
+            runtimeEnvironmentVariables: this.getRuntimeEnvironmentVariables(),
             runtimeEnvironmentSecrets: this.getRuntimeEnvironmentSecrets(secretArns),
           },
         },
@@ -201,12 +201,11 @@ export class AppRunnerStack extends cdk.Stack {
     }
   }
 
-  private getRuntimeEnvironmentVariables(environment: string): apprunner.CfnService.KeyValuePairProperty[] {
+  private getRuntimeEnvironmentVariables(): apprunner.CfnService.KeyValuePairProperty[] {
     return [
       { name: 'NODE_ENV', value: 'production' },
       { name: 'PORT', value: '3000' },
-      { name: 'AWS_REGION', value: 'us-east-1' },
-      { name: 'NAILIT_ENVIRONMENT', value: environment },
+      { name: 'HOSTNAME', value: '0.0.0.0' },
     ];
   }
 
@@ -218,19 +217,15 @@ export class AppRunnerStack extends cdk.Stack {
     googleClientSecretArn: string;
     apiKeysSecretArn: string;
   }): apprunner.CfnService.KeyValuePairProperty[] {
-    // Temporarily return empty array for testing
-    return [];
-    
-    // Original code commented out for testing
-    // if (!secretArns) return [];
+    if (!secretArns) return [];
 
-    // return [
-    //   { name: 'DATABASE_URL', value: `${secretArns.databaseSecretArn}` },
-    //   { name: 'NEXTAUTH_SECRET', value: `${secretArns.nextauthSecretArn}` },
-    //   { name: 'NEXTAUTH_URL', value: `${secretArns.nextauthUrlArn}` },
-    //   { name: 'GOOGLE_CLIENT_ID', value: `${secretArns.googleClientIdArn}` },
-    //   { name: 'GOOGLE_CLIENT_SECRET', value: `${secretArns.googleClientSecretArn}` },
-    // ];
+    return [
+      { name: 'DATABASE_URL', value: `${secretArns.databaseSecretArn}` },
+      { name: 'NEXTAUTH_SECRET', value: `${secretArns.nextauthSecretArn}` },
+      { name: 'NEXTAUTH_URL', value: `${secretArns.nextauthUrlArn}` },
+      { name: 'GOOGLE_CLIENT_ID', value: `${secretArns.googleClientIdArn}` },
+      { name: 'GOOGLE_CLIENT_SECRET', value: `${secretArns.googleClientSecretArn}` },
+    ];
   }
 
   private addOutputs(envConfig: { resourceSuffix: string }, deploymentMode: string) {
