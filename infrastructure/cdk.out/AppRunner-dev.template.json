@@ -181,7 +181,38 @@
      "ImageRepository": {
       "ImageConfiguration": {
        "Port": "3000",
-       "RuntimeEnvironmentSecrets": [],
+       "RuntimeEnvironmentSecrets": [
+        {
+         "Name": "DATABASE_URL",
+         "Value": {
+          "Fn::ImportValue": "Secrets-dev:ExportsOutputRefDatabaseCredentials8547B3E729671DA7"
+         }
+        },
+        {
+         "Name": "NEXTAUTH_SECRET",
+         "Value": {
+          "Fn::ImportValue": "Secrets-dev:ExportsOutputRefNextAuthSecret21484E9E77FF9A4C"
+         }
+        },
+        {
+         "Name": "NEXTAUTH_URL",
+         "Value": {
+          "Fn::ImportValue": "Secrets-dev:ExportsOutputRefNextAuthUrl03CEB3B75A8AF779"
+         }
+        },
+        {
+         "Name": "GOOGLE_CLIENT_ID",
+         "Value": {
+          "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientIdDF771C4D6A4E26E7"
+         }
+        },
+        {
+         "Name": "GOOGLE_CLIENT_SECRET",
+         "Value": {
+          "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientSecret7356BEB4E9294748"
+         }
+        }
+       ],
        "RuntimeEnvironmentVariables": [
         {
          "Name": "NODE_ENV",
@@ -192,12 +223,8 @@
          "Value": "3000"
         },
         {
-         "Name": "AWS_REGION",
-         "Value": "us-east-1"
-        },
-        {
-         "Name": "NAILIT_ENVIRONMENT",
-         "Value": "development"
+         "Name": "HOSTNAME",
+         "Value": "0.0.0.0"
         }
        ]
       },

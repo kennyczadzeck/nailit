@@ -1,7 +1,7 @@
 // Build information for debugging and verification
 export const BUILD_INFO = {
   // These will be populated at build time
-  commitHash: process.env.NEXT_PUBLIC_COMMIT_HASH || 'unknown',
+  commitHash: process.env.NEXT_PUBLIC_COMMIT_HASH || process.env.NAILIT_ENVIRONMENT || 'unknown',
   buildTime: process.env.NEXT_PUBLIC_BUILD_TIME || 'unknown',
   environment: process.env.NAILIT_ENVIRONMENT || 'unknown',
   nodeEnv: process.env.NODE_ENV || 'unknown',
@@ -12,6 +12,10 @@ export const BUILD_INFO = {
   
   // All public env vars (works on both client and server)
   publicEnvVars: Object.keys(process.env || {}).filter(key => key.startsWith('NEXT_PUBLIC_')),
+  
+  // Debug info
+  allEnvKeys: Object.keys(process.env || {}).length,
+  processEnvType: typeof process.env,
 };
 
 /**

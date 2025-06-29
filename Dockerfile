@@ -25,6 +25,13 @@ ENV NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=$NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
 ENV NEXT_PUBLIC_BUILD_TIME=$NEXT_PUBLIC_BUILD_TIME
 ENV NAILIT_ENVIRONMENT=$NAILIT_ENVIRONMENT
 
+# Debug: Show what environment variables are set
+RUN echo "🔍 Debug: Environment variables during build:" && \
+    echo "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}" && \
+    echo "NEXT_PUBLIC_BUILD_TIME=${NEXT_PUBLIC_BUILD_TIME}" && \
+    echo "NAILIT_ENVIRONMENT=${NAILIT_ENVIRONMENT}" && \
+    env | grep NEXT_PUBLIC || echo "No NEXT_PUBLIC vars found"
+
 # Generate Prisma client
 RUN npx prisma generate
 
