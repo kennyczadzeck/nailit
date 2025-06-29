@@ -1,21 +1,32 @@
 // Build information for debugging and verification
 export const BUILD_INFO = {
-  // These will be populated at build time
+  // These will be populated at build time - EXPLICITLY reference the env vars
   commitHash: process.env.NEXT_PUBLIC_COMMIT_HASH || process.env.NAILIT_ENVIRONMENT || 'unknown',
   buildTime: process.env.NEXT_PUBLIC_BUILD_TIME || 'unknown',
   environment: process.env.NAILIT_ENVIRONMENT || 'unknown',
   nodeEnv: process.env.NODE_ENV || 'unknown',
   
-  // Check if Google Maps API key is available
+  // Check if Google Maps API key is available - EXPLICIT reference
   hasGoogleMapsKey: !!(process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY),
   googleMapsKeyLength: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY?.length || 0,
+  
+  // EXPLICIT reference to force Next.js to embed these variables
+  explicitGoogleMapsKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+  explicitBuildTime: process.env.NEXT_PUBLIC_BUILD_TIME,
   
   // All public env vars (works on both client and server)
   publicEnvVars: Object.keys(process.env || {}).filter(key => key.startsWith('NEXT_PUBLIC_')),
   
-  // Debug info
-  allEnvKeys: Object.keys(process.env || {}).length,
-  processEnvType: typeof process.env,
+  // Debug info - show all env keys for debugging
+  allEnvKeys: typeof window === 'undefined' ? Object.keys(process.env || {}).slice(0, 10) : ['client-side'],
+  
+  // Test: Direct string comparison to see if variables are actually embedded
+  testEmbedding: {
+    hasKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY === 'AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0',
+    keyValue: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+    buildTimeSet: !!process.env.NEXT_PUBLIC_BUILD_TIME,
+    buildTimeValue: process.env.NEXT_PUBLIC_BUILD_TIME,
+  }
 };
 
 /**
