@@ -30,17 +30,27 @@ RUN echo "🔍 Debug: Environment variables during build:" && \
     echo "NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}" && \
     echo "NEXT_PUBLIC_BUILD_TIME=${NEXT_PUBLIC_BUILD_TIME}" && \
     echo "NAILIT_ENVIRONMENT=${NAILIT_ENVIRONMENT}" && \
-    env | grep NEXT_PUBLIC || echo "No NEXT_PUBLIC vars found"
+    echo "All environment variables:" && \
+    env | sort && \
+    echo "NEXT_PUBLIC variables specifically:" && \
+    env | grep NEXT_PUBLIC || echo "No NEXT_PUBLIC vars found" && \
+    echo "Checking if variables are set:" && \
+    test -n "$NEXT_PUBLIC_GOOGLE_MAPS_API_KEY" && echo "✅ NEXT_PUBLIC_GOOGLE_MAPS_API_KEY is set" || echo "❌ NEXT_PUBLIC_GOOGLE_MAPS_API_KEY is NOT set" && \
+    test -n "$NEXT_PUBLIC_BUILD_TIME" && echo "✅ NEXT_PUBLIC_BUILD_TIME is set" || echo "❌ NEXT_PUBLIC_BUILD_TIME is NOT set"
 
 # Generate Prisma client
 RUN npx prisma generate
 
 # Build Next.js application with environment variables available
-RUN DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" \
+RUN echo "🚀 Starting Next.js build process..." && \
+    echo "Environment variables visible to Next.js build:" && \
+    env | grep NEXT_PUBLIC || echo "No NEXT_PUBLIC vars visible to build" && \
+    DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" \
     NEXTAUTH_SECRET="dummy-secret-for-build" \
     NEXTAUTH_URL="http://localhost:3000" \
     NODE_ENV="production" \
-    npm run build
+    npm run build && \
+    echo "✅ Next.js build completed"
 
 # Production image, copy all the files and run next
 FROM base AS runner
