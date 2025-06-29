@@ -50,7 +50,7 @@ jobs:
           ${{ steps.login-ecr.outputs.registry }}/nailit-dev:${{ steps.meta.outputs.image_tag }}
           ${{ steps.login-ecr.outputs.registry }}/nailit-dev:latest
         build-args: |
-          NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0
+          NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}
           NEXT_PUBLIC_BUILD_TIME=${{ steps.meta.outputs.build_time }}
           NAILIT_ENVIRONMENT=development
         cache-from: type=gha
@@ -121,7 +121,7 @@ jobs:
           ${{ steps.login-ecr.outputs.registry }}/nailit-staging:${{ steps.meta.outputs.image_tag }}
           ${{ steps.login-ecr.outputs.registry }}/nailit-staging:latest
         build-args: |
-          NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0
+          NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}
           NEXT_PUBLIC_BUILD_TIME=${{ steps.meta.outputs.build_time }}
           NAILIT_ENVIRONMENT=staging
         cache-from: type=gha
@@ -192,7 +192,7 @@ jobs:
           ${{ steps.login-ecr.outputs.registry }}/nailit-prod:${{ steps.meta.outputs.image_tag }}
           ${{ steps.login-ecr.outputs.registry }}/nailit-prod:latest
         build-args: |
-          NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0
+          NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=${{ secrets.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY }}
           NEXT_PUBLIC_BUILD_TIME=${{ steps.meta.outputs.build_time }}
           NAILIT_ENVIRONMENT=production
         cache-from: type=gha
