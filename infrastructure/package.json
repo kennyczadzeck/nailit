@@ -11,6 +11,12 @@
     "deploy:dev": "cdk deploy --context environment=development",
     "deploy:staging": "cdk deploy --context environment=staging", 
     "deploy:prod": "cdk deploy --context environment=production",
+    "deploy:docker:dev": "./scripts/deploy-docker.sh development",
+    "deploy:docker:staging": "./scripts/deploy-docker.sh staging",
+    "deploy:docker:prod": "./scripts/deploy-docker.sh production",
+    "deploy:source:dev": "./scripts/deploy-source.sh development",
+    "deploy:source:staging": "./scripts/deploy-source.sh staging",
+    "deploy:source:prod": "./scripts/deploy-source.sh production",
     "diff": "cdk diff",
     "synth": "cdk synth",
     "destroy": "cdk destroy"

@@ -3,11 +3,13 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { Button } from '../../components/ui/Button';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/Card';
-import { AddressAutocomplete } from '../../components/ui/AddressAutocomplete';
-import { CurrencyInput } from '../../components/ui/CurrencyInput';
+import { Button } from '@/app/components/ui/Button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/Card';
+import { AddressAutocomplete } from '@/app/components/ui/AddressAutocomplete';
+import { CurrencyInput } from '@/app/components/ui/CurrencyInput';
 import { TrashIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { checkEnvironmentVariable } from '@/app/lib/utils';
+import { logBuildInfo } from '@/app/lib/build-info';
 
 interface TeamMember {
   name: string;
@@ -88,8 +90,23 @@ export default function CreateProject() {
     setHasSavedData(false);
   };
 
-  // Google Maps API key - you'll need to set this in your environment
+  // Google Maps API key - retrieved from environment variable (securely managed)
   const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
+  
+  // Log build information for debugging (secure) - only in local development
+  useEffect(() => {
+    // Only log in true local development (not deployed environments)
+    const isLocalDevelopment = process.env.NODE_ENV === 'development' && 
+                              typeof window !== 'undefined' && 
+                              (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+    
+    if (isLocalDevelopment) {
+      logBuildInfo();
+    }
+  }, []);
+  
+  // Check if API key is configured (without exposing the value)
+  const hasGoogleMapsKey = checkEnvironmentVariable('NEXT_PUBLIC_GOOGLE_MAPS_API_KEY');
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -179,11 +196,18 @@ export default function CreateProject() {
     }
 
     try {
-      console.log('=== FORM SUBMISSION DEBUG ===');
-      console.log('Form data being sent:', {
-        ...formData,
-        teamMembers,
-      });
+      // Debug logging only in local development
+      const isLocalDevelopment = process.env.NODE_ENV === 'development' && 
+                                typeof window !== 'undefined' && 
+                                (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+                           
+      if (isLocalDevelopment) {
+        console.log('=== FORM SUBMISSION DEBUG ===');
+        console.log('Form data being sent:', {
+          ...formData,
+          teamMembers,
+        });
+      }
 
       const requestData = {
         name: formData.name,
@@ -196,7 +220,9 @@ export default function CreateProject() {
         teamMembers,
       };
 
-      console.log('Processed request data:', requestData);
+      if (isLocalDevelopment) {
+        console.log('Processed request data:', requestData);
+      }
 
       const response = await fetch('/api/projects', {
         method: 'POST',
@@ -301,7 +327,7 @@ export default function CreateProject() {
                 <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
                   Project Address *
                 </label>
-                {GOOGLE_MAPS_API_KEY ? (
+                {hasGoogleMapsKey ? (
                   <AddressAutocomplete
                     value={formData.address}
                     onChange={handleAddressChange}
@@ -499,4 +525,4 @@ export default function CreateProject() {
       </div>
     </div>
   );
-} 
+}

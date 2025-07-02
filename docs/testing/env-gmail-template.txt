@@ -1,0 +1,22 @@
+# Gmail API OAuth Credentials for Email Testing Utility
+# Copy this content to project root as .env.local and replace with actual values
+
+# OAuth Client ID for email testing utility (contractor account)
+GMAIL_CONTRACTOR_CLIENT_ID="YOUR_CLIENT_ID_HERE"
+
+# OAuth Client Secret for email testing utility (contractor account)  
+GMAIL_CONTRACTOR_CLIENT_SECRET="YOUR_CLIENT_SECRET_HERE"
+
+# Refresh token (generated during OAuth flow - leave empty initially)
+GMAIL_CONTRACTOR_REFRESH_TOKEN=""
+
+# Contractor test email account
+GMAIL_CONTRACTOR_EMAIL="nailit.test.contractor@gmail.com"
+
+# Setup Instructions:
+# 1. Get actual credentials from team password manager or team lead
+# 2. Copy this content to project root as .env.local
+# 3. Replace placeholder values with actual credentials
+# 4. Run OAuth setup: npm run test:gmail:setup
+# 5. Complete OAuth flow: npm run test:gmail:token <AUTH_CODE>
+# 6. Test setup: npm run test:gmail:auth 

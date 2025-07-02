@@ -35,6 +35,10 @@ yarn-error.log*why
 .env*
 .githubauth
 
+# Gmail OAuth credentials and tokens (email testing utility)
+gmail-contractor-credentials.json
+gmail-contractor-tokens.json
+
 # vercel
 .vercel
 
@@ -57,3 +61,6 @@ next-env.d.ts
 *.dmg
 *.exe
 *.msi
+infrastructure/.env.secrets
+infrastructure/cdk.out/
+deploy/

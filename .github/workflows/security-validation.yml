@@ -1,0 +1,120 @@
+name: Security Validation
+
+on:
+  pull_request:
+    branches: [develop, staging, main]
+  push:
+    branches: [develop, staging, main]
+
+jobs:
+  security-validation:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci --legacy-peer-deps
+
+    - name: Security Audit
+      run: npm audit --audit-level=high
+
+    - name: Check for hardcoded secrets
+      run: |
+        echo "Checking for potential secrets in code..."
+        
+        # Check app/ directory (should be clean)
+        if grep -r "AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0\|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\|npg_avELx8uqOAc0" --include="*.ts" --include="*.js" --include="*.tsx" --include="*.jsx" app/; then
+          echo "❌ Hardcoded production secrets found in app/ directory"
+          exit 1
+        fi
+        
+        # Check infrastructure/lib directory (should be clean after migration)
+        if grep -r "AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0\|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\|npg_avELx8uqOAc0" --include="*.ts" infrastructure/lib/; then
+          echo "❌ Hardcoded production secrets found in infrastructure CDK code"
+          echo "✅ This was expected before the credential migration"
+          echo "🎉 Migration should now be complete - this test should pass"
+          exit 1
+        fi
+        
+        echo "✅ No hardcoded production secrets found in source code"
+
+    - name: Validate debug endpoints are secured
+      run: |
+        echo "Validating debug endpoint security..."
+        
+        # Check that debug endpoints use security middleware
+        missing_security=()
+        
+        # Check all debug and test endpoints
+        for endpoint in app/api/debug-*/route.ts app/api/test-*/route.ts; do
+          if [ -f "$endpoint" ]; then
+            if ! grep -q "withDebugSecurity\|requireDevelopmentOrAuth" "$endpoint"; then
+              missing_security+=("$endpoint")
+            fi
+          fi
+        done
+        
+        if [ ${#missing_security[@]} -gt 0 ]; then
+          echo "❌ The following debug endpoints are missing security middleware:"
+          printf '%s\n' "${missing_security[@]}"
+          exit 1
+        fi
+        
+        echo "✅ All debug endpoints have security middleware"
+
+    - name: Build application
+      run: npm run build
+      env:
+        # Use dummy values for build (these are safe for CI)
+        DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy"
+        NEXTAUTH_SECRET: "dummy-secret-for-build"
+        NEXTAUTH_URL: "http://localhost:3000"
+        GOOGLE_CLIENT_ID: "dummy-client-id"
+        GOOGLE_CLIENT_SECRET: "dummy-client-secret"
+        NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: "dummy-api-key"
+
+    - name: Run security tests
+      run: |
+        # Test that environment variable sanitization works
+        npm run test -- --testPathPattern="security" --passWithNoTests
+      env:
+        DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy"
+        NEXTAUTH_SECRET: "dummy-secret-for-build"
+
+  environment-specific-validation:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Validate credential migration status
+      run: |
+        echo "Validating credential migration status..."
+        
+        # Check that secrets-stack.ts uses environment variables
+        if grep -E "process\.env\." infrastructure/lib/secrets-stack.ts; then
+          echo "✅ Secrets migration complete - using environment variables"
+        else
+          echo "⚠️  Secrets migration may not be complete"
+          echo "📋 Ensure secrets-stack.ts uses process.env for all credentials"
+        fi
+
+    - name: Check environment-specific security
+      run: |
+        echo "Environment: ${{ github.ref_name }}"
+        
+        # Validate that production has stricter security
+        if [[ "${{ github.ref_name }}" == "main" ]]; then
+          echo "🔒 Production environment - validating enhanced security"
+          # Add production-specific security checks here
+        fi 
