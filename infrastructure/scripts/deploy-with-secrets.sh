@@ -1,99 +1,132 @@
 #!/bin/bash
 
-# NailIt Infrastructure Deployment with Secure Secrets Management
-# This script sets environment variables from current hardcoded values,
-# then deploys the CDK infrastructure to reference them properly.
+# Secure deployment script for NailIt CDK infrastructure
+# This script reads credentials from .env.secrets (not committed to Git)
+# Usage: ./deploy-with-secrets.sh [environment] [stack]
 
 set -e
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+ENVIRONMENT=${1:-development}
+STACK=${2:-all}
 
-echo -e "${GREEN}🚀 NailIt Infrastructure Deployment with Secrets Management${NC}"
-echo "=============================================================="
+echo "🔐 Deploying NailIt infrastructure with secure credential management"
+echo "Environment: $ENVIRONMENT"
+echo "Stack: $STACK"
 
-# Check required parameters
-if [ "$#" -lt 1 ]; then
-    echo -e "${RED}Usage: $0 <environment> [stack-names...]${NC}"
-    echo "Environment must be one of: development, staging, production"
-    echo "Example: $0 development"
-    echo "Example: $0 production Secrets AppRunner"
-    exit 1
-fi
-
-ENVIRONMENT="$1"
-shift
-STACKS="$@"
-
-if [[ ! "$ENVIRONMENT" =~ ^(development|staging|production)$ ]]; then
-    echo -e "${RED}❌ Invalid environment: $ENVIRONMENT${NC}"
+# Validate environment
+case $ENVIRONMENT in
+  development|staging|production)
+    echo "✅ Valid environment: $ENVIRONMENT"
+    ;;
+  *)
+    echo "❌ Invalid environment: $ENVIRONMENT"
     echo "Must be one of: development, staging, production"
     exit 1
-fi
-
-echo -e "${YELLOW}🔧 Environment: $ENVIRONMENT${NC}"
-
-# Set environment variables with current values
-# These will be moved to a secure location (like .env.secrets) in production
-echo -e "${YELLOW}🔐 Setting environment variables for deployment...${NC}"
-
-# Database URLs (environment-specific)
-case $ENVIRONMENT in
-    development)
-        export NAILIT_DATABASE_URL_DEVELOPMENT="postgresql://neondb_owner:npg_avELx8uqOAc0@ep-still-paper-a5tgtem8-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require"
-        ;;
-    staging)
-        export NAILIT_DATABASE_URL_STAGING="postgresql://neondb_owner:npg_avELx8uqOAc0@ep-raspy-sound-a5eg97xu-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require"
-        ;;
-    production)
-        export NAILIT_DATABASE_URL_PRODUCTION="postgresql://neondb_owner:npg_avELx8uqOAc0@ep-misty-frog-a5pcr9pt-pooler.us-east-2.aws.neon.tech/neondb?sslmode=require"
-        ;;
+    ;;
 esac
 
-# Shared secrets (same across environments for now)
-export NAILIT_NEXTAUTH_SECRET_DEVELOPMENT="+hP31rrZgohD7u3uHr/ASb1WE9j3MYjxHtTBmaaU+3M="
-export NAILIT_NEXTAUTH_SECRET_STAGING="+hP31rrZgohD7u3uHr/ASb1WE9j3MYjxHtTBmaaU+3M="
-export NAILIT_NEXTAUTH_SECRET_PRODUCTION="+hP31rrZgohD7u3uHr/ASb1WE9j3MYjxHtTBmaaU+3M="
+# Check for .env.secrets file
+SECRETS_FILE="$(dirname "$0")/../.env.secrets"
+if [ ! -f "$SECRETS_FILE" ]; then
+  echo "❌ Secrets file not found: $SECRETS_FILE"
+  echo ""
+  echo "📋 Please create .env.secrets with the following format:"
+  echo ""
+  echo "# Database URLs for each environment"
+  echo "NAILIT_DATABASE_URL_DEVELOPMENT=\"postgresql://user:pass@host/db\""
+  echo "NAILIT_DATABASE_URL_STAGING=\"postgresql://user:pass@host/db\""
+  echo "NAILIT_DATABASE_URL_PRODUCTION=\"postgresql://user:pass@host/db\""
+  echo ""
+  echo "# NextAuth secrets"
+  echo "NAILIT_NEXTAUTH_SECRET_DEVELOPMENT=\"your-nextauth-secret\""
+  echo "NAILIT_NEXTAUTH_SECRET_STAGING=\"your-nextauth-secret\""
+  echo "NAILIT_NEXTAUTH_SECRET_PRODUCTION=\"your-nextauth-secret\""
+  echo ""
+  echo "# Google OAuth credentials"
+  echo "NAILIT_GOOGLE_CLIENT_ID_DEVELOPMENT=\"your-google-client-id\""
+  echo "NAILIT_GOOGLE_CLIENT_ID_STAGING=\"your-google-client-id\""
+  echo "NAILIT_GOOGLE_CLIENT_ID_PRODUCTION=\"your-google-client-id\""
+  echo ""
+  echo "NAILIT_GOOGLE_CLIENT_SECRET_DEVELOPMENT=\"your-google-client-secret\""
+  echo "NAILIT_GOOGLE_CLIENT_SECRET_STAGING=\"your-google-client-secret\""
+  echo "NAILIT_GOOGLE_CLIENT_SECRET_PRODUCTION=\"your-google-client-secret\""
+  echo ""
+  echo "# API Keys"
+  echo "NAILIT_GOOGLE_MAPS_API_KEY_DEVELOPMENT=\"your-api-key\""
+  echo "NAILIT_GOOGLE_MAPS_API_KEY_STAGING=\"your-api-key\""
+  echo "NAILIT_GOOGLE_MAPS_API_KEY_PRODUCTION=\"your-api-key\""
+  echo ""
+  echo "⚠️  IMPORTANT: .env.secrets should NEVER be committed to Git!"
+  echo "   Add it to .gitignore if not already there."
+  exit 1
+fi
 
-export NAILIT_GOOGLE_CLIENT_ID_DEVELOPMENT="442433418686-sahpnrfagrs9lfs1pdee2m06e4g2ukdc.apps.googleusercontent.com"
-export NAILIT_GOOGLE_CLIENT_ID_STAGING="442433418686-sahpnrfagrs9lfs1pdee2m06e4g2ukdc.apps.googleusercontent.com"
-export NAILIT_GOOGLE_CLIENT_ID_PRODUCTION="442433418686-sahpnrfagrs9lfs1pdee2m06e4g2ukdc.apps.googleusercontent.com"
+# Load secrets from file
+echo "📁 Loading secrets from $SECRETS_FILE"
+export $(grep -v '^#' "$SECRETS_FILE" | xargs)
 
-export NAILIT_GOOGLE_CLIENT_SECRET_DEVELOPMENT="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"
-export NAILIT_GOOGLE_CLIENT_SECRET_STAGING="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"
-export NAILIT_GOOGLE_CLIENT_SECRET_PRODUCTION="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"
+# Validate that required secrets are loaded
+REQUIRED_VARS=(
+  "NAILIT_DATABASE_URL_${ENVIRONMENT^^}"
+  "NAILIT_NEXTAUTH_SECRET_${ENVIRONMENT^^}"
+  "NAILIT_GOOGLE_CLIENT_ID_${ENVIRONMENT^^}"
+  "NAILIT_GOOGLE_CLIENT_SECRET_${ENVIRONMENT^^}"
+  "NAILIT_GOOGLE_MAPS_API_KEY_${ENVIRONMENT^^}"
+)
 
-export NAILIT_GOOGLE_MAPS_API_KEY_DEVELOPMENT="AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0"
-export NAILIT_GOOGLE_MAPS_API_KEY_STAGING="AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0"
-export NAILIT_GOOGLE_MAPS_API_KEY_PRODUCTION="AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0"
+echo "🔍 Validating required environment variables..."
+MISSING_VARS=()
+for var in "${REQUIRED_VARS[@]}"; do
+  if [ -z "${!var}" ]; then
+    MISSING_VARS+=("$var")
+  else
+    echo "  ✅ $var is set"
+  fi
+done
 
-echo -e "${GREEN}✅ Environment variables set for $ENVIRONMENT${NC}"
+if [ ${#MISSING_VARS[@]} -gt 0 ]; then
+  echo "❌ Missing required environment variables:"
+  printf '  - %s\n' "${MISSING_VARS[@]}"
+  echo ""
+  echo "Please update your .env.secrets file with the missing variables."
+  exit 1
+fi
 
 # Change to infrastructure directory
 cd "$(dirname "$0")/.."
 
-# Build the project
-echo -e "${YELLOW}📦 Building CDK project...${NC}"
-npm run build
+# Deploy stacks
+echo "🚀 Starting CDK deployment..."
 
-# Deploy the stacks
-if [ -n "$STACKS" ]; then
-    echo -e "${YELLOW}🚀 Deploying specific stacks: $STACKS${NC}"
-    for stack in $STACKS; do
-        echo -e "${YELLOW}🔄 Deploying ${stack}-${ENVIRONMENT}...${NC}"
-        npx cdk deploy "${stack}-${ENVIRONMENT}" --require-approval never
-    done
-else
-    echo -e "${YELLOW}🚀 Deploying all stacks for $ENVIRONMENT...${NC}"
-    npx cdk deploy --all --require-approval never
+if [ "$STACK" = "all" ] || [ "$STACK" = "secrets" ]; then
+  echo "📦 Deploying Secrets stack..."
+  npx cdk deploy "Secrets-$(echo $ENVIRONMENT | sed 's/development/dev/; s/production/prod/')" \
+    --context environment=$ENVIRONMENT \
+    --require-approval never
 fi
 
-echo -e "${GREEN}🎉 Deployment completed successfully!${NC}"
-echo -e "${YELLOW}📋 Next steps:${NC}"
-echo "1. Verify the secrets are properly stored in AWS Secrets Manager"
-echo "2. Test the App Runner deployment"
-echo "3. Move secrets to a secure .env.secrets file (not committed to Git)"
-echo "4. Update GitHub Actions to use the secure deployment method" 
+if [ "$STACK" = "all" ] || [ "$STACK" = "logging" ]; then
+  echo "📊 Deploying Logging stack..."
+  npx cdk deploy "LoggingStack-$(echo $ENVIRONMENT | sed 's/development/dev/; s/production/prod/')" \
+    --context environment=$ENVIRONMENT \
+    --require-approval never
+fi
+
+if [ "$STACK" = "all" ] || [ "$STACK" = "app-runner" ]; then
+  echo "🏃 Deploying App Runner stack..."
+  npx cdk deploy "AppRunner-$(echo $ENVIRONMENT | sed 's/development/dev/; s/production/prod/')" \
+    --context environment=$ENVIRONMENT \
+    --require-approval never
+fi
+
+echo "✅ Deployment complete!"
+echo ""
+echo "📋 Next steps:"
+echo "1. Verify deployment in AWS Console"
+echo "2. Test application functionality"
+echo "3. Monitor CloudWatch logs for any issues"
+echo ""
+echo "🔒 Security reminder:"
+echo "- All credentials are now stored securely in AWS Secrets Manager"
+echo "- No hardcoded secrets remain in the codebase"
+echo "- .env.secrets file should remain local and never be committed" 

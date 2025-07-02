@@ -61,3 +61,6 @@ next-env.d.ts
 *.dmg
 *.exe
 *.msi
+infrastructure/.env.secrets
+infrastructure/cdk.out/
+deploy/

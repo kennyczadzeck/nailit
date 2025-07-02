@@ -20,10 +20,11 @@ export const BUILD_INFO = {
   // Debug info - show all env keys for debugging
   allEnvKeys: typeof window === 'undefined' ? Object.keys(process.env || {}).slice(0, 10) : ['client-side'],
   
-  // Test: Direct string comparison to see if variables are actually embedded
+  // Test: Verify that variables are properly embedded (without hardcoded values)
   testEmbedding: {
-    hasKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY === 'AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0',
-    keyValue: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+    hasKey: !!(process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY),
+    keyPresent: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ? 'Present' : 'Missing',
+    keyLength: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY?.length || 0,
     buildTimeSet: !!process.env.NEXT_PUBLIC_BUILD_TIME,
     buildTimeValue: process.env.NEXT_PUBLIC_BUILD_TIME,
   }

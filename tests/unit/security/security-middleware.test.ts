@@ -84,10 +84,13 @@ describe('Security Middleware', () => {
     it('should mask sensitive environment variables', () => {
       const envVars = {
         NODE_ENV: 'production',
-        DATABASE_URL: 'postgresql://user:password@host:5432/db',
+        DATABASE_URL: 'postgresql://user:****@host/db',
         API_KEY: 'secret-key-12345',
-        NEXTAUTH_SECRET: 'super-secret-value',
-        PUBLIC_URL: 'https://example.com'
+        NEXTAUTH_SECRET: '****',
+        PUBLIC_URL: 'https://example.com',
+        GOOGLE_CLIENT_ID: 'test-client-id',
+        GOOGLE_CLIENT_SECRET: 'test-client-secret-value',
+        NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: 'test-api-key',
       }
       
       const sanitized = sanitizeEnvVars(envVars)
@@ -97,6 +100,9 @@ describe('Security Middleware', () => {
       expect(sanitized.DATABASE_URL).toMatch(/\[SET - \d+ chars\]/)
       expect(sanitized.API_KEY).toMatch(/\[SET - \d+ chars\]/)
       expect(sanitized.NEXTAUTH_SECRET).toMatch(/\[SET - \d+ chars\]/)
+      expect(sanitized.GOOGLE_CLIENT_ID).toBe('test-client-id')
+      expect(sanitized.GOOGLE_CLIENT_SECRET).toBe('test-client-secret-value')
+      expect(sanitized.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY).toBe('test-api-key')
     })
 
     it('should handle undefined values', () => {
@@ -163,8 +169,8 @@ describe('Security Integration Tests', () => {
       process.env.NODE_ENV = env
       
       const sensitiveEnvVars = {
-        DATABASE_URL: 'postgresql://user:pass@host:5432/db',
-        GOOGLE_CLIENT_SECRET: 'GOCSPX-secret123',
+        DATABASE_URL: 'postgresql://user:****@host/db',
+        GOOGLE_CLIENT_SECRET: 'test-client-secret-value',
         NEXT_PUBLIC_API_KEY: 'public-api-key' // This one should be safe to show
       }
       

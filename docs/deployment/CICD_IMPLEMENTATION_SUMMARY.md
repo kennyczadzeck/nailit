@@ -214,19 +214,85 @@ npm run test:ci                 # CI environment testing
 - 📊 **Real validation**: Actual database connectivity testing
 - 🔄 **Rollback ready**: Quality gates prevent broken deployments
 
+### **5. Secure Credential Management**
+- 🔐 **Zero hardcoded secrets**: All credentials stored in AWS Secrets Manager
+- 🛡️ **Automated security validation**: Blocks deployment if credentials detected in code
+- 🚨 **Runtime security**: Environment variables securely injected at runtime
+- 📋 **Detailed documentation**: See [Secure CI/CD Credential Management](./SECURE_CICD_CREDENTIAL_MANAGEMENT.md)
+
 ## 🛡️ **Security & Compliance**
 
-### **Access Control**
-- **Production secrets**: Only accessible to protected branch deployments
-- **Development secrets**: Isolated environment for development branch
-- **Pull request isolation**: No access to any environment secrets
-- **Environment protection**: GitHub environment rules enforced
+### **Credential Management Strategy**
+The deployment pipeline maintains **enterprise-grade security** while preserving **full automation**:
 
-### **Audit Trail**
-- **All deployments**: Tracked with Git commits and workflow runs
-- **Quality gates**: Evidence of testing before deployment
-- **Environment validation**: Logged health checks and connectivity tests
-- **Performance metrics**: Historical data for optimization
+- **Infrastructure Secrets**: Stored in local `.env.secrets` file (gitignored) for CDK deployment
+- **GitHub Actions Secrets**: Build-time environment variables stored in GitHub repository secrets
+- **Runtime Secrets**: All production credentials stored in AWS Secrets Manager
+- **Application Security**: Debug endpoints protected, credential sanitization active
+
+### **Security Validation Pipeline**
+```yaml
+# Automatic security checks on every push/PR
+✅ Hardcoded credential scanning (blocks deployment if found)
+✅ Debug endpoint authentication validation  
+✅ Security middleware verification
+✅ Build process security validation
+✅ Environment-specific security controls
+```
+
+### **Deployment Security**
+- **Development**: Automated deployment on `develop` branch push
+- **Staging**: Automated deployment on `staging` branch push  
+- **Production**: Automated deployment on `main` branch push
+- **All environments**: Security validation must pass before deployment
+
+## 🚀 **Automated Deployment Flow**
+
+### **Complete Workflow (Fully Automated)**
+```bash
+# 1. Developer pushes code
+git push origin develop
+
+# 2. GitHub Actions automatically:
+#    - Runs security validation
+#    - Builds Docker image with secure build args
+#    - Pushes to ECR
+#    - Triggers App Runner deployment
+
+# 3. App Runner automatically:
+#    - Pulls new Docker image
+#    - Injects runtime secrets from AWS Secrets Manager
+#    - Deploys to live environment
+#    - Validates health checks
+
+# 4. Deployment complete - no manual steps required
+```
+
+### **Environment URLs (Auto-Updated)**
+- **Development**: https://d3pvc5dn43.us-east-1.awsapprunner.com
+- **Staging**: https://ubfybdadun.us-east-1.awsapprunner.com
+- **Production**: https://ijj2mc7dhz.us-east-1.awsapprunner.com
+
+## 📋 **Developer Workflow (Unchanged)**
+
+### **Daily Development Process**
+```bash
+# Normal development workflow - fully automated
+npm run dev                     # Local development
+npm run test:watch             # TDD development  
+git add . && git commit -m "..." && git push origin develop
+# → Automatic deployment to development environment
+
+# Deploy to staging
+git checkout staging && git merge develop && git push origin staging
+# → Automatic deployment to staging environment
+
+# Deploy to production
+git checkout main && git merge staging && git push origin main  
+# → Automatic deployment to production environment
+```
+
+**Key Point**: The credential security improvements **do not change** the developer workflow. Deployment remains **fully automated** via code pushes.
 
 ## 🚀 **Production Readiness**
 
