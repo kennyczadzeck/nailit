@@ -1,6 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '../api/auth/[...nextauth]/route'
+
+// Conditional import to avoid Jest issues
+let getServerSession: any;
+let authOptions: any;
+
+try {
+  const nextAuth = require('next-auth/next');
+  getServerSession = nextAuth.getServerSession;
+  authOptions = require('../api/auth/[...nextauth]/route').authOptions;
+} catch (error) {
+  // Fallback for testing environments
+  getServerSession = () => Promise.resolve(null);
+  authOptions = {};
+}
 
 /**
  * Security middleware for debug and test endpoints
@@ -42,20 +54,6 @@ export async function requireDevelopmentOrAuth(request: NextRequest) {
 }
 
 /**
- * Wrapper for debug endpoints that applies security middleware
- */
-export function withDebugSecurity(handler: (request: NextRequest) => Promise<NextResponse>) {
-  return async function securedHandler(request: NextRequest): Promise<NextResponse> {
-    const securityResponse = await requireDevelopmentOrAuth(request)
-    if (securityResponse) {
-      return securityResponse
-    }
-    
-    return handler(request)
-  }
-}
-
-/**
  * Sanitize environment variables for safe display
  * Shows only safe information and masks sensitive values
  */
@@ -80,7 +78,7 @@ export function sanitizeEnvVars(envVars: Record<string, string | undefined>) {
 
     if (isSensitive) {
       // Show only that it's set, not the value
-      sanitized[key] = `[SET - ${value.length} chars]`
+      sanitized[key] = 'SET'
     } else {
       // Safe to show (like NODE_ENV, URLs that aren't connection strings)
       sanitized[key] = value
@@ -91,11 +89,15 @@ export function sanitizeEnvVars(envVars: Record<string, string | undefined>) {
 }
 
 /**
- * Check if current environment allows debug operations
+ * Security headers for debug endpoints
  */
-export function isDebugEnvironment(): boolean {
-  return process.env.NODE_ENV === 'development' || 
-         process.env.NAILIT_ENVIRONMENT === 'development'
+export const debugSecurityHeaders = {
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'X-XSS-Protection': '1; mode=block',
+  'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+  'Pragma': 'no-cache',
+  'Expires': '0'
 }
 
 /**
@@ -112,18 +114,6 @@ export const enhancedSecurityHeaders = {
 }
 
 /**
- * Security headers for debug endpoints
- */
-export const debugSecurityHeaders = {
-  'X-Content-Type-Options': 'nosniff',
-  'X-Frame-Options': 'DENY',
-  'X-XSS-Protection': '1; mode=block',
-  'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-  'Pragma': 'no-cache',
-  'Expires': '0'
-}
-
-/**
  * Get appropriate security headers based on environment
  */
 export function getSecurityHeaders(): Record<string, string> {
@@ -131,4 +121,67 @@ export function getSecurityHeaders(): Record<string, string> {
     return enhancedSecurityHeaders
   }
   return debugSecurityHeaders
+}
+
+/**
+ * Add security headers to a response
+ */
+function addSecurityHeaders(response: NextResponse): NextResponse {
+  const headers = getSecurityHeaders();
+  Object.entries(headers).forEach(([key, value]) => {
+    response.headers.set(key, value);
+  });
+  return response;
+}
+
+/**
+ * Wrapper for debug endpoints that applies security middleware
+ */
+export function withDebugSecurity(
+  handler: (req: NextRequest) => Promise<NextResponse> | NextResponse
+) {
+  return async (req: NextRequest): Promise<NextResponse> => {
+    const env = process.env.NODE_ENV || 'development';
+    
+    // Check if debug endpoints are disabled
+    if (process.env.DISABLE_DEBUG_ENDPOINTS === 'true') {
+      return NextResponse.json(
+        { error: 'Debug endpoints are disabled' },
+        { status: 403, headers: debugSecurityHeaders }
+      );
+    }
+
+    // In development, allow all access
+    if (env === 'development') {
+      const response = await handler(req);
+      return addSecurityHeaders(response);
+    }
+
+    // In staging/production, require authentication
+    try {
+      const session = await getServerSession(authOptions);
+      if (!session?.user?.id) {
+        return NextResponse.json(
+          { error: 'Authentication required' },
+          { status: 401, headers: debugSecurityHeaders }
+        );
+      }
+    } catch (error) {
+      return NextResponse.json(
+        { error: 'Authentication system unavailable' },
+        { status: 503, headers: debugSecurityHeaders }
+      );
+    }
+
+    const response = await handler(req);
+    return addSecurityHeaders(response);
+  };
+}
+
+/**
+ * Check if current environment allows debug operations
+ */
+export function isDebugEnvironment(): boolean {
+  return process.env.NODE_ENV === 'development' || 
+         process.env.NAILIT_ENVIRONMENT === 'development'
 } 
