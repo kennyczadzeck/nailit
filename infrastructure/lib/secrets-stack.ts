@@ -17,27 +17,10 @@ export class SecretsStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: SecretsStackProps) {
     super(scope, id, props);
 
-    // Environment-specific configuration - URLs only (not secrets)
-    const envConfigs = {
-      development: {
-        nextauthUrl: 'https://d3pvc5dn43.us-east-1.awsapprunner.com',
-      },
-      staging: {
-        nextauthUrl: 'https://ubfybdadun.us-east-1.awsapprunner.com',
-      },
-      production: {
-        nextauthUrl: 'https://ijj2mc7dhz.us-east-1.awsapprunner.com',
-      },
-    };
-
-    const config = envConfigs[props.environment as keyof typeof envConfigs];
-    if (!config) {
-      throw new Error(`Unknown environment: ${props.environment}. Must be one of: ${Object.keys(envConfigs).join(', ')}`);
-    }
-
     // Get secrets from environment variables (set during CDK deployment)
     const databaseUrl = process.env[`NAILIT_DATABASE_URL_${props.environment.toUpperCase()}`];
     const nextauthSecret = process.env[`NAILIT_NEXTAUTH_SECRET_${props.environment.toUpperCase()}`];
+    const nextauthUrl = process.env[`NAILIT_NEXTAUTH_URL_${props.environment.toUpperCase()}`];
     const googleClientId = process.env[`NAILIT_GOOGLE_CLIENT_ID_${props.environment.toUpperCase()}`];
     const googleClientSecret = process.env[`NAILIT_GOOGLE_CLIENT_SECRET_${props.environment.toUpperCase()}`];
     const googleMapsApiKey = process.env[`NAILIT_GOOGLE_MAPS_API_KEY_${props.environment.toUpperCase()}`];
@@ -48,6 +31,9 @@ export class SecretsStack extends cdk.Stack {
     }
     if (!nextauthSecret) {
       throw new Error(`Missing required environment variable: NAILIT_NEXTAUTH_SECRET_${props.environment.toUpperCase()}`);
+    }
+    if (!nextauthUrl) {
+      throw new Error(`Missing required environment variable: NAILIT_NEXTAUTH_URL_${props.environment.toUpperCase()}`);
     }
     if (!googleClientId) {
       throw new Error(`Missing required environment variable: NAILIT_GOOGLE_CLIENT_ID_${props.environment.toUpperCase()}`);
@@ -73,10 +59,10 @@ export class SecretsStack extends cdk.Stack {
       secretStringValue: cdk.SecretValue.unsafePlainText(nextauthSecret),
     });
 
-    const nextauthUrl = new secretsmanager.Secret(this, 'NextAuthUrl', {
+    const nextauthUrlResource = new secretsmanager.Secret(this, 'NextAuthUrl', {
       secretName: `nailit-nextauth-url-${props.environment}`,
       description: 'NextAuth URL for NailIt application',
-      secretStringValue: cdk.SecretValue.unsafePlainText(config.nextauthUrl),
+      secretStringValue: cdk.SecretValue.unsafePlainText(nextauthUrl),
     });
 
     const googleClientIdResource = new secretsmanager.Secret(this, 'GoogleClientId', {
@@ -100,7 +86,7 @@ export class SecretsStack extends cdk.Stack {
     // Export ARNs for use in App Runner stack
     this.databaseSecretArn = databaseSecret.secretArn;
     this.nextauthSecretArn = nextauthSecretResource.secretArn;
-    this.nextauthUrlArn = nextauthUrl.secretArn;
+    this.nextauthUrlArn = nextauthUrlResource.secretArn;
     this.googleClientIdArn = googleClientIdResource.secretArn;
     this.googleClientSecretArn = googleClientSecretResource.secretArn;
     this.apiKeysSecretArn = apiKeysSecret.secretArn;
