@@ -93,9 +93,16 @@ export default function CreateProject() {
   // Google Maps API key - retrieved from environment variable (securely managed)
   const GOOGLE_MAPS_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
   
-  // Log build information for debugging (secure)
+  // Log build information for debugging (secure) - only in local development
   useEffect(() => {
-    logBuildInfo();
+    // Only log in true local development (not deployed environments)
+    const isLocalDevelopment = process.env.NODE_ENV === 'development' && 
+                              typeof window !== 'undefined' && 
+                              (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+    
+    if (isLocalDevelopment) {
+      logBuildInfo();
+    }
   }, []);
   
   // Check if API key is configured (without exposing the value)
@@ -189,11 +196,18 @@ export default function CreateProject() {
     }
 
     try {
-      console.log('=== FORM SUBMISSION DEBUG ===');
-      console.log('Form data being sent:', {
-        ...formData,
-        teamMembers,
-      });
+      // Debug logging only in local development
+      const isLocalDevelopment = process.env.NODE_ENV === 'development' && 
+                                typeof window !== 'undefined' && 
+                                (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+                           
+      if (isLocalDevelopment) {
+        console.log('=== FORM SUBMISSION DEBUG ===');
+        console.log('Form data being sent:', {
+          ...formData,
+          teamMembers,
+        });
+      }
 
       const requestData = {
         name: formData.name,
@@ -206,7 +220,9 @@ export default function CreateProject() {
         teamMembers,
       };
 
-      console.log('Processed request data:', requestData);
+      if (isLocalDevelopment) {
+        console.log('Processed request data:', requestData);
+      }
 
       const response = await fetch('/api/projects', {
         method: 'POST',
