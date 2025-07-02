@@ -269,7 +269,7 @@ git push origin develop
 ```
 
 ### **Environment URLs (Auto-Updated)**
-- **Development**: https://d3pvc5dn43.us-east-1.awsapprunner.com
+- **Development**: https://u9eack5h4f.us-east-1.awsapprunner.com
 - **Staging**: https://ubfybdadun.us-east-1.awsapprunner.com
 - **Production**: https://ijj2mc7dhz.us-east-1.awsapprunner.com
 

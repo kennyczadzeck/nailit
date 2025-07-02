@@ -34,7 +34,7 @@ export async function loadHistoricalEmailsIntoDB() {
   
   if (!testUser) {
     console.log('⚠️  No OAuth user found for', testAccounts.homeowner.email);
-    console.log('Please sign in with Google OAuth first at: https://d3pvc5dn43.us-east-1.awsapprunner.com/auth/signin');
+    console.log('Please sign in with Google OAuth first at: https://u9eack5h4f.us-east-1.awsapprunner.com/auth/signin');
     console.log('Then run this command again.');
     return { count: 0, emails: [], message: 'OAuth signin required' };
   }
