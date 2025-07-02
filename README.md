@@ -122,6 +122,9 @@ All Phase 1 objectives complete! The app now has:
 - **Authentication**: Google OAuth 2.0 (planned)
 - **AI/NLP**: OpenAI API (planned)
 - **Email**: Gmail API (planned)
+- **Deployment**: AWS App Runner (Docker-based)
+- **Infrastructure**: AWS CDK, ECR, Secrets Manager
+- **CI/CD**: GitHub Actions
 
 ## 🎨 Design System
 
@@ -144,6 +147,8 @@ All Phase 1 objectives complete! The app now has:
 
 ## 🚀 Getting Started
 
+### Local Development
+
 1. **Install dependencies**:
    ```bash
    npm install
@@ -156,6 +161,38 @@ All Phase 1 objectives complete! The app now has:
 
 3. **Visit the app**:
    Open [http://localhost:3000](http://localhost:3000)
+
+### Deployment
+
+The application uses Docker-based deployment on AWS App Runner with GitHub Actions for CI/CD.
+
+**Environment URLs**:
+- **Development**: https://u9eack5h4f.us-east-1.awsapprunner.com (develop branch)
+- **Staging**: https://ubfybdadun.us-east-1.awsapprunner.com (staging branch)  
+- **Production**: https://ijj2mc7dhz.us-east-1.awsapprunner.com (main branch)
+
+**Deployment Process**:
+1. Push to develop/staging/main branches
+2. GitHub Actions builds Docker image with proper environment variables
+3. Image pushed to ECR
+4. App Runner automatically deploys new image
+
+**Infrastructure Management**:
+```bash
+cd infrastructure
+
+# Deploy Docker-based infrastructure
+npm run deploy:docker:dev
+npm run deploy:docker:staging
+npm run deploy:docker:prod
+
+# Legacy source code deployment (fallback)
+npm run deploy:source:dev
+```
+
+**Documentation**:
+- [Docker Migration Plan](docs/deployment/DOCKER_MIGRATION_PLAN.md)
+- [Quick Start Guide](docs/deployment/DOCKER_MIGRATION_QUICKSTART.md)
 
 ## 📁 Project Structure
 

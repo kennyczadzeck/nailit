@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '../../lib/prisma';
+import { BUILD_INFO } from '@/app/lib/build-info';
 
 /**
  * @swagger
@@ -30,9 +30,30 @@ import { prisma } from '../../lib/prisma';
  *         description: Service is unhealthy
  */
 export async function GET() {
-  return Response.json({ 
-    status: 'healthy',
-    timestamp: new Date().toISOString(),
-    service: 'nailit'
-  });
+  try {
+    return NextResponse.json({
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      service: 'nailit',
+      build: {
+        commitHash: BUILD_INFO.commitHash,
+        buildTime: BUILD_INFO.buildTime,
+        environment: BUILD_INFO.environment,
+        nodeEnv: BUILD_INFO.nodeEnv,
+        hasGoogleMapsKey: BUILD_INFO.hasGoogleMapsKey,
+        googleMapsKeyLength: BUILD_INFO.googleMapsKeyLength,
+        publicEnvVars: BUILD_INFO.publicEnvVars,
+      }
+    });
+  } catch (error) {
+    console.error('Health check error:', error);
+    return NextResponse.json(
+      { 
+        status: 'unhealthy', 
+        timestamp: new Date().toISOString(),
+        error: 'Internal server error' 
+      },
+      { status: 500 }
+    );
+  }
 } 

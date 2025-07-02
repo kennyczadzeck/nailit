@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { RequestLogger } from '../../lib/request-logger';
 import { logger } from '../../lib/logger';
+import { withDebugSecurity, debugSecurityHeaders } from '../../lib/security-middleware';
 
 async function handleLoggingTest(request: NextRequest): Promise<NextResponse> {
   const context = RequestLogger.createContext(request);
@@ -142,9 +143,11 @@ async function handleLoggingTest(request: NextRequest): Promise<NextResponse> {
   }
 }
 
-// Wrap with automatic request logging
-export const GET = RequestLogger.wrap(handleLoggingTest);
-export const POST = RequestLogger.wrap(handleLoggingTest);
+// Apply security first, then request logging
+const securedLoggingTest = withDebugSecurity(handleLoggingTest);
+
+export const GET = RequestLogger.wrap(securedLoggingTest);
+export const POST = RequestLogger.wrap(securedLoggingTest);
 
 /**
  * Detects the current environment - must match the logic in logger.ts
