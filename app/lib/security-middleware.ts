@@ -1,14 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 // Conditional import to avoid Jest issues
-let getServerSession: any;
-let authOptions: any;
+let getServerSession: ((authOptions: Record<string, unknown>) => Promise<{ user?: { id?: string } } | null>) | (() => Promise<null>);
+let authOptions: Record<string, unknown>;
 
 try {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const nextAuth = require('next-auth/next');
   getServerSession = nextAuth.getServerSession;
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   authOptions = require('../api/auth/[...nextauth]/route').authOptions;
-} catch (error) {
+} catch {
   // Fallback for testing environments
   getServerSession = () => Promise.resolve(null);
   authOptions = {};
@@ -18,7 +20,7 @@ try {
  * Security middleware for debug and test endpoints
  * Ensures these endpoints are only accessible in development or with proper authentication
  */
-export async function requireDevelopmentOrAuth(request: NextRequest) {
+export async function requireDevelopmentOrAuth(_request: NextRequest) {
   // Check if debug endpoints are explicitly disabled
   if (process.env.DISABLE_DEBUG_ENDPOINTS === 'true') {
     return NextResponse.json(
@@ -166,7 +168,7 @@ export function withDebugSecurity(
           { status: 401, headers: debugSecurityHeaders }
         );
       }
-    } catch (error) {
+    } catch {
       return NextResponse.json(
         { error: 'Authentication system unavailable' },
         { status: 503, headers: debugSecurityHeaders }

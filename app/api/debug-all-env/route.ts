@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { withDebugSecurity, sanitizeEnvVars, debugSecurityHeaders } from '../../lib/security-middleware'
 
-async function handleDebugAllEnv(request: NextRequest) {
+async function handleDebugAllEnv(_request: NextRequest) {
   // Get all environment variables that might be relevant
   const allEnvVars = Object.keys(process.env).filter(key => 
     key.includes('DATABASE') || 
