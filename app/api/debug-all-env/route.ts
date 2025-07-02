@@ -1,44 +1,50 @@
-export async function GET() {
+import { NextRequest, NextResponse } from 'next/server'
+import { withDebugSecurity, sanitizeEnvVars, debugSecurityHeaders } from '../../lib/security-middleware'
+
+async function handleDebugAllEnv(request: NextRequest) {
   // Get all environment variables that might be relevant
   const allEnvVars = Object.keys(process.env).filter(key => 
     key.includes('DATABASE') || 
     key.includes('DIRECT') ||
     key.includes('NEXTAUTH') ||
     key.includes('GOOGLE') ||
-    key.startsWith('NAILIT')
+    key.startsWith('NAILIT') ||
+    key.startsWith('NEXT_PUBLIC_')
   );
 
-  const envSnapshot: Record<string, string> = {};
+  // Create safe snapshot of environment variables
+  const envSnapshot: Record<string, string | undefined> = {};
   allEnvVars.forEach(key => {
-    const value = process.env[key];
-    if (value) {
-      // Show first and last 4 characters for debugging
-      envSnapshot[key] = value.length > 8 ? 
-        `${value.slice(0, 4)}...${value.slice(-4)} (length: ${value.length})` : 
-        '***HIDDEN*** (short)';
-    } else {
-      envSnapshot[key] = 'NOT_SET';
-    }
+    envSnapshot[key] = process.env[key];
   });
 
-  return Response.json({
+  // Sanitize for safe display
+  const sanitizedVars = sanitizeEnvVars(envSnapshot);
+
+  return NextResponse.json({
     foundVariables: allEnvVars.length,
-    variables: envSnapshot,
-    // Specific checks
+    variables: sanitizedVars,
+    // Safe checks - only boolean existence, not values or lengths
     checks: {
       DATABASE_URL_exists: !!process.env.DATABASE_URL,
       DIRECT_URL_exists: !!process.env.DIRECT_URL,
       DATABASE_DIRECT_URL_exists: !!process.env.DATABASE_DIRECT_URL,
       NEON_CONNECTION_URL_exists: !!process.env.NEON_CONNECTION_URL,
-      DATABASE_URL_length: process.env.DATABASE_URL?.length || 0,
-      DIRECT_URL_length: process.env.DIRECT_URL?.length || 0,
-      DATABASE_DIRECT_URL_length: process.env.DATABASE_DIRECT_URL?.length || 0,
-      NEON_CONNECTION_URL_length: process.env.NEON_CONNECTION_URL?.length || 0,
+      NEXTAUTH_SECRET_exists: !!process.env.NEXTAUTH_SECRET,
+      GOOGLE_CLIENT_ID_exists: !!process.env.GOOGLE_CLIENT_ID,
+      GOOGLE_CLIENT_SECRET_exists: !!process.env.GOOGLE_CLIENT_SECRET,
     },
     timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV,
+    nailItEnvironment: process.env.NAILIT_ENVIRONMENT,
+    warning: 'This endpoint is for debugging only and should not be accessible in production'
   }, {
     headers: {
-      'Cache-Control': 'no-store, max-age=0',
+      ...debugSecurityHeaders,
+      'Content-Type': 'application/json'
     },
   });
-} 
+}
+
+// Apply security middleware
+export const GET = withDebugSecurity(handleDebugAllEnv) 

@@ -206,6 +206,10 @@ export class AppRunnerStack extends cdk.Stack {
       { name: 'NODE_ENV', value: 'production' },
       { name: 'PORT', value: '3000' },
       { name: 'HOSTNAME', value: '0.0.0.0' },
+      // Security: Disable debug endpoints in production
+      { name: 'DISABLE_DEBUG_ENDPOINTS', value: 'true' },
+      // Enable security headers in production
+      { name: 'SECURITY_HEADERS_ENABLED', value: 'true' },
     ];
   }
 
@@ -284,15 +288,20 @@ export class AppRunnerStack extends cdk.Stack {
       );
     }
 
-    // Build command with NEXT_PUBLIC environment variables properly set for Next.js build-time embedding
+    // Build command with NEXT_PUBLIC environment variables from AWS Secrets Manager
     const buildCommand = [
       'npm ci --ignore-scripts --legacy-peer-deps',
       'npx prisma generate',
-      'echo "=== DEBUG: Environment Variables During Build ==="',
-      'node debug-env.js',
-      'echo "=== DEBUG: About to run npm build with NEXT_PUBLIC vars ==="',
-      'NEXT_PUBLIC_BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ") NEXT_PUBLIC_GOOGLE_MAPS_API_KEY="AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0" DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" NEXTAUTH_SECRET="dummy-secret-for-build" NEXTAUTH_URL="http://localhost:3000" NODE_ENV="production" npm run build'
-    ].join(' && ');
+      'echo "=== Building application with secure environment ==="',
+      // Get API key from secrets manager for build
+      secretArns ? `export NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=$(aws secretsmanager get-secret-value --secret-id ${secretArns.apiKeysSecretArn} --query SecretString --output text)` : '',
+      'export NEXT_PUBLIC_BUILD_TIME=$(date -u +"%Y-%m-%dT%H:%M:%S.%3NZ")',
+      'export DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy"',
+      'export NEXTAUTH_SECRET="dummy-secret-for-build"',
+      'export NEXTAUTH_URL="http://localhost:3000"',
+      'export NODE_ENV="production"',
+      'npm run build'
+    ].filter(cmd => cmd !== '').join(' && ');
 
     return {
       runtime: 'NODEJS_22',

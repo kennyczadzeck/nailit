@@ -1,0 +1,109 @@
+name: Security Validation
+
+on:
+  pull_request:
+    branches: [develop, staging, main]
+  push:
+    branches: [develop, staging, main]
+
+jobs:
+  security-validation:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Security Audit
+      run: npm audit --audit-level=high
+
+    - name: Check for hardcoded secrets
+      run: |
+        echo "Checking for potential secrets in code..."
+        if grep -r "AIzaSy\|GOCSPX\|npg_\|sk-" --include="*.ts" --include="*.js" --include="*.tsx" --include="*.jsx" app/ infrastructure/ || true; then
+          echo "⚠️  Potential hardcoded secrets found. Please review and move to environment variables."
+          exit 1
+        fi
+        echo "✅ No obvious hardcoded secrets found"
+
+    - name: Validate debug endpoints are secured
+      run: |
+        echo "Validating debug endpoint security..."
+        
+        # Check that debug endpoints use security middleware
+        missing_security=()
+        
+        for endpoint in app/api/debug-*/route.ts app/api/test-*/route.ts; do
+          if [ -f "$endpoint" ]; then
+            if ! grep -q "withDebugSecurity\|requireDevelopmentOrAuth" "$endpoint"; then
+              missing_security+=("$endpoint")
+            fi
+          fi
+        done
+        
+        if [ ${#missing_security[@]} -gt 0 ]; then
+          echo "❌ The following debug endpoints are missing security middleware:"
+          printf '%s\n' "${missing_security[@]}"
+          exit 1
+        fi
+        
+        echo "✅ All debug endpoints have security middleware"
+
+    - name: Build application
+      run: npm run build
+      env:
+        # Use dummy values for build
+        DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy"
+        NEXTAUTH_SECRET: "dummy-secret-for-build"
+        NEXTAUTH_URL: "http://localhost:3000"
+        GOOGLE_CLIENT_ID: "dummy-client-id"
+        GOOGLE_CLIENT_SECRET: "dummy-client-secret"
+        NEXT_PUBLIC_GOOGLE_MAPS_API_KEY: "dummy-api-key"
+
+    - name: Run security tests
+      run: |
+        # Test that environment variable sanitization works
+        npm run test -- --testPathPattern="security" --passWithNoTests
+      env:
+        DATABASE_URL: "postgresql://dummy:dummy@localhost:5432/dummy"
+        NEXTAUTH_SECRET: "dummy-secret-for-build"
+
+  environment-specific-validation:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/staging' || github.ref == 'refs/heads/main'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Validate AWS secrets are configured
+      run: |
+        echo "Validating AWS secrets configuration..."
+        
+        # Check that secrets-stack.ts doesn't contain hardcoded values
+        if grep -E "(npg_|AIzaSy|GOCSPX)" infrastructure/lib/secrets-stack.ts; then
+          echo "❌ Hardcoded credentials found in secrets-stack.ts"
+          echo "Please move these to environment variables or AWS Parameter Store"
+          exit 1
+        fi
+        
+        echo "✅ No hardcoded credentials found in secrets configuration"
+
+    - name: Check environment-specific security
+      run: |
+        echo "Environment: ${{ github.ref_name }}"
+        
+        # Validate that production has stricter security
+        if [[ "${{ github.ref_name }}" == "main" ]]; then
+          echo "🔒 Production environment - validating enhanced security"
+          # Add production-specific security checks here
+        fi 

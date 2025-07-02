@@ -167,7 +167,7 @@ All Phase 1 objectives complete! The app now has:
 The application uses Docker-based deployment on AWS App Runner with GitHub Actions for CI/CD.
 
 **Environment URLs**:
-- **Development**: https://d3pvc5dn43.us-east-1.awsapprunner.com (develop branch)
+- **Development**: https://u9eack5h4f.us-east-1.awsapprunner.com (develop branch)
 - **Staging**: https://ubfybdadun.us-east-1.awsapprunner.com (staging branch)  
 - **Production**: https://ijj2mc7dhz.us-east-1.awsapprunner.com (main branch)
 

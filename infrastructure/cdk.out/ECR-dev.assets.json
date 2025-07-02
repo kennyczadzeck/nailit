@@ -1,7 +1,7 @@
 {
   "version": "31.0.0",
   "files": {
-    "bbc9b34f288f24d3d8417e2b5758c39cd1cfa494fd2922151a6d5ed6bf9a3fdb": {
+    "e549a556ea90dd4b2c10321d296aee257c51c008b23a5b79482ce7ddf7f1380e": {
       "source": {
         "path": "ECR-dev.template.json",
         "packaging": "file"
@@ -9,7 +9,7 @@
       "destinations": {
         "207091906248-us-east-1": {
           "bucketName": "cdk-hnb659fds-assets-207091906248-us-east-1",
-          "objectKey": "bbc9b34f288f24d3d8417e2b5758c39cd1cfa494fd2922151a6d5ed6bf9a3fdb.json",
+          "objectKey": "e549a556ea90dd4b2c10321d296aee257c51c008b23a5b79482ce7ddf7f1380e.json",
           "region": "us-east-1",
           "assumeRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-file-publishing-role-207091906248-us-east-1"
         }

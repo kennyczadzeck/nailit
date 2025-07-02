@@ -23,7 +23,7 @@
      },
      {
       "Key": "DeploymentMode",
-      "Value": "docker"
+      "Value": "source"
      },
      {
       "Key": "Environment",
@@ -104,174 +104,78 @@
     "aws:cdk:path": "AppRunner-dev/AppRunnerInstanceRole/DefaultPolicy/Resource"
    }
   },
-  "AppRunnerAccessRoleC89E5843": {
-   "Type": "AWS::IAM::Role",
-   "Properties": {
-    "AssumeRolePolicyDocument": {
-     "Statement": [
-      {
-       "Action": "sts:AssumeRole",
-       "Effect": "Allow",
-       "Principal": {
-        "Service": "build.apprunner.amazonaws.com"
-       }
-      }
-     ],
-     "Version": "2012-10-17"
-    },
-    "Description": "Access role for App Runner to pull from ECR",
-    "ManagedPolicyArns": [
-     {
-      "Fn::Join": [
-       "",
-       [
-        "arn:",
-        {
-         "Ref": "AWS::Partition"
-        },
-        ":iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess"
-       ]
-      ]
-     }
-    ],
-    "Tags": [
-     {
-      "Key": "DatabaseProvider",
-      "Value": "Neon"
-     },
-     {
-      "Key": "DeploymentMode",
-      "Value": "docker"
-     },
-     {
-      "Key": "Environment",
-      "Value": "development"
-     },
-     {
-      "Key": "HostingProvider",
-      "Value": "AppRunner"
-     },
-     {
-      "Key": "ManagedBy",
-      "Value": "CDK"
-     },
-     {
-      "Key": "Project",
-      "Value": "NailIt"
-     }
-    ]
-   },
-   "Metadata": {
-    "aws:cdk:path": "AppRunner-dev/AppRunnerAccessRole/Resource"
-   }
-  },
   "NailItAppRunnerService": {
    "Type": "AWS::AppRunner::Service",
    "Properties": {
     "SourceConfiguration": {
      "AuthenticationConfiguration": {
-      "AccessRoleArn": {
-       "Fn::GetAtt": [
-        "AppRunnerAccessRoleC89E5843",
-        "Arn"
-       ]
-      }
+      "ConnectionArn": "arn:aws:apprunner:us-east-1:207091906248:connection/nailit-github-connection/23d2ed4413bd4d85be23be027a1d401a"
      },
-     "AutoDeploymentsEnabled": false,
-     "ImageRepository": {
-      "ImageConfiguration": {
-       "Port": "3000",
-       "RuntimeEnvironmentSecrets": [
-        {
-         "Name": "DATABASE_URL",
-         "Value": {
-          "Fn::ImportValue": "Secrets-dev:ExportsOutputRefDatabaseCredentials8547B3E729671DA7"
+     "AutoDeploymentsEnabled": true,
+     "CodeRepository": {
+      "CodeConfiguration": {
+       "CodeConfigurationValues": {
+        "BuildCommand": "npm ci --ignore-scripts --legacy-peer-deps && npx prisma generate && echo \"=== DEBUG: Environment Variables During Build ===\" && node debug-env.js && echo \"=== DEBUG: About to run npm build with NEXT_PUBLIC vars ===\" && NEXT_PUBLIC_BUILD_TIME=$(date -u +\"%Y-%m-%dT%H:%M:%S.%3NZ\") NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=\"AIzaSyDCLRbf1Nf6NxV4PqO_92-q1wE1rCNOaw0\" DATABASE_URL=\"postgresql://dummy:dummy@localhost:5432/dummy\" NEXTAUTH_SECRET=\"dummy-secret-for-build\" NEXTAUTH_URL=\"http://localhost:3000\" NODE_ENV=\"production\" npm run build",
+        "Runtime": "NODEJS_22",
+        "RuntimeEnvironmentSecrets": [
+         {
+          "Name": "DATABASE_URL",
+          "Value": {
+           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefDatabaseCredentials8547B3E729671DA7"
+          }
+         },
+         {
+          "Name": "NEXTAUTH_SECRET",
+          "Value": {
+           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefNextAuthSecret21484E9E77FF9A4C"
+          }
+         },
+         {
+          "Name": "NEXTAUTH_URL",
+          "Value": {
+           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefNextAuthUrl03CEB3B75A8AF779"
+          }
+         },
+         {
+          "Name": "GOOGLE_CLIENT_ID",
+          "Value": {
+           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientIdDF771C4D6A4E26E7"
+          }
+         },
+         {
+          "Name": "GOOGLE_CLIENT_SECRET",
+          "Value": {
+           "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientSecret7356BEB4E9294748"
+          }
          }
-        },
-        {
-         "Name": "NEXTAUTH_SECRET",
-         "Value": {
-          "Fn::ImportValue": "Secrets-dev:ExportsOutputRefNextAuthSecret21484E9E77FF9A4C"
+        ],
+        "RuntimeEnvironmentVariables": [
+         {
+          "Name": "NODE_ENV",
+          "Value": "production"
+         },
+         {
+          "Name": "PORT",
+          "Value": "3000"
+         },
+         {
+          "Name": "AWS_REGION",
+          "Value": "us-east-1"
+         },
+         {
+          "Name": "NAILIT_ENVIRONMENT",
+          "Value": "development"
          }
-        },
-        {
-         "Name": "NEXTAUTH_URL",
-         "Value": {
-          "Fn::ImportValue": "Secrets-dev:ExportsOutputRefNextAuthUrl03CEB3B75A8AF779"
-         }
-        },
-        {
-         "Name": "GOOGLE_CLIENT_ID",
-         "Value": {
-          "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientIdDF771C4D6A4E26E7"
-         }
-        },
-        {
-         "Name": "GOOGLE_CLIENT_SECRET",
-         "Value": {
-          "Fn::ImportValue": "Secrets-dev:ExportsOutputRefGoogleClientSecret7356BEB4E9294748"
-         }
-        }
-       ],
-       "RuntimeEnvironmentVariables": [
-        {
-         "Name": "NODE_ENV",
-         "Value": "production"
-        },
-        {
-         "Name": "PORT",
-         "Value": "3000"
-        },
-        {
-         "Name": "HOSTNAME",
-         "Value": "0.0.0.0"
-        }
-       ]
+        ],
+        "StartCommand": "npm start"
+       },
+       "ConfigurationSource": "API"
       },
-      "ImageIdentifier": {
-       "Fn::Join": [
-        "",
-        [
-         {
-          "Fn::Select": [
-           4,
-           {
-            "Fn::Split": [
-             ":",
-             {
-              "Fn::ImportValue": "ECR-dev:ExportsOutputFnGetAttNailItRepository12755FD0Arn93FE8976"
-             }
-            ]
-           }
-          ]
-         },
-         ".dkr.ecr.",
-         {
-          "Fn::Select": [
-           3,
-           {
-            "Fn::Split": [
-             ":",
-             {
-              "Fn::ImportValue": "ECR-dev:ExportsOutputFnGetAttNailItRepository12755FD0Arn93FE8976"
-             }
-            ]
-           }
-          ]
-         },
-         ".",
-         {
-          "Ref": "AWS::URLSuffix"
-         },
-         "/",
-         {
-          "Fn::ImportValue": "ECR-dev:ExportsOutputRefNailItRepository12755FD050ABDCA0"
-         },
-         ":latest"
-        ]
-       ]
-      },
-      "ImageRepositoryType": "ECR"
+      "RepositoryUrl": "https://github.com/kennyczadzeck/nailit",
+      "SourceCodeVersion": {
+       "Type": "BRANCH",
+       "Value": "develop"
+      }
      }
     },
     "HealthCheckConfiguration": {
@@ -300,7 +204,7 @@
      },
      {
       "Key": "DeploymentMode",
-      "Value": "docker"
+      "Value": "source"
      },
      {
       "Key": "Environment",
@@ -381,7 +285,7 @@
   },
   "DeploymentMode": {
    "Description": "App Runner deployment mode (source or docker)",
-   "Value": "docker",
+   "Value": "source",
    "Export": {
     "Name": "NailIt-dev-DeploymentMode"
    }

@@ -1,7 +1,8 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { CloudWatchLogsClient, CreateLogGroupCommand, DescribeLogGroupsCommand, PutLogEventsCommand, CreateLogStreamCommand } from '@aws-sdk/client-cloudwatch-logs';
+import { withDebugSecurity, debugSecurityHeaders } from '../../lib/security-middleware';
 
-export async function GET() {
+async function handleTestCloudWatch(request: NextRequest) {
   const environment = process.env.NAILIT_ENVIRONMENT || 'development';
   const region = process.env.NAILIT_AWS_REGION || 'us-east-1';
   const logGroupName = `/nailit/${environment}/application`;
@@ -112,6 +113,12 @@ export async function GET() {
       NAILIT_IAM_ACCESS_KEY_SECRET: process.env.NAILIT_IAM_ACCESS_KEY_SECRET ? '[SET]' : '[NOT SET]',
       AWS_REGION: process.env.AWS_REGION
     },
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    warning: 'This endpoint is for testing only and should not be accessible in production'
+  }, {
+    headers: debugSecurityHeaders
   });
-} 
+}
+
+// Apply security middleware
+export const GET = withDebugSecurity(handleTestCloudWatch) 

@@ -23,7 +23,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-deploy-role-207091906248-us-east-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-cfn-exec-role-207091906248-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/bbc9b34f288f24d3d8417e2b5758c39cd1cfa494fd2922151a6d5ed6bf9a3fdb.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/e549a556ea90dd4b2c10321d296aee257c51c008b23a5b79482ce7ddf7f1380e.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -86,18 +86,6 @@
             "data": "CDKMetadata"
           }
         ],
-        "/ECR-dev/Exports/Output{\"Fn::GetAtt\":[\"NailItRepository12755FD0\",\"Arn\"]}": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "ExportsOutputFnGetAttNailItRepository12755FD0Arn93FE8976"
-          }
-        ],
-        "/ECR-dev/Exports/Output{\"Ref\":\"NailItRepository12755FD0\"}": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "ExportsOutputRefNailItRepository12755FD050ABDCA0"
-          }
-        ],
         "/ECR-dev/BootstrapVersion": [
           {
             "type": "aws:cdk:logicalId",
@@ -129,7 +117,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-deploy-role-207091906248-us-east-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-cfn-exec-role-207091906248-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/533dd92dd0ad104ced7280adb3e09b3ae2ec0ed400019779fde64db1d0ed5338.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/1008e04f82cb1cb4cbc4b9c9a2e304c0988934fce9aabbba879de9cc051cac54.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -620,7 +608,7 @@
         "templateFile": "AppRunner-dev.template.json",
         "tags": {
           "DatabaseProvider": "Neon",
-          "DeploymentMode": "docker",
+          "DeploymentMode": "source",
           "Environment": "development",
           "HostingProvider": "AppRunner",
           "ManagedBy": "CDK",
@@ -629,7 +617,7 @@
         "validateOnSynth": false,
         "assumeRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-deploy-role-207091906248-us-east-1",
         "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::207091906248:role/cdk-hnb659fds-cfn-exec-role-207091906248-us-east-1",
-        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/d65e3259ceb8cf2a88b7e8463df7187c648d2a7f9d06cfc3f69d4189025e2f7e.json",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-207091906248-us-east-1/13d7d81eacd5b28288fadaf4f6814199ab674aae213ff091ed6a258765cf550a.json",
         "requiresBootstrapStackVersion": 6,
         "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
         "additionalDependencies": [
@@ -643,7 +631,6 @@
       },
       "dependencies": [
         "Secrets-dev",
-        "ECR-dev",
         "AppRunner-dev.assets"
       ],
       "metadata": {
@@ -657,7 +644,7 @@
               },
               {
                 "Key": "DeploymentMode",
-                "Value": "docker"
+                "Value": "source"
               },
               {
                 "Key": "Environment",
@@ -688,12 +675,6 @@
           {
             "type": "aws:cdk:logicalId",
             "data": "AppRunnerInstanceRoleDefaultPolicy35195718"
-          }
-        ],
-        "/AppRunner-dev/AppRunnerAccessRole/Resource": [
-          {
-            "type": "aws:cdk:logicalId",
-            "data": "AppRunnerAccessRoleC89E5843"
           }
         ],
         "/AppRunner-dev/NailItAppRunnerService": [
