@@ -57,22 +57,43 @@ export function logEnvironmentInfo() {
 
 /**
  * Checks if a required environment variable is available without exposing its value
- * Updated to work with Next.js optimized builds where process.env object is optimized away
+ * 
+ * IMPORTANT: This function works around Next.js production build optimizations
+ * 
+ * Next.js Issue:
+ * - In production builds, Next.js optimizes away the process.env object
+ * - Dynamic property access (process.env[name]) returns undefined
+ * - Direct property access (process.env.VARIABLE_NAME) works correctly
+ * - Object.keys(process.env) returns an empty array
+ * 
+ * Symptoms:
+ * - Environment variables work on server but fail on client
+ * - process.env[variableName] returns undefined despite variable being set
+ * - Direct access like process.env.NEXT_PUBLIC_API_KEY works fine
+ * 
+ * Solution:
+ * - Use switch statement with direct property access for known variables
+ * - Fall back to dynamic access for backwards compatibility
+ * 
+ * See: docs/development/NEXTJS_ENVIRONMENT_VARIABLES.md for full details
  */
 export function checkEnvironmentVariable(name: string): boolean {
   let value: string | undefined;
   
   // Handle Next.js optimized builds where dynamic property access fails
-  // but direct property access works
+  // but direct property access works. This is required for production Docker builds.
   switch (name) {
     case 'NEXT_PUBLIC_GOOGLE_MAPS_API_KEY':
+      // ✅ Direct access works in Next.js optimized builds
       value = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
       break;
     case 'NEXT_PUBLIC_BUILD_TIME':
+      // ✅ Direct access works in Next.js optimized builds
       value = process.env.NEXT_PUBLIC_BUILD_TIME;
       break;
     default:
-      // Fallback to dynamic access for other variables
+      // ❌ Dynamic access fails in production but works in development
+      // Keep for backwards compatibility and server-side usage
       value = process.env[name];
       break;
   }
