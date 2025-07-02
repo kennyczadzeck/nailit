@@ -22,14 +22,16 @@ run:
       value: "3000"
   secrets:
     - name: DATABASE_URL
-      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-database-staging-PLACEHOLDER"
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-database-staging"
+    - name: DIRECT_URL
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-database-staging"
     - name: NEXTAUTH_SECRET
-      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-nextauth-secret-staging-PLACEHOLDER"
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-nextauth-secret-staging"
     - name: NEXTAUTH_URL
-      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-nextauth-url-staging-PLACEHOLDER"
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-nextauth-url-staging"
     - name: GOOGLE_CLIENT_ID
-      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-google-client-id-staging-PLACEHOLDER"
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-google-client-id-staging"
     - name: GOOGLE_CLIENT_SECRET
-      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-google-client-secret-staging-PLACEHOLDER"
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-google-client-secret-staging"
     - name: NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-google-maps-api-key-staging-PLACEHOLDER" 
+      value-from: "arn:aws:secretsmanager:us-east-1:207091906248:secret:nailit-google-maps-api-key-staging" 
