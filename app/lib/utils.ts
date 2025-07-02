@@ -57,9 +57,26 @@ export function logEnvironmentInfo() {
 
 /**
  * Checks if a required environment variable is available without exposing its value
+ * Updated to work with Next.js optimized builds where process.env object is optimized away
  */
 export function checkEnvironmentVariable(name: string): boolean {
-  const value = process.env[name];
+  let value: string | undefined;
+  
+  // Handle Next.js optimized builds where dynamic property access fails
+  // but direct property access works
+  switch (name) {
+    case 'NEXT_PUBLIC_GOOGLE_MAPS_API_KEY':
+      value = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+      break;
+    case 'NEXT_PUBLIC_BUILD_TIME':
+      value = process.env.NEXT_PUBLIC_BUILD_TIME;
+      break;
+    default:
+      // Fallback to dynamic access for other variables
+      value = process.env[name];
+      break;
+  }
+  
   const isAvailable = !!value && value.length > 0;
   
   if (!isAvailable) {
