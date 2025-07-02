@@ -1,7 +1,8 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../auth/[...nextauth]/route'
 import { prisma } from '../../lib/prisma'
+import { withDebugSecurity, debugSecurityHeaders } from '../../lib/security-middleware'
 
 interface DebugInfo {
   sessionExists: boolean
@@ -15,7 +16,7 @@ interface DebugInfo {
   projectCount?: number
 }
 
-export async function GET() {
+async function handleDebugProjects(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
     
@@ -69,12 +70,19 @@ export async function GET() {
       debugInfo.projectCount = projectCount
     }
 
-    return NextResponse.json(debugInfo)
+    return NextResponse.json(debugInfo, {
+      headers: debugSecurityHeaders
+    })
   } catch (error) {
     console.error('Debug error:', error)
     return NextResponse.json({ 
       error: 'Debug failed', 
       details: error instanceof Error ? error.message : 'Unknown error' 
-    }, { status: 500 })
+    }, { 
+      status: 500,
+      headers: debugSecurityHeaders
+    })
   }
-} 
+}
+
+export const GET = withDebugSecurity(handleDebugProjects) 

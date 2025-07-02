@@ -1,7 +1,8 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '../../lib/prisma';
+import { withDebugSecurity, debugSecurityHeaders } from '../../lib/security-middleware';
 
-export async function GET() {
+async function handleTestDb(request: NextRequest) {
   try {
     // Test basic connection
     await prisma.$connect();
@@ -13,14 +14,21 @@ export async function GET() {
       status: 'Connected', 
       userCount,
       timestamp: new Date().toISOString() 
+    }, {
+      headers: debugSecurityHeaders
     });
   } catch (error: unknown) {
     console.error('Database test error:', error);
     return NextResponse.json({
       error: error instanceof Error ? error.message : 'Unknown error',
       timestamp: new Date().toISOString()
-    }, { status: 500 });
+    }, { 
+      status: 500,
+      headers: debugSecurityHeaders
+    });
   } finally {
     await prisma.$disconnect();
   }
-} 
+}
+
+export const GET = withDebugSecurity(handleTestDb) 
