@@ -41,12 +41,13 @@ export async function GET() {
       timestamp: new Date().toISOString()
     })
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
       { 
         success: false,
         error: 'Test endpoint failed',
-        message: error.message 
+        message: errorMessage 
       },
       { status: 500 }
     )

@@ -103,16 +103,19 @@ export async function POST(request: NextRequest) {
       emailMessage
     })
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    
     logger.error('Manual email processing failed', {
-      error: error.message,
-      stack: error.stack
-    })
+      error: errorMessage,
+      stack: errorStack
+    });
     
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
-    )
+    );
   }
 }
 
@@ -183,14 +186,16 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ status })
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    
     logger.error('Failed to get email processing status', {
-      error: error.message
-    })
+      error: errorMessage
+    });
     
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
-    )
+    );
   }
 } 
