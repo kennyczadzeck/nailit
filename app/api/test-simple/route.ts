@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]/route';
 import { prisma } from '../../lib/prisma';
+import { withDebugSecurity, debugSecurityHeaders } from '../../lib/security-middleware';
 
-export async function GET() {
+async function handleTestSimple(request: NextRequest) {
   try {
     console.log('=== Simple Test Endpoint ===');
     
@@ -58,6 +59,8 @@ export async function GET() {
         projectCount
       },
       timestamp: new Date().toISOString()
+    }, {
+      headers: debugSecurityHeaders
     });
     
   } catch (error: unknown) {
@@ -69,4 +72,6 @@ export async function GET() {
   } finally {
     await prisma.$disconnect();
   }
-} 
+}
+
+export const GET = withDebugSecurity(handleTestSimple); 

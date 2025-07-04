@@ -1,4 +1,8 @@
 /**
+ * @jest-environment node
+ */
+
+/**
  * Integration Tests for Projects API (GET)
  * Tests the actual API route with mocked dependencies
  */

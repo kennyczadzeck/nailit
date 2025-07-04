@@ -1,7 +1,42 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '../../../lib/prisma'
 
-// PATCH /api/flagged-items/[id] - Update flagged item status or category
+/**
+ * @swagger
+ * /api/flagged-items/{id}:
+ *   patch:
+ *     summary: Update flagged item status
+ *     description: Update the status of a flagged item (e.g., mark as resolved or dismissed)
+ *     tags:
+ *       - Flagged Items
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Flagged item ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 enum: [PENDING, RESOLVED, DISMISSED]
+ *                 description: New status for the flagged item
+ *     responses:
+ *       200:
+ *         description: Flagged item updated successfully
+ *       400:
+ *         description: Bad request - invalid status
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Flagged item not found
+ */
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }

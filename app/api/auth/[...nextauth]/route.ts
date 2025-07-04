@@ -31,10 +31,30 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
-    async jwt({ token, user }) {
-      // On first sign in, get user ID from database
+    async jwt({ token, user, account }) {
+      // On first sign in, look up the database user ID using the OAuth account
       if (user) {
+        // user.id is the database user ID when using Prisma adapter
         token.sub = user.id;
+      } else if (account && !token.sub) {
+        // If for some reason we don't have the user ID, look it up from the database
+        try {
+          const dbUser = await prisma.user.findFirst({
+            where: {
+              accounts: {
+                some: {
+                  provider: account.provider,
+                  providerAccountId: account.providerAccountId
+                }
+              }
+            }
+          });
+          if (dbUser) {
+            token.sub = dbUser.id;
+          }
+        } catch (error) {
+          console.error('Error finding user in JWT callback:', error);
+        }
       }
       return token;
     },

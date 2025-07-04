@@ -1,10 +1,14 @@
 /**
+ * @jest-environment node
+ */
+
+/**
  * Feature: Projects API
  * All API-related tests for projects (integration, error handling, authentication)
  * Tests the actual API route with mocked dependencies
  */
 
-import { GET } from '../../../app/api/projects/route'
+import { GET, POST } from '../../../app/api/projects/route'
 
 // Use centralized fixtures and helpers
 import {

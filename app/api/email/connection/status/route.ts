@@ -4,11 +4,55 @@ import { authOptions } from '../../../auth/[...nextauth]/route'
 import { logger } from '../../../../lib/logger'
 import { prisma } from '../../../../lib/prisma'
 
+type EmailSettings = {
+  gmailConnected: boolean;
+  monitoringEnabled: boolean;
+  gmailTokenExpiry: Date | null;
+  gmailRefreshToken: string | null;
+  notificationsEnabled: boolean;
+  weeklyReports: boolean;
+  highPriorityAlerts: boolean;
+} | null;
+
+/**
+ * @swagger
+ * /api/email/connection/status:
+ *   get:
+ *     summary: Check email connection status
+ *     description: Check if the user has connected their email account for monitoring
+ *     tags:
+ *       - Email
+ *     responses:
+ *       200:
+ *         description: Email connection status retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 connected:
+ *                   type: boolean
+ *                   description: Whether email is connected
+ *                 provider:
+ *                   type: string
+ *                   description: Email provider (e.g., gmail)
+ *                 email:
+ *                   type: string
+ *                   description: Connected email address
+ *                 lastSync:
+ *                   type: string
+ *                   format: date-time
+ *                   description: Last sync timestamp
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
+ */
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions)
     
-    if (!session?.user?.email) {
+    if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -20,12 +64,10 @@ export async function GET(request: NextRequest) {
     }
 
     // Verify user owns the project and get basic info
-    const project = await prisma.project.findUnique({
+    const project = await prisma.project.findFirst({
       where: {
         id: projectId,
-        user: {
-          email: session.user.email
-        }
+        userId: session.user.id
       },
       select: {
         id: true,
@@ -78,7 +120,7 @@ export async function GET(request: NextRequest) {
     }
 
     logger.info('Email connection status retrieved for homeowner', {
-      userId: session.user.email,
+      userId: session.user.id,
       projectId,
       isConnected: connectionStatus.emailMonitoring.isConnected,
       status: connectionStatus.emailMonitoring.status
@@ -86,10 +128,13 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ connectionStatus })
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    const stack = error instanceof Error ? error.stack : undefined;
+    
     logger.error('Error retrieving email connection status', {
-      error: error.message,
-      stack: error.stack
+      error: errorMessage,
+      stack: stack
     })
     
     return NextResponse.json(
@@ -100,7 +145,7 @@ export async function GET(request: NextRequest) {
 }
 
 // Helper functions for homeowner-friendly messaging
-function getMonitoringStatus(emailSettings: any) {
+function getMonitoringStatus(emailSettings: EmailSettings) {
   if (!emailSettings?.gmailConnected) return 'disconnected'
   if (!emailSettings?.monitoringEnabled) return 'paused'
   
@@ -112,7 +157,7 @@ function getMonitoringStatus(emailSettings: any) {
   return 'active'
 }
 
-function getStatusMessage(emailSettings: any) {
+function getStatusMessage(emailSettings: EmailSettings) {
   const status = getMonitoringStatus(emailSettings)
   
   switch (status) {

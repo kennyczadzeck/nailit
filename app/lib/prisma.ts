@@ -13,7 +13,13 @@ const createPrismaClient = () => {
     console.error('Available env vars:', Object.keys(process.env).filter(key => 
       key.includes('DATABASE') || key.includes('NEON')
     ));
-    throw new Error('DATABASE_URL environment variable is required');
+    
+    // For Docker startup testing, return a mock client that throws on actual usage
+    return new Proxy({} as PrismaClient, {
+      get() {
+        throw new Error('DATABASE_URL environment variable is required for database operations');
+      }
+    });
   }
   
   console.log('Creating Prisma client with DATABASE_URL:', databaseUrl.substring(0, 30) + '...');
@@ -28,6 +34,15 @@ const createPrismaClient = () => {
   });
 };
 
-export const prisma = globalForPrisma.prisma ?? createPrismaClient()
+// Lazy initialization - only create client when accessed
+let _prisma: PrismaClient | undefined;
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma 
+export const prisma = new Proxy({} as PrismaClient, {
+  get(target, prop) {
+    if (!_prisma) {
+      _prisma = globalForPrisma.prisma ?? createPrismaClient();
+      if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = _prisma;
+    }
+    return _prisma[prop as keyof PrismaClient];
+  }
+}); 

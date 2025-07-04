@@ -57,7 +57,6 @@ model Project {
   timelineEntries TimelineEntry[]
   emailSettings EmailSettings?
   teamMembers TeamMember[]
-  emailMessages EmailMessage[] // New relation to email messages
   
   @@map("projects")
 }
@@ -239,6 +238,7 @@ model EmailMessage {
   @@index([urgencyLevel])
   @@index([containsChanges])
 }
+
 model OAuthSession {
   id                String   @id @default(cuid())
   userId            String
