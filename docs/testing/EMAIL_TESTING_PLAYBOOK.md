@@ -239,7 +239,7 @@ The conversation generator creates realistic patterns via Gmail API:
 - **Follow-ups**: 25% chance of additional homeowner-initiated check-ins
 - **Threading**: Proper email thread relationships
 - **Timing**: Realistic date distribution over specified periods
-- **Database Population**: ONLY through your ingestion code, not direct writes
+- **Database Population**: ONLY through your ingestion pathways, not direct writes
 
 ## 📥 Ingestion Testing
 

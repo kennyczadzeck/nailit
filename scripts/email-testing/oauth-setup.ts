@@ -96,7 +96,54 @@ class EmailTestOAuth {
       expiry_date: credentials.expiry_date
     });
 
+    // Auto-refresh tokens when they expire
+    this.oauth2Client.on('tokens', (tokens: any) => {
+      if (tokens.refresh_token) {
+        console.log(`🔄 Refreshing tokens for ${accountType}`);
+        const updatedCredentials = {
+          ...credentials,
+          access_token: tokens.access_token,
+          expiry_date: tokens.expiry_date,
+          refresh_token: tokens.refresh_token
+        };
+        this.saveCredentials(accountType, updatedCredentials);
+      }
+    });
+
     return google.gmail({ version: 'v1', auth: this.oauth2Client });
+  }
+
+  /**
+   * Refresh tokens for an account if they're expired
+   */
+  async refreshTokens(accountType: 'contractor' | 'homeowner'): Promise<boolean> {
+    try {
+      const credentials = this.loadCredentials(accountType);
+      if (!credentials || !credentials.refresh_token) {
+        console.log(`❌ No refresh token available for ${accountType}`);
+        return false;
+      }
+
+      this.oauth2Client.setCredentials({
+        refresh_token: credentials.refresh_token
+      });
+
+      const { credentials: newTokens } = await this.oauth2Client.refreshAccessToken();
+      
+      const updatedCredentials = {
+        ...credentials,
+        access_token: newTokens.access_token,
+        expiry_date: newTokens.expiry_date
+      };
+
+      this.saveCredentials(accountType, updatedCredentials);
+      console.log(`✅ Tokens refreshed for ${accountType}`);
+      return true;
+
+    } catch (error: any) {
+      console.error(`❌ Failed to refresh tokens for ${accountType}:`, error.message);
+      return false;
+    }
   }
 
   /**
@@ -108,8 +155,26 @@ class EmailTestOAuth {
       const profile = await gmail.users.getProfile({ userId: 'me' });
       console.log(`✅ ${accountType} credentials valid for: ${profile.data.emailAddress}`);
       return true;
-    } catch (error) {
-      console.error(`❌ Invalid credentials for ${accountType}:`, error);
+    } catch (error: any) {
+      console.log(`❌ Invalid credentials for ${accountType}:`, error);
+      
+      // Try to refresh tokens if they're expired
+      if (error.message.includes('Invalid Credentials') || error.code === 401) {
+        console.log(`🔄 Attempting to refresh tokens for ${accountType}...`);
+        const refreshed = await this.refreshTokens(accountType);
+        if (refreshed) {
+          // Try again with refreshed tokens
+          try {
+            const gmail = this.getGmailClient(accountType);
+            const profile = await gmail.users.getProfile({ userId: 'me' });
+            console.log(`✅ ${accountType} credentials valid after refresh: ${profile.data.emailAddress}`);
+            return true;
+          } catch (retryError) {
+            console.log(`❌ Still invalid after refresh for ${accountType}`);
+            return false;
+          }
+        }
+      }
       return false;
     }
   }
@@ -217,12 +282,20 @@ async function main() {
     case 'status':
       await oauth.checkStatus();
       break;
+    case 'refresh':
+      if (!accountType) {
+        console.error(`❌ Account type required: contractor or homeowner`);
+        process.exit(1);
+      }
+      await oauth.refreshTokens(accountType);
+      break;
     default:
       console.log(`\n🔐 OAuth Setup for Email Testing\n`);
       console.log(`Usage:`);
       console.log(`  npm run test:oauth-status                    # Check OAuth status`);
       console.log(`  npm run test:oauth-setup <contractor|homeowner>`);
       console.log(`  npm run test:oauth-callback <contractor|homeowner> <code>`);
+      console.log(`  npm run test:oauth-refresh <contractor|homeowner>  # Refresh tokens`);
       console.log(`\nExample:`);
       console.log(`  npm run test:oauth-setup contractor`);
   }

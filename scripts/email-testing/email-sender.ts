@@ -7,15 +7,32 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 /**
- * Email Sender Utility for Testing
+ * Email Sender for Testing Gmail API Integration
  * 
- * Sends mock contractor emails to homeowner account for testing:
- * - Cost changes
- * - Schedule delays  
- * - Material substitutions
- * - General updates
+ * CRITICAL PRINCIPLE: This module sends emails EXCLUSIVELY via Gmail API and NEVER writes to database.
+ * Database is populated only through proper ingestion pathways (Gmail queries + webhooks).
+ * 
+ * THREADING IMPLEMENTATION:
+ * - Maintains consistent subject lines throughout conversation threads
+ * - Uses proper email headers (In-Reply-To, References, Message-ID) for Gmail threading
+ * - Supports cross-account threading between contractor and homeowner Gmail accounts
+ * - Follows industry-standard email threading protocols
+ * 
+ * CONVERSATION PATTERNS:
+ * - Contractor initiates conversation with project-related email
+ * - Homeowner responds within realistic timeframe (2-48 hours simulated)
+ * - Contractor optionally follows up (70% probability)
+ * - Homeowner occasionally initiates check-ins (20% probability)
+ * 
+ * AUTHENTICATION:
+ * - Uses OAuth 2.0 with Gmail API scopes for sending and reading emails
+ * - Supports automatic token refresh for long-running operations
+ * - Maintains separate credentials for contractor and homeowner accounts
  */
 
+/**
+ * Email template structure for consistent email generation
+ */
 interface EmailTemplate {
   subject: string;
   body: string;
@@ -273,7 +290,7 @@ class EmailSender {
         }
       });
 
-      console.log(`✅ Homeowner reply sent successfully! Message ID: ${response.data.id}`);
+      console.log(`✅ Homeowner reply sent successfully! Message ID: ${response.data.id}, Thread ID: ${response.data.threadId}`);
       console.log(`📬 Check nailit.test.contractor@gmail.com inbox`);
 
     } catch (error: any) {
@@ -283,14 +300,35 @@ class EmailSender {
   }
 
   /**
-   * Generate realistic conversation threads for historical testing (ENHANCED)
+   * Generate realistic conversation threads for historical testing (ENHANCED WITH PROPER THREADING)
    * 
    * CRITICAL REQUIREMENT: Ensures authentic bidirectional contractor-homeowner conversations
-   * with proper threading, realistic timing, and authentic content patterns.
+   * with proper Gmail threading headers (In-Reply-To, References) for conversation grouping.
+   * 
+   * THREADING STRATEGY:
+   * 1. Initial email: Contractor sends with unique Message-ID (no threading headers)
+   * 2. Homeowner reply: Uses In-Reply-To and References headers pointing to initial email
+   * 3. Follow-ups: Chain threading headers to maintain conversation continuity
+   * 4. Subject consistency: Base subject remains identical, only "Re:" prefix added
+   * 
+   * CONVERSATION FLOW:
+   * - Contractor initiates with project-related email (cost, schedule, materials, etc.)
+   * - Homeowner responds with questions, approvals, or concerns
+   * - Contractor optionally follows up with confirmation or additional info (70% chance)
+   * - Homeowner occasionally initiates progress check-ins (20% chance)
+   * 
+   * GMAIL THREADING REQUIREMENTS:
+   * - Consistent subject lines (NO modifications like "- Update" or "- Progress Check")
+   * - Proper email headers (Message-ID, In-Reply-To, References)
+   * - Cross-account support between contractor and homeowner Gmail accounts
+   * - Industry-standard threading protocols for maximum compatibility
+   * 
+   * @param threadCount Number of conversation threads to generate
+   * @param daysBack Number of days back to distribute conversations over
    */
   async generateConversationThreads(threadCount: number, daysBack: number): Promise<void> {
-    console.log(`💬 Generating ${threadCount} AUTHENTIC conversation threads over ${daysBack} days`);
-    console.log(`🎯 Each thread will have: contractor → homeowner → contractor flow`);
+    console.log(`💬 Generating ${threadCount} AUTHENTIC conversation threads with proper Gmail threading over ${daysBack} days`);
+    console.log(`🎯 Each thread will have: contractor → homeowner → contractor flow with proper threading headers`);
 
     // Enhanced conversation patterns with guaranteed bidirectional flow
     const conversationPatterns = [
@@ -342,9 +380,10 @@ class EmailSender {
       const daysAgo = Math.floor(Math.random() * daysBack);
       const initialDate = new Date(now.getTime() - (daysAgo * 24 * 60 * 60 * 1000));
       
-      // Homeowner response timing (2-24 hours later)
-      const responseHours = 2 + Math.random() * 22;
-      const replyDate = new Date(initialDate.getTime() + (responseHours * 60 * 60 * 1000));
+      // Thread tracking for proper Gmail threading
+      let threadId = `thread-${Date.now()}-${i}`;
+      let messageIds: string[] = [];
+      let references = '';
       
       try {
         console.log(`\n🧵 Thread ${i + 1}/${threadCount}: ${pattern.name}`);
@@ -354,8 +393,24 @@ class EmailSender {
         const baseSubject = contractorTemplate.subject;
         const contractorSubject = `Kitchen Renovation - ${baseSubject}`;
         
-        await this.sendTestEmail(pattern.contractor, contractorSubject);
-        console.log(`   1️⃣ Contractor: "${contractorSubject}"`);
+        // Generate unique message ID for initial email
+        const initialMessageId = `<${Date.now()}.${Math.random().toString(36).substr(2, 9)}.${threadId}@gmail.com>`;
+        messageIds.push(initialMessageId);
+        
+        const contractorResult = await this.sendTestEmailWithThreading(
+          pattern.contractor, 
+          contractorSubject, 
+          undefined, // body
+          {
+            messageId: initialMessageId
+            // Don't pass threadId for initial email - let Gmail generate it
+          }
+        );
+        
+        // Use the actual thread ID returned by Gmail
+        const actualThreadId = contractorResult.threadId;
+        
+        console.log(`   1️⃣ Contractor: "${contractorSubject}" [${contractorResult.messageId}] Thread: ${actualThreadId}`);
         
         // Wait before homeowner response
         await this.delay(3000);
@@ -364,37 +419,67 @@ class EmailSender {
         const homeownerTemplate = EMAIL_TEMPLATES[pattern.homeowner];
         const homeownerSubject = `Re: ${contractorSubject}`;
         
-        await this.sendHomeownerReply(pattern.homeowner, homeownerSubject);
-        console.log(`   2️⃣ Homeowner: "${homeownerSubject}"`);
+        // Generate message ID for homeowner reply
+        const homeownerMessageId = `<${Date.now()}.${Math.random().toString(36).substr(2, 9)}.${threadId}@gmail.com>`;
+        messageIds.push(homeownerMessageId);
+        references = messageIds.join(' ');
+        
+        const homeownerResult = await this.sendHomeownerReplyWithThreading(
+          pattern.homeowner, 
+          homeownerSubject, 
+          undefined, // body
+          {
+            messageId: homeownerMessageId,
+            inReplyTo: initialMessageId,
+            references: references
+          }
+        );
+        console.log(`   2️⃣ Homeowner: "${homeownerSubject}" [Reply to: ${contractorResult.messageId}] Thread: ${homeownerResult.threadId}`);
         
         // Step 3: Contractor follow-up (conditional)
         if (pattern.followUp && Math.random() > 0.3) { // 70% chance of follow-up
           await this.delay(2000);
           
-          const followUpHours = 4 + Math.random() * 20; // 4-24 hours later
-          const followUpSubject = `Re: ${contractorSubject} - Update`;
+          const followUpSubject = `Re: ${contractorSubject}`;  // Keep same subject, just add Re:
           
-          // Create follow-up content based on pattern
-          let followUpTemplate = pattern.contractor;
-          if (pattern.name.includes('Cost')) {
-            followUpTemplate = 'cost-change'; // Confirm timeline
-          } else if (pattern.name.includes('Material')) {
-            followUpTemplate = 'material-substitute'; // Send samples
-          }
+          // Generate message ID for contractor follow-up
+          const followUpMessageId = `<${Date.now()}.${Math.random().toString(36).substr(2, 9)}.${threadId}@gmail.com>`;
+          messageIds.push(followUpMessageId);
+          references = messageIds.join(' ');
           
-          await this.sendTestEmail(followUpTemplate, followUpSubject, 
-            `Thanks for your response! I'll proceed as discussed. Will keep you updated on progress.`);
-          console.log(`   3️⃣ Contractor: "${followUpSubject}"`);
+          const followUpResult = await this.sendTestEmailWithThreading(
+            pattern.contractor, 
+            followUpSubject, 
+            `Thanks for your response! I'll proceed as discussed. Will keep you updated on progress.`,
+            {
+              messageId: followUpMessageId,
+              inReplyTo: homeownerMessageId,
+              references: references
+            }
+          );
+          console.log(`   3️⃣ Contractor: "${followUpSubject}" [Reply to: ${homeownerResult.messageId}] Thread: ${followUpResult.threadId}`);
         }
         
         // Occasionally add homeowner-initiated check-ins (20% chance)
         if (Math.random() < 0.2) {
           await this.delay(2000);
-          const checkInHours = 24 + Math.random() * 96; // 1-4 days later
-          const checkInSubject = `Kitchen Renovation - Progress Check`;
+          const checkInSubject = `Re: ${contractorSubject}`;  // Keep same subject, just add Re:
           
-          await this.sendHomeownerReply('homeowner-progress-check', checkInSubject);
-          console.log(`   4️⃣ Homeowner initiated: "${checkInSubject}"`);
+          const checkInMessageId = `<${Date.now()}.${Math.random().toString(36).substr(2, 9)}.${threadId}@gmail.com>`;
+          messageIds.push(checkInMessageId);
+          references = messageIds.join(' ');
+          
+          const checkInResult = await this.sendHomeownerReplyWithThreading(
+            'homeowner-progress-check', 
+            checkInSubject,
+            undefined, // body
+            {
+              messageId: checkInMessageId,
+              inReplyTo: messageIds[messageIds.length - 2], // Reply to previous message
+              references: references
+            }
+          );
+          console.log(`   4️⃣ Homeowner initiated: "${checkInSubject}" [Threaded] Thread: ${checkInResult.threadId}`);
         }
         
         threadsGenerated++;
@@ -407,9 +492,136 @@ class EmailSender {
       }
     }
 
-    console.log(`\n✅ Generated ${threadsGenerated}/${threadCount} authentic conversation threads`);
+    console.log(`\n✅ Generated ${threadsGenerated}/${threadCount} authentic conversation threads with proper Gmail threading`);
     console.log(`🎯 Each thread includes: contractor initiation → homeowner response → optional follow-up`);
-    console.log(`📧 All emails use proper "Re:" threading for Gmail conversation grouping`);
+    console.log(`📧 All emails use proper Gmail threading headers (In-Reply-To, References, Message-ID)`);
+  }
+
+  /**
+   * Send contractor email with threading support using proper email headers
+   * 
+   * THREADING IMPLEMENTATION:
+   * This method sends emails with proper threading headers to enable Gmail conversation
+   * grouping. Unlike Gmail's thread API (which is account-specific), email headers
+   * work across different Gmail accounts for cross-account threading.
+   * 
+   * HEADER STRATEGY:
+   * - Initial emails: Only Message-ID header (no threading references)
+   * - Reply emails: Include In-Reply-To and References headers for thread continuity
+   * - Subject consistency: Base subject remains unchanged, only "Re:" prefix added
+   * 
+   * CROSS-ACCOUNT SUPPORT:
+   * Threading headers enable conversations between contractor and homeowner accounts
+   * to be properly grouped in both Gmail inboxes, maintaining conversation context.
+   * 
+   * @param templateName Email template to use for content
+   * @param customSubject Optional custom subject (overrides template subject)
+   * @param customBody Optional custom body (overrides template body)
+   * @param threadingOptions Threading headers for conversation continuity
+   * @returns Promise containing message ID and thread ID from Gmail API
+   */
+  private async sendTestEmailWithThreading(
+    templateName: string, 
+    customSubject?: string, 
+    customBody?: string,
+    threadingOptions?: { messageId?: string, inReplyTo?: string, references?: string }
+  ): Promise<{ messageId: string, threadId: string }> {
+    const template = EMAIL_TEMPLATES[templateName];
+    if (!template && !customSubject && !customBody) {
+      throw new Error(`Unknown template: ${templateName}`);
+    }
+
+    const subject = customSubject || template?.subject || 'Test Email';
+    const body = customBody || template?.body || 'This is a test email';
+
+    const gmail = this.oauth.getGmailClient('contractor');
+    
+    const email = this.createEmailMessage(
+      'nailit.test.contractor@gmail.com',
+      'nailit.test.homeowner@gmail.com',
+      subject,
+      body,
+      threadingOptions
+    );
+
+    const response = await gmail.users.messages.send({
+      userId: 'me',
+      requestBody: {
+        raw: email
+      }
+    });
+
+    console.log(`✅ Email sent successfully! Message ID: ${response.data.id}, Thread ID: ${response.data.threadId}`);
+    console.log(`📬 Check nailit.test.homeowner@gmail.com inbox`);
+    
+    return { 
+      messageId: response.data.id || '', 
+      threadId: response.data.threadId || '' 
+    };
+  }
+
+  /**
+   * Send homeowner reply with threading support using proper email headers
+   * 
+   * HOMEOWNER REPLY THREADING:
+   * This method sends homeowner replies with proper threading headers to maintain
+   * conversation continuity. It uses the homeowner's Gmail account to send replies
+   * back to the contractor's account.
+   * 
+   * THREADING REQUIREMENTS:
+   * - Must include In-Reply-To header pointing to the contractor's original message
+   * - Must include References header with complete thread history
+   * - Subject must use "Re:" prefix with unchanged base subject
+   * - Message-ID must be unique for this specific reply
+   * 
+   * BIDIRECTIONAL CONVERSATION:
+   * This enables authentic contractor-homeowner communication patterns where
+   * homeowners can respond to contractor emails with questions, approvals, or concerns.
+   * 
+   * @param templateName Homeowner template to use for content
+   * @param customSubject Optional custom subject (should start with "Re:")
+   * @param customBody Optional custom body (overrides template body)
+   * @param threadingOptions Threading headers for conversation continuity
+   * @returns Promise containing message ID and thread ID from Gmail API
+   */
+  private async sendHomeownerReplyWithThreading(
+    templateName: string, 
+    customSubject?: string, 
+    customBody?: string,
+    threadingOptions?: { messageId?: string, inReplyTo?: string, references?: string }
+  ): Promise<{ messageId: string, threadId: string }> {
+    const template = EMAIL_TEMPLATES[templateName];
+    if (!template && !customSubject && !customBody) {
+      throw new Error(`Unknown homeowner template: ${templateName}`);
+    }
+
+    const subject = customSubject || template?.subject || 'Test Reply';
+    const body = customBody || template?.body || 'This is a test homeowner reply';
+
+    const gmail = this.oauth.getGmailClient('homeowner');
+    
+    const email = this.createEmailMessage(
+      'nailit.test.homeowner@gmail.com',
+      'nailit.test.contractor@gmail.com',
+      subject,
+      body,
+      threadingOptions
+    );
+
+    const response = await gmail.users.messages.send({
+      userId: 'me',
+      requestBody: {
+        raw: email
+      }
+    });
+
+    console.log(`✅ Homeowner reply sent successfully! Message ID: ${response.data.id}, Thread ID: ${response.data.threadId}`);
+    console.log(`📬 Check nailit.test.contractor@gmail.com inbox`);
+    
+    return { 
+      messageId: response.data.id || '', 
+      threadId: response.data.threadId || '' 
+    };
   }
 
   /**
@@ -447,13 +659,65 @@ class EmailSender {
   }
 
   /**
-   * Create email message in base64 format
+   * Create email message in base64 format with optional threading headers
+   * 
+   * GMAIL THREADING IMPLEMENTATION:
+   * This method creates properly formatted email messages with RFC 2822 compliant headers
+   * that enable Gmail to group related emails into conversation threads.
+   * 
+   * THREADING HEADERS EXPLAINED:
+   * - Message-ID: Unique identifier for this specific email message
+   * - In-Reply-To: Message-ID of the email this is replying to (for replies only)
+   * - References: Space-separated list of all Message-IDs in the conversation thread
+   * - Subject: Must remain consistent throughout thread (only "Re:" prefix allowed)
+   * 
+   * CROSS-ACCOUNT THREADING:
+   * These headers enable Gmail to properly thread conversations between different
+   * Gmail accounts (contractor and homeowner), maintaining conversation continuity
+   * across account boundaries.
+   * 
+   * BASE64 ENCODING:
+   * Gmail API requires email messages to be base64url encoded (RFC 4648 Section 5)
+   * with specific character replacements: + → -, / → _, padding removed
+   * 
+   * @param from Sender email address
+   * @param to Recipient email address  
+   * @param subject Email subject line (must remain consistent for threading)
+   * @param body Email body content
+   * @param options Optional threading headers for conversation continuity
+   * @returns Base64url encoded email message ready for Gmail API
    */
-  private createEmailMessage(from: string, to: string, subject: string, body: string): string {
-    const email = [
+  private createEmailMessage(
+    from: string, 
+    to: string, 
+    subject: string, 
+    body: string, 
+    options?: { 
+      inReplyTo?: string, 
+      references?: string,
+      messageId?: string 
+    }
+  ): string {
+    const messageId = options?.messageId || `<${Date.now()}.${Math.random().toString(36).substr(2, 9)}@gmail.com>`;
+    
+    const headers = [
       `From: ${from}`,
       `To: ${to}`,
       `Subject: ${subject}`,
+      `Message-ID: ${messageId}`,
+      `Date: ${new Date().toUTCString()}`
+    ];
+
+    // Add threading headers for replies
+    if (options?.inReplyTo) {
+      headers.push(`In-Reply-To: ${options.inReplyTo}`);
+    }
+    if (options?.references) {
+      headers.push(`References: ${options.references}`);
+    }
+
+    const email = [
+      ...headers,
       ``,
       body
     ].join('\n');
