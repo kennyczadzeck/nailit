@@ -57,7 +57,7 @@ model Project {
   timelineEntries TimelineEntry[]
   emailSettings EmailSettings?
   teamMembers TeamMember[]
-  
+  emailMessages EmailMessage[]  
   @@map("projects")
 }
 

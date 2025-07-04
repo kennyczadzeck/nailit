@@ -24,6 +24,12 @@ export interface OAuthComplianceData {
     reason: string;
     details?: string;
   };
+  reauthorizationRequired?: {
+    timestamp: string;
+    reason: string;
+    details?: string;
+  };
+  [key: string]: unknown;
 }
 
 export interface OAuthSessionData {
@@ -42,6 +48,33 @@ export interface OAuthRevocationData {
   revokedBy: string;
   reason: 'security' | 'user_request' | 'token_expired' | 'policy_violation' | 'reauthorization';
   details?: string;
+}
+
+export interface ComplianceReport {
+  projectId: string;
+  projectName: string;
+  userEmail: string;
+  oauthStatus: {
+    isConnected: boolean;
+    sessionId: string | null;
+    grantedAt: Date | null;
+    grantedBy: string | null;
+    lastRefreshedAt: Date | null;
+    tokenExpiry: Date | null;
+    scopes: string[] | null;
+    reauthorizationRequired: boolean | null;
+  };
+  revocationHistory: {
+    revokedAt: Date;
+    revokedBy: string;
+    reason: string;
+  } | null;
+  complianceData: OAuthComplianceData | null;
+  securityAssessment: {
+    sessionAge: number | null;
+    tokenValid: boolean;
+    needsReauthorization: boolean;
+  };
 }
 
 /**
@@ -290,7 +323,7 @@ export class OAuthSessionManager {
   /**
    * Get OAuth session compliance report
    */
-  async getComplianceReport(projectId: string): Promise<any> {
+  async getComplianceReport(projectId: string): Promise<ComplianceReport | null> {
     try {
       const emailSettings = await prisma.emailSettings.findUnique({
         where: { projectId },
@@ -326,7 +359,7 @@ export class OAuthSessionManager {
           revokedBy: emailSettings.oauthRevokedBy,
           reason: emailSettings.oauthRevokeReason
         } : null,
-        complianceData: emailSettings.oauthComplianceData,
+        complianceData: emailSettings.oauthComplianceData as OAuthComplianceData,
         securityAssessment: {
           sessionAge: emailSettings.oauthGrantedAt ? 
             Math.floor((Date.now() - emailSettings.oauthGrantedAt.getTime()) / (1000 * 60 * 60 * 24)) : null,
@@ -348,7 +381,7 @@ export class OAuthSessionManager {
   /**
    * Get all OAuth sessions for compliance audit
    */
-  async getAllOAuthSessions(): Promise<any[]> {
+  async getAllOAuthSessions(): Promise<ComplianceReport[]> {
     try {
       const emailSettings = await prisma.emailSettings.findMany({
         include: {
@@ -364,7 +397,7 @@ export class OAuthSessionManager {
         emailSettings.map(setting => this.getComplianceReport(setting.projectId))
       );
 
-      return reports.filter(report => report !== null);
+      return reports.filter((report): report is ComplianceReport => report !== null);
 
     } catch (error: any) {
       logger.error('Failed to get all OAuth sessions', {
@@ -393,7 +426,7 @@ export class OAuthSessionManager {
       await this.revokeOAuthSession(projectId, {
         revokedAt: new Date(),
         revokedBy: userId,
-        reason: reason as any,
+        reason: reason as OAuthRevocationData['reason'],
         details: 'Revoked for new authorization'
       });
     }
@@ -420,11 +453,11 @@ export class OAuthSessionManager {
     });
   }
 
-  private async getExistingComplianceData(projectId: string): Promise<any> {
+  private async getExistingComplianceData(projectId: string): Promise<OAuthComplianceData> {
     const settings = await prisma.emailSettings.findUnique({
       where: { projectId }
     });
-    return settings?.oauthComplianceData || {};
+    return (settings?.oauthComplianceData as OAuthComplianceData) || {};
   }
 
   private async incrementRefreshCount(projectId: string): Promise<number> {
