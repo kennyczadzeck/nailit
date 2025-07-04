@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { logger } from '../../../lib/logger'
 import { gmailEmailFetcher } from '../../../lib/gmail-email-fetcher'
 import { prisma } from '../../../lib/prisma'
+import { teamMemberFilter } from '../../../lib/email/team-member-filter'
 import fs from 'fs'
 import path from 'path'
 
@@ -100,11 +101,56 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Extract email metadata
+    // Extract email metadata for team member filtering
     const headers = emailContent.headers
-    const sender = headers['From'] || ''
-    const recipients = [headers['To'] || '']
-    const ccRecipients = headers['Cc'] ? [headers['Cc']] : []
+    const sender = {
+      email: headers['From'] || '',
+      name: undefined // Could parse name from "Name <email@domain.com>" format
+    }
+    const recipients = [
+      { email: headers['To'] || '', name: undefined }
+    ]
+    
+    // Add CC recipients if present
+    if (headers['Cc']) {
+      recipients.push({ email: headers['Cc'], name: undefined })
+    }
+
+    // CRITICAL: Apply team member filtering FIRST
+    const filterResult = await teamMemberFilter.shouldProcessEmail(sender, recipients, userId)
+    
+    if (!filterResult.shouldProcess) {
+      logger.info('Email filtered out by team member filter', {
+        messageId,
+        senderEmail: sender.email,
+        reason: filterResult.reason,
+        userId,
+        projectId
+      })
+
+      return NextResponse.json({
+        success: false,
+        filtered: true,
+        reason: filterResult.reason,
+        message: 'Email not processed - sender/recipients are not project team members',
+        filterDetails: {
+          senderEmail: sender.email,
+          recipientEmails: recipients.map(r => r.email),
+          reason: filterResult.reason,
+          availableTeamMembers: await teamMemberFilter.getProjectTeamMembers(projectId)
+        }
+      }, { status: 200 }) // 200 because filtering is expected behavior, not an error
+    }
+
+    logger.info('Email approved by team member filter', {
+      messageId,
+      senderEmail: sender.email,
+      matchedTeamMembers: filterResult.matchedTeamMembers.length,
+      assignedProjectId: filterResult.projectId,
+      userId
+    })
+
+    // Continue with normal email processing since it passed team member filter
     const sentAt = headers['Date'] ? new Date(headers['Date']) : new Date()
 
     // For testing without S3, we'll store content directly in database
@@ -118,38 +164,42 @@ export async function POST(request: NextRequest) {
     let emailMessage
     
     if (existingMessage) {
-      // Update existing record with OAuth session tracking
+      // Update existing record with OAuth session tracking and team member info
       emailMessage = await prisma.emailMessage.update({
         where: { messageId },
         data: {
           subject: emailContent.subject,
-          sender,
-          recipients,
-          ccRecipients,
+          sender: sender.email,
+          recipients: recipients.map(r => r.email),
+          ccRecipients: headers['Cc'] ? [headers['Cc']] : [],
           sentAt,
           bodyText: emailContent.bodyText,
           bodyHtml: emailContent.bodyHtml,
           ingestionStatus: 'completed',
+          projectId: filterResult.projectId || projectId, // Use filter-determined project
           providerData: {
             ...existingMessage.providerData as Record<string, unknown>,
             processedAt: new Date().toISOString(),
             testMode: true,
             fetchedFromGmail: true,
             oauthSessionId: oauthSessionId,
-            oauthSessionTracked: !!oauthSessionId
+            oauthSessionTracked: !!oauthSessionId,
+            teamMemberFiltered: true,
+            matchedTeamMembers: filterResult.matchedTeamMembers,
+            filterReason: filterResult.reason
           }
         }
       })
     } else {
-      // Create new record with OAuth session tracking
+      // Create new record with OAuth session tracking and team member info
       emailMessage = await prisma.emailMessage.create({
         data: {
           messageId,
           provider: 'gmail',
           subject: emailContent.subject,
-          sender,
-          recipients,
-          ccRecipients,
+          sender: sender.email,
+          recipients: recipients.map(r => r.email),
+          ccRecipients: headers['Cc'] ? [headers['Cc']] : [],
           sentAt,
           bodyText: emailContent.bodyText,
           bodyHtml: emailContent.bodyHtml,
@@ -157,7 +207,7 @@ export async function POST(request: NextRequest) {
           analysisStatus: 'pending',
           assignmentStatus: 'pending',
           userId,
-          projectId,
+          projectId: filterResult.projectId || projectId, // Use filter-determined project
           providerData: {
             processedAt: new Date().toISOString(),
             testMode: true,
@@ -165,26 +215,31 @@ export async function POST(request: NextRequest) {
             attachmentCount: emailContent.attachments.length,
             oauthSessionId: oauthSessionId,
             oauthSessionTracked: !!oauthSessionId,
-            credentialSource: oauthSessionId ? 'oauth_session' : 'test_credentials'
+            credentialSource: oauthSessionId ? 'oauth_session' : 'test_credentials',
+            teamMemberFiltered: true,
+            matchedTeamMembers: filterResult.matchedTeamMembers,
+            filterReason: filterResult.reason
           }
         }
       })
     }
 
-    logger.info('Test email processing completed with OAuth session tracking', {
+    logger.info('Test email processing completed with team member filtering', {
       messageId,
       userId,
-      projectId,
+      projectId: filterResult.projectId || projectId,
       emailMessageId: emailMessage.id,
       subject: emailContent.subject,
       attachmentCount: emailContent.attachments.length,
       oauthSessionId: oauthSessionId,
-      oauthSessionTracked: !!oauthSessionId
+      oauthSessionTracked: !!oauthSessionId,
+      teamMemberFiltered: true,
+      matchedTeamMembers: filterResult.matchedTeamMembers.length
     })
 
     return NextResponse.json({
       success: true,
-      message: 'Test email processed successfully with OAuth session tracking',
+      message: 'Test email processed successfully with team member filtering',
       emailMessage: {
         id: emailMessage.id,
         messageId: emailMessage.messageId,
@@ -193,6 +248,7 @@ export async function POST(request: NextRequest) {
         recipients: emailMessage.recipients,
         sentAt: emailMessage.sentAt,
         ingestionStatus: emailMessage.ingestionStatus,
+        projectId: emailMessage.projectId,
         bodyText: emailMessage.bodyText ? emailMessage.bodyText.substring(0, 200) + '...' : null,
         bodyHtml: emailMessage.bodyHtml ? emailMessage.bodyHtml.substring(0, 200) + '...' : null,
         providerData: emailMessage.providerData
@@ -204,6 +260,12 @@ export async function POST(request: NextRequest) {
         hasBodyHtml: !!emailContent.bodyHtml,
         attachmentCount: emailContent.attachments.length,
         headers: Object.keys(headers)
+      },
+      teamMemberFilter: {
+        approved: true,
+        matchedTeamMembers: filterResult.matchedTeamMembers,
+        reason: filterResult.reason,
+        assignedProjectId: filterResult.projectId
       },
       oauthInfo: {
         sessionId: oauthSessionId,
