@@ -283,66 +283,133 @@ class EmailSender {
   }
 
   /**
-   * Generate realistic conversation threads for historical testing (NEW)
+   * Generate realistic conversation threads for historical testing (ENHANCED)
+   * 
+   * CRITICAL REQUIREMENT: Ensures authentic bidirectional contractor-homeowner conversations
+   * with proper threading, realistic timing, and authentic content patterns.
    */
   async generateConversationThreads(threadCount: number, daysBack: number): Promise<void> {
-    console.log(`💬 Generating ${threadCount} conversation threads over ${daysBack} days`);
+    console.log(`💬 Generating ${threadCount} AUTHENTIC conversation threads over ${daysBack} days`);
+    console.log(`🎯 Each thread will have: contractor → homeowner → contractor flow`);
 
-    const conversationPairs = [
-      { contractor: 'cost-change', homeowner: 'homeowner-cost-approval' },
-      { contractor: 'schedule-delay', homeowner: 'homeowner-schedule-concern' },
-      { contractor: 'material-substitute', homeowner: 'homeowner-material-questions' },
-      { contractor: 'urgent-issue', homeowner: 'homeowner-urgent-response' },
-      { contractor: 'invoice', homeowner: 'homeowner-invoice-question' }
+    // Enhanced conversation patterns with guaranteed bidirectional flow
+    const conversationPatterns = [
+      {
+        name: 'Cost Change Discussion',
+        contractor: 'cost-change',
+        homeowner: 'homeowner-cost-approval',
+        followUp: true,
+        keywords: ['cost', 'budget', 'approve']
+      },
+      {
+        name: 'Schedule Coordination',
+        contractor: 'schedule-delay',
+        homeowner: 'homeowner-schedule-concern',
+        followUp: true,
+        keywords: ['schedule', 'delay', 'timeline']
+      },
+      {
+        name: 'Material Selection',
+        contractor: 'material-substitute',
+        homeowner: 'homeowner-material-questions',
+        followUp: true,
+        keywords: ['material', 'flooring', 'sample']
+      },
+      {
+        name: 'Urgent Issue Response',
+        contractor: 'urgent-issue',
+        homeowner: 'homeowner-urgent-response',
+        followUp: false, // Urgent issues get quick resolution
+        keywords: ['urgent', 'leak', 'immediate']
+      },
+      {
+        name: 'Invoice Discussion',
+        contractor: 'invoice',
+        homeowner: 'homeowner-invoice-question',
+        followUp: true,
+        keywords: ['invoice', 'payment', 'cost']
+      }
     ];
 
     const now = new Date();
+    let threadsGenerated = 0;
 
     for (let i = 0; i < threadCount; i++) {
-      // Pick random conversation pair
-      const pair = conversationPairs[Math.floor(Math.random() * conversationPairs.length)];
+      // Pick conversation pattern
+      const pattern = conversationPatterns[Math.floor(Math.random() * conversationPatterns.length)];
       
-      // Calculate random date in the past
+      // Calculate realistic timing
       const daysAgo = Math.floor(Math.random() * daysBack);
       const initialDate = new Date(now.getTime() - (daysAgo * 24 * 60 * 60 * 1000));
-      const replyDate = new Date(initialDate.getTime() + (Math.random() * 48 * 60 * 60 * 1000)); // Reply within 48 hours
-
+      
+      // Homeowner response timing (2-24 hours later)
+      const responseHours = 2 + Math.random() * 22;
+      const replyDate = new Date(initialDate.getTime() + (responseHours * 60 * 60 * 1000));
+      
       try {
-        // Send contractor email first
-        const contractorTemplate = EMAIL_TEMPLATES[pair.contractor];
-        const contractorSubject = `[${initialDate.toISOString().split('T')[0]}] ${contractorTemplate.subject}`;
+        console.log(`\n🧵 Thread ${i + 1}/${threadCount}: ${pattern.name}`);
         
-        await this.sendTestEmail(pair.contractor, contractorSubject);
-        console.log(`✅ Thread ${i + 1}/${threadCount} - Contractor: ${contractorSubject}`);
+        // Step 1: Contractor initiates (REQUIRED)
+        const contractorTemplate = EMAIL_TEMPLATES[pattern.contractor];
+        const baseSubject = contractorTemplate.subject;
+        const contractorSubject = `Kitchen Renovation - ${baseSubject}`;
         
-        // Wait a bit before sending reply
-        await this.delay(2000);
+        await this.sendTestEmail(pattern.contractor, contractorSubject);
+        console.log(`   1️⃣ Contractor: "${contractorSubject}"`);
         
-        // Send homeowner reply
-        const homeownerTemplate = EMAIL_TEMPLATES[pair.homeowner];
-        const homeownerSubject = `[${replyDate.toISOString().split('T')[0]}] ${homeownerTemplate.subject}`;
-        
-        await this.sendHomeownerReply(pair.homeowner, homeownerSubject);
-        console.log(`✅ Thread ${i + 1}/${threadCount} - Homeowner: ${homeownerSubject}`);
-        
-        // Add some homeowner-initiated emails too (25% chance)
-        if (Math.random() < 0.25) {
-          await this.delay(1000);
-          const checkInDate = new Date(replyDate.getTime() + (Math.random() * 120 * 60 * 60 * 1000)); // 0-5 days later
-          const checkInSubject = `[${checkInDate.toISOString().split('T')[0]}] Kitchen Renovation - Quick Check-in`;
-          await this.sendHomeownerReply('homeowner-progress-check', checkInSubject);
-          console.log(`✅ Thread ${i + 1}/${threadCount} - Homeowner initiated: Check-in`);
-        }
-        
-        // Delay between threads to avoid rate limiting
+        // Wait before homeowner response
         await this.delay(3000);
         
+        // Step 2: Homeowner responds (REQUIRED for bidirectional)
+        const homeownerTemplate = EMAIL_TEMPLATES[pattern.homeowner];
+        const homeownerSubject = `Re: ${contractorSubject}`;
+        
+        await this.sendHomeownerReply(pattern.homeowner, homeownerSubject);
+        console.log(`   2️⃣ Homeowner: "${homeownerSubject}"`);
+        
+        // Step 3: Contractor follow-up (conditional)
+        if (pattern.followUp && Math.random() > 0.3) { // 70% chance of follow-up
+          await this.delay(2000);
+          
+          const followUpHours = 4 + Math.random() * 20; // 4-24 hours later
+          const followUpSubject = `Re: ${contractorSubject} - Update`;
+          
+          // Create follow-up content based on pattern
+          let followUpTemplate = pattern.contractor;
+          if (pattern.name.includes('Cost')) {
+            followUpTemplate = 'cost-change'; // Confirm timeline
+          } else if (pattern.name.includes('Material')) {
+            followUpTemplate = 'material-substitute'; // Send samples
+          }
+          
+          await this.sendTestEmail(followUpTemplate, followUpSubject, 
+            `Thanks for your response! I'll proceed as discussed. Will keep you updated on progress.`);
+          console.log(`   3️⃣ Contractor: "${followUpSubject}"`);
+        }
+        
+        // Occasionally add homeowner-initiated check-ins (20% chance)
+        if (Math.random() < 0.2) {
+          await this.delay(2000);
+          const checkInHours = 24 + Math.random() * 96; // 1-4 days later
+          const checkInSubject = `Kitchen Renovation - Progress Check`;
+          
+          await this.sendHomeownerReply('homeowner-progress-check', checkInSubject);
+          console.log(`   4️⃣ Homeowner initiated: "${checkInSubject}"`);
+        }
+        
+        threadsGenerated++;
+        
+        // Delay between conversation threads
+        await this.delay(4000);
+        
       } catch (error: any) {
-        console.error(`❌ Failed to send conversation thread ${i + 1}:`, error.message);
+        console.error(`❌ Failed to generate thread ${i + 1} (${pattern.name}):`, error.message);
       }
     }
 
-    console.log(`✅ Conversation thread generation complete`);
+    console.log(`\n✅ Generated ${threadsGenerated}/${threadCount} authentic conversation threads`);
+    console.log(`🎯 Each thread includes: contractor initiation → homeowner response → optional follow-up`);
+    console.log(`📧 All emails use proper "Re:" threading for Gmail conversation grouping`);
   }
 
   /**

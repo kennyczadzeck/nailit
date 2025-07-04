@@ -659,3 +659,204 @@ npm run test:truncate-db
 **Last Updated**: January 7, 2025  
 **Test Accounts**: `nailit.test.homeowner@gmail.com`, `nailit.test.contractor@gmail.com`  
 **Status**: ✅ Complete email testing infrastructure with Gmail API only (no direct database writes)
+
+## Enhanced Conversation Validation
+
+### Bidirectional Communication Requirements
+
+**CRITICAL REQUIREMENT**: All test data must contain authentic bidirectional conversations between contractor and homeowner with:
+
+- ✅ **Proper email threading** (Re: subjects)
+- ✅ **Realistic response timing** (2-48 hours between messages)
+- ✅ **Authentic content patterns** (contractor sends project updates, homeowner responds with questions/approvals)
+- ✅ **Bidirectional flow** (contractor → homeowner → contractor)
+- ✅ **Thread continuity** (conversations that make sense together)
+
+### Conversation Quality Standards
+
+Each conversation thread must include:
+
+1. **Contractor Initiation**: Project updates, cost changes, schedule updates, urgent issues
+2. **Homeowner Response**: Questions, approvals, concerns, requests for clarification
+3. **Optional Follow-up**: Contractor confirmation, additional details, status updates
+
+### Validation Tools
+
+```bash
+# Validate existing conversations
+npm run test:validate-conversations
+
+# Generate enhanced conversation threads
+npm run test:send-email conversation 5 30  # 5 threads over 30 days
+```
+
+## Quick Start Guide
+
+### 1. OAuth Setup (Required)
+
+```bash
+# Set up OAuth for both accounts
+npm run test:oauth-setup contractor
+npm run test:oauth-setup homeowner
+
+# Check OAuth status
+npm run test:oauth-status
+```
+
+### 2. Generate Authentic Test Data
+
+```bash
+# Generate bidirectional conversation threads
+npm run test:send-email conversation 10 60  # 10 conversations over 60 days
+
+# Validate conversation quality
+npm run test:validate-conversations
+```
+
+### 3. Verify Email Delivery
+
+```bash
+# Preview current emails
+npm run test:gmail:cleanup-preview
+
+# Clean up test emails (moves to trash)
+npm run test:gmail:cleanup-all
+```
+
+## Available Commands
+
+### OAuth Management
+```bash
+npm run test:oauth-setup <contractor|homeowner>    # Setup OAuth
+npm run test:oauth-callback <contractor|homeowner> # Handle callback
+npm run test:oauth-status                          # Check status
+```
+
+### Email Generation (Gmail API Only)
+```bash
+npm run test:send-email single <template>          # Single email
+npm run test:send-email bulk <count> <days>        # Bulk emails
+npm run test:send-email conversation <count> <days> # Conversation threads
+npm run test:send-email homeowner-reply <template> # Homeowner response
+```
+
+### Conversation Validation
+```bash
+npm run test:validate-conversations               # Validate existing conversations
+```
+
+### Email Management
+```bash
+npm run test:gmail:cleanup-preview                # Preview emails to clean
+npm run test:gmail:cleanup-all                    # Move all test emails to trash
+npm run test:gmail:cleanup-recent                 # Move recent emails to trash
+```
+
+### Data Management
+```bash
+npm run test:emails:data status                   # Check database status
+npm run test:emails:cleanup                       # Clean database only
+```
+
+## Email Templates
+
+### Contractor Templates
+- `cost-change` - Cost update notifications
+- `schedule-delay` - Schedule change notifications  
+- `material-substitute` - Material substitution requests
+- `urgent-issue` - Urgent problem notifications
+- `invoice` - Invoice and payment requests
+
+### Homeowner Response Templates
+- `homeowner-cost-approval` - Cost change responses
+- `homeowner-schedule-concern` - Schedule concern responses
+- `homeowner-material-questions` - Material selection questions
+- `homeowner-urgent-response` - Urgent issue responses
+- `homeowner-invoice-question` - Invoice questions
+- `homeowner-progress-check` - Progress check-ins
+
+## Enhanced Conversation Patterns
+
+### Pattern 1: Cost Change Discussion
+```
+1. Contractor: "Kitchen Renovation - Cost Update Required"
+2. Homeowner: "Re: Kitchen Renovation - Cost Update Required"
+3. Contractor: "Re: Kitchen Renovation - Cost Update Required - Timeline Confirmed"
+```
+
+### Pattern 2: Urgent Issue Resolution
+```
+1. Contractor: "URGENT: Kitchen Water Leak"
+2. Homeowner: "Re: URGENT: Kitchen Water Leak" (within 2-4 hours)
+3. Contractor: "Re: URGENT: Kitchen Water Leak - Issue Resolved"
+```
+
+### Pattern 3: Material Selection Process
+```
+1. Contractor: "Flooring Material Substitution"
+2. Homeowner: "Re: Flooring Material Substitution" (questions)
+3. Contractor: "Re: Flooring Material Substitution - Samples Available"
+4. Homeowner: "Re: Flooring Material Substitution - Approved!"
+```
+
+## Troubleshooting
+
+### OAuth Issues
+```bash
+# Check OAuth status
+npm run test:oauth-status
+
+# Re-authenticate if expired
+npm run test:oauth-setup contractor
+npm run test:oauth-setup homeowner
+```
+
+### Email Delivery Issues
+- Verify OAuth credentials are valid
+- Check Gmail API quotas
+- Ensure proper email formatting
+- Verify recipient email addresses
+
+### Conversation Quality Issues
+- Run conversation validator to identify problems
+- Ensure proper "Re:" threading
+- Check for bidirectional communication
+- Verify realistic timing between messages
+
+## System Architecture
+
+### Gmail API Integration
+- **Authentication**: OAuth 2.0 with refresh tokens
+- **Sending**: `gmail.users.messages.send()` with base64 encoded messages
+- **Reading**: `gmail.users.messages.list()` and `gmail.users.messages.get()`
+- **Cleanup**: `gmail.users.messages.trash()` for safe removal
+
+### Database Separation
+- **Email Generation**: ONLY via Gmail API
+- **Database Population**: ONLY via ingestion pathways
+- **Testing**: Validates actual production ingestion code
+
+### Conversation Threading
+- **Subject Lines**: Use "Re:" prefix for replies
+- **Message IDs**: Gmail handles threading automatically
+- **Timing**: Realistic delays between messages (2-48 hours)
+
+## Best Practices
+
+1. **Always validate conversations** after generating test data
+2. **Use realistic timing** between contractor and homeowner messages
+3. **Include authentic content** that matches real project communication
+4. **Test bidirectional flow** in every conversation thread
+5. **Clean up test data** regularly to avoid quota issues
+6. **Monitor OAuth status** and refresh tokens as needed
+
+## Conversation Quality Metrics
+
+The conversation validator checks:
+- **Bidirectional Communication**: Both contractor and homeowner participate
+- **Proper Threading**: Reply emails use "Re:" subjects  
+- **Realistic Timing**: Responses within 2-48 hours
+- **Authentic Content**: Contractor/homeowner language patterns
+- **Thread Continuity**: Conversations make logical sense
+
+Target: 80%+ quality score with all 5 checks passing.

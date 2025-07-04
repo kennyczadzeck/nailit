@@ -47,6 +47,7 @@
     "test:oauth-setup": "tsx scripts/email-testing/oauth-setup.ts setup",
     "test:oauth-callback": "tsx scripts/email-testing/oauth-setup.ts callback",
     "test:oauth-status": "tsx scripts/email-testing/oauth-setup.ts status",
+    "test:validate-conversations": "tsx scripts/email-testing/conversation-validator.ts validate",
     "lint:check": "next lint --max-warnings 0",
     "lint:ci": "next lint --max-warnings 20",
     "type-check": "tsc --noEmit",
