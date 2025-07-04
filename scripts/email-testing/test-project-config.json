@@ -1,0 +1,25 @@
+{
+  "homeownerUserId": "cmcno2zmb0000lvnwh6udokku",
+  "homeownerEmail": "nailit.test.homeowner@gmail.com",
+  "projectId": "cmcno30f50002lvnw071mcicm",
+  "projectName": "Test Kitchen Renovation",
+  "contractorEmail": "nailit.test.contractor@gmail.com",
+  "teamMembers": [
+    {
+      "name": "Mike Johnson",
+      "email": "nailit.test.contractor@gmail.com",
+      "role": "GENERAL_CONTRACTOR"
+    },
+    {
+      "name": "Sarah Chen",
+      "email": "info@graniteplus.com",
+      "role": "ARCHITECT_DESIGNER"
+    },
+    {
+      "name": "Tom Rodriguez",
+      "email": "tom@brightelectrical.com",
+      "role": "PROJECT_MANAGER"
+    }
+  ],
+  "createdAt": "2025-07-04T11:33:08.607Z"
+}

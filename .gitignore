@@ -39,6 +39,9 @@ yarn-error.log*why
 gmail-contractor-credentials.json
 gmail-contractor-tokens.json
 
+# Email testing credentials directory
+scripts/email-testing/credentials/
+
 # vercel
 .vercel
 
