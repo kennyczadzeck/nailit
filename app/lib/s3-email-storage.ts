@@ -137,14 +137,15 @@ class S3EmailStorage {
         success: true
       };
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       const duration = Date.now() - startTime;
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       
       logger.error('S3 email storage failed', {
         userId,
         projectId,
         messageId: emailContent.messageId,
-        error: error.message,
+        error: errorMessage,
         duration
       });
 
@@ -152,7 +153,7 @@ class S3EmailStorage {
         attachmentPaths: [],
         totalSize: 0,
         success: false,
-        error: error.message
+        error: errorMessage
       };
     }
   }
@@ -192,10 +193,11 @@ class S3EmailStorage {
         attachments: [] // Attachments retrieved separately
       };
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       logger.error('Failed to retrieve email content from S3', {
         contentPath,
-        error: error.message
+        error: errorMessage
       });
       return null;
     }
@@ -234,11 +236,12 @@ class S3EmailStorage {
 
       return true;
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       logger.error('Failed to delete email from S3', {
         contentPath,
         attachmentPaths,
-        error: error.message
+        error: errorMessage
       });
       return false;
     }
