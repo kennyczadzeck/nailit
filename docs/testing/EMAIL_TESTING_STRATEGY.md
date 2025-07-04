@@ -50,14 +50,16 @@ We use a **multi-layered approach** that progresses from isolated unit tests to 
 
 #### **Test Gmail Account Setup**
 ```
-Primary Test Account: nailit.email.testing@gmail.com
-Purpose: Controlled environment for email ingestion testing
+Test Homeowner Account: nailit.test.homeowner@gmail.com
+Test Contractor Account: nailit.test.contractor@gmail.com
+Purpose: Realistic email conversations between homeowner and contractor
 
-Team Member Accounts (for sending test emails):
-- contractor.test@gmail.com
-- architect.test@gmail.com  
-- inspector.test@citycode.gov
-- supplier.test@materials.com
+Team Member Configuration:
+- ONLY the contractor (nailit.test.contractor@gmail.com) is a defined team member
+- All emails must be between homeowner and contractor accounts
+- Emails should be realistic renovation project conversations
+- Include email threads/replies as they would occur in reality
+- Include attachments (PDFs) like quotes, invoices, permits
 ```
 
 #### **Environment Configuration**
@@ -170,57 +172,39 @@ jobs:
 Our filtering strategy is based on **known team member email addresses** rather than content analysis:
 
 ```typescript
-// Project team members (defined per project)
+// Project team members (UPDATED: only contractor)
 teamMembers: [
-  'contractor.test@gmail.com',     // General contractor
-  'architect.test@gmail.com',      // Project architect  
-  'inspector.test@citycode.gov',   // City inspector
-  'supplier.test@materials.com'    // Material supplier
+  'nailit.test.contractor@gmail.com'     // General contractor (ONLY team member)
 ]
 
-// Filtering logic: Only process emails FROM these addresses
-// This eliminates 99% of irrelevant emails (marketing, spam, personal)
+// Filtering logic: Only process emails FROM/TO this address
+// Homeowner emails are processed only when they involve the contractor
 ```
 
-### **Historical Email Test Set**
-Pre-created emails in test Gmail account for consistent testing:
+### **Realistic Email Test Set**
+Pre-created realistic email conversations in test accounts for consistent testing:
 
 ```
-1. Kitchen renovation quote ($45,000) - contractor.test@gmail.com
-2. Building permit approval - permits@citycode.gov  
-3. Material delivery schedule - supplier.test@materials.com
-4. Weather delay notification - contractor.test@gmail.com
-5. Personal thank you note - contractor.test@gmail.com (edge case)
+1. Initial quote and timeline discussion - threaded conversation
+2. Urgent plumbing issue discovered - quick back-and-forth
+3. Cabinet installation progress updates - status updates with photos
+4. Permit application and inspection scheduling - official communications
+5. Final invoice and project completion - closing conversation
+
+Each thread includes:
+- Realistic construction project content
+- Email replies and threading
+- PDF attachments (quotes, photos, permits, invoices)
+- Appropriate timing between messages
 ```
 
 ### **Real-time Test Scenarios**
-Automated scripts to send test emails from team members:
+Automated scripts to generate realistic email conversations:
 
 ```typescript
-// scripts/send-test-emails.ts
-export const sendTestEmails = {
-  urgentInspection: () => sendEmail({
-    from: 'inspector.test@citycode.gov',
-    to: 'nailit.email.testing@gmail.com',
-    subject: 'URGENT: Electrical inspection tomorrow 9 AM',
-    body: 'Inspector will arrive tomorrow at 9:00 AM...'
-  }),
-  
-  changeOrder: () => sendEmail({
-    from: 'contractor.test@gmail.com', 
-    to: 'nailit.email.testing@gmail.com',
-    subject: 'Change order required - additional work',
-    body: 'Additional cost: $2,800 for electrical upgrade...'
-  }),
-
-  // Non-team member email (should be filtered out)
-  marketingEmail: () => sendEmail({
-    from: 'marketing@homedepot.com',
-    to: 'nailit.email.testing@gmail.com',
-    subject: 'Black Friday Sale!',
-    // This email should never be processed or stored
-  })
-};
+// scripts/email-testing/realistic-email-generator.ts
+// Generates threaded conversations with attachments
+// Only between homeowner and contractor accounts
 ```
 
 ---

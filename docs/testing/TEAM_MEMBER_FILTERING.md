@@ -149,14 +149,15 @@ if (!filterResult.shouldProcess) {
 ### **Test Data Setup**
 
 ```sql
--- Required for email processing to work
+-- UPDATED: Only ONE team member (contractor) required for testing
 INSERT INTO team_members VALUES 
-  ('tm_contractor_001', 'Mike Johnson', 'nailit.test.contractor@gmail.com', 'GENERAL_CONTRACTOR', 'project-id'),
-  ('tm_architect_001', 'Sarah Chen', 'permits@citycode.gov', 'ARCHITECT_DESIGNER', 'project-id'),
-  ('tm_supplier_001', 'Tom Rodriguez', 'supplier.test@materials.com', 'PROJECT_MANAGER', 'project-id');
+  ('tm_contractor_001', 'Mike Johnson', 'nailit.test.contractor@gmail.com', 'GENERAL_CONTRACTOR', 'project-id');
 
 -- Enable email monitoring
 UPDATE email_settings SET monitoringEnabled = true WHERE projectId = 'project-id';
+
+-- Note: Previous setup included multiple team members (architect, suppliers)
+-- New testing requirements focus on homeowner-contractor conversations only
 ```
 
 ---

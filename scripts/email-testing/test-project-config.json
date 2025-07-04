@@ -1,25 +1,21 @@
 {
-  "homeownerUserId": "cmcno2zmb0000lvnwh6udokku",
+  "homeownerUserId": "cmcp8t16v0000lvuljtl8h16z",
   "homeownerEmail": "nailit.test.homeowner@gmail.com",
-  "projectId": "cmcno30f50002lvnw071mcicm",
-  "projectName": "Test Kitchen Renovation",
+  "projectId": "cmcp8t1c50002lvul2id0icsr",
+  "projectName": "Kitchen Renovation Test Project",
   "contractorEmail": "nailit.test.contractor@gmail.com",
   "teamMembers": [
     {
       "name": "Mike Johnson",
       "email": "nailit.test.contractor@gmail.com",
       "role": "GENERAL_CONTRACTOR"
-    },
-    {
-      "name": "Sarah Chen",
-      "email": "info@graniteplus.com",
-      "role": "ARCHITECT_DESIGNER"
-    },
-    {
-      "name": "Tom Rodriguez",
-      "email": "tom@brightelectrical.com",
-      "role": "PROJECT_MANAGER"
     }
   ],
-  "createdAt": "2025-07-04T11:33:08.607Z"
+  "testingRequirements": {
+    "onlyOneTeamMember": true,
+    "realisticConversations": true,
+    "includeAttachments": true,
+    "homeownerContractorOnly": true
+  },
+  "createdAt": "2025-07-04T20:04:04.584Z"
 }

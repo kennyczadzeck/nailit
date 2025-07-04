@@ -419,6 +419,136 @@ class EmailTestDataManager {
   }
 
   /**
+   * Set up test project with ONLY the contractor as team member
+   * This aligns with the updated testing requirements:
+   * - Only one team member (test contractor)
+   * - Realistic email conversations between homeowner and contractor
+   */
+  async setupSingleContractorProject(): Promise<void> {
+    console.log('🏗️  Setting up test project with single contractor...');
+
+    try {
+      // Find or create test homeowner user
+      let homeowner = await prisma.user.findUnique({
+        where: { email: 'nailit.test.homeowner@gmail.com' }
+      });
+
+      if (!homeowner) {
+        homeowner = await prisma.user.create({
+          data: {
+            email: 'nailit.test.homeowner@gmail.com',
+            name: 'Sarah Test Homeowner',
+          }
+        });
+        console.log('👤 Created homeowner user');
+      } else {
+        console.log('👤 Found existing homeowner user');
+      }
+
+      // Find or create test project
+      let project = await prisma.project.findFirst({
+        where: { 
+          userId: homeowner.id,
+          name: 'Kitchen Renovation Test Project'
+        }
+      });
+
+      if (!project) {
+        project = await prisma.project.create({
+          data: {
+            name: 'Kitchen Renovation Test Project',
+            description: 'Complete kitchen renovation with realistic email testing between homeowner and contractor',
+            status: 'ACTIVE',
+            startDate: new Date('2024-02-01'),
+            contractor: 'Johnson Construction',
+            budget: 50000,
+            address: '123 Test Street, Test City, CA 90210',
+            userId: homeowner.id,
+          }
+        });
+        console.log('🏠 Created test project');
+      } else {
+        console.log('🏠 Found existing test project');
+      }
+
+      // CRITICAL: Remove ALL existing team members first
+      const deletedMembers = await prisma.teamMember.deleteMany({
+        where: { projectId: project.id }
+      });
+      console.log(`🗑️  Removed ${deletedMembers.count} existing team members`);
+
+      // Add ONLY the contractor as team member
+      const contractor = await prisma.teamMember.create({
+        data: {
+          name: 'Mike Johnson',
+          email: 'nailit.test.contractor@gmail.com',
+          role: 'GENERAL_CONTRACTOR',
+          projectId: project.id,
+        }
+      });
+      console.log('👷 Added contractor as ONLY team member');
+
+      // Ensure email monitoring is enabled
+      await prisma.emailSettings.upsert({
+        where: { projectId: project.id },
+        update: {
+          monitoringEnabled: true,
+          gmailConnected: true,
+          notificationsEnabled: true,
+          weeklyReports: true,
+          highPriorityAlerts: true,
+        },
+        create: {
+          projectId: project.id,
+          monitoringEnabled: true,
+          gmailConnected: true,
+          notificationsEnabled: true,
+          weeklyReports: true,
+          highPriorityAlerts: true,
+        }
+      });
+      console.log('📧 Email monitoring enabled');
+
+      // Update test config file
+      const testConfig = {
+        homeownerUserId: homeowner.id,
+        homeownerEmail: homeowner.email,
+        projectId: project.id,
+        projectName: project.name,
+        contractorEmail: 'nailit.test.contractor@gmail.com',
+        teamMembers: [
+          { 
+            name: 'Mike Johnson', 
+            email: 'nailit.test.contractor@gmail.com', 
+            role: 'GENERAL_CONTRACTOR' 
+          }
+        ],
+        testingRequirements: {
+          onlyOneTeamMember: true,
+          realisticConversations: true,
+          includeAttachments: true,
+          homeownerContractorOnly: true
+        },
+        createdAt: new Date().toISOString(),
+      };
+
+      const configPath = path.join(__dirname, 'test-project-config.json');
+      fs.writeFileSync(configPath, JSON.stringify(testConfig, null, 2));
+      
+      console.log('✅ Single contractor project setup complete!');
+      console.log(`📋 Project ID: ${project.id}`);
+      console.log(`📧 Homeowner: ${homeowner.email}`);
+      console.log(`👷 Contractor: nailit.test.contractor@gmail.com`);
+      console.log(`👥 Team Members: 1 (contractor only)`);
+      console.log(`💾 Config saved to: ${configPath}`);
+
+    } catch (error: any) {
+      console.error('❌ Failed to setup single contractor project:', error.message);
+      throw error;
+    }
+  }
+
+  /**
    * Get test project configuration
    */
   async getTestProjectConfig(): Promise<{
@@ -596,6 +726,10 @@ async function main() {
 
       case 'setup-test-project':
         await dataManager.setupTestProject();
+        break;
+
+      case 'setup-single-contractor-project':
+        await dataManager.setupSingleContractorProject();
         break;
 
       default:

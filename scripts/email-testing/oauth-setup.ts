@@ -105,12 +105,59 @@ class EmailTestOAuth {
   async testCredentials(accountType: 'contractor' | 'homeowner'): Promise<boolean> {
     try {
       const gmail = this.getGmailClient(accountType);
-      await gmail.users.getProfile({ userId: 'me' });
+      const profile = await gmail.users.getProfile({ userId: 'me' });
+      console.log(`✅ ${accountType} credentials valid for: ${profile.data.emailAddress}`);
       return true;
     } catch (error) {
       console.error(`❌ Invalid credentials for ${accountType}:`, error);
       return false;
     }
+  }
+
+  /**
+   * Check OAuth status for both accounts
+   */
+  async checkStatus(): Promise<void> {
+    console.log(`\n🔐 OAuth Status Check\n`);
+
+    const accounts: ('contractor' | 'homeowner')[] = ['contractor', 'homeowner'];
+    
+    for (const account of accounts) {
+      const credentialsPath = path.join(CREDENTIALS_DIR, `${account}-credentials.json`);
+      
+      if (!fs.existsSync(credentialsPath)) {
+        console.log(`❌ ${account}: No credentials file found`);
+        console.log(`   Run: npm run test:oauth-setup ${account}`);
+        continue;
+      }
+
+      try {
+        const credentials = this.loadCredentials(account);
+        if (!credentials) {
+          console.log(`❌ ${account}: Invalid credentials file`);
+          continue;
+        }
+
+        if (credentials.refresh_token === 'test_refresh_token_placeholder') {
+          console.log(`⚠️  ${account}: Placeholder credentials detected`);
+          console.log(`   Run: npm run test:oauth-setup ${account}`);
+          continue;
+        }
+
+        const isValid = await this.testCredentials(account);
+        if (isValid) {
+          console.log(`✅ ${account}: OAuth credentials working`);
+        } else {
+          console.log(`❌ ${account}: OAuth credentials expired`);
+          console.log(`   Run: npm run test:oauth-setup ${account}`);
+        }
+
+      } catch (error: any) {
+        console.log(`❌ ${account}: Error testing credentials - ${error.message}`);
+      }
+    }
+
+    console.log(`\n💡 To set up OAuth: npm run test:oauth-setup <contractor|homeowner>`);
   }
 
   private saveCredentials(accountType: 'contractor' | 'homeowner', credentials: OAuthCredentials): void {
@@ -154,13 +201,30 @@ async function main() {
 
   switch (command) {
     case 'setup':
+      if (!accountType) {
+        console.error(`❌ Account type required: contractor or homeowner`);
+        process.exit(1);
+      }
       await oauth.setupAccount(accountType);
       break;
     case 'callback':
+      if (!accountType || !authCode) {
+        console.error(`❌ Account type and auth code required`);
+        process.exit(1);
+      }
       await oauth.handleCallback(accountType, authCode);
       break;
+    case 'status':
+      await oauth.checkStatus();
+      break;
     default:
-      console.log(`Usage: npm run test:oauth-setup <contractor|homeowner>`);
+      console.log(`\n🔐 OAuth Setup for Email Testing\n`);
+      console.log(`Usage:`);
+      console.log(`  npm run test:oauth-status                    # Check OAuth status`);
+      console.log(`  npm run test:oauth-setup <contractor|homeowner>`);
+      console.log(`  npm run test:oauth-callback <contractor|homeowner> <code>`);
+      console.log(`\nExample:`);
+      console.log(`  npm run test:oauth-setup contractor`);
   }
 }
 
