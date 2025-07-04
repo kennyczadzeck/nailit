@@ -58,10 +58,14 @@ export async function POST(request: NextRequest) {
     }
 
     if (oauthSession && oauthSession.isActive) {
-      // Use OAuth session credentials
+      // Use OAuth session credentials with null checks
+      if (!oauthSession.refreshToken) {
+        throw new Error('OAuth session missing refresh token')
+      }
+      
       credentials = {
         refreshToken: oauthSession.refreshToken,
-        accessToken: oauthSession.accessToken,
+        accessToken: oauthSession.accessToken || undefined,
         expiryDate: oauthSession.expiresAt?.getTime()
       }
       oauthSessionId = oauthSession.id

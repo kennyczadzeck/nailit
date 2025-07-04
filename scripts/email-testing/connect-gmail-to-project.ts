@@ -66,15 +66,20 @@ async function connectGmailToProject(): Promise<void> {
     // Get compliance report
     const complianceReport = await oauthSessionManager.getComplianceReport(projectId);
     
-    console.log(`\n📊 OAuth Session Compliance Report:`);
-    console.log(`   Session Age: ${complianceReport.securityAssessment.sessionAge} days`);
-    console.log(`   Token Valid: ${complianceReport.securityAssessment.tokenValid}`);
-    console.log(`   Needs Reauth: ${complianceReport.securityAssessment.needsReauthorization}`);
-    console.log(`   Granted At: ${complianceReport.oauthStatus.grantedAt}`);
-    console.log(`   Granted By: ${complianceReport.oauthStatus.grantedBy}`);
+    if (complianceReport) {
+      console.log(`\n📊 OAuth Session Compliance Report:`);
+      console.log(`   Session Age: ${complianceReport.securityAssessment.sessionAge} days`);
+      console.log(`   Token Valid: ${complianceReport.securityAssessment.tokenValid}`);
+      console.log(`   Needs Reauth: ${complianceReport.securityAssessment.needsReauthorization}`);
+      console.log(`   Granted At: ${complianceReport.oauthStatus.grantedAt}`);
+      console.log(`   Granted By: ${complianceReport.oauthStatus.grantedBy}`);
+    } else {
+      console.log(`\n⚠️  No compliance report available for project ${projectId}`);
+    }
 
-  } catch (error: any) {
-    console.error('❌ Failed to connect Gmail OAuth with enhanced tracking:', error.message);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('❌ Failed to connect Gmail OAuth with enhanced tracking:', errorMessage);
     throw error;
   } finally {
     await prisma.$disconnect();

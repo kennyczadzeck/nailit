@@ -352,10 +352,10 @@ export class OAuthSessionManager {
           grantedBy: emailSettings.oauthGrantedBy,
           lastRefreshedAt: emailSettings.oauthLastRefreshedAt,
           tokenExpiry: emailSettings.gmailTokenExpiry,
-          scopes: emailSettings.oauthScopes,
+          scopes: emailSettings.oauthScopes as string[] | null,
           reauthorizationRequired: emailSettings.oauthReauthorizationRequired
         },
-        revocationHistory: emailSettings.oauthRevokedAt ? {
+        revocationHistory: emailSettings.oauthRevokedAt && emailSettings.oauthRevokedBy && emailSettings.oauthRevokeReason ? {
           revokedAt: emailSettings.oauthRevokedAt,
           revokedBy: emailSettings.oauthRevokedBy,
           reason: emailSettings.oauthRevokeReason
