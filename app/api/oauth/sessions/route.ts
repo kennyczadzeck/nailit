@@ -76,10 +76,13 @@ export async function GET(request: NextRequest) {
       securityAssessment: complianceReport?.securityAssessment || null
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    
     logger.error('Failed to get OAuth session information', {
-      error: error.message,
-      stack: error.stack
+      error: errorMessage,
+      stack: errorStack
     });
 
     return NextResponse.json(
@@ -155,10 +158,13 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    
     logger.error('Failed to manage OAuth session', {
-      error: error.message,
-      stack: error.stack
+      error: errorMessage,
+      stack: errorStack
     });
 
     return NextResponse.json(
@@ -178,7 +184,7 @@ export async function DELETE(request: NextRequest) {
 
     const { searchParams } = new URL(request.url);
     const projectId = searchParams.get('projectId');
-    const reason = searchParams.get('reason') as any || 'user_request';
+    const reason = searchParams.get('reason') || 'user_request';
     const details = searchParams.get('details');
 
     if (!projectId) {
@@ -189,7 +195,7 @@ export async function DELETE(request: NextRequest) {
     await oauthSessionManager.revokeOAuthSession(projectId, {
       revokedAt: new Date(),
       revokedBy: session.user.id,
-      reason,
+      reason: reason as 'security' | 'user_request' | 'token_expired' | 'policy_violation' | 'reauthorization',
       details: details || undefined
     });
 
@@ -205,10 +211,13 @@ export async function DELETE(request: NextRequest) {
       message: 'OAuth session revoked successfully'
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    
     logger.error('Failed to revoke OAuth session', {
-      error: error.message,
-      stack: error.stack
+      error: errorMessage,
+      stack: errorStack
     });
 
     return NextResponse.json(
