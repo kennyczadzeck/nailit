@@ -28,12 +28,19 @@
 # debug
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
+yarn-error.log*why
 .pnpm-debug.log*
 
 # env files (can opt-in for committing if needed)
 .env*
 .githubauth
+
+# Gmail OAuth credentials and tokens (email testing utility)
+gmail-contractor-credentials.json
+gmail-contractor-tokens.json
+
+# Email testing credentials directory
+scripts/email-testing/credentials/
 
 # vercel
 .vercel
@@ -57,3 +64,6 @@ next-env.d.ts
 *.dmg
 *.exe
 *.msi
+infrastructure/.env.secrets
+infrastructure/cdk.out/
+deploy/
