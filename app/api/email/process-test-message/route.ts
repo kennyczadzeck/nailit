@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { logger } from '../../../lib/logger'
 import { gmailEmailFetcher } from '../../../lib/gmail-email-fetcher'
 import { prisma } from '../../../lib/prisma'
-import { oauthSessionManager } from '../../../lib/oauth-session-manager'
 import fs from 'fs'
 import path from 'path'
 
@@ -52,7 +51,11 @@ export async function POST(request: NextRequest) {
     })
 
     let oauthSessionId: string | undefined
-    let credentials: any
+    let credentials: {
+      refreshToken: string;
+      accessToken?: string;
+      expiryDate?: number;
+    }
 
     if (oauthSession && oauthSession.isActive) {
       // Use OAuth session credentials
@@ -124,7 +127,7 @@ export async function POST(request: NextRequest) {
           bodyHtml: emailContent.bodyHtml,
           ingestionStatus: 'completed',
           providerData: {
-            ...existingMessage.providerData as any,
+            ...existingMessage.providerData as Record<string, unknown>,
             processedAt: new Date().toISOString(),
             testMode: true,
             fetchedFromGmail: true,
@@ -205,14 +208,17 @@ export async function POST(request: NextRequest) {
       }
     })
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    const errorStack = error instanceof Error ? error.stack : undefined
+    
     logger.error('Test email processing failed', {
-      error: error.message,
-      stack: error.stack
+      error: errorMessage,
+      stack: errorStack
     })
     
     return NextResponse.json(
-      { error: `Internal server error: ${error.message}` },
+      { error: `Internal server error: ${errorMessage}` },
       { status: 500 }
     )
   }
@@ -221,7 +227,11 @@ export async function POST(request: NextRequest) {
 /**
  * Load test credentials from file system
  */
-async function loadTestCredentials(): Promise<any> {
+async function loadTestCredentials(): Promise<{
+  refreshToken: string;
+  accessToken?: string;
+  expiryDate?: number;
+}> {
   const credentialsPath = path.join(process.cwd(), 'scripts/email-testing/credentials/homeowner-credentials.json')
   
   if (!fs.existsSync(credentialsPath)) {
@@ -299,13 +309,15 @@ export async function GET(request: NextRequest) {
       }
     })
 
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+    
     logger.error('Failed to get test email processing status', {
-      error: error.message
+      error: errorMessage
     })
     
     return NextResponse.json(
-      { error: `Internal server error: ${error.message}` },
+      { error: `Internal server error: ${errorMessage}` },
       { status: 500 }
     )
   }

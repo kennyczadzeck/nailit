@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client';
-import { google } from 'googleapis';
 import { logger } from './logger';
 import crypto from 'crypto';
 
@@ -267,10 +266,11 @@ export class OAuthSessionManager {
         reason: revocationData.reason
       });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       logger.error('Failed to revoke OAuth session', {
         projectId,
-        error: error.message
+        error: errorMessage
       });
       throw error;
     }
@@ -311,10 +311,11 @@ export class OAuthSessionManager {
 
       return false;
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       logger.error('Failed to check reauthorization requirement', {
         projectId,
-        error: error.message
+        error: errorMessage
       });
       return true; // Fail safe - require reauthorization on error
     }
@@ -369,10 +370,11 @@ export class OAuthSessionManager {
         }
       };
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       logger.error('Failed to generate compliance report', {
         projectId,
-        error: error.message
+        error: errorMessage
       });
       throw error;
     }
@@ -399,9 +401,10 @@ export class OAuthSessionManager {
 
       return reports.filter((report): report is ComplianceReport => report !== null);
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       logger.error('Failed to get all OAuth sessions', {
-        error: error.message
+        error: errorMessage
       });
       throw error;
     }
