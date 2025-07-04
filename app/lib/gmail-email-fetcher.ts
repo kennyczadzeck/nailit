@@ -8,18 +8,34 @@ export interface GmailCredentials {
   expiryDate?: number;
 }
 
+export interface GmailMessagePayload {
+  partId?: string;
+  mimeType: string;
+  filename?: string;
+  headers?: Array<{
+    name: string;
+    value: string;
+  }>;
+  body?: {
+    attachmentId?: string;
+    size?: number;
+    data?: string;
+  };
+  parts?: GmailMessagePayload[];
+}
+
 export interface GmailMessage {
   id: string;
   threadId: string;
   snippet: string;
   historyId: string;
   internalDate: string;
-  payload: any;
+  payload: GmailMessagePayload;
   raw?: string;
 }
 
 class GmailEmailFetcher {
-  private oauth2Client: any;
+  private oauth2Client: InstanceType<typeof google.auth.OAuth2>;
 
   constructor() {
     this.oauth2Client = new google.auth.OAuth2(
@@ -68,7 +84,7 @@ class GmailEmailFetcher {
       }
 
       // Extract email content
-      const emailContent = await this.parseEmailMessage(message);
+      const emailContent = await this.parseEmailMessage(message as GmailMessage);
       
       const duration = Date.now() - startTime;
       
@@ -82,17 +98,18 @@ class GmailEmailFetcher {
 
       return emailContent;
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       const duration = Date.now() - startTime;
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       
       logger.error('Failed to fetch email from Gmail API', {
         messageId,
-        error: error.message,
+        error: errorMessage,
         duration
       });
 
       // Check if it's an authentication error
-      if (error.message?.includes('invalid_grant') || error.message?.includes('unauthorized')) {
+      if (errorMessage.includes('invalid_grant') || errorMessage.includes('unauthorized')) {
         logger.warn('Gmail credentials may be expired', { messageId });
       }
 
@@ -173,7 +190,7 @@ class GmailEmailFetcher {
   /**
    * Extract headers from Gmail message payload
    */
-  private extractHeaders(payload: any): Record<string, string> {
+  private extractHeaders(payload: GmailMessagePayload): Record<string, string> {
     const headers: Record<string, string> = {};
     
     if (payload.headers) {
@@ -188,11 +205,11 @@ class GmailEmailFetcher {
   /**
    * Extract text and HTML bodies from Gmail message payload
    */
-  private extractBodies(payload: any): { bodyText?: string; bodyHtml?: string } {
+  private extractBodies(payload: GmailMessagePayload): { bodyText?: string; bodyHtml?: string } {
     let bodyText: string | undefined;
     let bodyHtml: string | undefined;
 
-    const extractFromPart = (part: any) => {
+    const extractFromPart = (part: GmailMessagePayload) => {
       if (part.mimeType === 'text/plain' && part.body?.data) {
         bodyText = Buffer.from(part.body.data, 'base64').toString('utf-8');
       } else if (part.mimeType === 'text/html' && part.body?.data) {
@@ -216,7 +233,7 @@ class GmailEmailFetcher {
       }
     }
 
-    // Check parts
+    // Check parts if no direct body
     if (payload.parts) {
       for (const part of payload.parts) {
         extractFromPart(part);
@@ -229,36 +246,19 @@ class GmailEmailFetcher {
   /**
    * Extract attachments from Gmail message payload
    */
-  private async extractAttachments(payload: any): Promise<EmailAttachment[]> {
+  private async extractAttachments(payload: GmailMessagePayload): Promise<EmailAttachment[]> {
     const attachments: EmailAttachment[] = [];
 
-    const extractFromPart = async (part: any) => {
-      // Check if this part is an attachment
-      if (part.filename && part.body?.attachmentId) {
-        try {
-          // For now, we'll skip downloading actual attachment data
-          // In production, you'd use gmail.users.messages.attachments.get()
-          const attachment: EmailAttachment = {
-            filename: part.filename,
-            contentType: part.mimeType || 'application/octet-stream',
-            size: part.body.size || 0,
-            data: Buffer.alloc(0) // Placeholder - would fetch actual data in production
-          };
-
-          attachments.push(attachment);
-
-          logger.debug('Attachment found', {
-            filename: attachment.filename,
-            contentType: attachment.contentType,
-            size: attachment.size
-          });
-
-        } catch (error: any) {
-          logger.warn('Failed to extract attachment', {
-            filename: part.filename,
-            error: error.message
-          });
-        }
+    const extractFromPart = async (part: GmailMessagePayload) => {
+      if (part.filename && part.filename.length > 0 && part.body?.attachmentId) {
+        // Note: For Gmail attachments, we'd need to fetch the actual data separately
+        // This is a placeholder structure that matches the EmailAttachment interface
+        attachments.push({
+          filename: part.filename,
+          contentType: part.mimeType,
+          size: part.body.size || 0,
+          data: Buffer.alloc(0) // Placeholder - actual data would be fetched separately
+        });
       }
 
       // Recursively check parts
@@ -269,12 +269,7 @@ class GmailEmailFetcher {
       }
     };
 
-    if (payload.parts) {
-      for (const part of payload.parts) {
-        await extractFromPart(part);
-      }
-    }
-
+    await extractFromPart(payload);
     return attachments;
   }
 
@@ -299,9 +294,10 @@ class GmailEmailFetcher {
 
       return true;
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       logger.error('Gmail API connection test failed', {
-        error: error.message
+        error: errorMessage
       });
       return false;
     }
@@ -325,15 +321,16 @@ class GmailEmailFetcher {
         return {
           ...credentials,
           accessToken: tokenInfo.token,
-          expiryDate: this.oauth2Client.credentials.expiry_date
+          expiryDate: this.oauth2Client.credentials.expiry_date ?? undefined
         };
       }
 
       return credentials;
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       logger.error('Failed to refresh Gmail token', {
-        error: error.message
+        error: errorMessage
       });
       throw error;
     }

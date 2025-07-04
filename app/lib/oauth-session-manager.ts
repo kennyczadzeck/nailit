@@ -5,6 +5,27 @@ import crypto from 'crypto';
 
 const prisma = new PrismaClient();
 
+export interface OAuthTokens {
+  access_token?: string;
+  refresh_token: string;
+  expiry_date?: number;
+}
+
+export interface OAuthComplianceData {
+  ipAddress?: string;
+  userAgent?: string;
+  grantTimestamp?: string;
+  tokenSource?: string;
+  securityLevel?: string;
+  lastRefresh?: string;
+  refreshCount?: number;
+  revocation?: {
+    timestamp: string;
+    reason: string;
+    details?: string;
+  };
+}
+
 export interface OAuthSessionData {
   sessionId: string;
   grantedAt: Date;
@@ -13,7 +34,7 @@ export interface OAuthSessionData {
   refreshToken: string;
   accessToken?: string;
   tokenExpiry?: Date;
-  complianceData?: any;
+  complianceData?: OAuthComplianceData;
 }
 
 export interface OAuthRevocationData {
@@ -37,7 +58,7 @@ export class OAuthSessionManager {
   async createOAuthSession(
     projectId: string,
     userId: string,
-    tokens: any,
+    tokens: OAuthTokens,
     scopes: string[]
   ): Promise<string> {
     try {
@@ -115,11 +136,12 @@ export class OAuthSessionManager {
 
       return sessionId;
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       logger.error('Failed to create OAuth session', {
         projectId,
         userId,
-        error: error.message
+        error: errorMessage
       });
       throw error;
     }
@@ -130,7 +152,7 @@ export class OAuthSessionManager {
    */
   async refreshOAuthTokens(
     projectId: string,
-    newTokens: any
+    newTokens: OAuthTokens
   ): Promise<void> {
     try {
       const now = new Date();
@@ -160,10 +182,11 @@ export class OAuthSessionManager {
         newTokenExpiry: newTokens.expiry_date ? new Date(newTokens.expiry_date) : null
       });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
       logger.error('Failed to refresh OAuth tokens', {
         projectId,
-        error: error.message
+        error: errorMessage
       });
       throw error;
     }
