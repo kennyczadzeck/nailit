@@ -30,22 +30,40 @@ npm run test:send-email "material-substitute"
 
 ## 📥 Ingestion Testing
 
-### Two Testing Modes
+### Two Critical Testing Modes
 
-#### 1. Historical Bulk Ingestion
-Test processing existing emails in bulk:
+#### 1. Historical Bulk Ingestion (NEW - CRITICAL FOR EXISTING PROJECTS)
+Test processing existing emails from Gmail API in bulk:
 ```bash
 # Clear test data
 npm run test:truncate-data
 
-# Generate historical emails 
-npm run test:generate-bulk-emails --count=100 --days-back=60
+# Generate realistic bidirectional conversation history (ENHANCED)
+npm run test:send-conversations 20 180  # 20 conversation threads over 6 months
+npm run test:send-bulk-emails 30 180   # Additional one-way contractor emails
 
-# Run historical ingestion
-npm run test:ingest-historical
+# Test historical discovery and filtering
+npm run test:discover-historical --date-range="6-months" --project-id="test-123"
 
-# Validate results
-npm run test:validate-ingestion --mode=historical
+# Run historical ingestion with progress tracking
+npm run test:ingest-historical --batch-size=50 --rate-limit=100
+
+# Validate bulk processing results (now includes homeowner replies)
+npm run test:validate-ingestion --mode=historical --expected-count=480
+```
+
+#### 2. Bidirectional Conversation Testing (NEW - for Mid-Project Onboarding)
+Test realistic conversation patterns between contractors and homeowners:
+```bash
+# Generate conversation threads for historical testing
+npm run test:send-conversations 15 90  # 15 conversation threads over 3 months
+
+# Test individual homeowner replies
+npm run test:send-homeowner-reply homeowner-cost-approval
+npm run test:send-homeowner-reply homeowner-schedule-concern
+
+# Validate conversation threading and context
+npm run test:validate-conversations --thread-count=15
 ```
 
 #### 2. Real-time Webhook Ingestion  
@@ -62,6 +80,182 @@ npm run test:validate-webhook --timeout=30
 
 # Check database for new EmailMessage record
 npm run test:check-db --latest
+```
+
+## 🕐 **Historical Email Testing Scenarios**
+
+### Scenario 1: "Mid-Project Onboarding"
+Simulates homeowner joining NailIt after project has been running for months:
+
+```bash
+# Generate realistic historical email dataset
+npm run test:create-historical-dataset \
+  --scenario="mid-project" \
+  --duration="4-months" \
+  --contractors=3 \
+  --email-types="quotes,invoices,schedule-updates,change-orders"
+
+# Test historical import workflow
+npm run test:historical-import-workflow \
+  --user="nailit.test.homeowner@gmail.com" \
+  --project-id="kitchen-renovation-123" \
+  --date-range="2024-09-01,2025-01-01"
+
+# Validate project timeline reconstruction
+npm run test:validate-timeline-reconstruction \
+  --expected-events=45 \
+  --expected-flagged-items=12
+```
+
+### Scenario 2: "Large Scale Historical Processing"
+Tests system performance with high-volume historical imports:
+
+```bash
+# Generate large historical dataset (1000+ emails)
+npm run test:create-large-historical-dataset \
+  --emails=1500 \
+  --timespan="12-months" \
+  --realistic-distribution=true
+
+# Test batch processing performance
+npm run test:historical-batch-processing \
+  --batch-size=100 \
+  --concurrent-jobs=3 \
+  --timeout="2-hours"
+
+# Monitor resource usage during bulk processing
+npm run test:monitor-bulk-processing \
+  --metrics="cpu,memory,database-connections,api-quotas"
+```
+
+### Scenario 3: "Mixed Provider Historical Import"
+Tests historical import from both Gmail and Outlook:
+
+```bash
+# Set up historical data in both providers
+npm run test:setup-mixed-historical \
+  --gmail-emails=300 \
+  --outlook-emails=200 \
+  --overlap-percentage=10
+
+# Test unified historical import
+npm run test:mixed-provider-import \
+  --providers="gmail,outlook" \
+  --deduplication=true
+
+# Validate unified timeline
+npm run test:validate-mixed-timeline \
+  --total-emails=450 \
+  --duplicates-removed=50
+```
+
+## 🔄 **Historical Ingestion API Testing**
+
+### Historical Import API Endpoint Testing
+```bash
+# Test historical import initiation
+curl -X POST http://localhost:3000/api/email/import/historical \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $JWT_TOKEN" \
+  -d '{
+    "projectId": "test-project-123",
+    "dateRange": {
+      "start": "2024-06-01",
+      "end": "2025-01-01"
+    },
+    "providers": ["gmail"],
+    "batchSize": 50
+  }'
+
+# Check import job status
+curl -X GET http://localhost:3000/api/email/import/status/job-456 \
+  -H "Authorization: Bearer $JWT_TOKEN"
+
+# Get import progress
+curl -X GET http://localhost:3000/api/email/import/progress/job-456 \
+  -H "Authorization: Bearer $JWT_TOKEN"
+```
+
+### Historical Processing Queue Testing
+```bash
+# Monitor SQS queue for historical processing jobs
+npm run test:monitor-historical-queue \
+  --queue="nailit-historical-email-processing" \
+  --duration="30-minutes"
+
+# Test queue worker performance
+npm run test:queue-worker-performance \
+  --worker-count=3 \
+  --message-throughput=100-per-minute
+
+# Test queue error handling and retries
+npm run test:queue-error-scenarios \
+  --scenarios="api-rate-limit,oauth-expiry,network-timeout"
+```
+
+## 📊 **Performance Testing for Historical Import**
+
+### Gmail API Rate Limiting Tests
+```bash
+# Test compliance with Gmail API quotas
+npm run test:gmail-quota-compliance \
+  --quota-limit=250-units-per-second \
+  --test-duration=10-minutes
+
+# Test rate limiting backoff strategies
+npm run test:rate-limit-backoff \
+  --initial-delay=1000ms \
+  --max-delay=30000ms \
+  --backoff-multiplier=2
+```
+
+### Database Performance Tests
+```bash
+# Test bulk email insertion performance
+npm run test:bulk-insert-performance \
+  --email-count=1000 \
+  --target-time="<30-seconds"
+
+# Test timeline query performance with large datasets
+npm run test:timeline-query-performance \
+  --email-count=5000 \
+  --query-time="<2-seconds"
+```
+
+## 🧪 **Historical Email BDD Tests**
+
+### Feature: Historical Email Import
+```gherkin
+Feature: Historical Email Import for Existing Projects
+  As a homeowner who started my renovation before using NailIt
+  I want to import my existing project emails
+  So that I have a complete communication history
+
+Scenario: Discover Historical Project Emails
+  Given I have a Gmail account with 6 months of renovation emails
+  And I connect my Gmail to my existing kitchen renovation project
+  When I click "Import Historical Emails"
+  Then NailIt scans my Gmail for renovation-related emails
+  And shows me a list of 150 discovered project emails
+  And I can select the date range "Last 6 months"
+  And I can review the list before importing
+
+Scenario: Bulk Historical Email Processing
+  Given I have selected 300 historical emails for import
+  When I start the historical import process
+  Then emails are processed in batches of 50
+  And I see progress "Processing batch 3 of 6"
+  And the import completes within 45 minutes
+  And all 300 emails appear in my project timeline
+  And 25 flagged items are automatically created from the emails
+
+Scenario: Historical Import with API Rate Limiting
+  Given I have 1000 historical emails to import
+  When the import process encounters Gmail API rate limits
+  Then the system automatically implements exponential backoff
+  And continues processing when rate limits reset
+  And no emails are lost or duplicated
+  And the import eventually completes successfully
 ```
 
 ## 🗄️ Data Storage Testing

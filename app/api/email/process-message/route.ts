@@ -1,0 +1,196 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { logger } from '../../../lib/logger'
+import { processGmailMessage } from '../webhook/gmail/route'
+import { prisma } from '../../../lib/prisma'
+
+// Manual email processing endpoint (for testing and background jobs)
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json()
+    const { messageId, userId, projectId, testMode = false } = body
+
+    if (!messageId || !userId || !projectId) {
+      return NextResponse.json(
+        { error: 'Missing required fields: messageId, userId, projectId' },
+        { status: 400 }
+      )
+    }
+
+    logger.info('Manual email processing requested', {
+      messageId,
+      userId,
+      projectId,
+      testMode
+    })
+
+    // Get user and project with email settings
+    const project = await prisma.project.findUnique({
+      where: {
+        id: projectId,
+        userId: userId
+      },
+      include: {
+        emailSettings: true,
+        user: true
+      }
+    })
+
+    if (!project) {
+      return NextResponse.json(
+        { error: 'Project not found or access denied' },
+        { status: 404 }
+      )
+    }
+
+    if (!project.emailSettings?.gmailConnected || !project.emailSettings?.gmailRefreshToken) {
+      return NextResponse.json(
+        { error: 'Gmail not connected for this project' },
+        { status: 400 }
+      )
+    }
+
+    // Prepare Gmail credentials
+    const credentials = {
+      refreshToken: project.emailSettings.gmailRefreshToken,
+      accessToken: project.emailSettings.gmailAccessToken,
+      expiryDate: project.emailSettings.gmailTokenExpiry?.getTime()
+    }
+
+    // For test mode, use test credentials
+    if (testMode) {
+      credentials.refreshToken = process.env.GMAIL_TEST_CLIENT_SECRET || credentials.refreshToken
+      // Use test credentials from email testing setup
+    }
+
+    // Process the Gmail message
+    const success = await processGmailMessage(messageId, userId, projectId, credentials)
+
+    if (!success) {
+      return NextResponse.json(
+        { error: 'Failed to process Gmail message' },
+        { status: 500 }
+      )
+    }
+
+    // Get the processed email message
+    const emailMessage = await prisma.emailMessage.findUnique({
+      where: { messageId },
+      select: {
+        id: true,
+        messageId: true,
+        subject: true,
+        sender: true,
+        recipients: true,
+        sentAt: true,
+        ingestionStatus: true,
+        s3ContentPath: true,
+        s3AttachmentPaths: true,
+        providerData: true
+      }
+    })
+
+    logger.info('Manual email processing completed', {
+      messageId,
+      userId,
+      projectId,
+      emailMessageId: emailMessage?.id,
+      success
+    })
+
+    return NextResponse.json({
+      success: true,
+      message: 'Email processed successfully',
+      emailMessage
+    })
+
+  } catch (error: any) {
+    logger.error('Manual email processing failed', {
+      error: error.message,
+      stack: error.stack
+    })
+    
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+}
+
+// GET endpoint to check processing status
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url)
+    const messageId = searchParams.get('messageId')
+    const projectId = searchParams.get('projectId')
+
+    if (!messageId) {
+      return NextResponse.json(
+        { error: 'messageId parameter required' },
+        { status: 400 }
+      )
+    }
+
+    // Find the email message
+    const emailMessage = await prisma.emailMessage.findUnique({
+      where: { messageId },
+      include: {
+        project: {
+          select: {
+            id: true,
+            name: true
+          }
+        },
+        user: {
+          select: {
+            id: true,
+            email: true
+          }
+        }
+      }
+    })
+
+    if (!emailMessage) {
+      return NextResponse.json(
+        { error: 'Email message not found' },
+        { status: 404 }
+      )
+    }
+
+    // Check project access if specified
+    if (projectId && emailMessage.projectId !== projectId) {
+      return NextResponse.json(
+        { error: 'Email message not found in specified project' },
+        { status: 404 }
+      )
+    }
+
+    const status = {
+      messageId: emailMessage.messageId,
+      subject: emailMessage.subject,
+      sender: emailMessage.sender,
+      sentAt: emailMessage.sentAt,
+      ingestionStatus: emailMessage.ingestionStatus,
+      analysisStatus: emailMessage.analysisStatus,
+      assignmentStatus: emailMessage.assignmentStatus,
+      hasS3Content: !!emailMessage.s3ContentPath,
+      attachmentCount: emailMessage.s3AttachmentPaths.length,
+      project: emailMessage.project,
+      user: emailMessage.user,
+      providerData: emailMessage.providerData,
+      createdAt: emailMessage.createdAt,
+      updatedAt: emailMessage.updatedAt
+    }
+
+    return NextResponse.json({ status })
+
+  } catch (error: any) {
+    logger.error('Failed to get email processing status', {
+      error: error.message
+    })
+    
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    )
+  }
+} 

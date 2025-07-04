@@ -1,5 +1,7 @@
 #!/usr/bin/env ts-node
 
+import { config } from 'dotenv';
+config({ path: '.env.local' });
 import { EmailTestOAuth } from './oauth-setup';
 import { google } from 'googleapis';
 
@@ -20,16 +22,16 @@ class WebhookTester {
     const environment = process.env.NAILIT_ENVIRONMENT || 'development';
     switch (environment) {
       case 'development':
-        this.webhookUrl = 'https://u9eack5h4f.us-east-1.awsapprunner.com/api/email/webhook/gmail'\;
+        this.webhookUrl = 'https://u9eack5h4f.us-east-1.awsapprunner.com/api/email/webhook/gmail';
         break;
       case 'staging':
-        this.webhookUrl = 'https://ubfybdadun.us-east-1.awsapprunner.com/api/email/webhook/gmail'\;
+        this.webhookUrl = 'https://ubfybdadun.us-east-1.awsapprunner.com/api/email/webhook/gmail';
         break;
       case 'production':
-        this.webhookUrl = 'https://ijj2mc7dhz.us-east-1.awsapprunner.com/api/email/webhook/gmail'\;
+        this.webhookUrl = 'https://ijj2mc7dhz.us-east-1.awsapprunner.com/api/email/webhook/gmail';
         break;
       default:
-        this.webhookUrl = 'http://localhost:3001/api/email/webhook/gmail'\;
+        this.webhookUrl = 'http://localhost:3001/api/email/webhook/gmail';
     }
   }
 

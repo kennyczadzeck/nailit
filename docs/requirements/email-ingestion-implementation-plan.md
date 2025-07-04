@@ -77,18 +77,18 @@ Homeowner's Email → Enhanced Capture → Project Assignment → AI Analysis �
 
 ## 📊 **Phased Development Strategy**
 
-### **Phase 1: Enhanced Email Connection & Capture (Weeks 1-3)**
-**Goal**: Upgrade existing email monitoring with real-time capture and storage
+### **Phase 1: Enhanced Email Connection & Real-time Ingestion (Weeks 1-3)**
+**Goal**: Extend existing email monitoring with enhanced permissions and real-time capture
 
 #### **Week 1: Enhanced OAuth & Infrastructure**
-- Extend existing Gmail OAuth with enhanced permissions (gmail.readonly → gmail.modify)
-- Deploy enhanced CDK infrastructure for email storage and processing
-- Extend existing database schema with EmailMessage and EmailProvider models
-- Configure real-time webhook processing
+- Extend existing OAuth flow with enhanced gmail.readonly permissions
+- Set up SQS queues for both real-time and historical email processing
+- Enhance S3 bucket structure for email content storage
+- Test enhanced Gmail connection with existing projects
 
-#### **Week 2: Real-time Email Capture**
-- Implement Gmail webhook handlers for real-time email capture
-- Build email content fetching and secure S3 storage
+#### **Week 2: Real-time Email Capture Enhancement**
+- Enhance existing Gmail webhook handlers for improved real-time capture
+- Build email content fetching service with full message support
 - Integrate with existing project team contact matching
 - Test real-time email capture with existing projects
 
@@ -104,22 +104,50 @@ Homeowner's Email → Enhanced Capture → Project Assignment → AI Analysis �
 - [ ] Integration with existing project dashboard seamless
 - [ ] Performance supports typical homeowner email volumes
 
-### **Phase 2: Intelligent Analysis & Flagged Items Integration (Weeks 4-6)**
+### **Phase 1.5: Historical Email Ingestion (Weeks 3.5-4.5) - NEW CRITICAL PHASE**
+**Goal**: Enable bulk import of existing project emails for mid-project onboarding
+
+#### **Week 3.5: Historical Discovery & Filtering**
+- Implement Gmail API integration for historical message retrieval
+- Build AI-powered project relevance pre-filtering for historical emails
+- Create date range selection and email discovery interface
+- Test historical email discovery with realistic email volumes
+
+#### **Week 4: Bulk Processing Infrastructure**
+- Implement SQS-based queue system for historical email processing
+- Build rate-limiting compliant batch processing system
+- Create progress tracking and status reporting for bulk imports
+- Test bulk processing with 500+ historical emails
+
+#### **Week 4.5: Historical Import User Experience**
+- Build "Import Historical Emails" interface for project setup
+- Create progress tracking UI for bulk import operations
+- Implement error handling and retry logic for failed imports
+- Test complete historical import workflow end-to-end
+
+**Exit Criteria:**
+- [ ] Historical email discovery working for 6-12 month date ranges
+- [ ] Bulk processing handles 500+ emails within 2 hours
+- [ ] Progress tracking provides accurate status and completion estimates
+- [ ] Historical import integrates seamlessly with existing project setup
+- [ ] Gmail API rate limiting compliance (250 quota units/user/second)
+
+### **Phase 2: Intelligent Analysis & Flagged Items Integration (Weeks 5-7)**
 **Goal**: Connect email analysis with existing flagged items system
 
-#### **Week 4: Project Email Detection**
+#### **Week 5: Project Email Detection**
 - Implement AI relevance scoring for renovation project emails
 - Build participant matching with existing project team contacts
 - Create email filtering to show only project-relevant communications
 - Test relevance detection with real homeowner email patterns
 
-#### **Week 5: Enhanced Email Categorization**
+#### **Week 6: Enhanced Email Categorization**
 - Extend existing AI classification for email-specific categories
 - Build category-based filtering in email timeline
 - Integrate email categories with existing flagged item categories
 - Test categorization accuracy with construction email samples
 
-#### **Week 6: Email-to-Flagged Items Integration**
+#### **Week 7: Email-to-Flagged Items Integration**
 - Connect email change detection with existing flagged items creation
 - Build email-to-flagged-item linking and cross-references
 - Enhance flagged item details to show originating email context
@@ -131,16 +159,16 @@ Homeowner's Email → Enhanced Capture → Project Assignment → AI Analysis �
 - [ ] Seamless integration between emails and existing flagged items system
 - [ ] Email context enhances flagged item review experience
 
-### **Phase 3: Unified Communication Experience (Weeks 7-8)**
+### **Phase 3: Unified Communication Experience (Weeks 8-9)**
 **Goal**: Create integrated timeline and search across emails and flagged items
 
-#### **Week 7: Unified Timeline**
+#### **Week 8: Unified Timeline**
 - Integrate email timeline with existing project timeline
 - Build unified view showing emails, flagged items, and confirmations
 - Create cross-linking between related emails and changes
 - Design timeline for homeowner workflow patterns
 
-#### **Week 8: Advanced Search & Navigation**
+#### **Week 9: Advanced Search & Navigation**
 - Build search across emails, flagged items, and timeline entries
 - Create filtering by email category, flagged item status, and date ranges
 - Implement email-to-change navigation and context switching
@@ -152,16 +180,16 @@ Homeowner's Email → Enhanced Capture → Project Assignment → AI Analysis �
 - [ ] Navigation between emails and flagged items intuitive
 - [ ] Performance optimized for months of project communication
 
-### **Phase 4: Multi-Provider & Smart Features (Weeks 9-10)**
+### **Phase 4: Multi-Provider & Smart Features (Weeks 10-11)**
 **Goal**: Add Outlook support and intelligent notification features
 
-#### **Week 9: Outlook Integration**
+#### **Week 10: Outlook Integration**
 - Implement Microsoft Graph OAuth integration
 - Adapt email processing pipeline for Outlook emails
 - Build multi-provider management interface
 - Test Gmail + Outlook unified processing
 
-#### **Week 10: Smart Notifications & Analytics**
+#### **Week 11: Smart Notifications & Analytics**
 - Implement intelligent email notifications for urgent issues
 - Build communication analytics for homeowner insights
 - Create notification preferences and customization

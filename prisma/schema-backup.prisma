@@ -239,39 +239,6 @@ model EmailMessage {
   @@index([urgencyLevel])
   @@index([containsChanges])
 }
-model OAuthSession {
-  id                String   @id @default(cuid())
-  userId            String
-  provider          String   // "google", "microsoft", etc.
-  sessionContext    String   // "email_api", "calendar_api", "app_auth"
-  sessionPurpose    String   // Human-readable description
-  
-  // OAuth credentials
-  providerAccountId String
-  accessToken       String?
-  refreshToken      String?
-  expiresAt         DateTime?
-  tokenType         String?  @default("Bearer")
-  scopes            String[] // ["gmail.readonly", "calendar.events"]
-  
-  // Session management
-  isActive          Boolean  @default(true)
-  lastUsedAt        DateTime @default(now())
-  createdAt         DateTime @default(now())
-  revokedAt         DateTime?
-  revokedReason     String?
-  
-  // Device/app context
-  deviceInfo        String?  // "web", "mobile", "desktop", "server"
-  userAgent         String?
-  ipAddress         String?
-  
-  // Relations
-  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  @@unique([userId, provider, sessionContext])
-  @@map("oauth_sessions")
-}
 
 model MLFeedback {
   id          String   @id @default(cuid())

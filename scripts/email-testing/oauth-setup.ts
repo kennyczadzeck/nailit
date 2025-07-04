@@ -1,8 +1,12 @@
 #!/usr/bin/env ts-node
 
+import { config } from 'dotenv';
 import { google } from 'googleapis';
 import * as fs from 'fs';
 import * as path from 'path';
+
+// Load environment variables from .env.local
+config({ path: '.env.local' });
 
 /**
  * OAuth Setup Utility for Email Testing
@@ -35,7 +39,7 @@ class EmailTestOAuth {
     this.oauth2Client = new google.auth.OAuth2(
       process.env.GMAIL_TEST_CLIENT_ID,
       process.env.GMAIL_TEST_CLIENT_SECRET,
-      'http://localhost:3000/auth/gmail/callback'
+      'http://localhost:3001/auth/gmail/callback'
     );
   }
 
@@ -93,6 +97,20 @@ class EmailTestOAuth {
     });
 
     return google.gmail({ version: 'v1', auth: this.oauth2Client });
+  }
+
+  /**
+   * Test if credentials are valid for an account
+   */
+  async testCredentials(accountType: 'contractor' | 'homeowner'): Promise<boolean> {
+    try {
+      const gmail = this.getGmailClient(accountType);
+      await gmail.users.getProfile({ userId: 'me' });
+      return true;
+    } catch (error) {
+      console.error(`❌ Invalid credentials for ${accountType}:`, error);
+      return false;
+    }
   }
 
   private saveCredentials(accountType: 'contractor' | 'homeowner', credentials: OAuthCredentials): void {

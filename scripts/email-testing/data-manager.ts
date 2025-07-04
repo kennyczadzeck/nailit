@@ -1,7 +1,11 @@
 #!/usr/bin/env ts-node
 
+import { config } from 'dotenv';
+config({ path: '.env.local' });
 import { prisma } from '../../app/lib/prisma';
 import { S3Client, ListObjectsV2Command, DeleteObjectsCommand } from '@aws-sdk/client-s3';
+import path from 'path';
+import fs from 'fs';
 
 /**
  * Data Manager for Email Testing
@@ -286,6 +290,240 @@ class EmailTestDataManager {
       throw error;
     }
   }
+
+  /**
+   * Create test user and project setup for email testing
+   */
+  async setupTestProject(): Promise<void> {
+    console.log(`🏠 Setting up test project for email testing...`);
+
+    try {
+      // Create homeowner user aligned with email testing
+      const homeowner = await prisma.user.upsert({
+        where: { email: 'nailit.test.homeowner@gmail.com' },
+        update: {},
+        create: {
+          email: 'nailit.test.homeowner@gmail.com',
+          name: 'Sarah Homeowner',
+          emailVerified: new Date(),
+        },
+      });
+
+      console.log(`👤 Created/verified homeowner user: ${homeowner.email}`);
+
+      // Create test project
+      let project = await prisma.project.findFirst({
+        where: {
+          userId: homeowner.id,
+          name: 'Test Kitchen Renovation'
+        }
+      });
+
+      if (!project) {
+        project = await prisma.project.create({
+          data: {
+            name: 'Test Kitchen Renovation',
+            description: 'Complete kitchen remodel for email testing - includes new cabinets, countertops, appliances, and flooring',
+            status: 'ACTIVE',
+            startDate: new Date('2024-01-15'),
+            contractor: 'Mike Johnson Construction',
+            budget: 75000,
+            address: '123 Test St, Email Testing, CA 90210',
+            userId: homeowner.id,
+          },
+        });
+      }
+
+      console.log(`🏗️ Created/verified project: ${project.name}`);
+
+      // Create email settings
+      await prisma.emailSettings.upsert({
+        where: { projectId: project.id },
+        update: {},
+        create: {
+          projectId: project.id,
+          gmailConnected: true,
+          monitoringEnabled: true,
+          notificationsEnabled: true,
+          weeklyReports: true,
+          highPriorityAlerts: true,
+        },
+      });
+
+      console.log(`📧 Created/verified email settings`);
+
+      // Create team members aligned with email testing
+      const teamMembers = [
+        {
+          name: 'Mike Johnson',
+          email: 'nailit.test.contractor@gmail.com',
+          role: 'GENERAL_CONTRACTOR' as const,
+          projectId: project.id,
+        },
+        {
+          name: 'Sarah Chen',
+          email: 'info@graniteplus.com',
+          role: 'ARCHITECT_DESIGNER' as const,
+          projectId: project.id,
+        },
+        {
+          name: 'Tom Rodriguez',
+          email: 'tom@brightelectrical.com',
+          role: 'PROJECT_MANAGER' as const,
+          projectId: project.id,
+        },
+      ];
+
+      for (const member of teamMembers) {
+        const existingMember = await prisma.teamMember.findFirst({
+          where: {
+            projectId: member.projectId,
+            email: member.email,
+          }
+        });
+
+        if (!existingMember) {
+          await prisma.teamMember.create({
+            data: member,
+          });
+        }
+      }
+
+      console.log(`👥 Created/verified ${teamMembers.length} team members`);
+
+      // Store project info for test scripts
+      const testConfig = {
+        homeownerUserId: homeowner.id,
+        homeownerEmail: homeowner.email,
+        projectId: project.id,
+        projectName: project.name,
+        contractorEmail: 'nailit.test.contractor@gmail.com',
+        teamMembers: teamMembers.map(m => ({ name: m.name, email: m.email, role: m.role })),
+        createdAt: new Date().toISOString(),
+      };
+
+      // Save test config for other scripts to use
+      const configPath = path.join(__dirname, 'test-project-config.json');
+      fs.writeFileSync(configPath, JSON.stringify(testConfig, null, 2));
+      
+      console.log(`✅ Test project setup complete!`);
+      console.log(`📋 Project ID: ${project.id}`);
+      console.log(`📧 Homeowner: ${homeowner.email}`);
+      console.log(`👷 Contractor: nailit.test.contractor@gmail.com`);
+      console.log(`💾 Config saved to: ${configPath}`);
+
+    } catch (error: any) {
+      console.error('❌ Failed to setup test project:', error.message);
+      throw error;
+    }
+  }
+
+  /**
+   * Get test project configuration
+   */
+  async getTestProjectConfig(): Promise<{
+    userId: string;
+    projectId: string;
+    userEmail: string;
+    projectName: string;
+  }> {
+    const configPath = path.join(__dirname, 'test-project-config.json');
+    
+    if (fs.existsSync(configPath)) {
+      const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+      return {
+        userId: config.homeownerUserId,
+        projectId: config.projectId,
+        userEmail: config.homeownerEmail,
+        projectName: config.projectName
+      };
+    }
+    
+    throw new Error('Test project config not found. Run: npm run test:setup-project');
+  }
+
+  /**
+   * Query a specific email message by messageId
+   */
+  async queryEmailMessage(messageId: string): Promise<any> {
+    try {
+      const emailMessage = await prisma.emailMessage.findUnique({
+        where: { messageId },
+        include: {
+          project: {
+            select: { name: true }
+          },
+          user: {
+            select: { email: true }
+          }
+        }
+      });
+
+      return emailMessage;
+
+    } catch (error: any) {
+      console.error('❌ Failed to query email message:', error.message);
+      throw error;
+    }
+  }
+
+  /**
+   * Query recent emails for testing
+   */
+  async queryRecentEmails(limit: number = 10): Promise<any[]> {
+    try {
+      const emails = await prisma.emailMessage.findMany({
+        orderBy: {
+          createdAt: 'desc'
+        },
+        take: limit,
+        select: {
+          id: true,
+          messageId: true,
+          subject: true,
+          sender: true,
+          sentAt: true,
+          ingestionStatus: true,
+          analysisStatus: true,
+          s3ContentPath: true,
+          s3AttachmentPaths: true,
+          providerData: true,
+          createdAt: true
+        }
+      });
+
+      return emails;
+
+    } catch (error: any) {
+      console.error('❌ Failed to query recent emails:', error.message);
+      throw error;
+    }
+  }
+
+  /**
+   * Clean up test emails from database
+   */
+  async cleanupTestEmails(): Promise<void> {
+    try {
+      const result = await prisma.emailMessage.deleteMany({
+        where: {
+          OR: [
+            { sender: { contains: 'nailit.test' } },
+            { messageId: { startsWith: 'webhook-' } },
+            { messageId: { startsWith: 'test-' } },
+            { subject: { contains: '[TEST]' } },
+            { subject: { contains: '[WEBHOOK TEST]' } }
+          ]
+        }
+      });
+
+      console.log(`🗑️ Deleted ${result.count} test email records`);
+
+    } catch (error: any) {
+      console.error('❌ Failed to cleanup test emails:', error.message);
+      throw error;
+    }
+  }
 }
 
 // CLI interface
@@ -354,6 +592,10 @@ async function main() {
       case 'check-s3':
         const expectedFiles = args[1] ? parseInt(args[1]) : undefined;
         await dataManager.checkS3(expectedFiles);
+        break;
+
+      case 'setup-test-project':
+        await dataManager.setupTestProject();
         break;
 
       default:

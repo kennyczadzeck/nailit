@@ -382,3 +382,67 @@ Scenario: Unified Communication Timeline
 6. **User Experience Tests** - End-to-end homeowner workflows, notification system
 
 This revised plan maintains focus on the homeowner persona while building on your existing email monitoring and flagged items foundation, creating a comprehensive communication tracking system for renovation projects. 
+
+## 🕐 **Historical Email Ingestion - Critical Use Case**
+
+### **Story 0.1: Historical Project Email Discovery**
+**As a** homeowner who started my renovation project months ago  
+**I want to** import all my existing project emails into NailIt  
+**So that** I can get the complete communication history for my already-in-progress project  
+
+**Acceptance Criteria:**
+- **Given** I have 6 months of renovation emails in my Gmail already  
+- **When** I connect my Gmail account to my existing project  
+- **Then** NailIt offers to "Import Historical Emails" for this project  
+- **And** I can specify the date range to import (e.g., "Last 6 months" or custom range)  
+- **And** NailIt shows progress as it processes historical emails in batches  
+- **And** all historical emails appear in my project timeline chronologically  
+
+**Technical Requirements:**
+- Gmail API integration for historical message retrieval
+- Batch processing system with rate limiting compliance
+- Date range filtering and project association logic
+- Progress tracking for bulk operations
+- Historical email deduplication system
+
+### **Story 0.2: Bulk Historical Email Processing**
+**As a** homeowner with an existing project  
+**I want** bulk processing of my historical emails to complete efficiently  
+**So that** I can start using NailIt immediately without waiting hours for processing  
+
+**Acceptance Criteria:**
+- **Given** I have 500+ historical emails to process  
+- **When** I start the historical import process  
+- **Then** emails are processed in batches of 50-100 to respect Gmail API limits  
+- **And** I see a progress indicator showing "Processing email 150 of 487"  
+- **And** processing continues in the background if I navigate away  
+- **And** the entire import completes within a reasonable timeframe (under 2 hours for 500 emails)  
+- **And** I receive a notification when import is complete  
+
+**Technical Requirements:**
+- Background job processing system (SQS-based queue)
+- Gmail API rate limiting compliance (250 quota units/user/second)
+- Robust error handling and retry logic
+- Progress tracking and status updates
+- Performance optimization for bulk operations
+
+### **Story 0.3: Smart Historical Email Filtering**
+**As a** homeowner doing historical import  
+**I want** AI to identify project-relevant emails from my entire email history  
+**So that** only renovation-related communications are imported, not my entire inbox  
+
+**Acceptance Criteria:**
+- **Given** my Gmail contains both project and personal emails  
+- **When** the historical import process scans my emails  
+- **Then** AI pre-filters emails for project relevance before full processing  
+- **And** only emails with renovation/construction relevance scores >0.7 are imported  
+- **And** I can review and approve the list of emails to be imported  
+- **And** I can manually add/remove emails from the import list  
+- **And** the final import only includes confirmed project-relevant emails  
+
+**Technical Requirements:**
+- Lightweight relevance scoring for email filtering
+- Batch email content analysis
+- User review interface for import confirmation
+- Manual override capabilities
+- Efficient email preview system 
