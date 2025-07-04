@@ -3,19 +3,18 @@
 import { config } from 'dotenv';
 config({ path: '.env.local' });
 import { EmailTestOAuth } from './oauth-setup';
-import { prisma } from '../../app/lib/prisma';
-import * as fs from 'fs';
-import * as path from 'path';
 
 /**
  * Realistic Email Generator for Testing
  * 
- * Generates realistic email conversations between homeowner and contractor
- * that include:
- * - Threaded conversations (replies/responses)
- * - Realistic construction project content
- * - Attachments (PDFs like quotes, invoices, permits)
- * - Only between test homeowner and test contractor accounts
+ * CRITICAL PRINCIPLE: This script ONLY sends emails via Gmail API.
+ * It NEVER writes to the database directly.
+ * 
+ * The database should ONLY be populated through:
+ * - Gmail API queries (for historical email discovery)
+ * - Webhooks (for real-time email processing)
+ * 
+ * This ensures we test the actual email ingestion pathways.
  */
 
 interface EmailTemplate {
@@ -205,27 +204,25 @@ Mike`,
       subject: "Cabinet Installation Update",
       body: `Hi Sarah,
 
-Great progress update! The cabinet installation is going smoothly and we're actually ahead of schedule.
+Great progress this week! The cabinet installation is going smoothly and we're actually ahead of schedule.
 
 **This Week's Progress:**
 - All base cabinets installed and leveled
-- Upper cabinets going in today and tomorrow  
-- Hardware installation starts Friday
-- Countertop template scheduled for next Tuesday
+- Upper cabinets going in tomorrow
+- Countertop template scheduled for Friday
+- Plumbing rough-in completed and inspected
 
-**What You'll Notice:**
-The kitchen is really starting to take shape! The cabinet quality is excellent and the soft-close hinges work perfectly. The brushed brass hardware you selected looks fantastic against the cabinet finish.
+**Next Week's Schedule:**
+- Monday: Countertop installation
+- Tuesday-Wednesday: Backsplash tile work  
+- Thursday: Appliance delivery and installation
+- Friday: Final electrical connections
 
-**Next Week:**
-- Countertop installation (Wednesday)
-- Backsplash tile work begins (Thursday)
-- Appliance delivery and installation (Friday)
+**Quick Question:**
+The electrician noticed your current outlet layout won't work optimally with the new island. We can add two more outlets for $180 - would you like me to include this? It'll make the island much more functional for small appliances.
 
-We're tracking to finish 3 days early! I'll send photos of today's progress.
+Everything looks fantastic! Can't wait for you to see it coming together.
 
-Any questions about the upcoming countertop installation? They'll need access Tuesday 9 AM - 12 PM for templating.
-
-Best,
 Mike`,
       attachments: ['cabinet-progress-photos.pdf']
     },
@@ -234,15 +231,16 @@ Mike`,
         subject: "Re: Cabinet Installation Update",
         body: `Hi Mike,
 
-This is such exciting progress! I love seeing it come together.
+This is so exciting! I can't wait to see the progress.
 
-Tuesday 9 AM - 12 PM works perfectly for countertop templating. I'll plan to be there to see how it looks.
+Yes, please add the additional outlets to the island - $180 is definitely worth it for the functionality. Better to do it now than regret it later.
 
-Quick question about the backsplash - I've been thinking about the subway tile we selected. Would it be possible to see it against the cabinets before we install? I want to make sure the color is right.
+A couple of questions about next week:
+1. What time Monday for countertops? I'd like to be there to see the installation
+2. For the backsplash - we picked the subway tile, right? Just want to confirm
+3. Will the appliances be fully functional by Friday, or is there additional work after that?
 
-Also, for appliance delivery Friday - do I need to be there, or can your team handle it?
-
-Thanks for staying ahead of schedule!
+Thanks for staying ahead of schedule! This is exactly why we chose your team.
 
 Sarah`,
         isReply: true,
@@ -252,16 +250,17 @@ Sarah`,
         subject: "Re: Cabinet Installation Update",
         body: `Hi Sarah,
 
-**Backsplash Preview:**
-Great idea! I'll bring a few subway tile samples Tuesday when the countertop guys are there. We can hold them up and see how they look with everything together. If you want to change, we have time since tile work doesn't start until Thursday.
+Perfect! I'll add the island outlets to tomorrow's electrical work.
 
-**Appliance Delivery:**
-I can handle the delivery - I'll be there to check everything and make sure there's no damage. The delivery crew will just drop them in the garage, and we'll move them to final positions after countertops are in.
+**Your Questions:**
+1. **Countertop timing:** Monday 9 AM - installation takes about 4 hours, perfect time to watch!
+2. **Backsplash:** Yes, 3x6 white subway tile with dark grout - looks amazing with your cabinets
+3. **Appliances:** Fully functional Friday evening! You'll be cooking in your new kitchen this weekend!
 
-**Timing Update:**
-Actually, we might finish a full week early at this pace! The crew is working really efficiently and everything is going smoothly.
+**Bonus Update:**
+The cabinet hardware came in and it looks incredible. The brushed brass was the perfect choice - really makes the white cabinets pop.
 
-See you Tuesday!
+See you Monday morning!
 
 Mike`,
         isReply: true,
@@ -271,53 +270,56 @@ Mike`,
   },
   {
     threadSubject: "Final Invoice and Project Completion",
-    daysSpread: 2,
+    daysSpread: 1,
     initialEmail: {
       subject: "Final Invoice and Project Completion",
       body: `Hi Sarah,
 
-I'm thrilled to let you know that your kitchen renovation is officially complete! It has been an absolute pleasure working with you and your husband on this project.
+I can't believe how amazing your kitchen turned out! It was a pleasure working with you and your family on this project.
 
 **Project Summary:**
-- Started: February 1st
-- Completed: March 12th (5 days ahead of schedule!)
-- Final cost: $48,350 (including plumbing repairs and hardware upgrade)
+- Original timeline: 6-8 weeks
+- Actual completion: 7 weeks (including the plumbing discovery)
+- Final cost: $50,700 (original $47,500 + plumbing $3,200)
 
-**What's Included in Final Payment:**
-- Remaining balance: $12,087.50
-- All warranties and documentation attached
-- Maintenance guide for your new fixtures
+**What We Accomplished:**
+✅ Complete kitchen renovation
+✅ Upgraded plumbing system
+✅ Additional island outlets
+✅ Brushed brass hardware upgrade
+✅ All work passed inspections
+✅ 2-year warranty on all workmanship
 
-**Warranty Information:**
-- Cabinets: 10 years manufacturer + 2 years installation
-- Countertops: Lifetime warranty on material, 5 years installation
-- Plumbing work: 3 years full warranty
-- General workmanship: 2 years
+**Final Invoice:**
+Please find attached the final invoice for $2,500 (remaining balance). This covers the final electrical connections, cleanup, and touch-up work completed this week.
 
-The kitchen looks absolutely stunning! I hope you and your family enjoy cooking and entertaining in your beautiful new space.
+**Next Steps:**
+- Final walkthrough scheduled for tomorrow at 10 AM
+- All warranty documentation will be provided
+- Please don't hesitate to call if you have any questions
 
-Please don't hesitate to reach out if you have any questions or need anything in the future.
+Thank you for choosing Johnson Construction. Enjoy your beautiful new kitchen!
 
 Best regards,
-Mike Johnson
-Johnson Construction`,
-      attachments: ['final-invoice-kitchen-renovation.pdf', 'warranty-documentation.pdf', 'kitchen-maintenance-guide.pdf']
+Mike Johnson`,
+      attachments: ['final-invoice.pdf', 'warranty-documentation.pdf']
     },
     replies: [
       {
         subject: "Re: Final Invoice and Project Completion",
         body: `Hi Mike,
 
-We absolutely LOVE the kitchen! You and your team did an incredible job, and finishing early was such a nice surprise.
+We absolutely LOVE the kitchen! You and your team exceeded our expectations in every way.
 
-The quality of work is outstanding - everything is exactly what we hoped for and more. Thank you for being so professional, communicative, and flexible throughout the project.
+The attention to detail, communication throughout the project, and quality of work was outstanding. We're already getting compliments from neighbors who've seen it.
 
-I'll send the final payment by Friday. Also, I've already recommended you to my neighbor who's thinking about a bathroom remodel. I gave her your contact information.
+Payment for the final invoice will be sent today. 
 
-Thank you again for making this such a positive experience!
+Would you be available for a quick photo session next week? We'd love to get some professional photos for our records, and I know you like to showcase your work too.
 
-Best regards,
-Sarah`,
+Thank you again for making this such a positive experience. We'll definitely be calling you for the bathroom renovation we're planning for next year!
+
+Sarah & Tom`,
         isReply: true,
         replyToSubject: "Final Invoice and Project Completion"
       }
@@ -330,43 +332,44 @@ Sarah`,
       subject: "Permit Application Status",
       body: `Hi Sarah,
 
-Quick update on our permit application for the electrical and plumbing work.
+Quick update on the permit applications for your kitchen renovation.
 
-**Current Status:**
-- Application submitted to city planning department
-- Initial review completed - no issues found
-- Electrical inspection scheduled for February 15th at 10 AM
-- Plumbing inspection scheduled for February 16th at 2 PM
+**Permit Status:**
+✅ Building permit: APPROVED (received yesterday)
+✅ Electrical permit: APPROVED 
+✅ Plumbing permit: APPROVED
+⏳ Mechanical permit: Under review (expected approval by Friday)
 
 **What This Means:**
-We're on track with our timeline. The inspections are routine and I expect them to pass without issues. I'll be there for both inspections to walk through everything with the inspectors.
+- We can start demo work on Monday as planned
+- All major work is cleared to proceed
+- Mechanical permit is just for the range hood vent - won't delay anything
 
-**Your Action:**
-No action needed from you! I just wanted to keep you informed of our progress.
+**Inspector Schedule:**
+- Rough electrical: Week 3 (February 19-23)
+- Rough plumbing: Week 3 (February 19-23) 
+- Final inspection: Week 6 (March 11-15)
 
-**Next Steps:**
-- Pass inspections (confident we will)
-- Receive final permits
-- Continue with cabinet installation as planned
+I'll coordinate all inspections and make sure we're ready for each one. You don't need to be present unless you want to be.
 
-I'll update you after each inspection.
+Ready to transform your kitchen starting Monday!
 
-Best,
 Mike`,
-      attachments: ['permit-application-copy.pdf']
+      attachments: ['approved-permits.pdf']
     },
     replies: [
       {
         subject: "Re: Permit Application Status",
         body: `Hi Mike,
 
-Thanks for keeping me in the loop! I appreciate how you handle all the permit stuff - it's one less thing for me to worry about.
+Great news on the permits! I'm relieved everything is approved and we can start on time.
 
-Will the inspectors need access to other parts of the house, or just the kitchen area?
+I'd actually like to be present for the final inspection if possible - want to understand what they're checking so I know what to maintain going forward.
 
-Also, if there are any issues (though I'm sure there won't be), how would that affect our timeline?
+Also, should I do anything to prep for demo day Monday? Move anything, cover furniture in adjacent rooms, etc.?
 
-Thanks!
+Looking forward to Monday!
+
 Sarah`,
         isReply: true,
         replyToSubject: "Permit Application Status"
@@ -375,18 +378,22 @@ Sarah`,
         subject: "Re: Permit Application Status",
         body: `Hi Sarah,
 
-**Inspector Access:**
-Just the kitchen area and basement where the new electrical panel is. They won't need to go anywhere else in the house.
+Absolutely! I'll make sure you know when the final inspection is scheduled. It's actually really interesting to see what they check.
 
-**If Issues Arise:**
-Very unlikely, but if there were any issues, it would typically be minor things like:
-- Adding a GFCI outlet (1 day delay)
-- Adjusting a pipe connection (1-2 day delay)
+**Demo Day Prep:**
+- We'll handle all kitchen prep (disconnecting appliances, protecting floors)
+- Please remove any items from kitchen cabinets/pantry by Sunday night
+- Cover dining room furniture with plastic (dust will travel)
+- Consider staying elsewhere Monday-Tuesday if you're sensitive to noise/dust
+- We'll have a dumpster delivered Sunday evening
 
-I've never had a major issue that caused significant delays - my crew knows the codes well and we always build to exceed requirements.
+**Our Demo Process:**
+- Start with appliance removal
+- Careful cabinet removal (we'll save any you want to donate)
+- Protect your hardwood floors in adjacent rooms
+- Daily cleanup so your house stays livable
 
-**Good News:**
-Electrical inspection this morning went perfectly! Inspector was impressed with the clean installation. Plumbing inspection tomorrow should be just as smooth.
+Don't worry - we've done this hundreds of times and know how to minimize disruption!
 
 Mike`,
         isReply: true,
@@ -406,137 +413,67 @@ class RealisticEmailGenerator {
   }
 
   /**
-   * Clean up existing emails and generate new realistic conversations
+   * MAIN METHOD: Generate realistic email conversations via Gmail API ONLY
+   * 
+   * CRITICAL: This method NEVER touches the database.
+   * Emails are only sent via Gmail API and will enter our database through:
+   * - Historical email discovery (Gmail API queries)
+   * - Real-time webhook processing
    */
   async generateRealisticEmails(): Promise<void> {
     console.log('🧹 Cleaning up existing test emails...');
-    await this.cleanupExistingEmails();
-
-    console.log('👥 Setting up test project with single contractor...');
-    await this.setupTestProjectWithSingleContractor();
+    await this.cleanupGmailInboxes();
 
     console.log('📧 Generating realistic email conversations...');
     await this.generateConversationThreads();
 
     console.log('✅ Realistic email generation complete!');
+    console.log('');
+    console.log('🔍 NEXT STEPS:');
+    console.log('1. Use Gmail API queries to discover historical emails');
+    console.log('2. Test webhook processing for real-time emails');
+    console.log('3. Verify database is populated ONLY through ingestion pathways');
   }
 
   /**
-   * Remove all existing emails from test accounts
+   * Clean up Gmail inboxes using the Gmail cleanup utility
+   * 
+   * CRITICAL: This uses the Gmail API cleanup tool, NOT database operations
    */
-  private async cleanupExistingEmails(): Promise<void> {
+  private async cleanupGmailInboxes(): Promise<void> {
     try {
-      // Clean up database records
-      const deleteResult = await prisma.emailMessage.deleteMany({
-        where: {
-          OR: [
-            { sender: this.contractorEmail },
-            { sender: this.homeownerEmail },
-            { recipients: { has: this.contractorEmail } },
-            { recipients: { has: this.homeownerEmail } }
-          ]
-        }
+      console.log('🗑️  Moving existing test emails to Gmail trash...');
+      
+      // Use the existing Gmail cleanup utility
+      // This respects the principle of only using Gmail API operations
+      const { spawn } = require('child_process');
+      
+      const cleanup = spawn('npx', ['tsx', 'scripts/email-testing/gmail-inbox-cleaner.ts', 'trash-all'], {
+        stdio: 'inherit'
       });
 
-      console.log(`✅ Deleted ${deleteResult.count} email records from database`);
-
-      // TODO: Add Gmail API calls to delete emails from actual Gmail accounts
-      // This would require additional OAuth scopes and implementation
-      console.log('⚠️  Note: Gmail account cleanup would require additional implementation');
-
-    } catch (error: any) {
-      console.error('❌ Failed to cleanup existing emails:', error.message);
-      throw error;
-    }
-  }
-
-  /**
-   * Set up test project with only the contractor as team member
-   */
-  private async setupTestProjectWithSingleContractor(): Promise<void> {
-    try {
-      // Find or create test homeowner user
-      let homeowner = await prisma.user.findUnique({
-        where: { email: this.homeownerEmail }
-      });
-
-      if (!homeowner) {
-        homeowner = await prisma.user.create({
-          data: {
-            email: this.homeownerEmail,
-            name: 'Sarah Test Homeowner',
+      await new Promise((resolve, reject) => {
+        cleanup.on('close', (code: number) => {
+          if (code === 0) {
+            resolve(code);
+          } else {
+            reject(new Error(`Gmail cleanup failed with code ${code}`));
           }
         });
-      }
-
-      // Find or create test project
-      let project = await prisma.project.findFirst({
-        where: { 
-          userId: homeowner.id,
-          name: 'Kitchen Renovation Test Project'
-        }
       });
 
-      if (!project) {
-        project = await prisma.project.create({
-          data: {
-            name: 'Kitchen Renovation Test Project',
-            description: 'Complete kitchen renovation with realistic email testing',
-            status: 'ACTIVE',
-            startDate: new Date('2024-02-01'),
-            contractor: 'Johnson Construction',
-            budget: 50000,
-            address: '123 Test Street, Test City, CA 90210',
-            userId: homeowner.id,
-          }
-        });
-      }
-
-      // Remove all existing team members
-      await prisma.teamMember.deleteMany({
-        where: { projectId: project.id }
-      });
-
-      // Add only the contractor as team member
-      await prisma.teamMember.create({
-        data: {
-          name: 'Mike Johnson',
-          email: this.contractorEmail,
-          role: 'GENERAL_CONTRACTOR',
-          projectId: project.id,
-        }
-      });
-
-      // Ensure email monitoring is enabled
-      await prisma.emailSettings.upsert({
-        where: { projectId: project.id },
-        update: {
-          monitoringEnabled: true,
-          gmailConnected: true,
-          notificationsEnabled: true,
-        },
-        create: {
-          projectId: project.id,
-          monitoringEnabled: true,
-          gmailConnected: true,
-          notificationsEnabled: true,
-        }
-      });
-
-      console.log(`✅ Project setup complete:`);
-      console.log(`   Project ID: ${project.id}`);
-      console.log(`   Homeowner: ${homeowner.email}`);
-      console.log(`   Contractor: ${this.contractorEmail}`);
-      console.log(`   Team Members: 1 (contractor only)`);
+      console.log('✅ Gmail inboxes cleaned via Gmail API');
 
     } catch (error: any) {
-      console.error('❌ Failed to setup test project:', error.message);
-      throw error;
+      console.error('❌ Failed to cleanup Gmail inboxes:', error.message);
+      console.log('⚠️  Continuing with email generation...');
     }
   }
 
   /**
    * Generate realistic conversation threads between homeowner and contractor
+   * 
+   * CRITICAL: Only sends emails via Gmail API, never writes to database
    */
   private async generateConversationThreads(): Promise<void> {
     const baseDate = new Date('2024-02-01'); // Project start date
@@ -550,7 +487,7 @@ class RealisticEmailGenerator {
       threadStartDate.setDate(baseDate.getDate() + (i * 7)); // Start threads 1 week apart
 
       // Send initial email from contractor
-      await this.sendEmail(
+      await this.sendEmailViaGmailAPI(
         this.contractorEmail,
         this.homeownerEmail,
         thread.initialEmail.subject,
@@ -573,7 +510,7 @@ class RealisticEmailGenerator {
         const from = isHomeownerReply ? this.homeownerEmail : this.contractorEmail;
         const to = isHomeownerReply ? this.contractorEmail : this.homeownerEmail;
 
-        await this.sendEmail(
+        await this.sendEmailViaGmailAPI(
           from,
           to,
           reply.subject,
@@ -589,9 +526,13 @@ class RealisticEmailGenerator {
   }
 
   /**
-   * Send an email using Gmail API
+   * Send an email using Gmail API ONLY
+   * 
+   * CRITICAL: This method ONLY uses Gmail API. 
+   * It NEVER writes to the database.
+   * Database records will be created through proper ingestion pathways.
    */
-  private async sendEmail(
+  private async sendEmailViaGmailAPI(
     from: string,
     to: string,
     subject: string,
@@ -600,26 +541,37 @@ class RealisticEmailGenerator {
     attachments?: string[]
   ): Promise<void> {
     try {
-      console.log(`  📤 Sending: ${subject} (${from} → ${to})`);
+      console.log(`  📤 Sending via Gmail API: ${subject} (${from} → ${to})`);
       
-      // Create email message
+      // Get Gmail API client for the sender account
+      const accountType = from === this.contractorEmail ? 'contractor' : 'homeowner';
+      const gmail = await this.oauth.getGmailClient(accountType);
+      
+      // Create email message in RFC 2822 format
       const emailMessage = this.createEmailMessage(from, to, subject, body, date, attachments);
       
-      // TODO: Implement actual Gmail API sending
-      // For now, we'll simulate the email creation
-      console.log(`  ✅ Email simulated: ${subject}`);
+      // Send via Gmail API
+      const response = await gmail.users.messages.send({
+        userId: 'me',
+        requestBody: {
+          raw: emailMessage
+        }
+      });
+
+      console.log(`  ✅ Email sent via Gmail API! Message ID: ${response.data.id}`);
+      console.log(`  📬 Check ${to} inbox`);
       
       // Add small delay to avoid overwhelming the API
       await this.delay(1000);
 
     } catch (error: any) {
-      console.error(`❌ Failed to send email: ${subject}`, error.message);
+      console.error(`❌ Failed to send email via Gmail API: ${subject}`, error.message);
       throw error;
     }
   }
 
   /**
-   * Create RFC 2822 email message
+   * Create RFC 2822 email message for Gmail API
    */
   private createEmailMessage(
     from: string,
@@ -629,68 +581,47 @@ class RealisticEmailGenerator {
     date: Date,
     attachments?: string[]
   ): string {
-    const messageId = `<${Date.now()}.${Math.random().toString(36).substr(2, 9)}@${from.split('@')[1]}>`;
-    
-    let message = [
+    const email = [
       `From: ${from}`,
       `To: ${to}`,
       `Subject: ${subject}`,
       `Date: ${date.toUTCString()}`,
-      `Message-ID: ${messageId}`,
-      `MIME-Version: 1.0`,
-      `Content-Type: text/plain; charset=utf-8`,
+      `Message-ID: <${Date.now()}.${Math.random().toString(36).substr(2, 9)}@gmail.com>`,
       ``,
       body
-    ].join('\r\n');
+    ].join('\n');
 
-    if (attachments && attachments.length > 0) {
-      message += `\r\n\r\n[Attachments: ${attachments.join(', ')}]`;
-    }
-
-    return Buffer.from(message).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    return Buffer.from(email).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   }
 
   /**
-   * Create realistic PDF attachments for testing
+   * Utility delay function
    */
-  private async createTestAttachments(): Promise<void> {
-    const attachmentsDir = path.join(__dirname, 'test-attachments');
-    
-    if (!fs.existsSync(attachmentsDir)) {
-      fs.mkdirSync(attachmentsDir, { recursive: true });
-    }
-
-    // Create placeholder PDF files for testing
-    const testPDFs = [
-      'kitchen-renovation-quote.pdf',
-      'plumbing-damage-photos.pdf',
-      'cabinet-progress-photos.pdf',
-      'final-invoice-kitchen-renovation.pdf',
-      'warranty-documentation.pdf',
-      'kitchen-maintenance-guide.pdf',
-      'permit-application-copy.pdf'
-    ];
-
-    for (const pdfName of testPDFs) {
-      const pdfPath = path.join(attachmentsDir, pdfName);
-      if (!fs.existsSync(pdfPath)) {
-        // Create a simple text file as PDF placeholder
-        const content = `This is a test PDF attachment: ${pdfName}\nGenerated for email testing purposes.\nDate: ${new Date().toISOString()}`;
-        fs.writeFileSync(pdfPath, content);
-      }
-    }
-
-    console.log(`✅ Created ${testPDFs.length} test attachment files`);
-  }
-
   private delay(ms: number): Promise<void> {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 }
 
+// CLI interface
 async function main() {
   const args = process.argv.slice(2);
   const command = args[0];
+
+  console.log(`\n📧 Realistic Email Generator for Testing\n`);
+
+  if (!command) {
+    console.log(`Commands:`);
+    console.log(`  generate      - Clean up and generate new realistic email conversations`);
+    console.log(`  cleanup       - Remove existing test emails only`);
+    console.log(``);
+    console.log(`Usage: npm run test:emails:realistic [command]`);
+    console.log(``);
+    console.log(`🔄 IMPORTANT: This script ONLY sends emails via Gmail API.`);
+    console.log(`   Database records are created through proper ingestion pathways:`);
+    console.log(`   - Gmail API queries (historical discovery)`);
+    console.log(`   - Webhooks (real-time processing)`);
+    return;
+  }
 
   const generator = new RealisticEmailGenerator();
 
@@ -699,25 +630,20 @@ async function main() {
       case 'generate':
         await generator.generateRealisticEmails();
         break;
+
       case 'cleanup':
-        await generator['cleanupExistingEmails']();
+        console.log('🧹 Cleaning up existing test emails...');
+        await generator['cleanupGmailInboxes']();
+        console.log('✅ Cleanup complete!');
         break;
-      case 'setup-project':
-        await generator['setupTestProjectWithSingleContractor']();
-        break;
+
       default:
-        console.log('📧 Realistic Email Generator for Testing');
-        console.log('');
-        console.log('Commands:');
-        console.log('  generate      - Clean up and generate new realistic email conversations');
-        console.log('  cleanup       - Remove existing test emails only');
-        console.log('  setup-project - Set up test project with single contractor only');
-        console.log('');
-        console.log('Usage: npm run test:emails:realistic [command]');
-        break;
+        console.error(`❌ Unknown command: ${command}`);
+        console.log(`Available commands: generate, cleanup`);
+        process.exit(1);
     }
   } catch (error: any) {
-    console.error('❌ Error:', error.message);
+    console.error(`❌ Error:`, error.message);
     process.exit(1);
   }
 }
