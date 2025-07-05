@@ -53,7 +53,7 @@
     "test:email:master": "tsx scripts/email-testing/master-test.ts",
     "test:email:smoke": "tsx scripts/email-testing/master-test.ts smoke",
     "test:email:historical": "tsx scripts/email-testing/master-test.ts historical",
-    "test:e2e:email-only": "tsx scripts/email-testing/e2e-test-runner.ts email-only",
+    "test:email:foundation": "tsx scripts/email-testing/e2e-test-runner.ts email-only",
     "test:e2e:ai-basic": "tsx scripts/email-testing/e2e-test-runner.ts ai-basic",
     "test:e2e:complete": "tsx scripts/email-testing/e2e-test-runner.ts complete",
     "test:e2e:complete:verbose": "tsx scripts/email-testing/e2e-test-runner.ts complete --verbose",
