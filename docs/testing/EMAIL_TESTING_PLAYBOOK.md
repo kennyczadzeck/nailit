@@ -1,5 +1,279 @@
 # 🧪 Email Testing Playbook
 
+## 🏠 HOMEOWNER-ONLY EMAIL TESTING PRINCIPLE
+
+**CRITICAL ARCHITECTURAL DECISION**: All email testing follows the **HOMEOWNER-ONLY** approach:
+- Email ingestion ONLY from homeowner Gmail accounts
+- NEVER access contractor Gmail accounts for processing
+- Complete conversation capture through homeowner's perspective
+- Privacy-compliant testing that mirrors production usage
+
+## 🎯 Testing Objectives
+
+This playbook provides step-by-step instructions for testing the nailit email ingestion system using realistic scenarios and data. All testing follows the homeowner-only principle to ensure accurate simulation of production email processing.
+
+### Key Testing Principles
+- **Homeowner-Centric**: All email ingestion testing uses homeowner Gmail as the source
+- **Realistic Data**: Test with authentic contractor-homeowner conversations
+- **Complete Coverage**: Test both historical and real-time email processing
+- **Privacy Compliant**: Only access homeowner's own Gmail account
+
+## 🚀 Quick Start (HOMEOWNER-ONLY)
+
+### 1. Setup OAuth Credentials for Homeowner Testing
+```bash
+# Setup homeowner account for email ingestion (PRIMARY)
+npm run test:oauth-setup homeowner
+
+# Setup contractor account for test email generation only (SECONDARY)
+npm run test:oauth-setup contractor
+
+# Verify both accounts are properly configured
+npm run test:oauth-status
+```
+
+**CRITICAL**: Homeowner account is used for ingestion, contractor account only for sending test emails TO homeowner.
+
+### 2. Generate Test Email Conversations
+```bash
+# Generate realistic bidirectional conversations (contractor↔homeowner)
+npm run test:send-conversations 5 30
+
+# All emails will appear in homeowner's Gmail for ingestion testing
+```
+
+### 3. Test Historical Email Ingestion (HOMEOWNER-ONLY)
+```bash
+# Discover emails in homeowner's Gmail
+npm run test:historical-discover -- --project=kitchen-reno --months=1
+
+# Import emails FROM homeowner's Gmail into database
+npm run test:historical-import -- --project=kitchen-reno --start=2025-06-01 --end=2025-07-01
+```
+
+### 4. Validate Homeowner-Only Compliance
+```bash
+# Run comprehensive homeowner-only validation
+npm run test:validate-homeowner-only
+
+# Validate conversation quality
+npm run test:validate-conversations
+```
+
+## 📋 Detailed Testing Scenarios
+
+### Scenario 1: Mid-Project Onboarding (HOMEOWNER PERSPECTIVE)
+**Goal**: Test importing 6 months of existing project emails from homeowner's Gmail
+
+```bash
+# 1. Setup test project and homeowner user
+npx tsx scripts/setup-test-project.ts
+
+# 2. Generate historical conversations in homeowner's Gmail
+npm run test:send-conversations 10 180  # 10 threads over 6 months
+
+# 3. Test discovery from homeowner's Gmail
+npm run test:historical-discover -- --project=kitchen-reno --months=6
+
+# 4. Import emails FROM homeowner's Gmail
+npm run test:historical-import -- --project=kitchen-reno --start=2025-01-01 --end=2025-07-01
+
+# 5. Validate homeowner-only compliance
+npm run test:validate-homeowner-only
+```
+
+**Expected Results**:
+- All emails ingested from homeowner's Gmail account only
+- Complete conversation threads captured
+- Proper team member filtering applied
+- Database records marked with homeowner source
+
+### Scenario 2: Real-Time Email Processing (HOMEOWNER WEBHOOKS)
+**Goal**: Test webhook processing of new emails arriving in homeowner's Gmail
+
+```bash
+# 1. Setup Gmail webhooks for homeowner account
+# (This requires production webhook setup - see webhook documentation)
+
+# 2. Send test email TO homeowner
+npm run test:send-email
+
+# 3. Verify webhook processes email from homeowner's perspective
+# Check logs and database for proper homeowner-only processing
+```
+
+### Scenario 3: Large Project History (HOMEOWNER BULK PROCESSING)
+**Goal**: Test performance with 1000+ emails in homeowner's Gmail
+
+```bash
+# 1. Generate large email dataset in homeowner's Gmail
+npm run test:send-conversations 50 365  # 50 threads over 1 year
+
+# 2. Test bulk discovery from homeowner's Gmail
+npm run test:historical-discover -- --project=large-renovation --months=12
+
+# 3. Process in batches from homeowner's Gmail
+npm run test:historical-import -- --project=large-renovation --start=2024-07-01 --end=2025-07-01
+
+# 4. Monitor processing performance and homeowner-only compliance
+npm run test:validate-homeowner-only
+```
+
+## 🔧 Troubleshooting (HOMEOWNER-ONLY FOCUS)
+
+### Issue: No emails discovered in homeowner's Gmail
+**Solution**:
+```bash
+# 1. Verify homeowner OAuth credentials
+npm run test:oauth-status
+
+# 2. Check homeowner Gmail has test emails
+npm run test:gmail:cleanup-preview
+
+# 3. Generate test emails TO homeowner
+npm run test:send-conversations 3 7
+
+# 4. Retry discovery from homeowner's Gmail
+npm run test:historical-discover -- --project=test --months=1
+```
+
+### Issue: Emails not being processed from homeowner's Gmail
+**Diagnosis**:
+```bash
+# 1. Check team member filtering for homeowner projects
+npm run test:validate-homeowner-only
+
+# 2. Verify homeowner project setup
+npx tsx scripts/check-email-db.ts
+
+# 3. Test email processing manually
+npm run test:send-email
+```
+
+### Issue: Contractor emails being processed directly (VIOLATION)
+**CRITICAL FIX**:
+```bash
+# 1. Run homeowner-only validation to identify violations
+npm run test:validate-homeowner-only
+
+# 2. Check for contractor OAuth sessions with ingestion scopes
+npm run test:oauth-status
+
+# 3. Remove any contractor-sourced email records
+# (This should NEVER happen with proper homeowner-only implementation)
+```
+
+## 📊 Validation and Quality Assurance
+
+### Homeowner-Only Compliance Checklist
+- [ ] All email ingestion from homeowner Gmail only
+- [ ] No contractor Gmail access for processing
+- [ ] Database records have homeowner user IDs
+- [ ] Provider data includes homeowner source markers
+- [ ] Team member filtering from homeowner perspective
+- [ ] OAuth sessions properly scoped and separated
+
+### Run Validation Suite
+```bash
+# Comprehensive homeowner-only validation
+npm run test:validate-homeowner-only
+
+# Expected results: 100% compliance with homeowner-only principle
+```
+
+### Conversation Quality Validation
+```bash
+# Validate bidirectional conversation authenticity
+npm run test:validate-conversations
+
+# Expected results: 80%+ quality score with authentic conversations
+```
+
+## 🧹 Cleanup and Reset
+
+### Clean Test Data (HOMEOWNER-FOCUSED)
+```bash
+# Remove test emails from homeowner's Gmail
+npm run test:gmail:cleanup-all
+
+# Clear database (keeps homeowner user and project)
+npm run test:emails:cleanup
+
+# Reset to clean state for new testing
+npm run test:validate-homeowner-only
+```
+
+### Reset OAuth Credentials
+```bash
+# Re-setup homeowner credentials for ingestion
+npm run test:oauth-setup homeowner
+
+# Re-setup contractor credentials for test email generation
+npm run test:oauth-setup contractor
+
+# Verify proper homeowner-only configuration
+npm run test:oauth-status
+```
+
+## 📚 Advanced Testing
+
+### Custom Email Scenarios (HOMEOWNER PERSPECTIVE)
+```bash
+# Generate specific conversation types in homeowner's Gmail
+npm run test:send-conversations 3 14  # 3 threads over 2 weeks
+
+# Test specific ingestion patterns from homeowner's Gmail
+npm run test:historical-import -- --project=custom --start=2025-06-15 --end=2025-06-30
+```
+
+### Performance Testing (HOMEOWNER GMAIL)
+```bash
+# Test large volume processing from homeowner's Gmail
+npm run test:send-conversations 100 365  # 100 threads over 1 year
+npm run test:historical-import -- --project=performance-test --start=2024-07-01 --end=2025-07-01
+
+# Monitor processing metrics and homeowner-only compliance
+npm run test:validate-homeowner-only
+```
+
+## 🔐 Security and Privacy (HOMEOWNER-ONLY)
+
+### Privacy Compliance
+- ✅ Only accesses homeowner's own Gmail account
+- ✅ Never reads contractor private emails
+- ✅ Respects Gmail API rate limits and permissions
+- ✅ Uses minimal required OAuth scopes for homeowner
+
+### Data Protection
+- ✅ All emails associated with homeowner user ID
+- ✅ Complete audit trail for homeowner email processing
+- ✅ Secure credential storage and separation
+- ✅ Regular validation of homeowner-only compliance
+
+## 📋 Testing Checklist
+
+### Pre-Testing Setup
+- [ ] Homeowner OAuth configured with ingestion scopes
+- [ ] Contractor OAuth configured with send-only scopes
+- [ ] Test project and homeowner user created
+- [ ] Gmail cleanup completed
+
+### During Testing
+- [ ] All emails generated TO homeowner Gmail
+- [ ] All ingestion FROM homeowner Gmail only
+- [ ] Team member filtering validated
+- [ ] Conversation quality maintained
+
+### Post-Testing Validation
+- [ ] Homeowner-only compliance verified
+- [ ] Database records properly attributed
+- [ ] OAuth sessions correctly scoped
+- [ ] Documentation updated if needed
+
+---
+
+**Remember**: The homeowner-only principle is fundamental to nailit's architecture. All email testing must respect this principle to ensure accurate simulation of production behavior and maintain privacy compliance.
+
 ## 🚨 **CRITICAL PRINCIPLE: Gmail API Only, No Direct Database Writes**
 
 **⚠️ FUNDAMENTAL RULE**: All email generation scripts ONLY send emails via Gmail API. They NEVER write to the database directly.

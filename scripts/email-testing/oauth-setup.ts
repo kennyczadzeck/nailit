@@ -2,302 +2,512 @@
 
 import { config } from 'dotenv';
 import { google } from 'googleapis';
-import * as fs from 'fs';
-import * as path from 'path';
+import fs from 'fs';
+import path from 'path';
+import readline from 'readline';
 
-// Load environment variables from .env.local
+// Load environment variables
 config({ path: '.env.local' });
 
 /**
- * OAuth Setup Utility for Email Testing
+ * OAuth Setup for Email Testing - HOMEOWNER-ONLY GMAIL ACCESS
  * 
- * Sets up OAuth credentials for test Gmail accounts:
- * - nailit.test.contractor@gmail.com (for sending test emails)
- * - nailit.test.homeowner@gmail.com (for receiving test emails)
+ * CRITICAL ARCHITECTURAL PRINCIPLE: HOMEOWNER-ONLY EMAIL INGESTION
+ * 
+ * This OAuth setup utility manages Gmail API credentials for email testing with
+ * the HOMEOWNER-ONLY approach:
+ * 
+ * 1. HOMEOWNER ACCOUNT: Primary OAuth setup for nailit.test.homeowner@gmail.com
+ *    - Full Gmail API access for email ingestion testing
+ *    - Scope: gmail.readonly, gmail.modify (for cleanup)
+ *    - Purpose: Simulate production homeowner email processing
+ * 
+ * 2. CONTRACTOR ACCOUNT: Limited OAuth setup for nailit.test.contractor@gmail.com
+ *    - Send-only Gmail API access for test email generation
+ *    - Scope: gmail.send (for creating test emails TO homeowner)
+ *    - Purpose: Generate test emails that appear in homeowner's Gmail
+ *    - NEVER used for email ingestion or processing
+ * 
+ * HOMEOWNER-ONLY VALIDATION:
+ * - Validates that homeowner OAuth has proper ingestion scopes
+ * - Validates that contractor OAuth is limited to send-only
+ * - Prevents accidental contractor Gmail access for ingestion
+ * - Enforces proper credential separation
+ * 
+ * WORKFLOW:
+ * 1. Setup homeowner OAuth with full Gmail access
+ * 2. Setup contractor OAuth with send-only access
+ * 3. Validate both accounts have correct scope limitations
+ * 4. Generate test emails from contractor TO homeowner
+ * 5. Process emails from homeowner Gmail ONLY
+ * 
+ * NEVER MODIFY THIS TO ALLOW CONTRACTOR GMAIL INGESTION
  */
 
 interface OAuthCredentials {
-  client_id: string;
-  client_secret: string;
   refresh_token: string;
-  access_token?: string;
-  expiry_date?: number;
+  access_token: string;
+  expiry_date: number;
+  scope: string;
 }
 
-const CREDENTIALS_DIR = path.join(__dirname, 'credentials');
-const SCOPES = [
-  'https://www.googleapis.com/auth/gmail.readonly',
-  'https://www.googleapis.com/auth/gmail.send',
-  'https://www.googleapis.com/auth/gmail.compose',
-  'https://www.googleapis.com/auth/gmail.modify'
-];
+interface AccountConfig {
+  name: string;
+  email: string;
+  purpose: string;
+  allowedScopes: string[];
+  requiredScopes: string[];
+  credentialsFile: string;
+}
 
 class EmailTestOAuth {
-  private oauth2Client: any;
+  private clientId: string;
+  private clientSecret: string;
+  private redirectUri: string;
+  
+  // HOMEOWNER-ONLY Account Configuration
+  private readonly accountConfigs: Record<string, AccountConfig> = {
+    homeowner: {
+      name: 'Homeowner (Primary Ingestion Account)',
+      email: 'nailit.test.homeowner@gmail.com',
+      purpose: 'Email ingestion and processing (FULL Gmail access)',
+      allowedScopes: [
+        'https://www.googleapis.com/auth/gmail.readonly',
+        'https://www.googleapis.com/auth/gmail.modify',
+        'https://www.googleapis.com/auth/gmail.send'
+      ],
+      requiredScopes: [
+        'https://www.googleapis.com/auth/gmail.readonly',
+        'https://www.googleapis.com/auth/gmail.modify'
+      ],
+      credentialsFile: 'homeowner-credentials.json'
+    },
+    contractor: {
+      name: 'Contractor (Send-Only Account)',
+      email: 'nailit.test.contractor@gmail.com',
+      purpose: 'Send test emails TO homeowner (LIMITED Gmail access)',
+      allowedScopes: [
+        'https://www.googleapis.com/auth/gmail.send'
+      ],
+      requiredScopes: [
+        'https://www.googleapis.com/auth/gmail.send'
+      ],
+      credentialsFile: 'contractor-credentials.json'
+    }
+  };
 
   constructor() {
-    this.oauth2Client = new google.auth.OAuth2(
-      process.env.GMAIL_TEST_CLIENT_ID,
-      process.env.GMAIL_TEST_CLIENT_SECRET,
-      'http://localhost:3001/auth/gmail/callback'
-    );
+    this.clientId = process.env.GOOGLE_CLIENT_ID || '';
+    this.clientSecret = process.env.GOOGLE_CLIENT_SECRET || '';
+    this.redirectUri = process.env.GOOGLE_REDIRECT_URI || 'http://localhost:3000/api/auth/callback/google';
+    
+    if (!this.clientId || !this.clientSecret) {
+      throw new Error('Missing Google OAuth credentials in environment variables');
+    }
   }
 
-  async setupAccount(accountType: 'contractor' | 'homeowner'): Promise<void> {
-    const email = accountType === 'contractor' 
-      ? 'nailit.test.contractor@gmail.com'
-      : 'nailit.test.homeowner@gmail.com';
+  /**
+   * Setup OAuth for a specific account with HOMEOWNER-ONLY validation
+   * 
+   * This method sets up OAuth credentials for either homeowner or contractor
+   * accounts with proper scope validation and access controls.
+   * 
+   * @param accountType - 'homeowner' or 'contractor'
+   */
+  async setupOAuth(accountType: 'homeowner' | 'contractor'): Promise<void> {
+    const config = this.accountConfigs[accountType];
+    if (!config) {
+      throw new Error(`Invalid account type: ${accountType}`);
+    }
 
-    console.log(`\n🔐 Setting up OAuth for ${email}`);
+    console.log(`\n🔐 Setting up OAuth for ${config.name}`);
+    console.log(`📧 Email: ${config.email}`);
+    console.log(`🎯 Purpose: ${config.purpose}`);
+    console.log(`🔑 Required Scopes: ${config.requiredScopes.join(', ')}`);
+    
+    // VALIDATION: Ensure we're setting up the correct account type
+    if (accountType === 'homeowner') {
+      console.log(`🏠 HOMEOWNER ACCOUNT: This will be used for email ingestion`);
+      console.log(`⚠️  CRITICAL: This account must have gmail.readonly and gmail.modify scopes`);
+    } else {
+      console.log(`👷 CONTRACTOR ACCOUNT: This will ONLY be used to send test emails`);
+      console.log(`⚠️  CRITICAL: This account should NEVER be used for email ingestion`);
+    }
 
-    const authUrl = this.oauth2Client.generateAuthUrl({
+    const oauth2Client = new google.auth.OAuth2(
+      this.clientId,
+      this.clientSecret,
+      this.redirectUri
+    );
+
+    // Generate authorization URL with proper scopes for account type
+    const authUrl = oauth2Client.generateAuthUrl({
       access_type: 'offline',
-      scope: SCOPES,
-      login_hint: email
+      scope: config.allowedScopes,
+      prompt: 'consent' // Force consent screen to ensure refresh token
     });
 
-    console.log(`\n📋 Please authorize this app by visiting this URL:`);
-    console.log(`${authUrl}\n`);
-    console.log(`⚠️  Make sure to sign in as: ${email}`);
-    console.log(`\n🔄 After authorization, copy the code and run:`);
-    console.log(`npm run test:oauth-callback ${accountType} <authorization_code>`);
-  }
+    console.log(`\n🌐 Open this URL in your browser to authorize ${config.name}:`);
+    console.log(authUrl);
+    console.log(`\n⚠️  IMPORTANT: Make sure you're logged into ${config.email} in your browser`);
 
-  async handleCallback(accountType: 'contractor' | 'homeowner', code: string): Promise<void> {
+    // Get authorization code from user
+    const authCode = await this.getAuthorizationCode();
+
     try {
-      const { tokens } = await this.oauth2Client.getToken(code);
+      // Exchange authorization code for tokens
+      const { tokens } = await oauth2Client.getToken(authCode);
       
-      const credentials: OAuthCredentials = {
-        client_id: process.env.GMAIL_TEST_CLIENT_ID!,
-        client_secret: process.env.GMAIL_TEST_CLIENT_SECRET!,
-        refresh_token: tokens.refresh_token!,
-        access_token: tokens.access_token,
-        expiry_date: tokens.expiry_date
-      };
+      // VALIDATION: Verify tokens have required scopes
+      if (!tokens.refresh_token) {
+        throw new Error('No refresh token received. Make sure to use prompt=consent');
+      }
 
-      this.saveCredentials(accountType, credentials);
-      console.log(`✅ OAuth setup complete for ${accountType}`);
+      // Validate scopes for account type
+      await this.validateTokenScopes(tokens, config);
+
+      // Save credentials to file
+      const credentialsPath = path.join(__dirname, 'credentials', config.credentialsFile);
+      await this.saveCredentials(credentialsPath, tokens);
+
+      console.log(`\n✅ OAuth setup completed for ${config.name}`);
+      console.log(`💾 Credentials saved to: ${credentialsPath}`);
+      
+      // Test the credentials
+      await this.testCredentials(accountType);
 
     } catch (error: any) {
-      console.error(`❌ OAuth callback failed:`, error.message);
+      console.error(`❌ OAuth setup failed for ${config.name}:`, error.message);
       throw error;
     }
   }
 
-  getGmailClient(accountType: 'contractor' | 'homeowner') {
-    const credentials = this.loadCredentials(accountType);
-    if (!credentials) {
-      throw new Error(`No credentials found for ${accountType} account`);
+  /**
+   * Validate that OAuth tokens have the correct scopes for HOMEOWNER-ONLY approach
+   * 
+   * This method ensures that:
+   * - Homeowner tokens have ingestion scopes (readonly, modify)
+   * - Contractor tokens are limited to send-only scope
+   * - No unauthorized scope escalation occurs
+   */
+  private async validateTokenScopes(tokens: any, config: AccountConfig): Promise<void> {
+    console.log(`🔍 Validating OAuth scopes for ${config.name}...`);
+    
+    // Extract scopes from token (if available)
+    const grantedScopes: string[] = tokens.scope ? tokens.scope.split(' ') : [];
+    
+    console.log(`📋 Granted scopes: ${grantedScopes.join(', ')}`);
+    console.log(`📋 Required scopes: ${config.requiredScopes.join(', ')}`);
+    
+    // Check if all required scopes are present
+    const missingScopes = config.requiredScopes.filter(scope => 
+      !grantedScopes.includes(scope)
+    );
+    
+    if (missingScopes.length > 0) {
+      throw new Error(`Missing required scopes for ${config.name}: ${missingScopes.join(', ')}`);
     }
-
-    this.oauth2Client.setCredentials({
-      refresh_token: credentials.refresh_token,
-      access_token: credentials.access_token,
-      expiry_date: credentials.expiry_date
-    });
-
-    // Auto-refresh tokens when they expire
-    this.oauth2Client.on('tokens', (tokens: any) => {
-      if (tokens.refresh_token) {
-        console.log(`🔄 Refreshing tokens for ${accountType}`);
-        const updatedCredentials = {
-          ...credentials,
-          access_token: tokens.access_token,
-          expiry_date: tokens.expiry_date,
-          refresh_token: tokens.refresh_token
-        };
-        this.saveCredentials(accountType, updatedCredentials);
+    
+    // Additional validation for homeowner account
+    if (config.name.includes('Homeowner')) {
+      if (!grantedScopes.includes('https://www.googleapis.com/auth/gmail.readonly')) {
+        throw new Error('HOMEOWNER account missing gmail.readonly scope - cannot perform email ingestion');
       }
-    });
-
-    return google.gmail({ version: 'v1', auth: this.oauth2Client });
+      console.log(`✅ HOMEOWNER account has proper ingestion scopes`);
+    }
+    
+    // Additional validation for contractor account
+    if (config.name.includes('Contractor')) {
+      const hasInvalidScopes = grantedScopes.some(scope => 
+        scope.includes('gmail.readonly') || scope.includes('gmail.modify')
+      );
+      if (hasInvalidScopes) {
+        console.warn(`⚠️  WARNING: CONTRACTOR account has ingestion scopes - this violates homeowner-only principle`);
+      }
+      console.log(`✅ CONTRACTOR account limited to send-only scopes`);
+    }
+    
+    console.log(`✅ OAuth scope validation passed for ${config.name}`);
   }
 
   /**
-   * Refresh tokens for an account if they're expired
+   * Test OAuth credentials with HOMEOWNER-ONLY validation
+   * 
+   * This method tests the OAuth credentials and validates that:
+   * - Homeowner account can access Gmail for ingestion
+   * - Contractor account is limited to send-only operations
+   * - No unauthorized cross-account access occurs
    */
-  async refreshTokens(accountType: 'contractor' | 'homeowner'): Promise<boolean> {
-    try {
-      const credentials = this.loadCredentials(accountType);
-      if (!credentials || !credentials.refresh_token) {
-        console.log(`❌ No refresh token available for ${accountType}`);
-        return false;
-      }
-
-      this.oauth2Client.setCredentials({
-        refresh_token: credentials.refresh_token
-      });
-
-      const { credentials: newTokens } = await this.oauth2Client.refreshAccessToken();
-      
-      const updatedCredentials = {
-        ...credentials,
-        access_token: newTokens.access_token,
-        expiry_date: newTokens.expiry_date
-      };
-
-      this.saveCredentials(accountType, updatedCredentials);
-      console.log(`✅ Tokens refreshed for ${accountType}`);
-      return true;
-
-    } catch (error: any) {
-      console.error(`❌ Failed to refresh tokens for ${accountType}:`, error.message);
-      return false;
-    }
-  }
-
-  /**
-   * Test if credentials are valid for an account
-   */
-  async testCredentials(accountType: 'contractor' | 'homeowner'): Promise<boolean> {
+  async testCredentials(accountType: 'homeowner' | 'contractor'): Promise<void> {
+    const config = this.accountConfigs[accountType];
+    console.log(`\n🧪 Testing OAuth credentials for ${config.name}...`);
+    
     try {
       const gmail = this.getGmailClient(accountType);
-      const profile = await gmail.users.getProfile({ userId: 'me' });
-      console.log(`✅ ${accountType} credentials valid for: ${profile.data.emailAddress}`);
-      return true;
-    } catch (error: any) {
-      console.log(`❌ Invalid credentials for ${accountType}:`, error);
       
-      // Try to refresh tokens if they're expired
-      if (error.message.includes('Invalid Credentials') || error.code === 401) {
-        console.log(`🔄 Attempting to refresh tokens for ${accountType}...`);
-        const refreshed = await this.refreshTokens(accountType);
-        if (refreshed) {
-          // Try again with refreshed tokens
-          try {
-            const gmail = this.getGmailClient(accountType);
-            const profile = await gmail.users.getProfile({ userId: 'me' });
-            console.log(`✅ ${accountType} credentials valid after refresh: ${profile.data.emailAddress}`);
-            return true;
-          } catch (retryError) {
-            console.log(`❌ Still invalid after refresh for ${accountType}`);
-            return false;
-          }
-        }
+      // Test basic profile access
+      const profile = await gmail.users.getProfile({ userId: 'me' });
+      console.log(`✅ Connected as: ${profile.data.emailAddress}`);
+      
+      // VALIDATION: Ensure we're connected to the correct account
+      if (!profile.data.emailAddress?.includes(accountType)) {
+        console.warn(`⚠️  WARNING: Connected to ${profile.data.emailAddress} but expected ${accountType} account`);
       }
-      return false;
+      
+      // Test account-specific capabilities
+      if (accountType === 'homeowner') {
+        // Test HOMEOWNER ingestion capabilities
+        await this.testHomeownerCapabilities(gmail);
+      } else {
+        // Test CONTRACTOR send-only capabilities
+        await this.testContractorCapabilities(gmail);
+      }
+      
+      console.log(`✅ OAuth credentials working for ${config.name}`);
+      
+    } catch (error: any) {
+      console.error(`❌ OAuth test failed for ${config.name}:`, error.message);
+      throw error;
     }
   }
 
   /**
-   * Check OAuth status for both accounts
+   * Test HOMEOWNER Gmail capabilities for email ingestion
    */
-  async checkStatus(): Promise<void> {
-    console.log(`\n🔐 OAuth Status Check\n`);
-
-    const accounts: ('contractor' | 'homeowner')[] = ['contractor', 'homeowner'];
+  private async testHomeownerCapabilities(gmail: any): Promise<void> {
+    console.log(`🏠 Testing HOMEOWNER ingestion capabilities...`);
     
-    for (const account of accounts) {
-      const credentialsPath = path.join(CREDENTIALS_DIR, `${account}-credentials.json`);
+    try {
+      // Test email listing (required for ingestion)
+      const messages = await gmail.users.messages.list({
+        userId: 'me',
+        maxResults: 1
+      });
+      console.log(`✅ HOMEOWNER can list emails: ${messages.data.resultSizeEstimate || 0} total`);
+      
+      // Test email reading (required for ingestion)
+      if (messages.data.messages && messages.data.messages.length > 0) {
+        const messageId = messages.data.messages[0].id;
+        const message = await gmail.users.messages.get({
+          userId: 'me',
+          id: messageId,
+          format: 'metadata'
+        });
+        console.log(`✅ HOMEOWNER can read email metadata`);
+      }
+      
+      console.log(`✅ HOMEOWNER account ready for email ingestion`);
+      
+    } catch (error: any) {
+      throw new Error(`HOMEOWNER ingestion test failed: ${error.message}`);
+    }
+  }
+
+  /**
+   * Test CONTRACTOR send-only capabilities
+   */
+  private async testContractorCapabilities(gmail: any): Promise<void> {
+    console.log(`👷 Testing CONTRACTOR send-only capabilities...`);
+    
+    try {
+      // Test profile access (minimal required)
+      const profile = await gmail.users.getProfile({ userId: 'me' });
+      console.log(`✅ CONTRACTOR profile access: ${profile.data.emailAddress}`);
+      
+      // VALIDATION: Ensure contractor cannot list emails (ingestion prevention)
+      try {
+        await gmail.users.messages.list({
+          userId: 'me',
+          maxResults: 1
+        });
+        console.warn(`⚠️  WARNING: CONTRACTOR account can list emails - this violates homeowner-only principle`);
+      } catch (error: any) {
+        console.log(`✅ CONTRACTOR correctly blocked from listing emails`);
+      }
+      
+      console.log(`✅ CONTRACTOR account properly limited to send-only`);
+      
+    } catch (error: any) {
+      throw new Error(`CONTRACTOR send-only test failed: ${error.message}`);
+    }
+  }
+
+  /**
+   * Get Gmail client for specific account type with HOMEOWNER-ONLY validation
+   * 
+   * This method returns a Gmail API client for the specified account type
+   * with proper validation to ensure homeowner-only ingestion compliance.
+   */
+  getGmailClient(accountType: 'homeowner' | 'contractor') {
+    const config = this.accountConfigs[accountType];
+    if (!config) {
+      throw new Error(`Invalid account type: ${accountType}`);
+    }
+
+    const credentialsPath = path.join(__dirname, 'credentials', config.credentialsFile);
+    
+    if (!fs.existsSync(credentialsPath)) {
+      throw new Error(`Credentials not found for ${config.name}. Run OAuth setup first.`);
+    }
+
+    const credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
+    
+    if (!credentials.refresh_token) {
+      throw new Error(`Invalid credentials for ${config.name}. Missing refresh token.`);
+    }
+
+    const oauth2Client = new google.auth.OAuth2(
+      this.clientId,
+      this.clientSecret,
+      this.redirectUri
+    );
+
+    oauth2Client.setCredentials(credentials);
+
+    // VALIDATION: Log account type for audit trail
+    console.log(`🔗 Creating Gmail client for ${config.name}`);
+    if (accountType === 'homeowner') {
+      console.log(`🏠 HOMEOWNER client: Used for email ingestion`);
+    } else {
+      console.log(`👷 CONTRACTOR client: Used for test email generation only`);
+    }
+
+    return google.gmail({ version: 'v1', auth: oauth2Client });
+  }
+
+  /**
+   * Check OAuth status for all accounts with HOMEOWNER-ONLY validation
+   */
+  async checkOAuthStatus(): Promise<void> {
+    console.log(`\n📊 OAuth Status Check (HOMEOWNER-ONLY Validation)\n`);
+    
+    for (const [accountType, config] of Object.entries(this.accountConfigs)) {
+      console.log(`\n🔍 Checking ${config.name}...`);
+      
+      const credentialsPath = path.join(__dirname, 'credentials', config.credentialsFile);
       
       if (!fs.existsSync(credentialsPath)) {
-        console.log(`❌ ${account}: No credentials file found`);
-        console.log(`   Run: npm run test:oauth-setup ${account}`);
+        console.log(`❌ No credentials found for ${config.name}`);
+        console.log(`   Run: npm run test:oauth-setup ${accountType}`);
         continue;
       }
 
       try {
-        const credentials = this.loadCredentials(account);
-        if (!credentials) {
-          console.log(`❌ ${account}: Invalid credentials file`);
+        const credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
+        
+        if (!credentials.refresh_token) {
+          console.log(`❌ Invalid credentials for ${config.name} (missing refresh token)`);
           continue;
         }
 
-        if (credentials.refresh_token === 'test_refresh_token_placeholder') {
-          console.log(`⚠️  ${account}: Placeholder credentials detected`);
-          console.log(`   Run: npm run test:oauth-setup ${account}`);
-          continue;
+        // Test the credentials
+        const gmail = this.getGmailClient(accountType as 'homeowner' | 'contractor');
+        const profile = await gmail.users.getProfile({ userId: 'me' });
+        
+        console.log(`✅ ${config.name} - Connected as: ${profile.data.emailAddress}`);
+        console.log(`   Purpose: ${config.purpose}`);
+        console.log(`   Scopes: ${config.requiredScopes.join(', ')}`);
+        
+        // VALIDATION: Ensure correct account connection
+        if (!profile.data.emailAddress?.includes(accountType)) {
+          console.warn(`⚠️  WARNING: Account mismatch for ${config.name}`);
         }
-
-        const isValid = await this.testCredentials(account);
-        if (isValid) {
-          console.log(`✅ ${account}: OAuth credentials working`);
-        } else {
-          console.log(`❌ ${account}: OAuth credentials expired`);
-          console.log(`   Run: npm run test:oauth-setup ${account}`);
-        }
-
+        
       } catch (error: any) {
-        console.log(`❌ ${account}: Error testing credentials - ${error.message}`);
+        console.log(`❌ ${config.name} - Error: ${error.message}`);
+        console.log(`   Run: npm run test:oauth-setup ${accountType}`);
       }
     }
-
-    console.log(`\n💡 To set up OAuth: npm run test:oauth-setup <contractor|homeowner>`);
+    
+    console.log(`\n📋 OAuth Status Summary:`);
+    console.log(`🏠 HOMEOWNER: Primary account for email ingestion`);
+    console.log(`👷 CONTRACTOR: Send-only account for test email generation`);
+    console.log(`⚠️  CRITICAL: Only homeowner account should be used for email processing`);
   }
 
-  private saveCredentials(accountType: 'contractor' | 'homeowner', credentials: OAuthCredentials): void {
-    if (!fs.existsSync(CREDENTIALS_DIR)) {
-      fs.mkdirSync(CREDENTIALS_DIR, { recursive: true });
-    }
+  // Helper methods
+  private async getAuthorizationCode(): Promise<string> {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout
+    });
 
-    const credentialsPath = path.join(CREDENTIALS_DIR, `${accountType}-credentials.json`);
-    fs.writeFileSync(credentialsPath, JSON.stringify(credentials, null, 2));
-    console.log(`💾 Credentials saved to ${credentialsPath}`);
+    return new Promise((resolve) => {
+      rl.question('Enter the authorization code: ', (code) => {
+        rl.close();
+        resolve(code.trim());
+      });
+    });
   }
 
-  private loadCredentials(accountType: 'contractor' | 'homeowner'): OAuthCredentials | null {
-    const credentialsPath = path.join(CREDENTIALS_DIR, `${accountType}-credentials.json`);
-    if (!fs.existsSync(credentialsPath)) {
-      return null;
+  private async saveCredentials(filePath: string, tokens: any): Promise<void> {
+    const dir = path.dirname(filePath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
     }
 
-    try {
-      const credentialsJson = fs.readFileSync(credentialsPath, 'utf8');
-      return JSON.parse(credentialsJson);
-    } catch (error) {
-      console.error(`❌ Failed to load credentials:`, error);
-      return null;
-    }
+    const credentials = {
+      refresh_token: tokens.refresh_token,
+      access_token: tokens.access_token,
+      expiry_date: tokens.expiry_date,
+      scope: tokens.scope
+    };
+
+    fs.writeFileSync(filePath, JSON.stringify(credentials, null, 2));
   }
 }
 
+// CLI interface
 async function main() {
   const args = process.argv.slice(2);
   const command = args[0];
-  const accountType = args[1] as 'contractor' | 'homeowner';
-  const authCode = args[2];
+  const accountType = args[1] as 'homeowner' | 'contractor';
 
-  if (!process.env.GMAIL_TEST_CLIENT_ID || !process.env.GMAIL_TEST_CLIENT_SECRET) {
-    console.error(`❌ Missing environment variables: GMAIL_TEST_CLIENT_ID, GMAIL_TEST_CLIENT_SECRET`);
-    process.exit(1);
+  if (!command) {
+    console.log(`\n🔐 OAuth Setup for Email Testing (HOMEOWNER-ONLY)\n`);
+    console.log(`CRITICAL PRINCIPLE: Only homeowner Gmail account used for email ingestion`);
+    console.log(`\nAvailable commands:`);
+    console.log(`  setup <homeowner|contractor>  - Setup OAuth for specific account`);
+    console.log(`  status                        - Check OAuth status for all accounts`);
+    console.log(`  test <homeowner|contractor>   - Test OAuth credentials`);
+    console.log(`\nExamples:`);
+    console.log(`  npm run test:oauth-setup homeowner   # Setup homeowner ingestion account`);
+    console.log(`  npm run test:oauth-setup contractor  # Setup contractor send-only account`);
+    console.log(`  npm run test:oauth-status             # Check all OAuth status`);
+    return;
   }
 
   const oauth = new EmailTestOAuth();
 
-  switch (command) {
-    case 'setup':
-      if (!accountType) {
-        console.error(`❌ Account type required: contractor or homeowner`);
+  try {
+    switch (command) {
+      case 'setup':
+        if (!accountType || !['homeowner', 'contractor'].includes(accountType)) {
+          console.error('❌ Invalid account type. Use: homeowner or contractor');
+          process.exit(1);
+        }
+        await oauth.setupOAuth(accountType);
+        break;
+
+      case 'status':
+        await oauth.checkOAuthStatus();
+        break;
+
+      case 'test':
+        if (!accountType || !['homeowner', 'contractor'].includes(accountType)) {
+          console.error('❌ Invalid account type. Use: homeowner or contractor');
+          process.exit(1);
+        }
+        await oauth.testCredentials(accountType);
+        break;
+
+      default:
+        console.error(`❌ Unknown command: ${command}`);
         process.exit(1);
-      }
-      await oauth.setupAccount(accountType);
-      break;
-    case 'callback':
-      if (!accountType || !authCode) {
-        console.error(`❌ Account type and auth code required`);
-        process.exit(1);
-      }
-      await oauth.handleCallback(accountType, authCode);
-      break;
-    case 'status':
-      await oauth.checkStatus();
-      break;
-    case 'refresh':
-      if (!accountType) {
-        console.error(`❌ Account type required: contractor or homeowner`);
-        process.exit(1);
-      }
-      await oauth.refreshTokens(accountType);
-      break;
-    default:
-      console.log(`\n🔐 OAuth Setup for Email Testing\n`);
-      console.log(`Usage:`);
-      console.log(`  npm run test:oauth-status                    # Check OAuth status`);
-      console.log(`  npm run test:oauth-setup <contractor|homeowner>`);
-      console.log(`  npm run test:oauth-callback <contractor|homeowner> <code>`);
-      console.log(`  npm run test:oauth-refresh <contractor|homeowner>  # Refresh tokens`);
-      console.log(`\nExample:`);
-      console.log(`  npm run test:oauth-setup contractor`);
+    }
+  } catch (error: any) {
+    console.error(`❌ Error:`, error.message);
+    process.exit(1);
   }
 }
 

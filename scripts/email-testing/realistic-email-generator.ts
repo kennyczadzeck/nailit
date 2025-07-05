@@ -7,14 +7,30 @@ import { EmailTestOAuth } from './oauth-setup';
 /**
  * Realistic Email Generator for Testing
  * 
- * CRITICAL PRINCIPLE: This script ONLY sends emails via Gmail API.
- * It NEVER writes to the database directly.
+ * CRITICAL ARCHITECTURAL PRINCIPLES:
  * 
- * The database should ONLY be populated through:
- * - Gmail API queries (for historical email discovery)
- * - Webhooks (for real-time email processing)
+ * 1. HOMEOWNER-ONLY INGESTION:
+ *    - This script ONLY sends emails via Gmail API
+ *    - It NEVER writes to the database directly
+ *    - Database should ONLY be populated through proper ingestion pathways:
+ *      * Gmail API queries (for historical email discovery)
+ *      * Webhooks (for real-time email processing)
  * 
- * This ensures we test the actual email ingestion pathways.
+ * 2. HOMEOWNER-CENTRIC EMAIL FLOW:
+ *    - Contractors send emails TO homeowner via Gmail API
+ *    - Homeowner receives all project communications in their Gmail
+ *    - Nailit ingests emails FROM homeowner's Gmail account only
+ *    - Complete conversation history captured through homeowner's perspective
+ * 
+ * 3. EMAIL GENERATION PATTERN:
+ *    - Use contractor Gmail to SEND emails TO homeowner
+ *    - Use homeowner Gmail to SEND replies TO contractor
+ *    - Never access contractor Gmail for ingestion
+ *    - Always test ingestion from homeowner's Gmail only
+ * 
+ * This ensures we test the actual email ingestion pathways used in production.
+ * 
+ * NEVER MODIFY THIS TO WRITE TO DATABASE DIRECTLY
  */
 
 interface EmailTemplate {

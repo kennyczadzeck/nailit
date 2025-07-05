@@ -1,52 +1,68 @@
 import { prisma } from '../prisma'
-
-// Optional logger import - fallback to console if not available
-let logger: any
-try {
-  logger = require('../logger').logger
-} catch (error) {
-  // Fallback for testing environments
-  logger = {
-    info: console.log,
-    error: console.error,
-    warn: console.warn,
-    debug: console.debug
-  }
-}
+import { logger } from '../logger'
 
 interface EmailParticipant {
   email: string
   name?: string
 }
 
+interface TeamMember {
+  id: string
+  name: string
+  email: string
+  role: string
+}
+
 interface TeamMemberFilterResult {
   shouldProcess: boolean
-  matchedTeamMembers: Array<{
-    id: string
-    name: string
-    email: string
-    role: string
-  }>
+  matchedTeamMembers: TeamMember[]
   reason: string
   projectId?: string
 }
 
 /**
- * Team Member Email Filter
+ * Team Member Email Filter - Production Email Processing
  * 
- * Core privacy and relevance filter that ensures only emails from/to 
- * defined project team members are processed.
+ * ARCHITECTURAL PRINCIPLE: NAILIT USER-CENTRIC EMAIL INGESTION
  * 
- * This is the first and most important filter in the email processing pipeline.
+ * This filter is the core component in the email processing pipeline that ensures
+ * only emails relevant to the Nailit user's projects are processed.
+ * 
+ * NAILIT USER-CENTRIC APPROACH:
+ * 1. ALL emails are processed from the Nailit user's Gmail account perspective
+ * 2. Filter includes emails FROM team members TO Nailit user
+ * 3. Filter includes emails FROM Nailit user TO team members  
+ * 4. Filter excludes emails that don't involve known project team members
+ * 5. Team members are defined per project by the Nailit user
+ * 
+ * WHY NAILIT USER-CENTRIC?
+ * - Privacy: Only access the authenticated user's own Gmail account
+ * - Completeness: Nailit user receives ALL project communications
+ * - Bidirectional: Captures team member→user AND user→team member emails
+ * - Single Source: Nailit user's Gmail is the single source of truth
+ * - Extensible: Supports any user type (homeowner, contractor, architect, etc.)
+ * 
+ * TEAM MEMBER FILTERING LOGIC:
+ * - Process emails if sender OR recipient is a known team member
+ * - Team members are defined per project by the Nailit user
+ * - Nailit user email is implicitly included (they own the Gmail account)
+ * - Team member emails are captured when they communicate with the Nailit user
+ * 
+ * EXTENSIBILITY: This pattern supports future user types (contractors, architects)
+ * by maintaining the same filtering logic while allowing different team member roles.
  */
 export class TeamMemberFilter {
   
   /**
    * Check if an email should be processed based on team member validation
    * 
-   * @param sender - Email sender information
-   * @param recipients - Email recipients list
-   * @param userId - User ID who owns the project
+   * This method processes emails found in the Nailit user's Gmail account.
+   * It determines if the email involves known project team members and should
+   * be included in the user's project communication timeline.
+   * 
+   * @param sender - Email sender information (could be team member OR Nailit user)
+   * @param recipients - Email recipients list (could be team member OR Nailit user)
+   * @param userId - Nailit user ID who owns the Gmail account being processed
    * @returns Filter result with processing decision
    */
   async shouldProcessEmail(
@@ -56,10 +72,20 @@ export class TeamMemberFilter {
   ): Promise<TeamMemberFilterResult> {
     
     try {
+      // VALIDATION: Ensure we're processing for a valid Nailit user
+      if (!userId) {
+        logger.error('Team member filter called without userId')
+        return {
+          shouldProcess: false,
+          matchedTeamMembers: [],
+          reason: 'No user ID provided'
+        }
+      }
+
       // Get all team members for user's active projects
       const userProjects = await prisma.project.findMany({
         where: {
-          userId: userId,
+          userId: userId, // Only authenticated user's projects
           // Only consider active projects for email filtering
           status: {
             in: ['ACTIVE', 'ON_HOLD'] // Don't process emails for completed/archived projects
@@ -76,6 +102,7 @@ export class TeamMemberFilter {
       })
 
       if (userProjects.length === 0) {
+        logger.info('No active projects found for user', { userId })
         return {
           shouldProcess: false,
           matchedTeamMembers: [],
@@ -83,7 +110,7 @@ export class TeamMemberFilter {
         }
       }
 
-      // Build list of all team member emails across active projects
+      // Build list of all team member emails across user's active projects
       const teamMemberEmailMap = new Map<string, Array<{
         id: string
         name: string
@@ -93,13 +120,36 @@ export class TeamMemberFilter {
         monitoringEnabled: boolean
       }>>()
 
+      // Get Nailit user's email for implicit inclusion
+      const nailItUser = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { email: true }
+      })
+
+      const userEmail = nailItUser?.email?.toLowerCase().trim()
+      
       for (const project of userProjects) {
-        const monitoringEnabled = project.emailSettings?.monitoringEnabled ?? false
-        
-        if (!monitoringEnabled) {
-          continue // Skip projects with monitoring disabled
+        // Skip projects without email monitoring enabled
+        if (!project.emailSettings?.monitoringEnabled) {
+          continue
         }
 
+        // Add Nailit user email implicitly to each project
+        if (userEmail) {
+          if (!teamMemberEmailMap.has(userEmail)) {
+            teamMemberEmailMap.set(userEmail, [])
+          }
+          teamMemberEmailMap.get(userEmail)!.push({
+            id: userId,
+            name: 'Project Owner',
+            email: userEmail,
+            role: 'PROJECT_OWNER',
+            projectId: project.id,
+            monitoringEnabled: true
+          })
+        }
+
+        // Add explicit team members for this project
         for (const member of project.teamMembers) {
           const memberEmail = member.email.toLowerCase().trim()
           
@@ -113,29 +163,24 @@ export class TeamMemberFilter {
             email: member.email,
             role: member.role,
             projectId: project.id,
-            monitoringEnabled
+            monitoringEnabled: project.emailSettings?.monitoringEnabled || false
           })
         }
       }
 
       if (teamMemberEmailMap.size === 0) {
+        logger.warn('No team members found for user projects', { userId })
         return {
           shouldProcess: false,
           matchedTeamMembers: [],
-          reason: 'No team members defined for any active projects with monitoring enabled'
+          reason: 'No team members configured for user projects'
         }
       }
 
-      // Check sender against team members
+      // Check if sender is a team member (team member→user OR user→team member)
       const senderEmail = sender.email.toLowerCase().trim()
-      const matchedMembers: Array<{
-        id: string
-        name: string
-        email: string
-        role: string
-      }> = []
+      const matchedMembers: TeamMember[] = []
 
-      // Check if sender is a team member
       if (teamMemberEmailMap.has(senderEmail)) {
         const senderMatches = teamMemberEmailMap.get(senderEmail)!
         matchedMembers.push(...senderMatches.map(m => ({
@@ -146,7 +191,7 @@ export class TeamMemberFilter {
         })))
       }
 
-      // Also check if any recipients are team members (for sent emails)
+      // Also check if any recipients are team members (for sent emails from user)
       for (const recipient of recipients) {
         const recipientEmail = recipient.email.toLowerCase().trim()
         if (teamMemberEmailMap.has(recipientEmail)) {
@@ -173,11 +218,29 @@ export class TeamMemberFilter {
         
         const projectId = primaryMatch?.[0]?.projectId
 
+        // VALIDATION: Ensure project belongs to the authenticated user
+        if (projectId) {
+          const projectOwner = userProjects.find(p => p.id === projectId)
+          if (!projectOwner || projectOwner.userId !== userId) {
+            logger.error('Project ownership mismatch in team member filter', {
+              projectId,
+              expectedUserId: userId,
+              actualUserId: projectOwner?.userId
+            })
+            return {
+              shouldProcess: false,
+              matchedTeamMembers: [],
+              reason: 'Project ownership validation failed'
+            }
+          }
+        }
+
         logger.info('Email approved by team member filter', {
           senderEmail,
           recipientEmails: recipients.map(r => r.email),
           matchedTeamMembers: uniqueMatches.length,
-          projectId
+          projectId,
+          userId
         })
 
         return {
@@ -188,7 +251,7 @@ export class TeamMemberFilter {
         }
       }
 
-      // Email doesn't involve any team members - filter out
+      // Email doesn't involve any project team members - filter out
       logger.info('Email filtered out - no team member involvement', {
         senderEmail,
         recipientEmails: recipients.map(r => r.email),
@@ -199,72 +262,148 @@ export class TeamMemberFilter {
       return {
         shouldProcess: false,
         matchedTeamMembers: [],
-        reason: `Email sender (${senderEmail}) and recipients are not project team members`
+        reason: `Email does not involve any team members for user projects. Available team members: ${Array.from(teamMemberEmailMap.keys()).join(', ')}`
       }
 
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-      
-      logger.error('Team member filter error', {
-        error: errorMessage,
+    } catch (error: any) {
+      logger.error('Error in team member filter', {
+        error: error.message,
+        userId,
         senderEmail: sender.email,
-        userId
+        recipientEmails: recipients.map(r => r.email)
       })
 
-      // Fail closed - don't process emails if filter fails
       return {
         shouldProcess: false,
         matchedTeamMembers: [],
-        reason: `Team member filter error: ${errorMessage}`
+        reason: `Team member filter error: ${error.message}`
       }
     }
   }
 
   /**
    * Get team members for a specific project
+   * 
+   * This method returns team members configured for a user's project.
+   * It includes the project owner implicitly plus any explicitly added team members.
+   * 
+   * @param projectId - Project ID
+   * @returns List of team member emails
    */
-  async getProjectTeamMembers(projectId: string): Promise<Array<{
-    id: string
-    name: string
-    email: string
-    role: string
-  }>> {
+  async getProjectTeamMembers(projectId: string): Promise<string[]> {
     try {
-      const teamMembers = await prisma.teamMember.findMany({
-        where: { projectId },
-        orderBy: [
-          { role: 'asc' }, // GENERAL_CONTRACTOR first
-          { name: 'asc' }
-        ]
+      // VALIDATION: Ensure project exists
+      const project = await prisma.project.findUnique({
+        where: { id: projectId },
+        include: {
+          teamMembers: true,
+          user: {
+            select: { email: true }
+          }
+        }
       })
 
-      return teamMembers.map(member => ({
-        id: member.id,
-        name: member.name,
-        email: member.email,
-        role: member.role
-      }))
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-      logger.error('Failed to get project team members', {
+      if (!project) {
+        logger.error('Project not found for team member lookup', { projectId })
+        return []
+      }
+
+      const teamMemberEmails: string[] = []
+
+      // Add project owner email implicitly
+      if (project.user.email) {
+        teamMemberEmails.push(project.user.email)
+      }
+
+      // Add explicit team members
+      for (const member of project.teamMembers) {
+        teamMemberEmails.push(member.email)
+      }
+
+      logger.debug('Retrieved team members for project', {
         projectId,
-        error: errorMessage
+        teamMemberCount: teamMemberEmails.length,
+        includesOwner: !!project.user.email
+      })
+
+      return teamMemberEmails
+
+    } catch (error: any) {
+      logger.error('Error retrieving team members for project', {
+        error: error.message,
+        projectId
       })
       return []
     }
   }
 
   /**
-   * Validate team member email format and uniqueness
+   * Validate if a user is authorized for email processing
+   * 
+   * This method validates that the user exists and has proper permissions
+   * for email processing operations.
+   * 
+   * @param userId - User ID to validate
+   * @returns True if user is valid for email processing
+   */
+  async validateUser(userId: string): Promise<boolean> {
+    try {
+      if (!userId) {
+        return false
+      }
+
+      const user = await prisma.user.findUnique({
+        where: { id: userId },
+        select: { 
+          id: true,
+          email: true,
+          emailVerified: true
+        }
+      })
+
+      if (!user) {
+        logger.warn('User not found for email processing validation', { userId })
+        return false
+      }
+
+      if (!user.email) {
+        logger.warn('User missing email for email processing', { userId })
+        return false
+      }
+
+      // Note: emailVerified check can be added here if required
+      // For now, we allow processing for any user with an email
+
+      return true
+
+    } catch (error: any) {
+      logger.error('Error validating user for email processing', {
+        error: error.message,
+        userId
+      })
+      return false
+    }
+  }
+
+  /**
+   * Validate team member email format
+   * 
+   * @param email - Email to validate
+   * @returns Validation result
    */
   validateTeamMemberEmail(email: string): { isValid: boolean; reason?: string } {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    
-    if (!email || !email.trim()) {
+    if (!email || typeof email !== 'string') {
       return { isValid: false, reason: 'Email is required' }
     }
 
-    if (!emailRegex.test(email.trim())) {
+    const trimmedEmail = email.trim()
+    if (!trimmedEmail) {
+      return { isValid: false, reason: 'Email is required' }
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(trimmedEmail)) {
       return { isValid: false, reason: 'Invalid email format' }
     }
 
@@ -272,5 +411,5 @@ export class TeamMemberFilter {
   }
 }
 
-// Export singleton instance
+// Export singleton instance for use throughout the application
 export const teamMemberFilter = new TeamMemberFilter() 
