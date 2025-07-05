@@ -265,9 +265,10 @@ export class TeamMemberFilter {
         reason: `Email does not involve any team members for user projects. Available team members: ${Array.from(teamMemberEmailMap.keys()).join(', ')}`
       }
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
       logger.error('Error in team member filter', {
-        error: error.message,
+        error: errorMessage,
         userId,
         senderEmail: sender.email,
         recipientEmails: recipients.map(r => r.email)
@@ -276,7 +277,7 @@ export class TeamMemberFilter {
       return {
         shouldProcess: false,
         matchedTeamMembers: [],
-        reason: `Team member filter error: ${error.message}`
+        reason: `Team member filter error: ${errorMessage}`
       }
     }
   }
@@ -328,9 +329,10 @@ export class TeamMemberFilter {
 
       return teamMemberEmails
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
       logger.error('Error retrieving team members for project', {
-        error: error.message,
+        error: errorMessage,
         projectId
       })
       return []
@@ -376,9 +378,10 @@ export class TeamMemberFilter {
 
       return true
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
       logger.error('Error validating user for email processing', {
-        error: error.message,
+        error: errorMessage,
         userId
       })
       return false
