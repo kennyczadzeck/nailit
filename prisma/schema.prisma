@@ -57,7 +57,9 @@ model Project {
   timelineEntries TimelineEntry[]
   emailSettings EmailSettings?
   teamMembers TeamMember[]
-  emailMessages EmailMessage[]  
+  emailMessages EmailMessage[]
+  emailAnalyses EmailAnalysis[] // AI analysis results for this project
+  
   @@map("projects")
 }
 
@@ -225,6 +227,7 @@ model EmailMessage {
   projectId       String?     // Project assignment (can be null if not project-related)
   project         Project?    @relation(fields: [projectId], references: [id], onDelete: SetNull)
   flaggedItem     FlaggedItem? @relation(fields: [flaggedItemId], references: [id], onDelete: SetNull)
+  emailAnalyses   EmailAnalysis[] // AI analysis results for this email
   
   // Timestamps
   createdAt       DateTime @default(now())
@@ -237,6 +240,54 @@ model EmailMessage {
   @@index([analysisStatus])
   @@index([urgencyLevel])
   @@index([containsChanges])
+}
+
+model EmailAnalysis {
+  id                    String   @id @default(cuid())
+  
+  // References
+  emailId               String
+  projectId             String
+  
+  // Classification results
+  primaryType           String   // primary_type from AI analysis (aligned with API)
+  confidenceScore       Float    // overall confidence (0-1) (aligned with API)
+  subCategories         String   // JSON array of sub-categories
+  
+  // Summary results
+  keyPoints             String   // JSON array of key points
+  actionItems           String   // JSON array of action items
+  timelineMentions      String   // JSON array of timeline mentions
+  
+  // Entity extraction results - structured fields for easier querying
+  keyAmounts            Float[]  // Extracted monetary amounts
+  keyDates              String[] // Extracted dates and deadlines
+  keyContractors        String[] // Extracted contractor emails/names
+  entities              String   // JSON object with all entities (full details)
+  
+  // Analysis metadata
+  priority              String   // high, medium, low
+  requiresResponse      Boolean  @default(false)
+  attachmentsMentioned  Boolean  @default(false)
+  
+  // Processing metadata
+  modelUsed             String   // e.g., "gpt-4o"
+  processingTimeMs      Int      // processing time in milliseconds
+  analyzedAt            DateTime @default(now())
+  
+  // Full analysis JSON for complete context
+  fullAnalysisJson      Json     // Complete AI analysis response
+  
+  // Timestamps
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  
+  // Relations
+  email                 EmailMessage @relation(fields: [emailId], references: [id], onDelete: Cascade)
+  project               Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  @@unique([emailId, projectId]) // One analysis per email per project
+  @@map("email_analyses")
 }
 
 model OAuthSession {

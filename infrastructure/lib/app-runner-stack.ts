@@ -19,6 +19,7 @@ interface AppRunnerStackProps extends cdk.StackProps {
     googleClientIdArn: string;
     googleClientSecretArn: string;
     apiKeysSecretArn: string;
+    openaiApiKeyArn: string;
   };
 }
 
@@ -93,6 +94,7 @@ export class AppRunnerStack extends cdk.Stack {
           secretArns.googleClientIdArn,
           secretArns.googleClientSecretArn,
           secretArns.apiKeysSecretArn,
+          secretArns.openaiApiKeyArn,
         ],
       }));
     }
@@ -152,6 +154,7 @@ export class AppRunnerStack extends cdk.Stack {
       googleClientIdArn: string;
       googleClientSecretArn: string;
       apiKeysSecretArn: string;
+      openaiApiKeyArn: string;
     },
     accessRole?: iam.Role
   ): apprunner.CfnService.SourceConfigurationProperty {
@@ -220,6 +223,7 @@ export class AppRunnerStack extends cdk.Stack {
     googleClientIdArn: string;
     googleClientSecretArn: string;
     apiKeysSecretArn: string;
+    openaiApiKeyArn: string;
   }): apprunner.CfnService.KeyValuePairProperty[] {
     if (!secretArns) return [];
 
@@ -229,6 +233,7 @@ export class AppRunnerStack extends cdk.Stack {
       { name: 'NEXTAUTH_URL', value: `${secretArns.nextauthUrlArn}` },
       { name: 'GOOGLE_CLIENT_ID', value: `${secretArns.googleClientIdArn}` },
       { name: 'GOOGLE_CLIENT_SECRET', value: `${secretArns.googleClientSecretArn}` },
+      { name: 'OPENAI_API_KEY', value: `${secretArns.openaiApiKeyArn}` },
     ];
   }
 
@@ -266,6 +271,7 @@ export class AppRunnerStack extends cdk.Stack {
     googleClientIdArn: string;
     googleClientSecretArn: string;
     apiKeysSecretArn: string;
+    openaiApiKeyArn: string;
   }): apprunner.CfnService.CodeConfigurationValuesProperty {
     const envVars = [
       { name: 'NODE_ENV', value: 'production' },

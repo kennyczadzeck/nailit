@@ -13,6 +13,7 @@ export class SecretsStack extends cdk.Stack {
   public readonly googleClientIdArn: string;
   public readonly googleClientSecretArn: string;
   public readonly apiKeysSecretArn: string;
+  public readonly openaiApiKeyArn: string;
 
   constructor(scope: Construct, id: string, props: SecretsStackProps) {
     super(scope, id, props);
@@ -24,6 +25,7 @@ export class SecretsStack extends cdk.Stack {
     const googleClientId = process.env[`NAILIT_GOOGLE_CLIENT_ID_${props.environment.toUpperCase()}`];
     const googleClientSecret = process.env[`NAILIT_GOOGLE_CLIENT_SECRET_${props.environment.toUpperCase()}`];
     const googleMapsApiKey = process.env[`NAILIT_GOOGLE_MAPS_API_KEY_${props.environment.toUpperCase()}`];
+    const openaiApiKey = process.env[`NAILIT_OPENAI_API_KEY_${props.environment.toUpperCase()}`];
 
     // Validate required environment variables
     if (!databaseUrl) {
@@ -43,6 +45,9 @@ export class SecretsStack extends cdk.Stack {
     }
     if (!googleMapsApiKey) {
       throw new Error(`Missing required environment variable: NAILIT_GOOGLE_MAPS_API_KEY_${props.environment.toUpperCase()}`);
+    }
+    if (!openaiApiKey) {
+      throw new Error(`Missing required environment variable: NAILIT_OPENAI_API_KEY_${props.environment.toUpperCase()}`);
     }
 
     // Database credentials secret
@@ -83,6 +88,12 @@ export class SecretsStack extends cdk.Stack {
       secretStringValue: cdk.SecretValue.unsafePlainText(googleMapsApiKey),
     });
 
+    const openaiApiKeyResource = new secretsmanager.Secret(this, 'OpenAIApiKey', {
+      secretName: `nailit-openai-api-key-${props.environment}`,
+      description: 'OpenAI API key for NailIt application',
+      secretStringValue: cdk.SecretValue.unsafePlainText(openaiApiKey),
+    });
+
     // Export ARNs for use in App Runner stack
     this.databaseSecretArn = databaseSecret.secretArn;
     this.nextauthSecretArn = nextauthSecretResource.secretArn;
@@ -90,6 +101,7 @@ export class SecretsStack extends cdk.Stack {
     this.googleClientIdArn = googleClientIdResource.secretArn;
     this.googleClientSecretArn = googleClientSecretResource.secretArn;
     this.apiKeysSecretArn = apiKeysSecret.secretArn;
+    this.openaiApiKeyArn = openaiApiKeyResource.secretArn;
 
     // Output the ARNs
     new cdk.CfnOutput(this, 'DatabaseSecretArn', {
@@ -120,6 +132,11 @@ export class SecretsStack extends cdk.Stack {
     new cdk.CfnOutput(this, 'ApiKeysSecretArn', {
       value: this.apiKeysSecretArn,
       description: 'ARN of the API keys secret',
+    });
+
+    new cdk.CfnOutput(this, 'OpenAIApiKeyArn', {
+      value: this.openaiApiKeyArn,
+      description: 'ARN of the OpenAI API key secret',
     });
   }
 } 
