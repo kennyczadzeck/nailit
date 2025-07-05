@@ -20,7 +20,7 @@ try {
  * Security middleware for debug and test endpoints
  * Ensures these endpoints are only accessible in development or with proper authentication
  */
-export async function requireDevelopmentOrAuth(_request: NextRequest) {
+export async function requireDevelopmentOrAuth() {
   // Check if debug endpoints are explicitly disabled
   if (process.env.DISABLE_DEBUG_ENDPOINTS === 'true') {
     return NextResponse.json(

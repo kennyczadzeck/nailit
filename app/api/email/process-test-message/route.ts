@@ -2,10 +2,34 @@ import { NextRequest, NextResponse } from 'next/server'
 import { logger } from '../../../lib/logger'
 import { gmailEmailFetcher } from '../../../lib/gmail-email-fetcher'
 import { prisma } from '../../../lib/prisma'
+import { teamMemberFilter } from '../../../lib/email/team-member-filter'
 import fs from 'fs'
 import path from 'path'
 
-// Test email processing endpoint (uses test credentials with OAuth session tracking)
+/**
+ * Test Email Processing Endpoint - User-Centric Email Processing
+ * 
+ * ARCHITECTURAL PRINCIPLE: NAILIT USER-CENTRIC EMAIL INGESTION
+ * 
+ * This endpoint processes test emails using the user-centric approach:
+ * 
+ * 1. USER PERSPECTIVE: All emails are processed from the authenticated user's Gmail account
+ * 2. COMPLETE CAPTURE: Processes both team member→user AND user→team member emails
+ * 3. TEAM MEMBER FILTERING: Only processes emails involving known project team members
+ * 4. OAUTH TRACKING: Uses user's OAuth session for Gmail API access
+ * 
+ * Email Processing Flow:
+ * 1. Receive email messageId from user's Gmail
+ * 2. Fetch email content from user's Gmail via API
+ * 3. Apply team member filtering (team member emails TO/FROM user)
+ * 4. Store email with user's ID and project association
+ * 5. Track OAuth session usage for user
+ * 
+ * This endpoint simulates the production email ingestion pipeline for testing.
+ * It uses test credentials with OAuth session tracking to mirror real-world usage.
+ * 
+ * EXTENSIBLE: Supports any user type (homeowner, contractor, architect, etc.)
+ */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
@@ -18,13 +42,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    logger.info('Test email processing requested', {
+    logger.info('Test email processing requested (user-centric)', {
       messageId,
       userId,
       projectId
     })
 
-    // Verify project exists
+    // Verify project exists and belongs to authenticated user
     const project = await prisma.project.findUnique({
       where: { id: projectId },
       include: {
@@ -39,7 +63,20 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Get OAuth session for email API
+    // Verify this is the correct user (not another user)
+    if (project.userId !== userId) {
+      logger.warn('Project access denied - user mismatch', {
+        projectId,
+        requestedUserId: userId,
+        projectUserId: project.userId
+      })
+      return NextResponse.json(
+        { error: 'Project access denied' },
+        { status: 403 }
+      )
+    }
+
+    // Get user's OAuth session for email API access
     const oauthSession = await prisma.oAuthSession.findUnique({
       where: {
         userId_provider_sessionContext: {
@@ -58,7 +95,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (oauthSession && oauthSession.isActive) {
-      // Use OAuth session credentials with null checks
+      // Use user's OAuth session credentials
       if (!oauthSession.refreshToken) {
         throw new Error('OAuth session missing refresh token')
       }
@@ -70,27 +107,27 @@ export async function POST(request: NextRequest) {
       }
       oauthSessionId = oauthSession.id
       
-      // Update last used timestamp
+      // Update last used timestamp for user session
       await prisma.oAuthSession.update({
         where: { id: oauthSession.id },
         data: { lastUsedAt: new Date() }
       })
       
-      logger.info('Using OAuth session credentials for test', {
+      logger.info('Using user OAuth session credentials for test', {
         projectId,
         oauthSessionId,
         sessionContext: oauthSession.sessionContext
       })
     } else {
-      // No OAuth session - use test credentials
+      // No user OAuth session - use test credentials
       credentials = await loadTestCredentials()
       
-      logger.info('No OAuth session found, using test credentials', {
+      logger.info('No user OAuth session found, using test credentials', {
         projectId
       })
     }
 
-    // Fetch email content from Gmail API
+    // Fetch email content from user's Gmail API
     const emailContent = await gmailEmailFetcher.fetchEmailContent(messageId, credentials)
     
     if (!emailContent) {
@@ -100,154 +137,179 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Extract email metadata
+    // Extract email metadata for user team member filtering
     const headers = emailContent.headers
-    const sender = headers['From'] || ''
-    const recipients = [headers['To'] || '']
-    const ccRecipients = headers['Cc'] ? [headers['Cc']] : []
-    const sentAt = headers['Date'] ? new Date(headers['Date']) : new Date()
-
-    // For testing without S3, we'll store content directly in database
-    // In production, this would be stored in S3 and only paths stored in DB
+    const sender = {
+      email: headers['From'] || '',
+      name: undefined // Could parse name from "Name <email@domain.com>" format
+    }
+    const recipients = [
+      { email: headers['To'] || '', name: undefined }
+    ]
     
-    // Check if email message already exists
-    const existingMessage = await prisma.emailMessage.findUnique({
-      where: { messageId }
-    })
-
-    let emailMessage
-    
-    if (existingMessage) {
-      // Update existing record with OAuth session tracking
-      emailMessage = await prisma.emailMessage.update({
-        where: { messageId },
-        data: {
-          subject: emailContent.subject,
-          sender,
-          recipients,
-          ccRecipients,
-          sentAt,
-          bodyText: emailContent.bodyText,
-          bodyHtml: emailContent.bodyHtml,
-          ingestionStatus: 'completed',
-          providerData: {
-            ...existingMessage.providerData as Record<string, unknown>,
-            processedAt: new Date().toISOString(),
-            testMode: true,
-            fetchedFromGmail: true,
-            oauthSessionId: oauthSessionId,
-            oauthSessionTracked: !!oauthSessionId
-          }
-        }
-      })
-    } else {
-      // Create new record with OAuth session tracking
-      emailMessage = await prisma.emailMessage.create({
-        data: {
-          messageId,
-          provider: 'gmail',
-          subject: emailContent.subject,
-          sender,
-          recipients,
-          ccRecipients,
-          sentAt,
-          bodyText: emailContent.bodyText,
-          bodyHtml: emailContent.bodyHtml,
-          ingestionStatus: 'completed',
-          analysisStatus: 'pending',
-          assignmentStatus: 'pending',
-          userId,
-          projectId,
-          providerData: {
-            processedAt: new Date().toISOString(),
-            testMode: true,
-            fetchedFromGmail: true,
-            attachmentCount: emailContent.attachments.length,
-            oauthSessionId: oauthSessionId,
-            oauthSessionTracked: !!oauthSessionId,
-            credentialSource: oauthSessionId ? 'oauth_session' : 'test_credentials'
-          }
-        }
-      })
+    // Add CC recipients if present
+    if (headers['Cc']) {
+      recipients.push({ email: headers['Cc'], name: undefined })
     }
 
-    logger.info('Test email processing completed with OAuth session tracking', {
+    // CRITICAL: Apply user team member filtering FIRST
+    // This ensures we only process emails involving the user's project team
+    const filterResult = await teamMemberFilter.shouldProcessEmail(sender, recipients, userId)
+
+    if (!filterResult.shouldProcess) {
+      logger.info('Email filtered out by team member filter', {
+        messageId,
+        senderEmail: sender.email,
+        reason: filterResult.reason,
+        userId,
+        projectId
+      })
+
+      return NextResponse.json({
+        success: false,
+        filtered: true,
+        reason: filterResult.reason,
+        message: 'Email not processed - sender/recipients are not project team members'
+      }, { status: 200 }) // 200 because filtering is expected behavior
+    }
+
+    // Determine sender type for processing
+    const userEmail = project.user.email?.toLowerCase()
+    const senderEmail = sender.email.toLowerCase()
+    
+    let senderType: 'user' | 'team_member' = 'team_member'
+    if (userEmail && senderEmail === userEmail) {
+      senderType = 'user'
+    }
+
+    // Create email message record
+    const emailMessage = await prisma.emailMessage.create({
+      data: {
+        id: `msg_${messageId}_${Date.now()}`,
+        messageId: messageId,
+        subject: emailContent.subject || 'No Subject',
+        bodyText: emailContent.bodyText || emailContent.bodyHtml || '',
+        sender: sender.email,
+        senderName: sender.name,
+        recipients: recipients.map(r => r.email),
+        ccRecipients: [], // Initialize as empty array since not provided
+        bccRecipients: [], // Initialize as empty array since not provided
+        sentAt: new Date(), // Required field - use current time as fallback
+        receivedAt: new Date(), // Use current time since receivedAt is not in EmailContent
+        
+        // Associate with user and project
+        userId: userId,
+        projectId: projectId,
+        
+        // Provider information
+        provider: 'gmail',
+        providerData: {
+          messageId: messageId,
+          threadId: messageId, // Use messageId as threadId fallback since threadId is not in EmailContent
+          headers: emailContent.headers,
+          senderType: senderType,
+          teamMemberFilter: {
+            matched: filterResult.matchedTeamMembers.map(tm => ({
+              id: tm.id,
+              name: tm.name,
+              email: tm.email,
+              role: tm.role
+            })),
+            reason: filterResult.reason
+          },
+          oauthSessionId: oauthSessionId
+        }
+      }
+    })
+
+    logger.info('Email processed successfully (user-centric)', {
+      emailId: emailMessage.id,
       messageId,
+      subject: emailMessage.subject,
+      sender: emailMessage.sender,
+      recipients: emailMessage.recipients,
       userId,
       projectId,
-      emailMessageId: emailMessage.id,
-      subject: emailContent.subject,
-      attachmentCount: emailContent.attachments.length,
-      oauthSessionId: oauthSessionId,
-      oauthSessionTracked: !!oauthSessionId
+      senderType,
+      teamMembersMatched: filterResult.matchedTeamMembers.length,
+      oauthSessionId
     })
 
     return NextResponse.json({
       success: true,
-      message: 'Test email processed successfully with OAuth session tracking',
-      emailMessage: {
-        id: emailMessage.id,
-        messageId: emailMessage.messageId,
-        subject: emailMessage.subject,
-        sender: emailMessage.sender,
-        recipients: emailMessage.recipients,
-        sentAt: emailMessage.sentAt,
-        ingestionStatus: emailMessage.ingestionStatus,
-        bodyText: emailMessage.bodyText ? emailMessage.bodyText.substring(0, 200) + '...' : null,
-        bodyHtml: emailMessage.bodyHtml ? emailMessage.bodyHtml.substring(0, 200) + '...' : null,
-        providerData: emailMessage.providerData
-      },
-      gmailContent: {
-        subject: emailContent.subject,
-        sender: headers['From'],
-        hasBodyText: !!emailContent.bodyText,
-        hasBodyHtml: !!emailContent.bodyHtml,
-        attachmentCount: emailContent.attachments.length,
-        headers: Object.keys(headers)
-      },
-      oauthInfo: {
-        sessionId: oauthSessionId,
-        sessionTracked: !!oauthSessionId,
-        credentialSource: oauthSessionId ? 'oauth_session' : 'test_credentials'
+      message: 'Email processed successfully',
+      emailId: emailMessage.id,
+      messageId,
+      subject: emailMessage.subject,
+      sender: emailMessage.sender,
+      recipients: emailMessage.recipients,
+      senderType,
+      teamMembersMatched: filterResult.matchedTeamMembers.length,
+      processingDetails: {
+        filterResult: {
+          shouldProcess: filterResult.shouldProcess,
+          matchedTeamMembers: filterResult.matchedTeamMembers.length,
+          reason: filterResult.reason
+        },
+        oauthSession: {
+          used: !!oauthSessionId,
+          sessionId: oauthSessionId
+        }
       }
     })
 
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-    const errorStack = error instanceof Error ? error.stack : undefined
-    
-    logger.error('Test email processing failed', {
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred'
+    const stack = error instanceof Error ? error.stack : undefined
+
+    logger.error('Error processing test email', {
       error: errorMessage,
-      stack: errorStack
+      stack: stack
     })
     
     return NextResponse.json(
-      { error: `Internal server error: ${errorMessage}` },
+      { error: 'Internal server error' },
       { status: 500 }
     )
   }
 }
 
-/**
- * Load test credentials from file system
- */
+// Load test credentials from file system (fallback when no OAuth session)
 async function loadTestCredentials(): Promise<{
   refreshToken: string;
   accessToken?: string;
   expiryDate?: number;
 }> {
-  const credentialsPath = path.join(process.cwd(), 'scripts/email-testing/credentials/homeowner-credentials.json')
-  
-  if (!fs.existsSync(credentialsPath)) {
-    throw new Error('Test credentials not found. Run OAuth setup first.')
-  }
+  try {
+    // Try to load from homeowner credentials (test environment)
+    const credentialsPath = path.join(process.cwd(), 'scripts/email-testing/credentials/homeowner-credentials.json')
+    
+    if (!fs.existsSync(credentialsPath)) {
+      throw new Error('Test credentials not found. Run OAuth setup first.')
+    }
 
-  const testCredentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'))
-  
-  return {
-    refreshToken: testCredentials.refresh_token,
-    accessToken: testCredentials.access_token,
-    expiryDate: testCredentials.expiry_date
+    const credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'))
+    
+    if (!credentials.refresh_token) {
+      throw new Error('Test credentials missing refresh token')
+    }
+
+    logger.info('Loaded test credentials for email processing', {
+      hasRefreshToken: !!credentials.refresh_token,
+      hasAccessToken: !!credentials.access_token,
+      expiryDate: credentials.expiry_date ? new Date(credentials.expiry_date) : null
+    })
+
+    return {
+      refreshToken: credentials.refresh_token,
+      accessToken: credentials.access_token,
+      expiryDate: credentials.expiry_date
+    }
+
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred'
+    logger.error('Failed to load test credentials', { error: errorMessage })
+    throw new Error(`Failed to load test credentials: ${errorMessage}`)
   }
 }
 

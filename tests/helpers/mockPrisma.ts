@@ -37,6 +37,15 @@ export const createMockPrisma = () => ({
     create: jest.fn(),
     update: jest.fn(),
   },
+  teamMember: {
+    findMany: jest.fn(),
+    findUnique: jest.fn(),
+    findFirst: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+    deleteMany: jest.fn(),
+  },
 })
 
 // Global mock Prisma instance
@@ -76,11 +85,21 @@ export const setupPrismaMocks = {
     mockPrisma.user.findUnique.mockResolvedValue(null)
   },
 
+  // Team member mocks
+  teamMembersList: (teamMembers: any[]) => {
+    mockPrisma.teamMember.findMany.mockResolvedValue(teamMembers)
+  },
+
+  teamMembersEmpty: () => {
+    mockPrisma.teamMember.findMany.mockResolvedValue([])
+  },
+
   // Database error scenarios
   databaseError: (error: Error = new Error('Database connection failed')) => {
     mockPrisma.project.findMany.mockRejectedValue(error)
     mockPrisma.project.count.mockRejectedValue(error)
     mockPrisma.user.findUnique.mockRejectedValue(error)
+    mockPrisma.teamMember.findMany.mockRejectedValue(error)
   },
 
   // Reset all mocks
@@ -112,6 +131,14 @@ export const givenDatabaseHas = {
   noUser: () => {
     setupPrismaMocks.userNotFound()
   },
+
+  teamMembers: (teamMembers: any[]) => {
+    setupPrismaMocks.teamMembersList(teamMembers)
+  },
+
+  noTeamMembers: () => {
+    setupPrismaMocks.teamMembersEmpty()
+  },
 }
 
 export const givenDatabaseFails = {
@@ -127,7 +154,7 @@ export const givenDatabaseFails = {
 // Mock setup for Jest tests
 export const setupMockPrisma = () => {
   // Mock the Prisma module
-  jest.doMock('../../../app/lib/prisma', () => ({
+  jest.doMock('../../app/lib/prisma', () => ({
     prisma: mockPrisma,
   }))
 

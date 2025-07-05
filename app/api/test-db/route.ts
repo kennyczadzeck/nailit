@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prisma } from '../../lib/prisma';
 import { withDebugSecurity, debugSecurityHeaders } from '../../lib/security-middleware';
 
-async function handleTestDb(request: NextRequest) {
+async function handleTestDb() {
   try {
     // Test basic connection
     await prisma.$connect();

@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { withDebugSecurity, debugSecurityHeaders } from '../../lib/security-middleware'
 
-async function handleDebugEnv(request: NextRequest) {
+async function handleDebugEnv() {
   const envVars = {
     NODE_ENV: process.env.NODE_ENV,
     NAILIT_ENVIRONMENT: process.env.NAILIT_ENVIRONMENT,

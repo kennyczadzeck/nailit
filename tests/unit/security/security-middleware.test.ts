@@ -61,7 +61,7 @@ describe('Security Middleware', () => {
     it('should block access when debug endpoints are disabled', async () => {
       setEnv('DISABLE_DEBUG_ENDPOINTS', 'true')
       
-      const response = await requireDevelopmentOrAuth(mockNextRequest as any)
+      const response = await requireDevelopmentOrAuth()
       
       expect(response).not.toBeNull()
       expect(response?.status).toBe(404)
@@ -74,7 +74,7 @@ describe('Security Middleware', () => {
       setEnv('NODE_ENV', 'development')
       delete process.env.DISABLE_DEBUG_ENDPOINTS
       
-      const response = await requireDevelopmentOrAuth(mockNextRequest as any)
+      const response = await requireDevelopmentOrAuth()
       
       expect(response).toBeNull()
     })
@@ -84,7 +84,7 @@ describe('Security Middleware', () => {
       delete process.env.DISABLE_DEBUG_ENDPOINTS
       mockGetServerSession.mockResolvedValue(null)
       
-      const response = await requireDevelopmentOrAuth(mockNextRequest as any)
+      const response = await requireDevelopmentOrAuth()
       
       expect(response).not.toBeNull()
       expect(response?.status).toBe(401)
@@ -100,7 +100,7 @@ describe('Security Middleware', () => {
         user: { id: 'test-user-id', email: 'test@example.com' }
       })
       
-      const response = await requireDevelopmentOrAuth(mockNextRequest as any)
+      const response = await requireDevelopmentOrAuth()
       
       expect(response).toBeNull()
     })

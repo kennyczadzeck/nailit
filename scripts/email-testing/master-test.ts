@@ -88,8 +88,22 @@ class MasterEmailTester {
     try {
       // Quick OAuth check
       console.log(`📋 Checking OAuth...`);
-      const contractorValid = await this.oauth.testCredentials('contractor');
-      const homeownerValid = await this.oauth.testCredentials('homeowner');
+      let contractorValid = false;
+      let homeownerValid = false;
+
+      try {
+        await this.oauth.testCredentials('contractor');
+        contractorValid = true;
+      } catch (error) {
+        // OAuth not valid for contractor
+      }
+
+      try {
+        await this.oauth.testCredentials('homeowner');
+        homeownerValid = true;
+      } catch (error) {
+        // OAuth not valid for homeowner
+      }
 
       if (!contractorValid || !homeownerValid) {
         throw new Error('OAuth credentials not valid. Run setup first.');
@@ -306,10 +320,10 @@ class MasterEmailTester {
     console.log(`\n🔐 Setting up OAuth for test accounts\n`);
 
     console.log(`\n1️⃣  Setting up contractor account OAuth:`);
-    await this.oauth.setupAccount('contractor');
+    await this.oauth.setupOAuth('contractor');
 
     console.log(`\n2️⃣  Setting up homeowner account OAuth:`);
-    await this.oauth.setupAccount('homeowner');
+    await this.oauth.setupOAuth('homeowner');
 
     console.log(`\n📋 OAuth setup instructions displayed above.`);
     console.log(`📋 Complete the OAuth flows, then run the test again.`);
@@ -319,8 +333,22 @@ class MasterEmailTester {
    * Verify OAuth credentials are working
    */
   private async verifyOAuth(): Promise<void> {
-    const contractorValid = await this.oauth.testCredentials('contractor');
-    const homeownerValid = await this.oauth.testCredentials('homeowner');
+    let contractorValid = false;
+    let homeownerValid = false;
+
+    try {
+      await this.oauth.testCredentials('contractor');
+      contractorValid = true;
+    } catch (error) {
+      console.log(`❌ Contractor OAuth credentials invalid`);
+    }
+
+    try {
+      await this.oauth.testCredentials('homeowner');
+      homeownerValid = true;
+    } catch (error) {
+      console.log(`❌ Homeowner OAuth credentials invalid`);
+    }
 
     if (!contractorValid || !homeownerValid) {
       console.log(`❌ OAuth credentials invalid. Run setup first:`);

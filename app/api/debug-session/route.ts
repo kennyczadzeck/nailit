@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../auth/[...nextauth]/route';
 import { prisma } from '../../lib/prisma';
 import { withDebugSecurity, debugSecurityHeaders } from '../../lib/security-middleware';
 
-async function handleDebugSession(request: NextRequest) {
+async function handleDebugSession() {
   try {
     const session = await getServerSession(authOptions);
     

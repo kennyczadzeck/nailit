@@ -3,10 +3,62 @@
 ## 🏗️ **System Architecture Overview**
 
 ### **Core Philosophy**
+- **Homeowner-Centric**: **CRITICAL PRINCIPLE** - Email ingestion ONLY processes emails from the homeowner's Gmail account (the nailit user). This ensures complete project communication visibility while maintaining privacy and relevance.
 - **Serverless-First**: Leverage existing AWS serverless infrastructure for scalability and cost efficiency
 - **Event-Driven**: Real-time processing pipeline with SQS queues and webhooks
 - **AI-Native**: Built-in intelligence for content analysis and project association
 - **Security-First**: End-to-end encryption, secure token storage, and minimal permissions
+
+## 🎯 **CRITICAL ARCHITECTURAL PRINCIPLE: Homeowner-Only Email Ingestion**
+
+### **Why Homeowner-Only?**
+The homeowner is the **single source of truth** for all project communications because:
+
+1. **Complete Visibility**: Homeowner receives ALL project-related emails (from contractors, permits, suppliers, etc.)
+2. **Privacy Compliance**: Only accessing the nailit user's own email account
+3. **Relevance Filtering**: Homeowner's inbox naturally filters to project-relevant communications
+4. **Bidirectional Capture**: Both contractor→homeowner and homeowner→contractor emails are captured
+5. **Unified Timeline**: Single account provides complete communication history
+
+### **Email Flow Architecture**
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                    HOMEOWNER-ONLY EMAIL INGESTION                   │
+├─────────────────────────────────────────────────────────────────────┤
+│                                                                     │
+│  ┌─────────────────────────────────────────────────────────────────┐ │
+│  │                    CONTRACTORS                                  │ │
+│  │  contractor1@company.com  contractor2@company.com              │ │
+│  │  inspector@city.gov       supplier@materials.com              │ │
+│  └─────────────────────┬───────────────────────────────────────────┘ │
+│                        │ ALL EMAILS SENT TO                        │
+│                        ▼                                           │
+│  ┌─────────────────────────────────────────────────────────────────┐ │
+│  │               HOMEOWNER GMAIL ACCOUNT                          │ │
+│  │            homeowner@gmail.com (NAILIT USER)                   │ │
+│  │                                                                 │ │
+│  │  📧 Contractor quotes    📧 Permit approvals                   │ │
+│  │  📧 Schedule updates     📧 Invoice notifications              │ │
+│  │  📧 Delivery notices     📧 Change order requests             │ │
+│  │  📧 Homeowner replies    📧 Follow-up questions               │ │
+│  └─────────────────────┬───────────────────────────────────────────┘ │
+│                        │ NAILIT INGESTION (HOMEOWNER ONLY)        │
+│                        ▼                                           │
+│  ┌─────────────────────────────────────────────────────────────────┐ │
+│  │                 NAILIT DATABASE                                 │ │
+│  │        Complete Project Communication History                   │ │
+│  └─────────────────────────────────────────────────────────────────┘ │
+│                                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### **NEVER Access Contractor Emails Directly**
+- ❌ **NEVER** connect to contractor Gmail accounts
+- ❌ **NEVER** request contractor email access
+- ❌ **NEVER** process emails from contractor inboxes
+- ✅ **ALWAYS** process only homeowner Gmail account
+- ✅ **CAPTURE** contractor emails when they send to homeowner
+- ✅ **MAINTAIN** complete conversation history through homeowner inbox
 
 ---
 
@@ -74,127 +126,87 @@ Email Provider → Webhook → API Route → SQS Queue → Processing Service �
 
 ### **Phase 1: Foundation Infrastructure (Week 1)**
 
-#### **Database Schema Extensions**
+#### **Homeowner-Only Database Schema**
 ```typescript
-// Add to existing Prisma schema
+// CRITICAL: All email ingestion is homeowner-centric
 model EmailMessage {
   id              String   @id @default(cuid())
   
-  // Provider metadata
-  messageId       String   @unique
-  threadId        String?
-  provider        String   // "gmail", "outlook"
-  providerData    Json?    // Provider-specific metadata
+  // HOMEOWNER-ONLY: Always from homeowner's Gmail account
+  provider        String   // Always "gmail" for homeowner account
+  providerData    Json?    // Homeowner Gmail API metadata only
   
-  // Email details
+  // Email details (captured from homeowner's perspective)
   subject         String?
-  sender          String
-  senderName      String?
-  recipients      String[]
-  ccRecipients    String[]
-  bccRecipients   String[]
+  sender          String   // Can be contractor OR homeowner
+  recipients      String[] // Can be contractor OR homeowner
   sentAt          DateTime
-  receivedAt      DateTime
+  receivedAt      DateTime // When homeowner received it
   
-  // Content storage
+  // Content storage (from homeowner's Gmail)
   bodyText        String?
   bodyHtml        String?
-  s3ContentPath   String?     // S3 path for full email content
-  s3AttachmentPaths String[]  // S3 paths for attachments
+  s3ContentPath   String?     // S3 path for homeowner's email content
+  s3AttachmentPaths String[]  // Attachments from homeowner's Gmail
   
   // Processing pipeline status
   ingestionStatus String   @default("pending") // pending, processing, completed, failed
   analysisStatus  String   @default("pending") // pending, processing, completed, failed
-  associationStatus String @default("pending") // pending, processing, completed, failed
+  assignmentStatus String @default("pending") // pending, processing, completed, failed
   
-  // AI analysis results
-  relevanceScore  Float?      // 0.0-1.0 construction project relevance
-  aiSummary       String?     // AI-generated summary
-  classification  Json?       // { category: "quote", confidence: 0.95, subcategory: "..." }
-  actionItems     Json?       // [{ task, deadline, assignee, priority }]
-  urgencyLevel    String?     // "low", "normal", "high", "urgent"
-  extractedData   Json?       // { amounts: [], dates: [], contacts: [], addresses: [] }
+  // AI analysis results (homeowner-focused)
+  relevanceScore  Float?      // 0.0-1.0 project relevance FOR HOMEOWNER
+  aiSummary       String?     // AI summary from homeowner's perspective
+  classification  Json?       // Classification for homeowner's project
+  actionItems     Json?       // Action items for homeowner
+  urgencyLevel    String?     // Urgency level for homeowner
+  extractedData   Json?       // Data extracted from homeowner's emails
   
-  // Project association
-  projectAssociations Json?   // [{ projectId, confidence, type: "primary"|"referenced" }]
+  // Project association (homeowner's projects only)
+  projectAssociations Json?   // Homeowner's project associations only
   
-  // Error handling
-  processingErrors Json?      // { ingestion: "error", analysis: "error", association: "error" }
-  retryCount      Int     @default(0)
-  lastProcessedAt DateTime?
-  
-  // Relations
-  userId          String
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  projectId       String?  // Primary project association
-  project         Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  // Relations (homeowner-centric)
+  userId          String      // ALWAYS the homeowner's user ID
+  user            User        // ALWAYS the homeowner
+  projectId       String?     // ALWAYS homeowner's project
+  project         Project?    // ALWAYS homeowner's project
   
   // Timestamps
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   
   @@map("email_messages")
-  @@index([userId, receivedAt])
-  @@index([projectId, receivedAt])
-  @@index([ingestionStatus])
-  @@index([analysisStatus])
-  @@index([urgencyLevel])
+  @@index([userId, receivedAt])  // Homeowner's emails by date
+  @@index([projectId, receivedAt]) // Homeowner's project emails
 }
+```
 
-model EmailAttachment {
-  id              String   @id @default(cuid())
-  
-  // Attachment metadata
-  filename        String
-  contentType     String
-  sizeBytes       Int
-  s3Path          String   // S3 storage path
-  
-  // Processing status
-  isProcessed     Boolean  @default(false)
-  extractedText   String?  // OCR or parsed text content
-  aiAnalysis      Json?    // AI analysis of attachment content
-  
-  // Relations
-  emailMessageId  String
-  emailMessage    EmailMessage @relation(fields: [emailMessageId], references: [id], onDelete: Cascade)
-  
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
-  @@map("email_attachments")
-}
-
+#### **Homeowner-Only OAuth Configuration**
+```typescript
+// CRITICAL: Only homeowner Gmail OAuth is supported
 model EmailProvider {
   id              String   @id @default(cuid())
   
-  // Provider details
-  type            String   // "gmail", "outlook"
-  email           String   // Connected email address
+  // Provider details (homeowner only)
+  type            String   // ALWAYS "gmail"
+  email           String   // ALWAYS homeowner's email
   isActive        Boolean  @default(true)
   
-  // OAuth tokens (encrypted)
-  accessToken     String?
-  refreshToken    String?
+  // OAuth tokens (homeowner's Gmail only)
+  accessToken     String?  // Homeowner's Gmail access token
+  refreshToken    String?  // Homeowner's Gmail refresh token
   tokenExpiry     DateTime?
   
-  // Webhook configuration
-  webhookId       String?  // Provider-specific webhook ID
+  // Webhook configuration (homeowner's Gmail only)
+  webhookId       String?  // Gmail webhook for homeowner account
   webhookActive   Boolean  @default(false)
   
-  // Monitoring settings
-  lastSyncAt      DateTime?
-  syncErrors      Json?
-  
-  // Relations
-  userId          String
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  // Relations (homeowner only)
+  userId          String   // ALWAYS homeowner's user ID
+  user            User     // ALWAYS homeowner
   
   @@map("email_providers")
-  @@unique([userId, type, email])
+  @@unique([userId, type, email]) // One Gmail per homeowner
 }
 ```
 
@@ -274,87 +286,83 @@ export class EmailProcessingStack extends cdk.Stack {
 }
 ```
 
-### **Phase 2: Core Services Implementation (Weeks 2-4)**
+### **Phase 2: Homeowner-Only Processing Pipeline (Weeks 2-4)**
 
-#### **API Route Structure**
+#### **API Route Structure (Homeowner-Focused)**
 ```
 app/api/email/
 ├── webhook/
-│   ├── gmail/route.ts           # Gmail push notifications
-│   ├── outlook/route.ts         # Microsoft Graph webhooks  
-│   └── verify/route.ts          # Webhook verification
+│   └── gmail/route.ts           # HOMEOWNER Gmail webhooks ONLY
 ├── oauth/
-│   ├── gmail/
-│   │   ├── route.ts             # Initiate OAuth flow
-│   │   └── callback/route.ts    # Handle OAuth callback
-│   └── outlook/
-│       ├── route.ts             # Initiate OAuth flow
-│       └── callback/route.ts    # Handle OAuth callback
+│   └── gmail/
+│       ├── route.ts             # HOMEOWNER Gmail OAuth ONLY
+│       └── callback/route.ts    # HOMEOWNER Gmail callback ONLY
 ├── providers/
-│   ├── route.ts                 # List connected providers
-│   ├── connect/route.ts         # Connect new provider
-│   └── disconnect/route.ts      # Disconnect provider
+│   ├── route.ts                 # List HOMEOWNER Gmail connection
+│   ├── connect/route.ts         # Connect HOMEOWNER Gmail ONLY
+│   └── disconnect/route.ts      # Disconnect HOMEOWNER Gmail
 ├── messages/
-│   ├── route.ts                 # List emails with filtering
-│   ├── [id]/route.ts           # Get specific email
-│   ├── [id]/content/route.ts   # Get full email content from S3
-│   └── [id]/reprocess/route.ts # Reprocess email
-├── analysis/
-│   ├── trigger/route.ts         # Manually trigger analysis
-│   └── feedback/route.ts       # Submit AI feedback
+│   ├── route.ts                 # List HOMEOWNER's emails
+│   ├── [id]/route.ts           # Get HOMEOWNER's email
+│   └── [id]/content/route.ts   # Get HOMEOWNER's email content
 └── sync/
-    ├── route.ts                 # Manual sync trigger
-    └── status/route.ts          # Sync status
+    ├── route.ts                 # Sync HOMEOWNER Gmail ONLY
+    └── status/route.ts          # HOMEOWNER Gmail sync status
 ```
 
-#### **Service Layer Architecture**
+#### **Homeowner-Only Service Layer**
 ```typescript
-// Core service interfaces
+// Core service interfaces (homeowner-centric)
 interface EmailIngestionService {
-  processWebhook(provider: string, payload: any): Promise<void>;
-  fetchEmailContent(provider: string, messageId: string): Promise<EmailContent>;
-  storeEmailContent(email: EmailContent): Promise<string>; // Returns S3 path
+  // ONLY processes homeowner Gmail webhooks
+  processHomeownerWebhook(payload: any): Promise<void>;
+  
+  // ONLY fetches from homeowner Gmail
+  fetchHomeownerEmailContent(messageId: string): Promise<EmailContent>;
+  
+  // ONLY stores homeowner email content
+  storeHomeownerEmailContent(email: EmailContent): Promise<string>;
 }
 
 interface EmailAnalysisService {
-  analyzeRelevance(content: EmailContent, userContext: UserContext): Promise<RelevanceScore>;
-  classifyEmail(content: EmailContent): Promise<EmailClassification>;
-  extractEntities(content: EmailContent): Promise<ExtractedEntities>;
-  detectUrgency(content: EmailContent): Promise<UrgencyLevel>;
-  extractActionItems(content: EmailContent): Promise<ActionItem[]>;
+  // Analyzes relevance FOR HOMEOWNER
+  analyzeHomeownerRelevance(content: EmailContent, homeownerContext: UserContext): Promise<RelevanceScore>;
+  
+  // Classifies email from HOMEOWNER'S perspective
+  classifyHomeownerEmail(content: EmailContent): Promise<EmailClassification>;
+  
+  // Extracts entities relevant to HOMEOWNER
+  extractHomeownerEntities(content: EmailContent): Promise<ExtractedEntities>;
 }
 
 interface ProjectAssociationService {
-  associateWithProjects(email: EmailMessage, analysis: EmailAnalysis): Promise<ProjectAssociation[]>;
-  calculateAssociationConfidence(email: EmailMessage, project: Project): Promise<number>;
-  findMultiProjectReferences(content: string): Promise<ProjectReference[]>;
-}
-
-interface NotificationService {
-  shouldTriggerNotification(email: EmailMessage, analysis: EmailAnalysis): Promise<boolean>;
-  sendEmailNotification(email: EmailMessage, recipients: string[]): Promise<void>;
-  sendPushNotification(email: EmailMessage, userId: string): Promise<void>;
+  // Associates with HOMEOWNER'S projects only
+  associateWithHomeownerProjects(email: EmailMessage, analysis: EmailAnalysis): Promise<ProjectAssociation[]>;
+  
+  // Calculates confidence for HOMEOWNER'S project association
+  calculateHomeownerAssociationConfidence(email: EmailMessage, homeownerProject: Project): Promise<number>;
 }
 ```
 
-### **Phase 3: AI Processing Pipeline (Weeks 5-7)**
+### **Phase 3: Homeowner-Only AI Processing (Weeks 5-7)**
 
-#### **AI Analysis Architecture**
+#### **Homeowner-Focused AI Analysis**
 ```typescript
-class EmailAnalysisEngine {
+class HomeownerEmailAnalysisEngine {
   private openai: OpenAI;
-  private userContextCache: Map<string, UserContext>;
+  private homeownerContextCache: Map<string, HomeownerContext>;
 
-  async analyzeEmail(email: EmailMessage): Promise<EmailAnalysis> {
-    const userContext = await this.getUserContext(email.userId);
+  async analyzeHomeownerEmail(email: EmailMessage): Promise<EmailAnalysis> {
+    // CRITICAL: Only analyze from homeowner's perspective
+    const homeownerContext = await this.getHomeownerContext(email.userId);
     
-    // Parallel analysis for efficiency
+    // All analysis is homeowner-focused
     const [relevance, classification, entities, urgency, actionItems] = await Promise.all([
-      this.analyzeRelevance(email, userContext),
-      this.classifyEmail(email),
-      this.extractEntities(email),
-      this.detectUrgency(email),
-      this.extractActionItems(email)
+      this.analyzeHomeownerRelevance(email, homeownerContext),
+      this.classifyHomeownerEmail(email),
+      this.extractHomeownerEntities(email),
+      this.detectHomeownerUrgency(email),
+      this.extractHomeownerActionItems(email)
     ]);
 
     return {
@@ -363,18 +371,18 @@ class EmailAnalysisEngine {
       extractedData: entities,
       urgencyLevel: urgency,
       actionItems,
-      aiSummary: await this.generateSummary(email, { relevance, classification, entities }),
+      aiSummary: await this.generateHomeownerSummary(email, { relevance, classification, entities }),
       confidence: this.calculateOverallConfidence([relevance, classification, entities, urgency])
     };
   }
 
-  private async analyzeRelevance(email: EmailMessage, context: UserContext): Promise<RelevanceAnalysis> {
-    const prompt = this.buildRelevancePrompt(email, context);
+  private async analyzeHomeownerRelevance(email: EmailMessage, homeownerContext: HomeownerContext): Promise<RelevanceAnalysis> {
+    const prompt = this.buildHomeownerRelevancePrompt(email, homeownerContext);
     
     const completion = await this.openai.chat.completions.create({
       model: "gpt-4-turbo-preview",
       messages: [
-        { role: "system", content: RELEVANCE_SYSTEM_PROMPT },
+        { role: "system", content: HOMEOWNER_RELEVANCE_SYSTEM_PROMPT },
         { role: "user", content: prompt }
       ],
       temperature: 0.3,
@@ -384,26 +392,31 @@ class EmailAnalysisEngine {
     return JSON.parse(completion.choices[0].message.content);
   }
 
-  private buildRelevancePrompt(email: EmailMessage, context: UserContext): string {
+  private buildHomeownerRelevancePrompt(email: EmailMessage, homeownerContext: HomeownerContext): string {
     return `
-Analyze this email for construction project relevance:
+Analyze this email for construction project relevance FROM THE HOMEOWNER'S PERSPECTIVE:
 
 Email Details:
 - Subject: ${email.subject}
 - From: ${email.sender}
+- To: ${email.recipients.join(', ')}
 - Content: ${email.bodyText || email.bodyHtml}
 
-User Context:
-- Active Projects: ${context.projects.map(p => p.name).join(', ')}
-- Project Participants: ${context.participants.join(', ')}
-- Project Addresses: ${context.addresses.join(', ')}
+Homeowner Context:
+- Homeowner Projects: ${homeownerContext.projects.map(p => p.name).join(', ')}
+- Project Contractors: ${homeownerContext.contractors.join(', ')}
+- Project Addresses: ${homeownerContext.addresses.join(', ')}
+
+IMPORTANT: This email was found in the HOMEOWNER'S Gmail inbox. Analyze its relevance 
+to the homeowner's renovation projects and determine what action the homeowner should take.
 
 Return JSON:
 {
   "score": 0.0-1.0,
-  "reasoning": "explanation",
-  "projectMatches": ["project names"],
-  "participantMatches": ["contact names"],
+  "reasoning": "explanation from homeowner's perspective",
+  "projectMatches": ["homeowner's project names"],
+  "contractorMatches": ["contractor names"],
+  "homeownerActionRequired": true/false,
   "confidence": 0.0-1.0
 }
     `;
@@ -463,314 +476,171 @@ async function processEmailMessage(queueMessage: EmailQueueMessage) {
 
 ---
 
-## 🚀 **Phased Development Plan**
+## 🚀 **Homeowner-Only Development Plan**
 
-### **Phase 1: Foundation (Weeks 1-3)**
-**Goal**: Establish core infrastructure and basic email ingestion
+### **Phase 1: Homeowner Foundation (Weeks 1-3)**
+**Goal**: Establish homeowner-only email ingestion infrastructure
 
-**Week 1: Database & Infrastructure**
-- [ ] Extend Prisma schema with EmailMessage, EmailAttachment, EmailProvider models
-- [ ] Run database migrations across all environments
-- [ ] Deploy CDK updates for additional SQS queues
-- [ ] Set up S3 bucket policies and lifecycle rules
+**Week 1: Homeowner Database & Infrastructure**
+- [ ] Extend Prisma schema with homeowner-only EmailMessage model
+- [ ] Add homeowner-only constraints and indexes
+- [ ] Deploy CDK updates for homeowner Gmail processing
+- [ ] Set up S3 bucket for homeowner email content only
 
-**Week 2: OAuth Implementation**
-- [ ] Implement Gmail OAuth 2.0 flow with PKCE
-- [ ] Create OAuth callback handlers
-- [ ] Build provider management UI
-- [ ] Test OAuth flow end-to-end
+**Week 2: Homeowner OAuth Implementation**
+- [ ] Implement homeowner-only Gmail OAuth 2.0 flow
+- [ ] Create homeowner OAuth callback handlers
+- [ ] Build homeowner provider management UI
+- [ ] Test homeowner OAuth flow end-to-end
 
-**Week 3: Basic Ingestion**
-- [ ] Implement Gmail webhook handlers
-- [ ] Create email content fetching service
-- [ ] Build S3 storage pipeline
-- [ ] Test basic email capture and storage
+**Week 3: Homeowner Email Ingestion**
+- [ ] Implement homeowner Gmail webhook handlers
+- [ ] Create homeowner email content fetching service
+- [ ] Build homeowner S3 storage pipeline
+- [ ] Test homeowner email capture and storage
 
 **Exit Criteria Phase 1:**
-- [ ] Gmail OAuth flow completely functional
-- [ ] Webhooks receiving and processing notifications
-- [ ] Email content stored securely in S3
-- [ ] Basic metadata recorded in database
-- [ ] No data loss in processing pipeline
+- [ ] Homeowner Gmail OAuth flow completely functional
+- [ ] Homeowner webhooks receiving and processing notifications
+- [ ] Homeowner email content stored securely in S3
+- [ ] Homeowner metadata recorded in database
+- [ ] No contractor email access attempted
 
-### **Phase 2: AI Analysis Engine (Weeks 4-6)**
-**Goal**: Implement intelligent email analysis and classification
+### **Phase 2: Homeowner AI Analysis (Weeks 4-6)**
+**Goal**: Implement homeowner-focused email analysis
 
-**Week 4: AI Service Foundation**
-- [ ] Set up OpenAI API integration
-- [ ] Implement relevance scoring algorithm
-- [ ] Build email classification system
-- [ ] Create entity extraction pipeline
+**Week 4: Homeowner AI Foundation**
+- [ ] Set up homeowner-focused OpenAI prompts
+- [ ] Implement homeowner relevance scoring
+- [ ] Build homeowner email classification
+- [ ] Create homeowner entity extraction
 
-**Week 5: Advanced Analysis**
-- [ ] Implement urgency detection
-- [ ] Build action item extraction
-- [ ] Create email summarization
-- [ ] Develop confidence scoring system
+**Week 5: Homeowner Advanced Analysis**
+- [ ] Implement homeowner urgency detection
+- [ ] Build homeowner action item extraction
+- [ ] Create homeowner email summarization
+- [ ] Develop homeowner confidence scoring
 
-**Week 6: Analysis Integration**
-- [ ] Integrate AI services with processing pipeline
-- [ ] Implement analysis result storage
-- [ ] Build analysis feedback system
-- [ ] Test analysis accuracy and performance
+**Week 6: Homeowner Analysis Integration**
+- [ ] Integrate homeowner AI services with processing pipeline
+- [ ] Implement homeowner analysis result storage
+- [ ] Build homeowner analysis feedback system
+- [ ] Test homeowner analysis accuracy
 
 **Exit Criteria Phase 2:**
-- [ ] Relevance scoring accuracy >90% on test dataset
-- [ ] Email classification accuracy >85% on test dataset
-- [ ] Entity extraction functional for all key data types
-- [ ] Analysis results properly stored and retrievable
-- [ ] Performance under 30 seconds per email
+- [ ] Homeowner relevance scoring accuracy >90%
+- [ ] Homeowner email classification accuracy >85%
+- [ ] Homeowner entity extraction functional
+- [ ] Homeowner analysis results stored properly
+- [ ] No contractor-specific analysis attempted
 
-### **Phase 3: Project Association (Weeks 7-8)**
-**Goal**: Automatically link emails to relevant projects
+### **Phase 3: Homeowner Project Association (Weeks 7-8)**
+**Goal**: Link emails to homeowner's projects only
 
-**Week 7: Association Algorithm**
-- [ ] Implement participant matching logic
-- [ ] Build content similarity analysis
-- [ ] Create project context scoring
-- [ ] Develop confidence calculation
+**Week 7: Homeowner Association Algorithm**
+- [ ] Implement homeowner project matching logic
+- [ ] Build homeowner content similarity analysis
+- [ ] Create homeowner project context scoring
+- [ ] Develop homeowner confidence calculation
 
-**Week 8: Multi-Project Support**
-- [ ] Implement multi-project detection
-- [ ] Build primary/secondary association logic
-- [ ] Create manual override system
-- [ ] Test association accuracy
+**Week 8: Homeowner Multi-Project Support**
+- [ ] Implement homeowner multi-project detection
+- [ ] Build homeowner project association logic
+- [ ] Create homeowner manual override system
+- [ ] Test homeowner association accuracy
 
 **Exit Criteria Phase 3:**
-- [ ] Project association accuracy >80% on test dataset
-- [ ] Multi-project detection working correctly
-- [ ] Manual override system functional
-- [ ] Association confidence scores accurate
-
-### **Phase 4: Dashboard Integration (Weeks 9-10)**
-**Goal**: Present email data in user-friendly interface
-
-**Week 9: Email Views**
-- [ ] Build email timeline component
-- [ ] Create email detail views
-- [ ] Implement filtering and search
-- [ ] Add email status indicators
-
-**Week 10: Integration & Optimization**
-- [ ] Integrate with project dashboard
-- [ ] Optimize performance for large volumes
-- [ ] Add real-time updates
-- [ ] Implement responsive design
-
-**Exit Criteria Phase 4:**
-- [ ] Email timeline view fully functional
-- [ ] Search and filtering working correctly
-- [ ] Performance optimized for 1000+ emails
-- [ ] Real-time updates operational
-
-### **Phase 5: Advanced Features (Weeks 11-13)**
-**Goal**: Add multi-provider support and advanced capabilities
-
-**Week 11: Outlook Integration**
-- [ ] Implement Microsoft Graph OAuth
-- [ ] Build Outlook webhook handlers
-- [ ] Adapt processing pipeline for Outlook
-- [ ] Test Outlook integration
-
-**Week 12: Multi-Account Management**
-- [ ] Build account management interface
-- [ ] Implement per-account controls
-- [ ] Add account status monitoring
-- [ ] Test multi-account scenarios
-
-**Week 13: Notifications & Alerts**
-- [ ] Implement urgent email detection
-- [ ] Build notification delivery system
-- [ ] Create notification preferences
-- [ ] Test alerting pipeline
-
-**Exit Criteria Phase 5:**
-- [ ] Outlook integration fully functional
-- [ ] Multi-account management working
-- [ ] Notification system operational
-- [ ] All providers working in parallel
+- [ ] Homeowner project association accuracy >80%
+- [ ] Homeowner multi-project detection working
+- [ ] Homeowner override system functional
+- [ ] No contractor project association attempted
 
 ---
 
-## 🧪 **Testing Strategy**
+## 🧪 **Homeowner-Only Testing Strategy**
 
-### **Behavior-Driven Development Approach**
+### **Testing Philosophy**
+All testing focuses exclusively on the homeowner's email experience:
 
-#### **Test Framework Structure**
+1. **Homeowner Gmail Account Testing**: Use `nailit.test.homeowner@gmail.com` as the ONLY source
+2. **Contractor Email Simulation**: Generate emails FROM contractors TO homeowner
+3. **Bidirectional Capture**: Test both contractor→homeowner and homeowner→contractor flows
+4. **Homeowner Perspective**: All analysis and classification from homeowner's viewpoint
+
+### **Test Data Strategy**
 ```typescript
-// tests/bdd/features/email-processing.feature
-Feature: Email Processing Pipeline
-  As a project manager
-  I want automated email processing
-  So that I never miss important project communications
-
-Background:
-  Given I am a logged-in user with active projects
-  And I have Gmail connected with valid OAuth tokens
-
-Scenario: Real-time Email Ingestion
-  Given my Gmail account receives a new email from a contractor
-  When the Gmail webhook is triggered
-  Then the email is captured within 30 seconds
-  And stored securely in S3 with encryption
-  And metadata is recorded in database
-  And processing status is set to "pending"
-
-Scenario: AI Content Analysis
-  Given an email is successfully ingested
-  When the AI analysis pipeline processes it
-  Then relevance score is calculated between 0.0-1.0
-  And email category is assigned with confidence score
-  And important entities are extracted accurately
-  And urgency level is determined appropriately
-  And results are stored in database
-
-Scenario: Project Association
-  Given an email has been analyzed by AI
-  When the project association algorithm runs
-  Then email is linked to the most relevant project
-  And association confidence score is provided
-  And multi-project references are detected
-  And user can override incorrect associations
-
-Scenario: Dashboard Integration
-  Given processed emails exist for my projects
-  When I view the project communications timeline
-  Then I see emails sorted chronologically
-  And can filter by category, urgency, or date
-  And can search email content and metadata
-  And can access full email content and attachments
-```
-
-#### **Integration Test Categories**
-
-**1. OAuth Flow Tests**
-```typescript
-describe('Gmail OAuth Integration', () => {
-  test('should complete OAuth flow successfully', async () => {
-    // Test OAuth authorization URL generation
-    // Test callback handling and token storage
-    // Test token refresh mechanism
-    // Test error handling for invalid tokens
-  });
-});
-```
-
-**2. Webhook Processing Tests**
-```typescript
-describe('Email Webhook Processing', () => {
-  test('should process Gmail webhook correctly', async () => {
-    // Test webhook signature verification
-    // Test payload parsing and extraction
-    // Test queue message creation
-    // Test error handling for malformed payloads
-  });
-});
-```
-
-**3. AI Analysis Tests**
-```typescript
-describe('Email AI Analysis', () => {
-  test('should analyze email relevance accurately', async () => {
-    // Test relevance scoring with known datasets
-    // Test classification accuracy
-    // Test entity extraction precision
-    // Test urgency detection accuracy
-  });
-});
-```
-
-**4. Storage Integration Tests**
-```typescript
-describe('Email Storage Pipeline', () => {
-  test('should store email content securely', async () => {
-    // Test S3 upload with encryption
-    // Test database metadata storage
-    // Test attachment handling
-    // Test storage lifecycle management
-  });
-});
-```
-
-**5. Performance Tests**
-```typescript
-describe('System Performance', () => {
-  test('should handle high email volumes', async () => {
-    // Test processing 1000+ emails
-    // Test concurrent processing
-    // Test memory usage optimization
-    // Test response time requirements
-  });
-});
-```
-
-**6. Security Tests**
-```typescript
-describe('Security & Privacy', () => {
-  test('should protect sensitive email data', async () => {
-    // Test data encryption at rest and in transit
-    // Test access control and authorization
-    // Test token security and rotation
-    // Test audit trail completeness
-  });
-});
-```
-
-### **Test Data Management**
-```typescript
-// Test data fixtures for consistent testing
-const testEmails = {
-  highRelevance: {
-    subject: "Urgent: Foundation inspection scheduled for tomorrow",
-    sender: "inspector@citycode.gov",
-    content: "Inspector will arrive at 8 AM for foundation inspection..."
-  },
-  quote: {
-    subject: "Electrical work quote - Kitchen renovation",
-    sender: "mike@electricpro.com", 
-    content: "Please find attached quote for electrical work totaling $3,500..."
-  },
-  lowRelevance: {
-    subject: "Newsletter: Home improvement trends",
-    sender: "newsletter@homedepot.com",
-    content: "Check out the latest trends in home improvement..."
-  }
+// Homeowner-only test configuration
+const homeownerTestConfig = {
+  // ONLY homeowner Gmail account
+  homeownerEmail: 'nailit.test.homeowner@gmail.com',
+  
+  // Contractor emails (send TO homeowner, never access directly)
+  contractorEmails: [
+    'nailit.test.contractor@gmail.com',
+    'inspector@city.gov',
+    'supplier@materials.com'
+  ],
+  
+  // Test scenarios (all from homeowner's perspective)
+  testScenarios: [
+    'Contractor sends quote to homeowner',
+    'Homeowner replies with questions',
+    'Inspector sends permit approval to homeowner',
+    'Homeowner forwards email to contractor',
+    'Supplier sends delivery notice to homeowner'
+  ]
 };
 ```
 
-### **Continuous Integration Pipeline**
-```yaml
-# .github/workflows/email-processing-tests.yml
-name: Email Processing Tests
-
-on: [push, pull_request]
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-      
-      - name: Install dependencies
-        run: npm ci
-      
-      - name: Run unit tests
-        run: npm run test:unit
-      
-      - name: Run integration tests
-        run: npm run test:integration
-        env:
-          DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
-          OPENAI_API_KEY: ${{ secrets.TEST_OPENAI_API_KEY }}
-      
-      - name: Run BDD tests
-        run: npm run test:bdd
-      
-      - name: Run performance tests
-        run: npm run test:performance
+### **Homeowner-Only Integration Tests**
+```typescript
+describe('Homeowner Email Integration', () => {
+  test('should process homeowner Gmail webhook only', async () => {
+    // Test homeowner Gmail webhook processing
+    // Verify no contractor Gmail access attempted
+    // Confirm homeowner emails captured correctly
+  });
+  
+  test('should analyze emails from homeowner perspective', async () => {
+    // Test homeowner-focused AI analysis
+    // Verify homeowner project association
+    // Confirm homeowner action items extracted
+  });
+});
 ```
 
-This comprehensive architecture strategy provides a solid foundation for implementing intelligent email processing with clear phases, measurable success criteria, and robust testing strategies that align with your existing infrastructure. 
+---
+
+## 📋 **Homeowner-Only Compliance Checklist**
+
+### **Architecture Compliance**
+- [ ] All email ingestion uses homeowner Gmail account only
+- [ ] No contractor email accounts accessed directly
+- [ ] All OAuth flows are homeowner-only
+- [ ] All webhooks are homeowner Gmail webhooks
+- [ ] All database records are homeowner-centric
+
+### **AI Analysis Compliance**
+- [ ] All relevance scoring is homeowner-focused
+- [ ] All classification is from homeowner's perspective
+- [ ] All entity extraction serves homeowner needs
+- [ ] All action items are for homeowner
+- [ ] All project association is homeowner's projects
+
+### **Testing Compliance**
+- [ ] All test accounts use homeowner Gmail only
+- [ ] All test scenarios simulate homeowner experience
+- [ ] All test data is homeowner-centric
+- [ ] All validation checks homeowner perspective
+- [ ] No contractor email testing attempted
+
+### **Documentation Compliance**
+- [ ] All documentation emphasizes homeowner-only approach
+- [ ] All code comments clarify homeowner-only principle
+- [ ] All API documentation specifies homeowner-only
+- [ ] All user guides focus on homeowner experience
+- [ ] All architecture diagrams show homeowner-only flow
+
+---
+
+This comprehensive architecture ensures that NailIt's email ingestion system maintains the critical homeowner-only principle while providing complete project communication visibility and intelligence. 
