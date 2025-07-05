@@ -290,7 +290,7 @@ class HomeownerOnlyValidator {
       
       if (homeownerUser) {
         // Test homeowner validation
-        const isValidHomeowner = await teamMemberFilter.validateHomeownerUser(homeownerUser.id);
+        const isValidHomeowner = await teamMemberFilter.validateUser(homeownerUser.id);
         
         this.addResult({
           category: 'Team Filter',

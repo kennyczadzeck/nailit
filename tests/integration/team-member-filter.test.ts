@@ -172,7 +172,7 @@ describe('Team Member Filter', () => {
 
     it('should filter out emails when monitoring is disabled', async () => {
       // Mock disabled monitoring
-      mockPrisma.project.findMany.mockResolvedValue([{
+      ;(prisma.project.findMany as jest.Mock).mockResolvedValue([{
         id: testProjectId,
         name: 'Test Project for Team Member Filter',
         userId: testUserId,
@@ -211,7 +211,7 @@ describe('Team Member Filter', () => {
 
     it('should filter out emails for non-active projects', async () => {
       // Mock completed project
-      mockPrisma.project.findMany.mockResolvedValue([])
+      ;(prisma.project.findMany as jest.Mock).mockResolvedValue([])
 
       const result = await teamMemberFilter.shouldProcessEmail(
         { email: 'contractor@example.com', name: 'John Contractor' },
@@ -293,7 +293,7 @@ describe('Team Member Filter', () => {
 
     it('should handle errors gracefully', async () => {
       // Mock database error
-      mockPrisma.project.findMany.mockRejectedValue(new Error('Database error'))
+      ;(prisma.project.findMany as jest.Mock).mockRejectedValue(new Error('Database error'))
 
       const result = await teamMemberFilter.shouldProcessEmail(
         { email: 'contractor@example.com', name: 'John Contractor' },
