@@ -654,6 +654,45 @@ class EmailTestDataManager {
       throw error;
     }
   }
+
+  /**
+   * Count total emails in database
+   */
+  async countEmails(): Promise<number> {
+    try {
+      const count = await prisma.emailMessage.count();
+      return count;
+    } catch (error: any) {
+      console.error('❌ Failed to count emails:', error.message);
+      throw error;
+    }
+  }
+
+  /**
+   * Count AI analyses in database
+   */
+  async countAnalyses(): Promise<number> {
+    try {
+      const count = await prisma.emailAnalysis.count();
+      return count;
+    } catch (error: any) {
+      console.error('❌ Failed to count analyses:', error.message);
+      throw error;
+    }
+  }
+
+  /**
+   * Count flagged items in database
+   */
+  async countFlaggedItems(): Promise<number> {
+    try {
+      const count = await prisma.flaggedItem.count();
+      return count;
+    } catch (error: any) {
+      console.error('❌ Failed to count flagged items:', error.message);
+      throw error;
+    }
+  }
 }
 
 // CLI interface
