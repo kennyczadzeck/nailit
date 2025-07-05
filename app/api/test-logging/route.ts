@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { RequestLogger } from '../../lib/request-logger';
 import { logger } from '../../lib/logger';
-import { withDebugSecurity, debugSecurityHeaders } from '../../lib/security-middleware';
+import { withDebugSecurity } from '../../lib/security-middleware';
 
 async function handleLoggingTest(request: NextRequest): Promise<NextResponse> {
   const context = RequestLogger.createContext(request);

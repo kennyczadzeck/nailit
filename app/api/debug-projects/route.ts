@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../auth/[...nextauth]/route'
 import { prisma } from '../../lib/prisma'
@@ -16,7 +16,7 @@ interface DebugInfo {
   projectCount?: number
 }
 
-async function handleDebugProjects(request: NextRequest) {
+async function handleDebugProjects() {
   try {
     const session = await getServerSession(authOptions)
     

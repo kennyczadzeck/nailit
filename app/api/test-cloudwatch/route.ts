@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { CloudWatchLogsClient, CreateLogGroupCommand, DescribeLogGroupsCommand, PutLogEventsCommand, CreateLogStreamCommand } from '@aws-sdk/client-cloudwatch-logs';
 import { withDebugSecurity, debugSecurityHeaders } from '../../lib/security-middleware';
 
-async function handleTestCloudWatch(request: NextRequest) {
+async function handleTestCloudwatch() {
   const environment = process.env.NAILIT_ENVIRONMENT || 'development';
   const region = process.env.NAILIT_AWS_REGION || 'us-east-1';
   const logGroupName = `/nailit/${environment}/application`;
@@ -121,4 +121,4 @@ async function handleTestCloudWatch(request: NextRequest) {
 }
 
 // Apply security middleware
-export const GET = withDebugSecurity(handleTestCloudWatch) 
+export const GET = withDebugSecurity(handleTestCloudwatch) 
