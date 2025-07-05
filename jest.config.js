@@ -43,6 +43,10 @@ const config = {
     '<rootDir>/infrastructure/',
     '<rootDir>/archive/',
   ],
+  // Transform ESM modules from AWS SDK and other packages
+  transformIgnorePatterns: [
+    'node_modules/(?!(uuid|@smithy|@aws-sdk)/)',
+  ],
   collectCoverageFrom: [
     'app/**/*.{js,jsx,ts,tsx}',
     '!app/**/*.d.ts',
