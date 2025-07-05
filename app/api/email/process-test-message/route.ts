@@ -188,11 +188,14 @@ export async function POST(request: NextRequest) {
         id: `msg_${messageId}_${Date.now()}`,
         messageId: messageId,
         subject: emailContent.subject || 'No Subject',
-        body: emailContent.body || '',
+        bodyText: emailContent.bodyText || emailContent.bodyHtml || '',
         sender: sender.email,
         senderName: sender.name,
         recipients: recipients.map(r => r.email),
-        receivedAt: emailContent.receivedAt || new Date(),
+        ccRecipients: [], // Initialize as empty array since not provided
+        bccRecipients: [], // Initialize as empty array since not provided
+        sentAt: new Date(), // Required field - use current time as fallback
+        receivedAt: new Date(), // Use current time since receivedAt is not in EmailContent
         
         // Associate with user and project
         userId: userId,
@@ -200,14 +203,18 @@ export async function POST(request: NextRequest) {
         
         // Provider information
         provider: 'gmail',
-        providerId: messageId,
         providerData: {
           messageId: messageId,
-          threadId: emailContent.threadId,
+          threadId: messageId, // Use messageId as threadId fallback since threadId is not in EmailContent
           headers: emailContent.headers,
           senderType: senderType,
           teamMemberFilter: {
-            matched: filterResult.matchedTeamMembers,
+            matched: filterResult.matchedTeamMembers.map(tm => ({
+              id: tm.id,
+              name: tm.name,
+              email: tm.email,
+              role: tm.role
+            })),
             reason: filterResult.reason
           },
           oauthSessionId: oauthSessionId
