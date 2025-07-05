@@ -7,28 +7,28 @@ import fs from 'fs'
 import path from 'path'
 
 /**
- * Test Email Processing Endpoint - HOMEOWNER-ONLY EMAIL PROCESSING
+ * Test Email Processing Endpoint - User-Centric Email Processing
  * 
- * CRITICAL ARCHITECTURAL PRINCIPLE: HOMEOWNER-ONLY EMAIL INGESTION
+ * ARCHITECTURAL PRINCIPLE: NAILIT USER-CENTRIC EMAIL INGESTION
  * 
- * This endpoint processes test emails using the HOMEOWNER-ONLY approach:
+ * This endpoint processes test emails using the user-centric approach:
  * 
- * 1. HOMEOWNER PERSPECTIVE: All emails are processed from the homeowner's Gmail account
- * 2. COMPLETE CAPTURE: Processes both contractor→homeowner AND homeowner→contractor emails
+ * 1. USER PERSPECTIVE: All emails are processed from the authenticated user's Gmail account
+ * 2. COMPLETE CAPTURE: Processes both team member→user AND user→team member emails
  * 3. TEAM MEMBER FILTERING: Only processes emails involving known project team members
- * 4. OAUTH TRACKING: Uses homeowner's OAuth session for Gmail API access
+ * 4. OAUTH TRACKING: Uses user's OAuth session for Gmail API access
  * 
  * Email Processing Flow:
- * 1. Receive email messageId from homeowner's Gmail
- * 2. Fetch email content from homeowner's Gmail via API
- * 3. Apply team member filtering (contractor emails TO/FROM homeowner)
- * 4. Store email with homeowner's user ID and project association
- * 5. Track OAuth session usage for homeowner
+ * 1. Receive email messageId from user's Gmail
+ * 2. Fetch email content from user's Gmail via API
+ * 3. Apply team member filtering (team member emails TO/FROM user)
+ * 4. Store email with user's ID and project association
+ * 5. Track OAuth session usage for user
  * 
  * This endpoint simulates the production email ingestion pipeline for testing.
  * It uses test credentials with OAuth session tracking to mirror real-world usage.
  * 
- * NEVER MODIFY THIS TO PROCESS CONTRACTOR GMAIL ACCOUNTS DIRECTLY
+ * EXTENSIBLE: Supports any user type (homeowner, contractor, architect, etc.)
  */
 export async function POST(request: NextRequest) {
   try {
@@ -42,13 +42,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    logger.info('Test email processing requested (HOMEOWNER-ONLY)', {
+    logger.info('Test email processing requested (user-centric)', {
       messageId,
       userId,
       projectId
     })
 
-    // Verify project exists and belongs to HOMEOWNER user
+    // Verify project exists and belongs to authenticated user
     const project = await prisma.project.findUnique({
       where: { id: projectId },
       include: {
@@ -63,9 +63,9 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Verify this is a HOMEOWNER user (not contractor)
+    // Verify this is the correct user (not another user)
     if (project.userId !== userId) {
-      logger.warn('Project access denied - user mismatch (homeowner expected)', {
+      logger.warn('Project access denied - user mismatch', {
         projectId,
         requestedUserId: userId,
         projectUserId: project.userId
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Get HOMEOWNER OAuth session for email API access
+    // Get user's OAuth session for email API access
     const oauthSession = await prisma.oAuthSession.findUnique({
       where: {
         userId_provider_sessionContext: {
@@ -95,9 +95,9 @@ export async function POST(request: NextRequest) {
     }
 
     if (oauthSession && oauthSession.isActive) {
-      // Use HOMEOWNER OAuth session credentials
+      // Use user's OAuth session credentials
       if (!oauthSession.refreshToken) {
-        throw new Error('HOMEOWNER OAuth session missing refresh token')
+        throw new Error('OAuth session missing refresh token')
       }
       
       credentials = {
@@ -107,37 +107,37 @@ export async function POST(request: NextRequest) {
       }
       oauthSessionId = oauthSession.id
       
-      // Update last used timestamp for HOMEOWNER session
+      // Update last used timestamp for user session
       await prisma.oAuthSession.update({
         where: { id: oauthSession.id },
         data: { lastUsedAt: new Date() }
       })
       
-      logger.info('Using HOMEOWNER OAuth session credentials for test', {
+      logger.info('Using user OAuth session credentials for test', {
         projectId,
         oauthSessionId,
         sessionContext: oauthSession.sessionContext
       })
     } else {
-      // No HOMEOWNER OAuth session - use test credentials
+      // No user OAuth session - use test credentials
       credentials = await loadTestCredentials()
       
-      logger.info('No HOMEOWNER OAuth session found, using test credentials', {
+      logger.info('No user OAuth session found, using test credentials', {
         projectId
       })
     }
 
-    // Fetch email content from HOMEOWNER'S Gmail API
+    // Fetch email content from user's Gmail API
     const emailContent = await gmailEmailFetcher.fetchEmailContent(messageId, credentials)
     
     if (!emailContent) {
       return NextResponse.json(
-        { error: 'Failed to fetch email content from HOMEOWNER Gmail API' },
+        { error: 'Failed to fetch email content from Gmail API' },
         { status: 500 }
       )
     }
 
-    // Extract email metadata for HOMEOWNER team member filtering
+    // Extract email metadata for user team member filtering
     const headers = emailContent.headers
     const sender = {
       email: headers['From'] || '',
@@ -152,12 +152,12 @@ export async function POST(request: NextRequest) {
       recipients.push({ email: headers['Cc'], name: undefined })
     }
 
-    // CRITICAL: Apply HOMEOWNER team member filtering FIRST
-    // This ensures we only process emails involving the homeowner's project team
+    // CRITICAL: Apply user team member filtering FIRST
+    // This ensures we only process emails involving the user's project team
     const filterResult = await teamMemberFilter.shouldProcessEmail(sender, recipients, userId)
-    
+
     if (!filterResult.shouldProcess) {
-      logger.info('Email filtered out by HOMEOWNER team member filter', {
+      logger.info('Email filtered out by team member filter', {
         messageId,
         senderEmail: sender.email,
         reason: filterResult.reason,
@@ -169,196 +169,144 @@ export async function POST(request: NextRequest) {
         success: false,
         filtered: true,
         reason: filterResult.reason,
-        message: 'Email not processed - sender/recipients are not HOMEOWNER project team members',
-        filterDetails: {
-          senderEmail: sender.email,
-          recipientEmails: recipients.map(r => r.email),
-          reason: filterResult.reason,
-          availableTeamMembers: await teamMemberFilter.getProjectTeamMembers(projectId)
-        }
-      }, { status: 200 }) // 200 because filtering is expected behavior for homeowner-only processing
+        message: 'Email not processed - sender/recipients are not project team members'
+      }, { status: 200 }) // 200 because filtering is expected behavior
     }
 
-    logger.info('Email approved by HOMEOWNER team member filter', {
-      messageId,
-      senderEmail: sender.email,
-      matchedTeamMembers: filterResult.matchedTeamMembers.length,
-      assignedProjectId: filterResult.projectId,
-      userId
-    })
-
-    // Continue with normal HOMEOWNER email processing since it passed team member filter
-    const sentAt = headers['Date'] ? new Date(headers['Date']) : new Date()
-
-    // For testing without S3, we'll store content directly in database
-    // In production, this would be stored in S3 and only paths stored in DB
+    // Determine sender type for processing
+    const userEmail = project.user.email?.toLowerCase()
+    const senderEmail = sender.email.toLowerCase()
     
-    // Check if email message already exists in HOMEOWNER'S records
-    const existingMessage = await prisma.emailMessage.findUnique({
-      where: { messageId }
-    })
-
-    let emailMessage
-    
-    if (existingMessage) {
-      // Update existing HOMEOWNER record with OAuth session tracking and team member info
-      emailMessage = await prisma.emailMessage.update({
-        where: { messageId },
-        data: {
-          subject: emailContent.subject,
-          sender: sender.email,
-          recipients: recipients.map(r => r.email),
-          ccRecipients: headers['Cc'] ? [headers['Cc']] : [],
-          sentAt,
-          bodyText: emailContent.bodyText,
-          bodyHtml: emailContent.bodyHtml,
-          ingestionStatus: 'completed',
-          projectId: filterResult.projectId || projectId, // Use filter-determined HOMEOWNER project
-          providerData: {
-            ...existingMessage.providerData as Record<string, unknown>,
-            processedAt: new Date().toISOString(),
-            testMode: true,
-            fetchedFromGmail: true,
-            oauthSessionId: oauthSessionId,
-            oauthSessionTracked: !!oauthSessionId,
-            teamMemberFiltered: true,
-            matchedTeamMembers: filterResult.matchedTeamMembers,
-            filterReason: filterResult.reason,
-            sourceAccount: 'homeowner', // CRITICAL: Mark as homeowner-sourced
-            ingestedFrom: 'homeowner_gmail' // CRITICAL: Source identification
-          }
-        }
-      })
-    } else {
-      // Create new HOMEOWNER record with OAuth session tracking and team member info
-      emailMessage = await prisma.emailMessage.create({
-        data: {
-          messageId,
-          provider: 'gmail', // Always Gmail for homeowner
-          subject: emailContent.subject,
-          sender: sender.email,
-          recipients: recipients.map(r => r.email),
-          ccRecipients: headers['Cc'] ? [headers['Cc']] : [],
-          sentAt,
-          bodyText: emailContent.bodyText,
-          bodyHtml: emailContent.bodyHtml,
-          ingestionStatus: 'completed',
-          analysisStatus: 'pending',
-          assignmentStatus: 'pending',
-          userId, // CRITICAL: Always HOMEOWNER's user ID
-          projectId: filterResult.projectId || projectId, // Use filter-determined HOMEOWNER project
-          providerData: {
-            processedAt: new Date().toISOString(),
-            testMode: true,
-            fetchedFromGmail: true,
-            attachmentCount: emailContent.attachments.length,
-            oauthSessionId: oauthSessionId,
-            oauthSessionTracked: !!oauthSessionId,
-            credentialSource: oauthSessionId ? 'oauth_session' : 'test_credentials',
-            teamMemberFiltered: true,
-            matchedTeamMembers: filterResult.matchedTeamMembers,
-            filterReason: filterResult.reason,
-            sourceAccount: 'homeowner', // CRITICAL: Mark as homeowner-sourced
-            ingestedFrom: 'homeowner_gmail' // CRITICAL: Source identification
-          }
-        }
-      })
+    let senderType: 'user' | 'team_member' = 'team_member'
+    if (userEmail && senderEmail === userEmail) {
+      senderType = 'user'
     }
 
-    logger.info('Test email processing completed with HOMEOWNER team member filtering', {
+    // Create email message record
+    const emailMessage = await prisma.emailMessage.create({
+      data: {
+        id: `msg_${messageId}_${Date.now()}`,
+        messageId: messageId,
+        subject: emailContent.subject || 'No Subject',
+        body: emailContent.body || '',
+        sender: sender.email,
+        senderName: sender.name,
+        recipients: recipients.map(r => r.email),
+        receivedAt: emailContent.receivedAt || new Date(),
+        
+        // Associate with user and project
+        userId: userId,
+        projectId: projectId,
+        
+        // Provider information
+        provider: 'gmail',
+        providerId: messageId,
+        providerData: {
+          messageId: messageId,
+          threadId: emailContent.threadId,
+          headers: emailContent.headers,
+          senderType: senderType,
+          teamMemberFilter: {
+            matched: filterResult.matchedTeamMembers,
+            reason: filterResult.reason
+          },
+          oauthSessionId: oauthSessionId
+        }
+      }
+    })
+
+    logger.info('Email processed successfully (user-centric)', {
+      emailId: emailMessage.id,
       messageId,
+      subject: emailMessage.subject,
+      sender: emailMessage.sender,
+      recipients: emailMessage.recipients,
       userId,
-      projectId: filterResult.projectId || projectId,
-      emailMessageId: emailMessage.id,
-      subject: emailContent.subject,
-      attachmentCount: emailContent.attachments.length,
-      oauthSessionId: oauthSessionId,
-      oauthSessionTracked: !!oauthSessionId,
-      teamMemberFiltered: true,
-      matchedTeamMembers: filterResult.matchedTeamMembers.length,
-      sourceAccount: 'homeowner'
+      projectId,
+      senderType,
+      teamMembersMatched: filterResult.matchedTeamMembers.length,
+      oauthSessionId
     })
 
     return NextResponse.json({
       success: true,
-      message: 'Test email processed successfully with HOMEOWNER team member filtering',
-      emailMessage: {
-        id: emailMessage.id,
-        messageId: emailMessage.messageId,
-        subject: emailMessage.subject,
-        sender: emailMessage.sender,
-        recipients: emailMessage.recipients,
-        sentAt: emailMessage.sentAt,
-        ingestionStatus: emailMessage.ingestionStatus,
-        projectId: emailMessage.projectId,
-        bodyText: emailMessage.bodyText ? emailMessage.bodyText.substring(0, 200) + '...' : null,
-        bodyHtml: emailMessage.bodyHtml ? emailMessage.bodyHtml.substring(0, 200) + '...' : null,
-        providerData: emailMessage.providerData
-      },
-      gmailContent: {
-        subject: emailContent.subject,
-        sender: headers['From'],
-        hasBodyText: !!emailContent.bodyText,
-        hasBodyHtml: !!emailContent.bodyHtml,
-        attachmentCount: emailContent.attachments.length,
-        headers: Object.keys(headers)
-      },
-      homeownerTeamMemberFilter: {
-        approved: true,
-        matchedTeamMembers: filterResult.matchedTeamMembers,
-        reason: filterResult.reason,
-        assignedProjectId: filterResult.projectId
-      },
-      homeownerOauthInfo: {
-        sessionId: oauthSessionId,
-        sessionTracked: !!oauthSessionId,
-        credentialSource: oauthSessionId ? 'oauth_session' : 'test_credentials'
+      message: 'Email processed successfully',
+      emailId: emailMessage.id,
+      messageId,
+      subject: emailMessage.subject,
+      sender: emailMessage.sender,
+      recipients: emailMessage.recipients,
+      senderType,
+      teamMembersMatched: filterResult.matchedTeamMembers.length,
+      processingDetails: {
+        filterResult: {
+          shouldProcess: filterResult.shouldProcess,
+          matchedTeamMembers: filterResult.matchedTeamMembers.length,
+          reason: filterResult.reason
+        },
+        oauthSession: {
+          used: !!oauthSessionId,
+          sessionId: oauthSessionId
+        }
       }
     })
 
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
-    const errorStack = error instanceof Error ? error.stack : undefined
-    
-    logger.error('Test email processing failed for HOMEOWNER', {
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred'
+    const stack = error instanceof Error ? error.stack : undefined
+
+    logger.error('Error processing test email', {
       error: errorMessage,
-      stack: errorStack
+      stack: stack
     })
     
     return NextResponse.json(
-      { error: `Internal server error: ${errorMessage}` },
+      { error: 'Internal server error' },
       { status: 500 }
     )
   }
 }
 
-/**
- * Load test credentials for HOMEOWNER Gmail access
- * 
- * This function loads test credentials specifically for homeowner Gmail testing.
- * In production, these would be replaced with proper OAuth flows.
- */
-async function loadTestCredentials() {
-  const credentialsPath = path.join(process.cwd(), 'scripts/email-testing/credentials/homeowner-credentials.json')
-  
-  if (!fs.existsSync(credentialsPath)) {
-    throw new Error('HOMEOWNER test credentials not found. Run OAuth setup first.')
-  }
+// Load test credentials from file system (fallback when no OAuth session)
+async function loadTestCredentials(): Promise<{
+  refreshToken: string;
+  accessToken?: string;
+  expiryDate?: number;
+}> {
+  try {
+    // Try to load from homeowner credentials (test environment)
+    const credentialsPath = path.join(process.cwd(), 'scripts/email-testing/credentials/homeowner-credentials.json')
+    
+    if (!fs.existsSync(credentialsPath)) {
+      throw new Error('Test credentials not found. Run OAuth setup first.')
+    }
 
-  const credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'))
-  
-  if (!credentials.refresh_token) {
-    throw new Error('HOMEOWNER test credentials missing refresh_token')
-  }
+    const credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'))
+    
+    if (!credentials.refresh_token) {
+      throw new Error('Test credentials missing refresh token')
+    }
 
-  return {
-    refreshToken: credentials.refresh_token,
-    accessToken: credentials.access_token,
-    expiryDate: credentials.expiry_date
+    logger.info('Loaded test credentials for email processing', {
+      hasRefreshToken: !!credentials.refresh_token,
+      hasAccessToken: !!credentials.access_token,
+      expiryDate: credentials.expiry_date ? new Date(credentials.expiry_date) : null
+    })
+
+    return {
+      refreshToken: credentials.refresh_token,
+      accessToken: credentials.access_token,
+      expiryDate: credentials.expiry_date
+    }
+
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred'
+    logger.error('Failed to load test credentials', { error: errorMessage })
+    throw new Error(`Failed to load test credentials: ${errorMessage}`)
   }
 }
 
-// GET endpoint to check HOMEOWNER email processing status
+// GET endpoint to check processing status
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -371,7 +319,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Find the email message in HOMEOWNER records
+    // Find the email message
     const emailMessage = await prisma.emailMessage.findUnique({
       where: {
         messageId: messageId
@@ -394,7 +342,7 @@ export async function GET(request: NextRequest) {
 
     if (!emailMessage) {
       return NextResponse.json(
-        { error: 'Email message not found in HOMEOWNER records' },
+        { error: 'Email message not found' },
         { status: 404 }
       )
     }
@@ -416,15 +364,14 @@ export async function GET(request: NextRequest) {
         user: emailMessage.user,
         providerData: emailMessage.providerData,
         createdAt: emailMessage.createdAt,
-        updatedAt: emailMessage.updatedAt,
-        sourceAccount: 'homeowner' // CRITICAL: Identify as homeowner-sourced
+        updatedAt: emailMessage.updatedAt
       }
     })
 
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     
-    logger.error('Failed to get test email processing status for HOMEOWNER', {
+    logger.error('Failed to get test email processing status', {
       error: errorMessage
     })
     
