@@ -5,7 +5,7 @@ export interface EmailMessage {
   messageId: string;
   threadId?: string;
   provider: string;
-  providerData?: any;
+  providerData?: Record<string, unknown>;
   subject?: string;
   sender: string;
   senderName?: string;
@@ -23,12 +23,12 @@ export interface EmailMessage {
   assignmentStatus: string;
   relevanceScore?: number;
   aiSummary?: string;
-  classification?: any;
-  extractedData?: any;
+  classification?: Record<string, unknown>;
+  extractedData?: Record<string, unknown>;
   urgencyLevel?: string;
   flaggedItemId?: string;
   containsChanges: boolean;
-  processingErrors?: any;
+  processingErrors?: Record<string, unknown>;
   retryCount: number;
   lastProcessedAt?: string;
   userId: string;
@@ -84,13 +84,13 @@ export interface EmailSettings {
   gmailAccessToken?: string | null;
   gmailTokenExpiry?: string | null;
   monitoringEnabled: boolean;
-  emailFilters?: any;
+  emailFilters?: Record<string, unknown>;
   notificationsEnabled: boolean;
   weeklyReports: boolean;
   highPriorityAlerts: boolean;
   createdAt: string;
   updatedAt: string;
-  oauthComplianceData?: any;
+  oauthComplianceData?: Record<string, unknown>;
   oauthGrantedAt?: string | null;
   oauthGrantedBy?: string | null;
   oauthLastRefreshedAt?: string | null;
@@ -98,7 +98,7 @@ export interface EmailSettings {
   oauthRevokeReason?: string | null;
   oauthRevokedAt?: string | null;
   oauthRevokedBy?: string | null;
-  oauthScopes?: any;
+  oauthScopes?: Record<string, unknown>;
   oauthSessionId?: string | null;
 }
 
@@ -113,7 +113,7 @@ export interface FlaggedItem {
   emailDate: string;
   originalEmail?: string;
   aiConfidence: number;
-  detectedChanges?: any;
+  detectedChanges?: Record<string, unknown>;
   needsEmailResponse: boolean;
   status: 'PENDING' | 'REVIEWED' | 'CONFIRMED' | 'IGNORED' | 'EMAIL_SENT';
   createdAt: string;
