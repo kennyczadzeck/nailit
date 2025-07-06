@@ -157,13 +157,12 @@ async function testProperEmailAnalysisIntegration() {
       if (recentAnalysis) {
         console.log(`✅ Most recent analysis:`);
         console.log(`   Email: ${recentAnalysis.email.subject}`);
-        console.log(`   Classification: ${recentAnalysis.primaryType}`);
-        console.log(`   Confidence: ${(recentAnalysis.confidenceScore * 100).toFixed(1)}%`);
-        console.log(`   Processing Time: ${recentAnalysis.processingTimeMs}ms`);
-        console.log(`   Model: ${recentAnalysis.modelUsed}`);
-        console.log(`   Key Amounts: ${recentAnalysis.keyAmounts?.length || 0}`);
-        console.log(`   Key Dates: ${recentAnalysis.keyDates?.length || 0}`);
-        console.log(`   Key Contractors: ${recentAnalysis.keyContractors?.length || 0}`);
+        console.log(`   Classification: ${recentAnalysis.classification || 'N/A'}`);
+        console.log(`   Confidence: ${recentAnalysis.confidenceScore || 'N/A'}`);
+        console.log(`   Priority: ${recentAnalysis.priority || 'N/A'}`);
+        console.log(`   Key Amounts: ${recentAnalysis.entities ? JSON.parse(recentAnalysis.entities).amounts?.length || 0 : 0}`);
+        console.log(`   Key Dates: ${recentAnalysis.entities ? JSON.parse(recentAnalysis.entities).dates?.length || 0 : 0}`);
+        console.log(`   Key Contractors: ${recentAnalysis.entities ? JSON.parse(recentAnalysis.entities).contractors?.length || 0 : 0}`);
       }
     }
 

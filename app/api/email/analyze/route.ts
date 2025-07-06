@@ -39,7 +39,28 @@ export async function POST(request: NextRequest) {
     });
 
     // Analyze email
-    const result = await analyzer.analyzeEmail(email, project);
+    const result = await analyzer.analyzeEmail(email, {
+      ...project,
+      description: project.description || undefined,
+      endDate: project.endDate?.toISOString() || undefined,
+      startDate: project.startDate.toISOString(),
+      createdAt: project.createdAt.toISOString(),
+      updatedAt: project.updatedAt.toISOString(),
+      teamMembers: project.teamMembers?.map(tm => ({
+        ...tm,
+        createdAt: tm.createdAt.toISOString(),
+        updatedAt: tm.updatedAt.toISOString()
+      })) || [],
+      emailSettings: project.emailSettings ? {
+        ...project.emailSettings,
+        createdAt: project.emailSettings.createdAt.toISOString(),
+        updatedAt: project.emailSettings.updatedAt.toISOString(),
+        gmailTokenExpiry: project.emailSettings.gmailTokenExpiry?.toISOString() || null,
+        oauthGrantedAt: project.emailSettings.oauthGrantedAt?.toISOString() || null,
+        oauthLastRefreshedAt: project.emailSettings.oauthLastRefreshedAt?.toISOString() || null,
+        oauthRevokedAt: project.emailSettings.oauthRevokedAt?.toISOString() || null
+      } : undefined
+    });
 
     if (!result.success) {
       return NextResponse.json(

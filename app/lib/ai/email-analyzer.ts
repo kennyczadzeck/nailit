@@ -119,7 +119,7 @@ export class EmailAnalyzer {
   }> {
     // Dynamic import for enhanced context builder
     const { EnhancedContextBuilder } = await import('./enhanced-context-builder');
-    const enhancedContext = EnhancedContextBuilder.buildEnhancedContext(project, email);
+    const enhancedContext = EnhancedContextBuilder.buildEnhancedContext(project, project.teamMembers || []);
     const contextPrompt = EnhancedContextBuilder.contextToPrompt(enhancedContext);
     
     return {
@@ -196,29 +196,38 @@ export class EmailAnalyzer {
     try {
       const testEmail: EmailMessage = {
         id: 'test-1',
-        from: 'test@example.com',
-        to: 'project@example.com',
+        messageId: 'test-msg-1',
+        provider: 'gmail',
+        sender: 'test@example.com',
+        recipients: ['project@example.com'],
+        ccRecipients: [],
+        bccRecipients: [],
         subject: 'Test Email',
-        body: 'This is a test email to verify the OpenAI connection.',
-        date: new Date().toISOString()
+        bodyText: 'This is a test email to verify the OpenAI connection.',
+        sentAt: new Date().toISOString(),
+        receivedAt: new Date().toISOString(),
+        s3AttachmentPaths: [],
+        ingestionStatus: 'completed',
+        analysisStatus: 'pending',
+        assignmentStatus: 'pending',
+        containsChanges: false,
+        retryCount: 0,
+        userId: 'test-user',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
       };
 
       const testProject: Project = {
         id: 'test-project',
         name: 'Test Project',
-        type: 'Residential',
-        phase: 'planning',
-        address: '123 Test St',
+        description: 'Test description',
+        status: 'ACTIVE',
+        startDate: '2024-01-01',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
         budget: 100000,
-        spent_to_date: 0,
-        start_date: '2024-01-01',
-        estimated_completion: '2024-12-31',
-        current_phase: 'planning',
-        phase_activities: ['permits', 'design'],
-        change_order_threshold: 5000,
-        days_remaining: 365,
-        team_members: [],
-        contractors: []
+        address: '123 Test St',
+        userId: 'test-user'
       };
 
       const result = await this.analyzeEmail(testEmail, testProject);
@@ -240,6 +249,6 @@ export class EmailAnalyzer {
    * Get current context mode
    */
   isUsingEnhancedContext(): boolean {
-    return this.options.useEnhancedContext;
+    return this.options.useEnhancedContext ?? false;
   }
 } 

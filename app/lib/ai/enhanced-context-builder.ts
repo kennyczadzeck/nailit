@@ -96,8 +96,8 @@ export class EnhancedContextBuilder {
         description: project.description || 'No description provided',
         address: project.address || 'Address not specified',
         budget: project.budget || 0,
-        phase: project.phase || 'planning',
-        type: project.type || 'residential'
+        phase: 'planning', // Default phase since it's not in the schema
+        type: 'residential' // Default type since it's not in the schema
       },
       timeline: {
         startDate: project.startDate,
@@ -189,7 +189,7 @@ Use this enhanced context to provide more accurate and contextually-aware analys
    * Provides context-aware analysis suggestions based on project phase
    */
   static getPhaseSpecificGuidance(phase: string): string {
-    const phaseGuidance = {
+    const phaseGuidance: { [key: string]: string } = {
       'planning': 'Focus on permits, design changes, contractor selection, and timeline establishment',
       'pre-construction': 'Watch for permit approvals, material ordering, contractor scheduling, and site preparation',
       'construction': 'Monitor progress updates, change orders, material deliveries, and quality issues',

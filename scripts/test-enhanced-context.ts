@@ -67,32 +67,27 @@ async function testEnhancedContext() {
 
   // Test email with budget and timeline implications
   const testEmail: EmailMessage = {
-    id: 'email-change-order',
-    sender: 'dave@proplumb.com',
-    recipients: ['john@example.com'],
-    subject: 'URGENT: Additional Plumbing Work Required - Code Compliance',
-    bodyText: `John,
-
-We've encountered a significant issue during the rough-in inspection today. The inspector found that the existing main water line doesn't meet current building codes and must be replaced before we can proceed.
-
-REQUIRED WORK:
-- Replace 20 feet of main water line ($800 materials + $1,200 labor)
-- Install new pressure regulator ($300)
-- Additional city inspection required ($150)
-- Re-schedule HVAC rough-in (delayed 4 days)
-
-TOTAL ADDITIONAL COST: $2,450
-TIMELINE IMPACT: 4-day delay to completion
-NEW COMPLETION DATE: September 19th
-
-This work must be completed before the electrical rough-in can proceed. The city inspector will return Friday for re-inspection.
-
-I need your approval by tomorrow morning to order materials and avoid further delays.
-
-Dave Martinez
-ProPlumb Solutions
-(555) 123-4567`,
-    sentAt: '2024-08-05T14:30:00Z'
+    id: 'test-email-1',
+    messageId: 'msg-test-1',
+    provider: 'gmail',
+    sender: 'contractor@example.com',
+    recipients: ['homeowner@example.com'],
+    ccRecipients: [],
+    bccRecipients: [],
+    subject: 'Project Update - Kitchen Renovation',
+    bodyText: 'The kitchen renovation is progressing well. We completed the electrical work and are moving on to plumbing.',
+    sentAt: '2024-01-15T10:00:00Z',
+    receivedAt: '2024-01-15T10:00:00Z',
+    s3AttachmentPaths: [],
+    ingestionStatus: 'completed',
+    analysisStatus: 'pending',
+    assignmentStatus: 'pending',
+    containsChanges: false,
+    retryCount: 0,
+    userId: 'user-123',
+    projectId: 'test-project-123',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
   };
 
   console.log('📧 Test Email Details:');

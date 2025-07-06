@@ -617,19 +617,33 @@ function extractImpactFromAnalysis(analysis: any): string {
 }
 
 /**
- * Helper function to map analysis classification to flagged item category
+ * Map analysis classification to flagged item category
  */
-function mapAnalysisToFlaggedCategory(classification: string): string {
-  switch (classification) {
-    case 'invoice':
-      return 'COST';
-    case 'change_order':
-      return 'SCOPE';
-    case 'schedule_update':
-      return 'SCHEDULE';
-    default:
-      return 'UNCLASSIFIED';
+function mapAnalysisToFlaggedCategory(classification: string): 'COST' | 'SCHEDULE' | 'SCOPE' | 'UNCLASSIFIED' {
+  const lowerClassification = classification.toLowerCase();
+  
+  if (lowerClassification.includes('invoice') || 
+      lowerClassification.includes('payment') || 
+      lowerClassification.includes('cost') || 
+      lowerClassification.includes('budget')) {
+    return 'COST';
   }
+  
+  if (lowerClassification.includes('schedule') || 
+      lowerClassification.includes('timeline') || 
+      lowerClassification.includes('delay') || 
+      lowerClassification.includes('deadline')) {
+    return 'SCHEDULE';
+  }
+  
+  if (lowerClassification.includes('scope') || 
+      lowerClassification.includes('change') || 
+      lowerClassification.includes('modification') || 
+      lowerClassification.includes('addition')) {
+    return 'SCOPE';
+  }
+  
+  return 'UNCLASSIFIED';
 }
 
 /**

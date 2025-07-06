@@ -209,7 +209,7 @@ ProPlumb Solutions`,
       if (recentAnalysis) {
         console.log(`✅ Most recent analysis:`);
         console.log(`   Email: ${recentAnalysis.email.subject}`);
-        console.log(`   Classification: ${recentAnalysis.primaryType}`);
+        console.log(`   Classification: ${recentAnalysis.classification || 'N/A'}`);
         console.log(`   Confidence: ${(recentAnalysis.confidenceScore * 100).toFixed(1)}%`);
         console.log(`   Processing Time: ${recentAnalysis.processingTimeMs}ms`);
         console.log(`   Model: ${recentAnalysis.modelUsed}`);

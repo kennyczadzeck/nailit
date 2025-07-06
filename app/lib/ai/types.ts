@@ -2,32 +2,59 @@
 
 export interface EmailMessage {
   id: string;
+  messageId: string;
+  threadId?: string;
+  provider: string;
+  providerData?: any;
+  subject?: string;
   sender: string;
+  senderName?: string;
   recipients: string[];
-  subject: string;
-  bodyText: string;
-  bodyHtml?: string;
+  ccRecipients: string[];
+  bccRecipients: string[];
   sentAt: string;
+  receivedAt: string;
+  bodyText?: string;
+  bodyHtml?: string;
+  s3ContentPath?: string;
+  s3AttachmentPaths: string[];
+  ingestionStatus: string;
+  analysisStatus: string;
+  assignmentStatus: string;
+  relevanceScore?: number;
+  aiSummary?: string;
+  classification?: any;
+  extractedData?: any;
+  urgencyLevel?: string;
+  flaggedItemId?: string;
+  containsChanges: boolean;
+  processingErrors?: any;
+  retryCount: number;
+  lastProcessedAt?: string;
+  userId: string;
+  projectId?: string;
+  createdAt: string;
+  updatedAt: string;
   attachments?: string[];
 }
 
 export interface Project {
   id: string;
   name: string;
-  description?: string;
-  status: 'ACTIVE' | 'ARCHIVED';
+  description?: string | null;
+  status: 'ACTIVE' | 'ARCHIVED' | 'COMPLETED' | 'ON_HOLD' | 'CANCELLED';
   startDate: string;
-  endDate?: string;
+  endDate?: string | null;
   createdAt: string;
   updatedAt: string;
   
   // Project details
-  contractor?: string;
-  budget?: number;
-  address?: string;
-  addressPlaceId?: string;
-  addressLat?: number;
-  addressLng?: number;
+  contractor?: string | null;
+  budget?: number | null;
+  address?: string | null;
+  addressPlaceId?: string | null;
+  addressLat?: number | null;
+  addressLng?: number | null;
   
   // Relations
   userId: string;
@@ -52,13 +79,27 @@ export interface TeamMember {
 export interface EmailSettings {
   id: string;
   projectId: string;
+  gmailConnected: boolean;
+  gmailRefreshToken?: string | null;
+  gmailAccessToken?: string | null;
+  gmailTokenExpiry?: string | null;
   monitoringEnabled: boolean;
+  emailFilters?: any;
   notificationsEnabled: boolean;
   weeklyReports: boolean;
   highPriorityAlerts: boolean;
-  gmailConnected: boolean;
   createdAt: string;
   updatedAt: string;
+  oauthComplianceData?: any;
+  oauthGrantedAt?: string | null;
+  oauthGrantedBy?: string | null;
+  oauthLastRefreshedAt?: string | null;
+  oauthReauthorizationRequired: boolean;
+  oauthRevokeReason?: string | null;
+  oauthRevokedAt?: string | null;
+  oauthRevokedBy?: string | null;
+  oauthScopes?: any;
+  oauthSessionId?: string | null;
 }
 
 export interface FlaggedItem {
@@ -66,28 +107,39 @@ export interface FlaggedItem {
   title: string;
   description: string;
   impact: string;
-  category: string;
+  category: 'COST' | 'SCHEDULE' | 'SCOPE' | 'UNCLASSIFIED';
   emailFrom: string;
   emailSubject?: string;
   emailDate: string;
-  status: string;
-  projectId: string;
+  originalEmail?: string;
+  aiConfidence: number;
+  detectedChanges?: any;
+  needsEmailResponse: boolean;
+  status: 'PENDING' | 'REVIEWED' | 'CONFIRMED' | 'IGNORED' | 'EMAIL_SENT';
   createdAt: string;
   updatedAt: string;
+  reviewedAt?: string;
+  mlFeedback?: 'POSITIVE' | 'NEGATIVE' | 'RECLASSIFY' | 'CLASSIFY';
+  userNotes?: string;
+  projectId: string;
+  emailContext?: string;
 }
 
 export interface TimelineEntry {
   id: string;
   title: string;
   description: string;
-  category: string;
+  category: 'COST' | 'SCHEDULE' | 'SCOPE' | 'ISSUE' | 'UPDATE';
   date: string;
   impact?: string;
   cost?: number;
+  scheduleImpact?: string;
+  scopeDetails?: string;
   verified: boolean;
-  projectId: string;
   createdAt: string;
   updatedAt: string;
+  projectId: string;
+  flaggedItemId?: string;
 }
 
 export interface EmailClassification {

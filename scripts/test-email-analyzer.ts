@@ -36,93 +36,113 @@ async function testEmailAnalyzer() {
     process.exit(1);
   }
 
-  // Create test data
-  console.log('3. Creating test data...');
-  
+  // Test project data
   const testProject: Project = {
-    id: 'proj-123',
-    name: 'Modern Kitchen Renovation',
-    type: 'Residential Renovation',
-    phase: 'construction',
-    address: '456 Oak Street, Springfield, IL',
-    budget: 85000,
-    spent_to_date: 32000,
-    start_date: '2024-06-01',
-    estimated_completion: '2024-09-15',
-    current_phase: 'systems',
-    phase_activities: ['electrical', 'plumbing', 'HVAC'],
-    change_order_threshold: 2500,
-    days_remaining: 45,
-    team_members: [
-      { name: 'John Smith', email: 'john@example.com', role: 'Project Manager' },
-      { name: 'Sarah Johnson', email: 'sarah@example.com', role: 'Homeowner' }
-    ],
-    contractors: [
-      { company: 'Elite Electric', specialty: 'Electrical' },
-      { company: 'ProPlumb Solutions', specialty: 'Plumbing' }
-    ]
+    id: 'test-project-123',
+    name: 'Kitchen Renovation',
+    description: 'Complete kitchen renovation with new appliances and countertops',
+    status: 'ACTIVE',
+    startDate: '2024-01-01',
+    endDate: '2024-06-30',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    userId: 'user-123',
+    contractor: 'Elite Construction Co.',
+    budget: 45000,
+    address: '123 Main St, Anytown, USA'
   };
 
-  // Test different types of emails
+  // Test emails
   const testEmails: EmailMessage[] = [
     {
       id: 'email-1',
-      from: 'billing@eliteelectric.com',
-      to: 'john@example.com',
-      subject: 'Invoice #2024-1156 - Kitchen Electrical Work',
-      body: `Hi John,
+      messageId: 'msg-1',
+      provider: 'gmail',
+      sender: 'billing@eliteelectric.com',
+      senderName: 'Elite Electric Billing',
+      recipients: ['homeowner@example.com'],
+      ccRecipients: [],
+      bccRecipients: [],
+      subject: 'Invoice #2024-001 - Electrical Work Completed',
+      bodyText: `Dear Homeowner,
 
-Please find attached invoice #2024-1156 for the electrical work completed in the kitchen renovation project at 456 Oak Street.
+Please find attached invoice #2024-001 for the electrical work completed on January 15, 2024.
 
-Work completed:
-- Installed new electrical panel (200A)
-- Wired kitchen outlets and lighting
-- Added dedicated circuits for appliances
-- Passed electrical inspection on July 3rd
+Work Summary:
+- Installed new 200A electrical panel
+- Upgraded kitchen outlets to GFCI
+- Added under-cabinet lighting circuits
+- Electrical inspection passed
 
-Total amount: $3,250.00
-Payment due: July 20th, 2024
+Total Amount: $3,250.00
+Due Date: February 15, 2024
 
-Please let me know if you have any questions.
+Please remit payment within 30 days.
 
 Best regards,
-Mike Thompson
 Elite Electric`,
-      date: '2024-07-05T10:30:00Z',
-      attachments: ['invoice-2024-1156.pdf']
+      sentAt: '2024-01-20T10:30:00Z',
+      receivedAt: '2024-01-20T10:30:00Z',
+      s3AttachmentPaths: ['invoices/2024-001.pdf'],
+      ingestionStatus: 'completed',
+      analysisStatus: 'pending',
+      assignmentStatus: 'pending',
+      containsChanges: false,
+      retryCount: 0,
+      userId: 'user-123',
+      projectId: 'test-project-123',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     },
     {
       id: 'email-2',
-      from: 'foreman@proplumb.com',
-      to: 'john@example.com',
-      subject: 'Schedule Update - Plumbing Delay',
-      body: `John,
+      messageId: 'msg-2',
+      provider: 'gmail',
+      sender: 'foreman@proplumb.com',
+      senderName: 'Pro Plumbing Foreman',
+      recipients: ['homeowner@example.com'],
+      ccRecipients: [],
+      bccRecipients: [],
+      subject: 'Schedule Update - Plumbing Rough-In Delayed',
+      bodyText: `Hi,
 
-I need to update you on the plumbing schedule for the kitchen project. We've encountered an issue with the main water line that will require additional work.
+I wanted to give you a heads up that we need to push back the plumbing rough-in by 3 days.
 
-The city inspector found that the existing line doesn't meet current codes and needs to be replaced. This will add 3-4 days to our timeline and approximately $1,800 in additional costs.
+The city inspector found an issue with the electrical panel placement that needs to be resolved before we can proceed with the plumbing work. Elite Electric is coming back tomorrow to relocate the panel.
 
-We can start the replacement work Monday if you approve the change order. This would push our completion date from July 15th to July 19th.
+New Schedule:
+- Electrical panel relocation: January 22-23
+- Plumbing rough-in: January 25-26 (was January 22-23)
+- Plumbing inspection: January 29 (was January 26)
 
-Let me know how you'd like to proceed.
+This shouldn't affect the overall project timeline as we have some buffer built in.
+
+Let me know if you have any questions.
 
 Thanks,
-Dave Martinez
-ProPlumb Solutions`,
-      date: '2024-07-05T14:15:00Z'
+Mike - Pro Plumbing`,
+      sentAt: '2024-01-21T14:15:00Z',
+      receivedAt: '2024-01-21T14:15:00Z',
+      s3AttachmentPaths: [],
+      ingestionStatus: 'completed',
+      analysisStatus: 'pending',
+      assignmentStatus: 'pending',
+      containsChanges: false,
+      retryCount: 0,
+      userId: 'user-123',
+      projectId: 'test-project-123',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     }
   ];
 
-  console.log('✅ Test data created\n');
+  console.log('🧪 Testing Email Analyzer with realistic construction emails...\n');
 
-  // Analyze each email
-  console.log('4. Analyzing test emails...\n');
-  
-  for (let i = 0; i < testEmails.length; i++) {
-    const email = testEmails[i];
-    console.log(`📧 Analyzing Email ${i + 1}: "${email.subject}"`);
-    console.log(`From: ${email.from}`);
-    console.log(`Type: Expected ${i === 0 ? 'invoice' : 'schedule_update'}\n`);
+  for (const email of testEmails) {
+    console.log(`📧 Analyzing email: ${email.subject}`);
+    console.log(`From: ${email.sender}`);
+    console.log(`Date: ${email.sentAt}`);
+    console.log('---');
 
     const startTime = Date.now();
     const result = await analyzer.analyzeEmail(email, testProject);

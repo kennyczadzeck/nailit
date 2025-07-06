@@ -18,7 +18,7 @@ async function main() {
     console.log('Your test environment is now ready with:');
     console.log(`✅ OAuth-linked user: ${result.user.email}`);
     console.log(`✅ Test project: ${result.project.name}`);
-    console.log(`✅ Test emails: ${result.emails.length}`);
+    console.log(`✅ Test emails: ${result.emailsDiscovered}`);
     console.log(`✅ AI analyses: ${result.analyses.length}`);
     console.log(`✅ Flagged items: ${result.uiData.flaggedItems}`);
     console.log(`✅ Timeline entries: ${result.uiData.timelineEntries}`);
