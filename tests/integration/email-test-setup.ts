@@ -115,12 +115,21 @@ export async function setupComprehensiveTestData(): Promise<SetupResult> {
 }
 
 /**
- * Clean up all existing test data
+ * Clean up all existing test data from BOTH Gmail inboxes AND database
+ * 
+ * CRITICAL: This ensures clean test state by removing:
+ * 1. Test emails from both Gmail accounts (moved to trash)
+ * 2. All related database records (analyses, flagged items, timeline entries)
  */
 async function cleanupAllTestData() {
   console.log('🧹 Cleaning up all existing test data...');
   
   try {
+    // STEP 1: Clean Gmail inboxes FIRST (before database cleanup)
+    // This prevents re-ingestion of old test emails during the test run
+    await cleanupGmailInboxes();
+    
+    // STEP 2: Clean database records
     // Delete in order to respect foreign key constraints
     
     // 1. Delete timeline entries for test project
@@ -168,6 +177,59 @@ async function cleanupAllTestData() {
   } catch (error) {
     console.warn('⚠️  Cleanup warning:', error);
     // Continue even if cleanup fails
+  }
+}
+
+/**
+ * Clean up Gmail inboxes by moving test emails to trash
+ * 
+ * CRITICAL: This uses the Gmail API to move test emails to trash in both
+ * homeowner and contractor accounts, ensuring clean test environment.
+ */
+async function cleanupGmailInboxes(): Promise<void> {
+  console.log('🗑️  Cleaning Gmail inboxes (moving test emails to trash)...');
+  
+  try {
+    const { spawn } = require('child_process');
+    
+    // Use the existing Gmail inbox cleaner to move test emails to trash
+    const cleanup = spawn('npx', ['tsx', 'scripts/email-testing/gmail-inbox-cleaner.ts', 'trash-all'], {
+      stdio: 'pipe', // Capture output instead of inheriting
+      cwd: process.cwd()
+    });
+
+    // Capture output
+    let output = '';
+    cleanup.stdout?.on('data', (data: Buffer) => {
+      output += data.toString();
+    });
+    
+    cleanup.stderr?.on('data', (data: Buffer) => {
+      output += data.toString();
+    });
+
+    // Wait for completion
+    await new Promise((resolve, reject) => {
+      cleanup.on('close', (code: number) => {
+        if (code === 0) {
+          console.log('   ✅ Gmail inboxes cleaned (test emails moved to trash)');
+          resolve(code);
+        } else {
+          console.warn('⚠️  Gmail cleanup had issues but continuing...');
+          console.log('   Output:', output);
+          resolve(code); // Continue even if Gmail cleanup fails
+        }
+      });
+      
+      cleanup.on('error', (error: Error) => {
+        console.warn('⚠️  Gmail cleanup failed but continuing:', error.message);
+        resolve(0); // Continue even if Gmail cleanup fails - database cleanup is more critical
+      });
+    });
+
+  } catch (error: any) {
+    console.warn('⚠️  Gmail cleanup failed but continuing:', error.message);
+    // Continue even if Gmail cleanup fails - database cleanup is more critical
   }
 }
 
