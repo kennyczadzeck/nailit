@@ -1,349 +1,250 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
   binaryTargets = ["native", "rhel-openssl-1.0.x"]
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DATABASE_MIGRATION_URL")
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  image     String?
+  id            String         @id @default(cuid())
+  email         String         @unique
+  name          String?
+  image         String?
   emailVerified DateTime?
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  accounts      Account[]
+  emailMessages EmailMessage[]
+  oauthSessions OAuthSession[]
+  projects      Project[]
+  sessions      Session[]
 
-  // Relations
-  projects Project[]
-  accounts Account[]
-  sessions Session[]
-  emailMessages EmailMessage[] // New relation to email messages
-  oauthSessions OAuthSession[] // New relation to OAuth sessions
-  
   @@map("users")
 }
 
 model Project {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  status      ProjectStatus @default(ACTIVE)
-  startDate   DateTime
-  endDate     DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Project details
-  contractor  String?
-  budget      Float?
-  address     String?
-  addressPlaceId String? // Google Places ID for future reference
-  addressLat  Float? // Latitude for potential mapping features
-  addressLng  Float? // Longitude for potential mapping features
-
-  // Relations
-  userId      String
-  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  flaggedItems FlaggedItem[]
+  id              String          @id @default(cuid())
+  name            String
+  description     String?
+  status          ProjectStatus   @default(ACTIVE)
+  startDate       DateTime
+  endDate         DateTime?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  contractor      String?
+  budget          Float?
+  address         String?
+  addressPlaceId  String?
+  addressLat      Float?
+  addressLng      Float?
+  userId          String
+  emailAnalyses   EmailAnalysis[]
+  emailMessages   EmailMessage[]
+  emailSettings   EmailSettings?
+  flaggedItems    FlaggedItem[]
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  teamMembers     TeamMember[]
   timelineEntries TimelineEntry[]
-  emailSettings EmailSettings?
-  teamMembers TeamMember[]
-  emailMessages EmailMessage[]
-  emailAnalyses EmailAnalysis[] // AI analysis results for this project
-  
+
   @@map("projects")
 }
 
 model FlaggedItem {
-  id          String   @id @default(cuid())
-  title       String
-  description String
-  impact      String
-  category    FlaggedItemCategory
-  
-  // Email details
-  emailFrom   String
-  emailSubject String?
-  emailDate   DateTime
-  originalEmail String? // Full email content
-  
-  // AI Analysis
-  aiConfidence Float @default(0.0) // 0-1 confidence score
-  detectedChanges Json? // Array of detected changes
-  
-  // Status tracking
-  needsEmailResponse Boolean @default(false)
-  status      FlaggedItemStatus @default(PENDING)
-  
-  // Timestamps
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  reviewedAt  DateTime?
-  
-  // ML feedback
-  mlFeedback  MLFeedbackType?
-  userNotes   String?
-  
-  // Enhanced email integration
-  emailContext String?    // Additional context from originating email
-  
-  // Relations
-  projectId   String
-  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  timelineEntry TimelineEntry? // If confirmed, links to timeline entry
-  emailMessages EmailMessage[] // Can link to one or more triggering emails
-  
+  id                 String              @id @default(cuid())
+  title              String
+  description        String
+  impact             String
+  category           FlaggedItemCategory
+  emailFrom          String
+  emailSubject       String?
+  emailDate          DateTime
+  originalEmail      String?
+  aiConfidence       Float               @default(0.0)
+  detectedChanges    Json?
+  needsEmailResponse Boolean             @default(false)
+  status             FlaggedItemStatus   @default(PENDING)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  reviewedAt         DateTime?
+  mlFeedback         MLFeedbackType?
+  userNotes          String?
+  projectId          String
+  emailContext       String?
+  emailMessages      EmailMessage[]
+  project            Project             @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  timelineEntry      TimelineEntry?
+
   @@map("flagged_items")
 }
 
 model TimelineEntry {
-  id          String   @id @default(cuid())
-  title       String
-  description String
-  category    TimelineCategory
-  date        DateTime
-  impact      String?
-  
-  // Entry details
-  cost        Float?
+  id             String           @id @default(cuid())
+  title          String
+  description    String
+  category       TimelineCategory
+  date           DateTime
+  impact         String?
+  cost           Float?
   scheduleImpact String?
-  scopeDetails String?
-  
-  // Status
-  verified    Boolean @default(false)
-  
-  // Timestamps
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  // Relations
-  projectId   String
-  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  flaggedItemId String? @unique
-  flaggedItem FlaggedItem? @relation(fields: [flaggedItemId], references: [id])
-  
+  scopeDetails   String?
+  verified       Boolean          @default(false)
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  projectId      String
+  flaggedItemId  String?          @unique
+  flaggedItem    FlaggedItem?     @relation(fields: [flaggedItemId], references: [id])
+  project        Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
   @@map("timeline_entries")
 }
 
 model EmailSettings {
-  id          String   @id @default(cuid())
-  
-  // Gmail integration
-  gmailConnected Boolean @default(false)
-  gmailRefreshToken String?
-  gmailAccessToken String?
-  gmailTokenExpiry DateTime?
-  
-  // Enhanced OAuth Session Tracking
-  oauthSessionId String?     // Unique session identifier for this OAuth grant
-  oauthGrantedAt DateTime?   // When the OAuth was initially granted
-  oauthGrantedBy String?     // User ID who granted the OAuth (for audit trail)
-  oauthLastRefreshedAt DateTime? // When tokens were last refreshed
-  oauthRevokedAt DateTime?   // When OAuth was revoked (if applicable)
-  oauthRevokedBy String?     // User ID who revoked the OAuth
-  oauthRevokeReason String?  // Reason for revocation (security, user_request, etc.)
-  oauthScopes Json?          // Array of granted OAuth scopes
-  oauthReauthorizationRequired Boolean @default(false) // Flag for when reauth is needed
-  oauthComplianceData Json?  // Additional compliance tracking data
-  
-  // Monitoring settings
-  monitoringEnabled Boolean @default(true)
-  emailFilters Json? // Array of email filters/rules
-  
-  // Notification preferences
-  notificationsEnabled Boolean @default(true)
-  weeklyReports Boolean @default(true)
-  highPriorityAlerts Boolean @default(true)
-  
-  // Timestamps
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  // Relations
-  projectId   String @unique
-  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  
+  id                           String    @id @default(cuid())
+  gmailConnected               Boolean   @default(false)
+  gmailRefreshToken            String?
+  gmailAccessToken             String?
+  gmailTokenExpiry             DateTime?
+  monitoringEnabled            Boolean   @default(true)
+  emailFilters                 Json?
+  notificationsEnabled         Boolean   @default(true)
+  weeklyReports                Boolean   @default(true)
+  highPriorityAlerts           Boolean   @default(true)
+  createdAt                    DateTime  @default(now())
+  updatedAt                    DateTime  @updatedAt
+  projectId                    String    @unique
+  oauthComplianceData          Json?
+  oauthGrantedAt               DateTime?
+  oauthGrantedBy               String?
+  oauthLastRefreshedAt         DateTime?
+  oauthReauthorizationRequired Boolean   @default(false)
+  oauthRevokeReason            String?
+  oauthRevokedAt               DateTime?
+  oauthRevokedBy               String?
+  oauthScopes                  Json?
+  oauthSessionId               String?
+  project                      Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
   @@map("email_settings")
 }
 
 model EmailMessage {
-  id              String   @id @default(cuid())
-  
-  // Provider metadata
-  messageId       String   @unique
-  threadId        String?
-  provider        String   @default("gmail") // "gmail", "outlook"
-  providerData    Json?    // Provider-specific metadata
-  
-  // Email details
-  subject         String?
-  sender          String
-  senderName      String?
-  recipients      String[]
-  ccRecipients    String[]
-  bccRecipients   String[]
-  sentAt          DateTime
-  receivedAt      DateTime @default(now())
-  
-  // Content storage
-  bodyText        String?
-  bodyHtml        String?
-  s3ContentPath   String?     // S3 path for full email content
-  s3AttachmentPaths String[]  // S3 paths for attachments
-  
-  // Processing pipeline status
-  ingestionStatus String   @default("pending") // pending, processing, completed, failed
-  analysisStatus  String   @default("pending") // pending, processing, completed, failed
-  assignmentStatus String  @default("pending") // pending, processing, completed, failed
-  
-  // AI analysis results
-  relevanceScore  Float?      // 0.0-1.0 project relevance for homeowner
-  aiSummary       String?     // AI-generated summary
-  classification  Json?       // { category: "quote", confidence: 0.95, subcategory: "..." }
-  extractedData   Json?       // { amounts: [], dates: [], contacts: [], addresses: [] }
-  urgencyLevel    String?     // "low", "normal", "high", "urgent"
-  
-  // Integration with existing flagged items
-  flaggedItemId   String?     // Link to created flagged item
-  containsChanges Boolean     @default(false) // Whether this email triggered flagged items
-  
-  // Error handling
-  processingErrors Json?      // { ingestion: "error", analysis: "error", assignment: "error" }
-  retryCount      Int         @default(0)
-  lastProcessedAt DateTime?
-  
-  // Relations
-  userId          String
-  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  projectId       String?     // Project assignment (can be null if not project-related)
-  project         Project?    @relation(fields: [projectId], references: [id], onDelete: SetNull)
-  flaggedItem     FlaggedItem? @relation(fields: [flaggedItemId], references: [id], onDelete: SetNull)
-  emailAnalyses   EmailAnalysis[] // AI analysis results for this email
-  
-  // Timestamps
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  
-  @@map("email_messages")
+  id                String          @id @default(cuid())
+  messageId         String          @unique
+  threadId          String?
+  provider          String          @default("gmail")
+  providerData      Json?
+  subject           String?
+  sender            String
+  senderName        String?
+  recipients        String[]
+  ccRecipients      String[]
+  bccRecipients     String[]
+  sentAt            DateTime
+  receivedAt        DateTime        @default(now())
+  bodyText          String?
+  bodyHtml          String?
+  s3ContentPath     String?
+  s3AttachmentPaths String[]
+  ingestionStatus   String          @default("pending")
+  analysisStatus    String          @default("pending")
+  assignmentStatus  String          @default("pending")
+  relevanceScore    Float?
+  aiSummary         String?
+  classification    Json?
+  extractedData     Json?
+  urgencyLevel      String?
+  flaggedItemId     String?
+  containsChanges   Boolean         @default(false)
+  processingErrors  Json?
+  retryCount        Int             @default(0)
+  lastProcessedAt   DateTime?
+  userId            String
+  projectId         String?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  emailAnalyses     EmailAnalysis[]
+  flaggedItem       FlaggedItem?    @relation(fields: [flaggedItemId], references: [id])
+  project           Project?        @relation(fields: [projectId], references: [id])
+  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@index([userId, receivedAt])
   @@index([projectId, receivedAt])
   @@index([ingestionStatus])
   @@index([analysisStatus])
   @@index([urgencyLevel])
   @@index([containsChanges])
+  @@map("email_messages")
 }
 
 model EmailAnalysis {
-  id                    String   @id @default(cuid())
-  
-  // References
-  emailId               String
-  projectId             String
-  
-  // Classification results
-  primaryType           String   // primary_type from AI analysis (aligned with API)
-  confidenceScore       Float    // overall confidence (0-1) (aligned with API)
-  subCategories         String   // JSON array of sub-categories
-  
-  // Summary results
-  keyPoints             String   // JSON array of key points
-  actionItems           String   // JSON array of action items
-  timelineMentions      String   // JSON array of timeline mentions
-  
-  // Entity extraction results - structured fields for easier querying
-  keyAmounts            Float[]  // Extracted monetary amounts
-  keyDates              String[] // Extracted dates and deadlines
-  keyContractors        String[] // Extracted contractor emails/names
-  entities              String   // JSON object with all entities (full details)
-  
-  // Analysis metadata
-  priority              String   // high, medium, low
-  requiresResponse      Boolean  @default(false)
-  attachmentsMentioned  Boolean  @default(false)
-  
-  // Processing metadata
-  modelUsed             String   // e.g., "gpt-4o"
-  processingTimeMs      Int      // processing time in milliseconds
-  analyzedAt            DateTime @default(now())
-  
-  // Full analysis JSON for complete context
-  fullAnalysisJson      Json     // Complete AI analysis response
-  
-  // Timestamps
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
-  
-  // Relations
-  email                 EmailMessage @relation(fields: [emailId], references: [id], onDelete: Cascade)
-  project               Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  
-  @@unique([emailId, projectId]) // One analysis per email per project
+  id                   String       @id @default(cuid())
+  emailId              String
+  projectId            String
+  classification       String
+  confidence           Float
+  subCategories        String
+  keyPoints            String
+  actionItems          String
+  timelineMentions     String
+  entities             String
+  priority             String
+  requiresResponse     Boolean      @default(false)
+  attachmentsMentioned Boolean      @default(false)
+  confidenceScore      Float
+  modelUsed            String
+  processingTimeMs     Int
+  analyzedAt           DateTime     @default(now())
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+  email                EmailMessage @relation(fields: [emailId], references: [id], onDelete: Cascade)
+  project              Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([emailId, projectId])
   @@map("email_analyses")
 }
 
 model OAuthSession {
-  id                String   @id @default(cuid())
+  id                String    @id @default(cuid())
   userId            String
-  provider          String   // "google", "microsoft", etc.
-  sessionContext    String   // "email_api", "calendar_api", "app_auth"
-  sessionPurpose    String   // Human-readable description
-  
-  // OAuth credentials
+  provider          String
+  sessionContext    String
+  sessionPurpose    String
   providerAccountId String
   accessToken       String?
   refreshToken      String?
   expiresAt         DateTime?
-  tokenType         String?  @default("Bearer")
-  scopes            String[] // ["gmail.readonly", "calendar.events"]
-  
-  // Session management
-  isActive          Boolean  @default(true)
-  lastUsedAt        DateTime @default(now())
-  createdAt         DateTime @default(now())
+  tokenType         String?   @default("Bearer")
+  scopes            String[]
+  isActive          Boolean   @default(true)
+  lastUsedAt        DateTime  @default(now())
+  createdAt         DateTime  @default(now())
   revokedAt         DateTime?
   revokedReason     String?
-  
-  // Device/app context
-  deviceInfo        String?  // "web", "mobile", "desktop", "server"
+  deviceInfo        String?
   userAgent         String?
   ipAddress         String?
-  
-  // Relations
-  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([userId, provider, sessionContext])
   @@map("oauth_sessions")
 }
 
 model MLFeedback {
-  id          String   @id @default(cuid())
-  
-  // Feedback details
-  feedbackType MLFeedbackType
-  confidence  Float? // Original AI confidence
-  userAction  String // confirm, ignore, reclassify
-  
-  // Context
-  emailContent String?
-  detectedPatterns Json? // Patterns that triggered the flag
-  correctCategory FlaggedItemCategory?
-  
-  // Timestamps
-  createdAt   DateTime @default(now())
-  
-  // Relations - can link to flagged item for reference
-  flaggedItemId String?
-  projectId   String
-  
+  id               String               @id @default(cuid())
+  feedbackType     MLFeedbackType
+  confidence       Float?
+  userAction       String
+  emailContent     String?
+  detectedPatterns Json?
+  correctCategory  FlaggedItemCategory?
+  createdAt        DateTime             @default(now())
+  flaggedItemId    String?
+  projectId        String
+
   @@map("ml_feedback")
 }
 
@@ -360,8 +261,7 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
@@ -387,23 +287,18 @@ model VerificationToken {
 }
 
 model TeamMember {
-  id          String   @id @default(cuid())
-  name        String
-  email       String
-  role        TeamMemberRole
-  
-  // Timestamps
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  
-  // Relations
-  projectId   String
-  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  
+  id        String         @id @default(cuid())
+  name      String
+  email     String
+  role      TeamMemberRole
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  projectId String
+  project   Project        @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
   @@map("team_members")
 }
 
-// Enums
 enum ProjectStatus {
   ACTIVE
   ARCHIVED
@@ -436,10 +331,10 @@ enum TimelineCategory {
 }
 
 enum MLFeedbackType {
-  POSITIVE    // Correct detection and classification
-  NEGATIVE    // False positive
-  RECLASSIFY  // Wrong category but valid detection
-  CLASSIFY    // User classified unclassified item
+  POSITIVE
+  NEGATIVE
+  RECLASSIFY
+  CLASSIFY
 }
 
 enum TeamMemberRole {

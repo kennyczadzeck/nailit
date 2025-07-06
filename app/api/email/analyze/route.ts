@@ -59,27 +59,46 @@ export async function POST(request: NextRequest) {
         });
 
         if (emailMessage) {
-          storedAnalysis = await prisma.emailAnalysis.create({
-            data: {
-              emailId: email.id,
-              projectId: project.id,
-              primaryType: result.analysis!.classification.primary_type,
+          storedAnalysis = await prisma.emailAnalysis.upsert({
+            where: {
+              emailId_projectId: {
+                emailId: email.id,
+                projectId: project.id
+              }
+            },
+            update: {
+              classification: result.analysis!.classification.primary_type,
+              confidence: result.analysis!.confidence_score,
               confidenceScore: result.analysis!.confidence_score,
               subCategories: JSON.stringify(result.analysis!.classification.sub_categories),
               keyPoints: JSON.stringify(result.analysis!.summary.key_points),
               actionItems: JSON.stringify(result.analysis!.summary.action_items),
               timelineMentions: JSON.stringify(result.analysis!.summary.timeline_mentions),
-              keyAmounts: result.analysis!.entities.amounts?.map(a => parseFloat(a.replace(/[^0-9.-]/g, ''))) || [],
-              keyDates: result.analysis!.entities.dates || [],
-              keyContractors: result.analysis!.entities.contractors || [],
               entities: JSON.stringify(result.analysis!.entities),
               priority: result.analysis!.priority,
               requiresResponse: result.analysis!.requires_response,
               attachmentsMentioned: result.analysis!.attachments_mentioned,
               modelUsed: result.analysis!.processing_metadata.model_used,
               processingTimeMs: result.analysis!.processing_metadata.processing_time_ms,
-              analyzedAt: new Date(result.analysis!.processing_metadata.analyzed_at),
-              fullAnalysisJson: result.analysis!
+              analyzedAt: new Date(result.analysis!.processing_metadata.analyzed_at)
+            },
+            create: {
+              emailId: email.id,
+              projectId: project.id,
+              classification: result.analysis!.classification.primary_type,
+              confidence: result.analysis!.confidence_score,
+              confidenceScore: result.analysis!.confidence_score,
+              subCategories: JSON.stringify(result.analysis!.classification.sub_categories),
+              keyPoints: JSON.stringify(result.analysis!.summary.key_points),
+              actionItems: JSON.stringify(result.analysis!.summary.action_items),
+              timelineMentions: JSON.stringify(result.analysis!.summary.timeline_mentions),
+              entities: JSON.stringify(result.analysis!.entities),
+              priority: result.analysis!.priority,
+              requiresResponse: result.analysis!.requires_response,
+              attachmentsMentioned: result.analysis!.attachments_mentioned,
+              modelUsed: result.analysis!.processing_metadata.model_used,
+              processingTimeMs: result.analysis!.processing_metadata.processing_time_ms,
+              analyzedAt: new Date(result.analysis!.processing_metadata.analyzed_at)
             }
           });
         }

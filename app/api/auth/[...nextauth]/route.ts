@@ -24,6 +24,17 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
+    async signIn({ user, account, profile }) {
+      // Allow sign in for test accounts and development
+      if (process.env.NODE_ENV === 'development') {
+        // For test accounts, ensure they can always sign in
+        if (user.email === 'nailit.test.homeowner@gmail.com' || 
+            user.email === 'nailit.test.contractor@gmail.com') {
+          return true;
+        }
+      }
+      return true;
+    },
     async session({ session, token }) {
       // For JWT sessions, get user ID from token
       if (token && session?.user) {
@@ -31,11 +42,56 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
-    async jwt({ token, user, account }) {
-      // On first sign in, look up the database user ID using the OAuth account
-      if (user) {
-        // user.id is the database user ID when using Prisma adapter
-        token.sub = user.id;
+    async jwt({ token, user, account, profile }) {
+      // On first sign in, look up or link the database user
+      if (user && account) {
+        // Check if there's an existing user with this email (for test users)
+        const existingUser = await prisma.user.findUnique({
+          where: { email: user.email! },
+          include: { accounts: true }
+        });
+        
+        if (existingUser && existingUser.accounts.length === 0) {
+          // This is likely a test user created by E2E tests - link the account
+          try {
+            await prisma.account.upsert({
+              where: {
+                provider_providerAccountId: {
+                  provider: account.provider,
+                  providerAccountId: account.providerAccountId
+                }
+              },
+              update: {
+                access_token: account.access_token,
+                expires_at: account.expires_at,
+                refresh_token: account.refresh_token,
+                token_type: account.token_type,
+                scope: account.scope,
+                id_token: account.id_token,
+              },
+              create: {
+                userId: existingUser.id,
+                type: account.type,
+                provider: account.provider,
+                providerAccountId: account.providerAccountId,
+                access_token: account.access_token,
+                expires_at: account.expires_at,
+                refresh_token: account.refresh_token,
+                token_type: account.token_type,
+                scope: account.scope,
+                id_token: account.id_token,
+              }
+            });
+            
+            console.log(`✅ Linked existing user ${existingUser.email} to OAuth account`);
+            token.sub = existingUser.id;
+          } catch (error) {
+            console.error('Error linking existing user to OAuth account:', error);
+          }
+        } else {
+          // Normal flow - user.id is the database user ID when using Prisma adapter
+          token.sub = user.id;
+        }
       } else if (account && !token.sub) {
         // If for some reason we don't have the user ID, look it up from the database
         try {

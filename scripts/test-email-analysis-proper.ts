@@ -22,7 +22,7 @@ async function testProperEmailAnalysisIntegration() {
     
     const user = await prisma.user.findFirst({
       where: {
-        email: 'john.homeowner@example.com'
+        email: 'nailit.test.homeowner@gmail.com'
       },
       include: {
         projects: {
@@ -161,9 +161,9 @@ async function testProperEmailAnalysisIntegration() {
         console.log(`   Confidence: ${(recentAnalysis.confidenceScore * 100).toFixed(1)}%`);
         console.log(`   Processing Time: ${recentAnalysis.processingTimeMs}ms`);
         console.log(`   Model: ${recentAnalysis.modelUsed}`);
-        console.log(`   Key Amounts: ${recentAnalysis.keyAmounts.length}`);
-        console.log(`   Key Dates: ${recentAnalysis.keyDates.length}`);
-        console.log(`   Key Contractors: ${recentAnalysis.keyContractors.length}`);
+        console.log(`   Key Amounts: ${recentAnalysis.keyAmounts?.length || 0}`);
+        console.log(`   Key Dates: ${recentAnalysis.keyDates?.length || 0}`);
+        console.log(`   Key Contractors: ${recentAnalysis.keyContractors?.length || 0}`);
       }
     }
 

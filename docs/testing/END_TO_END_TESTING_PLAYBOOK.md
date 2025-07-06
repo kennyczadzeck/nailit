@@ -1,6 +1,48 @@
-# 🎯 End-to-End Testing Playbook
+# 🧪 End-to-End Testing Playbook
 
-*Comprehensive testing workflow from Gmail ingestion to timeline display*
+*Complete guide to E2E email processing testing with clear layer separation*
+
+## 🏗️ **Testing Architecture Overview**
+
+### **📧 Email Testing (Foundation Layer)**
+**Must complete successfully before E2E testing can run**
+
+- **Scope**: Database setup → OAuth → Email generation → Gmail ingestion → Validation
+- **Cost**: Free (no AI processing costs)
+- **Owner**: Email infrastructure team
+- **Purpose**: Validate email infrastructure without AI processing
+
+### **🤖 E2E Testing (Extension Layer)**
+**Only runs after email foundation is complete**
+
+- **Scope**: Email foundation → AI analysis → Flagged items → Timeline → Validation
+- **Cost**: ~$0.08-0.16 per test (AI processing)
+- **Owner**: AI/ML and frontend teams
+- **Purpose**: AI processing and visualization on top of email foundation
+
+**⚠️ CRITICAL PRINCIPLE**: E2E testing extends email testing but never replaces it. Email foundation must be verified before any E2E testing can begin.
+
+## 🎯 **Testing Workflow**
+
+### **Phase 1: Email Foundation (Required)**
+```bash
+# Complete email infrastructure testing
+npm run test:email:master
+
+# OR foundation-focused testing
+npm run test:email:foundation
+```
+
+### **Phase 2: E2E Extensions (Optional)**
+*Only after Phase 1 passes*
+
+```bash
+# Development: Basic AI processing
+npm run test:e2e:ai-basic
+
+# Deployment: Complete workflow
+npm run test:e2e:complete
+```
 
 **Last Updated**: 2025-01-05  
 **Testing Strategy**: Homeowner-Only Email Processing  

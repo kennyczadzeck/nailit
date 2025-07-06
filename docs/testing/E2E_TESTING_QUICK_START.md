@@ -2,67 +2,114 @@
 
 *Get started with end-to-end email processing testing in 5 minutes*
 
+## 🏗️ **Two-Layer Testing Architecture**
+
+### **📧 Email Testing (Foundation Layer) - MUST RUN FIRST**
+- **Purpose**: Validate email infrastructure without AI processing
+- **Cost**: Free (no AI processing costs)
+- **Scope**: Database setup → OAuth → Email generation → Gmail ingestion → Validation
+
+### **🤖 E2E Testing (Extension Layer) - RUNS AFTER FOUNDATION**
+- **Purpose**: AI processing and visualization on top of email foundation
+- **Cost**: ~$0.08-0.16 per test (AI processing)
+- **Scope**: Email foundation → AI analysis → Flagged items → Timeline
+
+**⚠️ CRITICAL**: E2E testing can ONLY run after email foundation is complete and verified.
+
 ## 📋 **Prerequisites**
 
-- ✅ Development environment set up
-- ✅ Database connection configured (Neon)
-- ✅ OpenAI API key configured
-- ✅ Gmail OAuth credentials configured
-- ✅ Test accounts accessible:
-  - `nailit.test.homeowner@gmail.com`
-  - `nailit.test.contractor@gmail.com`
+### **Required Setup**
+1. **Environment Variables**: Copy `.env.local` with OAuth credentials
+2. **OAuth Tokens**: Run `npm run test:oauth-setup homeowner` and `npm run test:oauth-setup contractor`
+3. **Database**: Ensure Neon database is accessible
+4. **OpenAI API Key**: Set `OPENAI_API_KEY` in `.env.local`
+
+### **Clean State Guarantee**
+The E2E test runner automatically ensures a clean state by:
+- 🧹 **Gmail Cleanup**: Moves existing test emails to trash (recoverable)
+- 🗄️ **Database Reset**: Truncates all test data
+- 🔄 **Fresh Setup**: Creates new users, projects, and team members
+
+**Note**: Gmail cleanup is safe and recoverable - emails are moved to trash, not permanently deleted.
 
 ## 🎯 **Quick Commands**
 
-### **Complete E2E Test (Recommended)**
+### **Email Foundation Testing (Free)**
 ```bash
-# Run full end-to-end test suite
-npm run test:e2e:complete
+# Complete email infrastructure testing
+npm run test:email:master
 
-# Run with verbose output for debugging
-npm run test:e2e:complete:verbose
+# Foundation-focused testing
+npm run test:email:foundation
+
+# Quick foundation validation
+npm run test:email:smoke
 ```
 
-### **Individual Steps**
+### **E2E Extension Testing (AI Costs)**
+*Only run after email foundation passes*
+
 ```bash
-# 1. Clean up existing test data (Gmail + Database)
-npm run test:cleanup:database
+# Basic AI processing (recommended for development)
+npm run test:e2e:ai-basic
 
-# 2. Verify cleanup was successful
-npm run test:gmail:verify-empty
-npm run test:db:verify-clean
+# Complete E2E workflow (pre-deployment)
+npm run test:e2e:complete
 
-# 3. Set up fresh test homeowner account
-npm run test:setup:homeowner-account
-
-# 4. Generate and send test emails
-npm run test:send-conversations 5 30
-
-# 5. Process emails with AI
-npm run test:ai:process-all
-
-# 6. Validate complete workflow
-npm run test:validate:e2e
+# Verbose output for debugging
+npm run test:e2e:complete:verbose
 ```
 
 ## 📊 **What Gets Tested**
 
-### **Core Workflow**
-1. **Complete Data Cleanup** - Clean Gmail accounts (homeowner + contractor) and database
-2. **Account Setup** - Create homeowner + project + team members
+### **Email Foundation Layer**
+1. **Database Setup** - Create users, projects, team members
+2. **OAuth Verification** - Validate credentials for both accounts
 3. **Email Generation** - Send realistic contractor emails
-4. **Email Ingestion** - Filter and ingest team member emails
-5. **AI Processing** - Analyze emails with GPT-4o
-6. **Flagged Items** - Create actionable items from AI analysis
-7. **Timeline Integration** - Convert flagged items to timeline entries
-8. **Validation** - Verify complete workflow
+4. **Gmail Ingestion** - Fetch and filter team member emails
+5. **Infrastructure Validation** - Verify email storage and processing
 
-### **Success Criteria**
-- ✅ All critical checks pass (account setup, ingestion, AI analysis)
-- ✅ 80%+ overall success rate
-- ✅ 75%+ average AI confidence
-- ✅ 80%+ email classification rate
-- ✅ <10 second average processing time
+### **E2E Extension Layer**
+*Only runs after email foundation is complete*
+
+6. **AI Processing** - Analyze emails with GPT-4o
+7. **Output Storage** - Create EmailAnalysis records
+8. **Flagged Items** - Generate actionable items from AI analysis
+9. **Timeline Integration** - Convert flagged items to timeline entries
+10. **Workflow Validation** - Verify complete pipeline
+
+## 🔄 **Proper Testing Workflow**
+
+### **Step 1: Email Foundation (Required)**
+```bash
+# Validate email infrastructure first
+npm run test:email:foundation
+```
+
+**Success Criteria:**
+- ✅ Users and projects created in database
+- ✅ OAuth credentials valid for both accounts
+- ✅ Emails successfully generated and sent
+- ✅ Gmail ingestion working correctly
+- ✅ EmailMessage records in database
+
+### **Step 2: E2E Extensions (Optional)**
+*Only run after Step 1 passes*
+
+```bash
+# For development: Basic AI processing
+npm run test:e2e:ai-basic
+
+# For deployment: Complete workflow
+npm run test:e2e:complete
+```
+
+**Success Criteria:**
+- ✅ AI analysis generates valid results
+- ✅ EmailAnalysis records created
+- ✅ Flagged items generated appropriately
+- ✅ Timeline entries created
+- ✅ Frontend displays data correctly
 
 ## 🔧 **Troubleshooting**
 
@@ -240,6 +287,203 @@ After successful E2E testing:
 - [AI Strategy Documentation](../architecture/ai-strategy-analysis.md)
 - [Gmail OAuth Setup](./GMAIL_API_OAUTH_SETUP.md)
 
+## 🌐 **Web App Testing After E2E**
+
+### **Accessing Test Data in Web App**
+After running E2E tests, you can view the results in the web application:
+
+1. **Start the development server** (if not already running):
+   ```bash
+   npm run dev
+   ```
+
+2. **Navigate to the app**: http://localhost:3000
+
+3. **Sign in with the test account**:
+   - Click "Sign in with Google"
+   - Use: `nailit.test.homeowner@gmail.com`
+   - The enhanced NextAuth configuration will automatically link your test user
+
+4. **View test results**:
+   - ✅ **Project**: Test Kitchen Renovation
+   - ✅ **Emails**: All ingested emails from E2E test
+   - ✅ **AI Analyses**: Classifications, priorities, confidence scores
+   - ✅ **Timeline**: AI-generated timeline entries
+   - ✅ **Flagged Items**: Actionable items from email analysis
+
+### **Troubleshooting Authentication**
+If you see "Create a project" instead of the test project:
+
+```bash
+# The NextAuth configuration should handle this automatically
+# But if needed, you can run:
+npm run test:fix-auth
+```
+
+**Note**: The first time you authenticate with the test account, NextAuth will automatically create the OAuth account linkage. This ensures seamless integration between E2E test data and web app authentication.
+
 ---
 
 **Need Help?** Check the [troubleshooting guide](./END_TO_END_TESTING_PLAYBOOK.md#troubleshooting-guide) or run `npm run test:e2e:complete:verbose` for detailed output. 
+
+## Overview
+
+This guide covers end-to-end testing for the Nailit email processing system. The E2E tests use **real OAuth authentication** to ensure compatibility with both API and web app authentication flows.
+
+## Key Principles
+
+### OAuth Authentication Strategy
+- **E2E Tests**: Use real OAuth flow to create user + account + session
+- **Web App**: Use same OAuth, finds existing user and creates new session
+- **No Mocking**: Both flows use the same authentication mechanism
+- **Session Isolation**: API and web app sessions coexist independently
+
+### Test User Setup
+- Email: `nailit.test.homeowner@gmail.com`
+- Created with proper OAuth account linkage
+- Ready for both API and web app authentication
+- Projects and team members pre-configured
+
+## Quick Start
+
+### 1. Verify OAuth Setup
+```bash
+# Check that test user has proper OAuth account
+npx tsx scripts/verify-oauth-setup.ts
+
+# Test OAuth flow for both API and web app
+npx tsx scripts/test-oauth-flow.ts
+```
+
+### 2. Set Up Test Project
+```bash
+# Create test project with OAuth user
+npx tsx scripts/email-testing/data-manager.ts setup-single-contractor-project
+```
+
+### 3. Run E2E Tests
+```bash
+# Run email analysis tests
+npx tsx scripts/test-email-analysis-integration.ts
+
+# Run comprehensive E2E tests
+npm run test:e2e
+```
+
+### 4. Test Web App Authentication
+1. Start the dev server: `npm run dev`
+2. Navigate to `/auth/signin`
+3. Sign in with `nailit.test.homeowner@gmail.com`
+4. NextAuth will find the existing user and create a new session
+5. Both API and web app sessions will coexist
+
+## Architecture
+
+### OAuth Flow
+```
+E2E Tests (API) ──┐
+                  ├── Same OAuth Account ──> User Record
+Web App (NextAuth)──┘
+```
+
+### Session Management
+- **API Session**: Created during E2E test setup
+- **Web Session**: Created when user signs in via web app
+- **Independence**: Both sessions work simultaneously
+- **No Conflicts**: Different session tokens, same user
+
+### Database Structure
+```sql
+-- User (shared)
+User { id, email, name, emailVerified }
+
+-- OAuth Account (shared)
+Account { userId, provider: 'google', providerAccountId, access_token }
+
+-- Sessions (separate)
+Session { sessionToken, userId, expires } -- Web app session
+OAuthSession { userId, provider, accessToken } -- API session
+```
+
+## Test Data Management
+
+### Clean Up Test Data
+```bash
+# Clean all test data
+npx tsx scripts/email-testing/data-manager.ts truncate-all
+
+# Clean only emails
+npx tsx scripts/email-testing/data-manager.ts truncate-db
+```
+
+### Reset Test User
+```bash
+# Recreate test user with OAuth
+npx tsx scripts/email-testing/data-manager.ts setup-single-contractor-project
+
+# Verify setup
+npx tsx scripts/verify-oauth-setup.ts
+```
+
+## Troubleshooting
+
+### "User not found" in E2E tests
+```bash
+# Recreate test user with proper OAuth
+npx tsx scripts/email-testing/data-manager.ts setup-single-contractor-project
+```
+
+### "Authentication failed" in web app
+1. Check that OAuth account exists: `npx tsx scripts/verify-oauth-setup.ts`
+2. Ensure test user has proper OAuth account linkage
+3. Verify NextAuth configuration in `app/api/auth/[...nextauth]/route.ts`
+
+### "No projects found"
+```bash
+# Verify test project exists
+npx tsx scripts/verify-oauth-setup.ts
+
+# Recreate if needed
+npx tsx scripts/email-testing/data-manager.ts setup-single-contractor-project
+```
+
+## Key Files
+
+### OAuth Setup
+- `scripts/email-testing/data-manager.ts` - Creates users with OAuth accounts
+- `scripts/verify-oauth-setup.ts` - Verifies OAuth account linkage
+- `scripts/test-oauth-flow.ts` - Tests both API and web app flows
+
+### E2E Tests
+- `scripts/test-email-analysis-integration.ts` - Email analysis E2E tests
+- `tests/e2e/` - Comprehensive E2E test suite
+
+### Authentication
+- `app/api/auth/[...nextauth]/route.ts` - NextAuth configuration
+- `app/lib/prisma.ts` - Database connection
+
+## Success Indicators
+
+✅ **OAuth Setup Complete**
+- User exists with OAuth account
+- Access token present and valid
+- Projects and team members configured
+
+✅ **E2E Tests Ready**
+- Test user authenticated via OAuth
+- API calls work with real authentication
+- Email analysis processes correctly
+
+✅ **Web App Compatible**
+- Same user can sign in via web app
+- NextAuth finds existing user
+- Sessions coexist independently
+
+## Next Steps
+
+1. **Run E2E Tests**: Use real OAuth authentication
+2. **Test Web App**: Sign in with test user
+3. **Verify Integration**: Both flows work simultaneously
+4. **Scale Up**: Add more test scenarios as needed
+
+This approach eliminates the complexity of mocking authentication while ensuring both API and web app authentication work seamlessly together. 

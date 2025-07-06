@@ -47,13 +47,13 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 })
     }
 
-    // Build Gmail OAuth URL
-    const clientId = process.env.GOOGLE_CLIENT_ID
+    // Build Gmail OAuth URL using Gmail API OAuth client (not authentication OAuth)
+    const clientId = process.env.GOOGLE_GMAIL_CLIENT_ID || process.env.GMAIL_TEST_CLIENT_ID || process.env.GOOGLE_CLIENT_ID
     const redirectUri = `${process.env.NEXTAUTH_URL}/api/email/oauth/gmail/callback`
     
     if (!clientId) {
-      logger.error('Google Client ID not configured')
-      return NextResponse.json({ error: 'OAuth not configured' }, { status: 500 })
+      logger.error('Gmail API OAuth Client ID not configured')
+      return NextResponse.json({ error: 'Gmail OAuth not configured' }, { status: 500 })
     }
 
     const scopes = [

@@ -179,7 +179,10 @@ class E2ETestRunner {
   private async setupDatabaseFoundation(): Promise<void> {
     console.log('🗄️  Setting up database foundation...');
     
-    // Clean existing test data
+    // Clean Gmail inboxes first (before database cleanup)
+    await this.cleanupGmailInboxes();
+    
+    // Clean existing test data from database
     await this.dataManager.truncateAll();
     
     // Set up user accounts and projects
@@ -187,6 +190,22 @@ class E2ETestRunner {
     await this.dataManager.setupTestProject();
     
     console.log('✅ Database foundation ready (users, projects, team members)');
+  }
+
+  private async cleanupGmailInboxes(): Promise<void> {
+    console.log('🧹 Cleaning Gmail inboxes...');
+    
+    try {
+      // Use the Gmail inbox cleaner to clean both accounts
+      // This moves test emails to trash (recoverable)
+      const command = 'npx tsx scripts/email-testing/gmail-inbox-cleaner.ts trash-all';
+      execSync(command, { stdio: 'pipe' });
+      
+      console.log('✅ Gmail inboxes cleaned (test emails moved to trash)');
+    } catch (error: any) {
+      console.warn('⚠️  Gmail cleanup failed (continuing anyway):', error.message);
+      console.log('💡 You may want to manually clean inboxes for cleaner test results');
+    }
   }
 
   private async verifyOAuth(): Promise<void> {
@@ -223,10 +242,21 @@ class E2ETestRunner {
   private async testEmailIngestion(): Promise<void> {
     console.log('📥 Testing email ingestion...');
     
-    // Use existing Gmail fetch script
-    execSync('npx tsx scripts/email-testing/test-gmail-fetch.ts', { stdio: 'pipe' });
+    // Get the correct project configuration
+    const projectConfig = await this.dataManager.getTestProjectConfig();
+    
+    // Use historical ingestion with the correct project ID
+    const command = `npx tsx scripts/email-testing/historical-ingestion.ts import --project=${projectConfig.projectId} --start=${this.getDateXMonthsAgo(1)} --end=${new Date().toISOString().split('T')[0]}`;
+    execSync(command, { stdio: 'pipe' });
     
     console.log('✅ Email ingestion completed');
+  }
+
+  // Helper method to get date X months ago
+  private getDateXMonthsAgo(months: number): string {
+    const date = new Date();
+    date.setDate(date.getDate() - (months * 30));
+    return date.toISOString().split('T')[0];
   }
 
   private async validateEmailFoundation(): Promise<void> {

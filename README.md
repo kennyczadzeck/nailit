@@ -265,3 +265,51 @@ This line was added to test the 3-environment development workflow:
 - Ready for authentication re-enablement
 
 <!-- Test PR workflow validation - can be removed after testing -->
+
+## 🧪 Testing Strategy
+
+### Testing Layer Separation
+
+**📧 Email Testing (Foundation Layer)**
+- **Purpose**: Validate email infrastructure without AI processing
+- **Cost**: Free (no AI processing costs)
+- **Scope**: Database setup → OAuth → Email generation → Gmail ingestion → Validation
+- **Commands**: `npm run test:email:master`, `npm run test:email:foundation`
+
+**🤖 E2E Testing (Extension Layer)**  
+- **Purpose**: AI processing and visualization on top of email foundation
+- **Cost**: ~$0.08-0.16 per test (AI processing)
+- **Scope**: Email foundation → AI analysis → Flagged items → Timeline
+- **Commands**: `npm run test:e2e:ai-basic`, `npm run test:e2e:complete`
+
+**Key Principle**: Email testing must pass before E2E testing can run. E2E testing extends email testing but never replaces it.
+
+### Testing Commands
+
+```bash
+# Email Testing Foundation (Free)
+npm run test:email:master           # Complete email workflow
+npm run test:email:foundation       # Foundation validation
+npm run test:oauth-status          # OAuth verification
+
+# E2E Testing Extensions (AI Processing Costs)
+npm run test:e2e:ai-basic          # Email + AI processing
+npm run test:e2e:complete          # Full E2E workflow
+
+# OAuth Management
+npm run test:oauth-setup homeowner  # Setup homeowner OAuth
+npm run test:oauth-setup contractor # Setup contractor OAuth
+```
+
+### Development Workflow
+
+```bash
+# Daily development: Free foundation testing
+npm run test:email:foundation
+
+# Feature development: Add AI processing
+npm run test:e2e:ai-basic
+
+# Pre-deployment: Complete validation
+npm run test:e2e:complete
+```

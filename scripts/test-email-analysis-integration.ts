@@ -15,12 +15,12 @@ async function testEmailAnalysisIntegration() {
   try {
     // 1. Find existing user and project
     console.log('1. Finding existing user and project...');
-    const user = await prisma.user.findFirst({
-      where: { email: { contains: 'homeowner' } }
+    const user = await prisma.user.findUnique({
+      where: { email: 'nailit.test.homeowner@gmail.com' }
     });
 
     if (!user) {
-      console.log('❌ No homeowner user found. Please run the seed script first.');
+      console.log('❌ Test user not found. Please run: npx tsx scripts/email-testing/data-manager.ts setup-single-contractor-project');
       process.exit(1);
     }
 
@@ -32,7 +32,7 @@ async function testEmailAnalysisIntegration() {
     });
 
     if (!project) {
-      console.log('❌ No project found for user. Please run the seed script first.');
+      console.log('❌ No project found for test user. Please run: npx tsx scripts/email-testing/data-manager.ts setup-single-contractor-project');
       process.exit(1);
     }
 
