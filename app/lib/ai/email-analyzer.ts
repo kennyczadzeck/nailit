@@ -36,7 +36,7 @@ export class EmailAnalyzer {
   }
 
   /**
-   * Analyze an email in the context of a construction project
+   * Analyze an email and extract structured information
    */
   async analyzeEmail(email: EmailMessage, project: Project): Promise<AnalysisResult> {
     const startTime = Date.now();
@@ -44,7 +44,7 @@ export class EmailAnalyzer {
     try {
       // Use MVP context by default for production readiness
       const prompt = this.options.useEnhancedContext 
-        ? this.buildEnhancedPrompt(email, project)
+        ? await this.buildEnhancedPrompt(email, project)
         : this.buildMVPPrompt(email, project);
 
       const response = await this.openai.chat.completions.create({
@@ -64,13 +64,12 @@ export class EmailAnalyzer {
       }
 
       const analysis = this.parseAnalysisResponse(content);
-      const processingTime = Date.now() - startTime;
 
       // Add processing metadata
       analysis.processing_metadata = {
         analyzed_at: new Date().toISOString(),
         model_used: this.options.model!,
-        processing_time_ms: processingTime
+        processing_time_ms: Date.now() - startTime
       };
 
       return {
@@ -79,7 +78,6 @@ export class EmailAnalyzer {
       };
 
     } catch (error) {
-      const processingTime = Date.now() - startTime;
       console.error('Email analysis failed:', error);
 
       const analysisError: AnalysisError = {
@@ -115,12 +113,12 @@ export class EmailAnalyzer {
   /**
    * Build enhanced prompt (kept for testing/comparison)
    */
-  private buildEnhancedPrompt(email: EmailMessage, project: Project): {
+  private async buildEnhancedPrompt(email: EmailMessage, project: Project): Promise<{
     systemPrompt: string;
     userPrompt: string;
-  } {
-    // Import enhanced context builder only when needed
-    const { EnhancedContextBuilder } = require('./enhanced-context-builder');
+  }> {
+    // Dynamic import for enhanced context builder
+    const { EnhancedContextBuilder } = await import('./enhanced-context-builder');
     const enhancedContext = EnhancedContextBuilder.buildEnhancedContext(project, email);
     const contextPrompt = EnhancedContextBuilder.contextToPrompt(enhancedContext);
     

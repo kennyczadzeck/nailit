@@ -136,7 +136,7 @@ export interface EmailAnalysis {
 export interface AnalysisError {
   type: 'api_error' | 'parse_error' | 'validation_error' | 'context_error';
   message: string;
-  details?: any;
+  details?: unknown;
   retry_suggested: boolean;
 }
 

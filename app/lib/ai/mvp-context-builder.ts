@@ -1,8 +1,8 @@
 // MVP-focused project context builder for AI email analysis
-// Only includes context that directly supports MVP requirements
-// Team member filtering is handled by business logic, not AI
+// Provides essential context while maintaining simplicity and performance
+// Optimized for production readiness and reliable analysis
 
-import { EmailMessage, Project, TeamMember } from './types';
+import { Project } from './types';
 
 export interface MVPProjectContext {
   projectInfo: {

@@ -2,7 +2,12 @@
 // Provides comprehensive context for better analysis quality
 // Team member filtering is handled by email ingestion business logic
 
-import { EmailMessage, Project, TeamMember } from './types';
+import { Project, TeamMember } from './types';
+
+interface RecentAnalysis {
+  analyzedAt: string;
+  [key: string]: unknown;
+}
 
 export interface EnhancedProjectContext {
   projectInfo: {
@@ -56,7 +61,7 @@ export class EnhancedContextBuilder {
   static buildEnhancedContext(
     project: Project, 
     teamMembers: TeamMember[] = [], 
-    recentAnalyses: any[] = []
+    recentAnalyses: RecentAnalysis[] = []
   ): EnhancedProjectContext {
     const now = new Date();
     const endDate = project.endDate ? new Date(project.endDate) : null;
