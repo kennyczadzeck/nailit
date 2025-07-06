@@ -56,6 +56,11 @@ if [ ! -f "$SECRETS_FILE" ]; then
   echo "NAILIT_GOOGLE_MAPS_API_KEY_STAGING=\"your-api-key\""
   echo "NAILIT_GOOGLE_MAPS_API_KEY_PRODUCTION=\"your-api-key\""
   echo ""
+  echo "# OpenAI API Keys"
+  echo "NAILIT_OPENAI_API_KEY_DEVELOPMENT=\"your-openai-api-key\""
+  echo "NAILIT_OPENAI_API_KEY_STAGING=\"your-openai-api-key\""
+  echo "NAILIT_OPENAI_API_KEY_PRODUCTION=\"your-openai-api-key\""
+  echo ""
   echo "⚠️  IMPORTANT: .env.secrets should NEVER be committed to Git!"
   echo "   Add it to .gitignore if not already there."
   exit 1
@@ -64,14 +69,16 @@ fi
 # Load secrets from file
 echo "📁 Loading secrets from $SECRETS_FILE"
 export $(grep -v '^#' "$SECRETS_FILE" | xargs)
-
+ENV_UPPER=$(echo "$ENVIRONMENT" | tr '[:lower:]' '[:upper:]')
 # Validate that required secrets are loaded
+ENV_UPPER=$(echo "$ENVIRONMENT" | tr '[:lower:]' '[:upper:]')
 REQUIRED_VARS=(
-  "NAILIT_DATABASE_URL_${ENVIRONMENT^^}"
-  "NAILIT_NEXTAUTH_SECRET_${ENVIRONMENT^^}"
-  "NAILIT_GOOGLE_CLIENT_ID_${ENVIRONMENT^^}"
-  "NAILIT_GOOGLE_CLIENT_SECRET_${ENVIRONMENT^^}"
-  "NAILIT_GOOGLE_MAPS_API_KEY_${ENVIRONMENT^^}"
+  "NAILIT_DATABASE_URL_${ENV_UPPER}"
+  "NAILIT_NEXTAUTH_SECRET_${ENV_UPPER}"
+  "NAILIT_GOOGLE_CLIENT_ID_${ENV_UPPER}"
+  "NAILIT_GOOGLE_CLIENT_SECRET_${ENV_UPPER}"
+  "NAILIT_GOOGLE_MAPS_API_KEY_${ENV_UPPER}"
+  "NAILIT_OPENAI_API_KEY_${ENV_UPPER}"
 )
 
 echo "🔍 Validating required environment variables..."

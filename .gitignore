@@ -67,3 +67,4 @@ next-env.d.ts
 infrastructure/.env.secrets
 infrastructure/cdk.out/
 deploy/
+.env.local

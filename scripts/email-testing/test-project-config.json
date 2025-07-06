@@ -1,7 +1,7 @@
 {
-  "homeownerUserId": "cmcp8t16v0000lvuljtl8h16z",
+  "homeownerUserId": "cmcqn7inz0000lvh7micxbs7j",
   "homeownerEmail": "nailit.test.homeowner@gmail.com",
-  "projectId": "cmcp8t1c50002lvul2id0icsr",
+  "projectId": "cmcqn7j5c0004lvh79227v7pf",
   "projectName": "Kitchen Renovation Test Project",
   "contractorEmail": "nailit.test.contractor@gmail.com",
   "teamMembers": [
@@ -17,5 +17,5 @@
     "includeAttachments": true,
     "homeownerContractorOnly": true
   },
-  "createdAt": "2025-07-04T20:04:04.584Z"
+  "createdAt": "2025-07-05T19:35:01.698Z"
 }

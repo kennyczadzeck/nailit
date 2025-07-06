@@ -67,15 +67,15 @@ export async function GET(request: NextRequest) {
       return NextResponse.redirect(`${process.env.NEXTAUTH_URL}/dashboard?email-error=invalid_state`)
     }
 
-    // Exchange authorization code for tokens
+    // Exchange authorization code for tokens using Gmail API OAuth client
     const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: new URLSearchParams({
-        client_id: process.env.GOOGLE_CLIENT_ID!,
-        client_secret: process.env.GOOGLE_CLIENT_SECRET!,
+        client_id: process.env.GOOGLE_GMAIL_CLIENT_ID || process.env.GMAIL_TEST_CLIENT_ID || process.env.GOOGLE_CLIENT_ID!,
+        client_secret: process.env.GOOGLE_GMAIL_CLIENT_SECRET || process.env.GMAIL_TEST_CLIENT_SECRET || process.env.GOOGLE_CLIENT_SECRET!,
         code,
         grant_type: 'authorization_code',
         redirect_uri: `${process.env.NEXTAUTH_URL}/api/email/oauth/gmail/callback`

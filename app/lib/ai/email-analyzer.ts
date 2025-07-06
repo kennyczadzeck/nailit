@@ -1,0 +1,254 @@
+// Main email analyzer using OpenAI GPT-4o with enhanced context
+
+import OpenAI from 'openai';
+import { EmailMessage, Project, EmailAnalysis, AnalysisResult, AnalysisError } from './types';
+import { PromptBuilder } from './prompt-builder';
+import { MVPContextBuilder } from './mvp-context-builder';
+
+interface EmailAnalyzerOptions {
+  useEnhancedContext?: boolean; // Keep for backward compatibility, but default to MVP
+  model?: string;
+  maxTokens?: number;
+  temperature?: number;
+}
+
+export class EmailAnalyzer {
+  private openai: OpenAI;
+  private options: EmailAnalyzerOptions;
+
+  constructor(options: EmailAnalyzerOptions = {}) {
+    this.options = {
+      useEnhancedContext: false, // Default to MVP context
+      model: 'gpt-4o',
+      maxTokens: 2000,
+      temperature: 0.1,
+      ...options
+    };
+
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) {
+      throw new Error('OPENAI_API_KEY environment variable is required');
+    }
+
+    this.openai = new OpenAI({
+      apiKey: apiKey,
+    });
+  }
+
+  /**
+   * Analyze an email and extract structured information
+   */
+  async analyzeEmail(email: EmailMessage, project: Project): Promise<AnalysisResult> {
+    const startTime = Date.now();
+
+    try {
+      // Use MVP context by default for production readiness
+      const prompt = this.options.useEnhancedContext 
+        ? await this.buildEnhancedPrompt(email, project)
+        : this.buildMVPPrompt(email, project);
+
+      const response = await this.openai.chat.completions.create({
+        model: this.options.model!,
+        messages: [
+          { role: 'system', content: prompt.systemPrompt },
+          { role: 'user', content: prompt.userPrompt }
+        ],
+        max_tokens: this.options.maxTokens,
+        temperature: this.options.temperature,
+        response_format: { type: 'json_object' }
+      });
+
+      const content = response.choices[0]?.message?.content;
+      if (!content) {
+        throw new Error('No response content from OpenAI');
+      }
+
+      const analysis = this.parseAnalysisResponse(content);
+
+      // Add processing metadata
+      analysis.processing_metadata = {
+        analyzed_at: new Date().toISOString(),
+        model_used: this.options.model!,
+        processing_time_ms: Date.now() - startTime
+      };
+
+      return {
+        success: true,
+        analysis
+      };
+
+    } catch (error) {
+      console.error('Email analysis failed:', error);
+
+      const analysisError: AnalysisError = {
+        type: error instanceof SyntaxError ? 'parse_error' : 'api_error',
+        message: error instanceof Error ? error.message : 'Unknown error occurred',
+        details: error,
+        retry_suggested: true
+      };
+
+      return {
+        success: false,
+        error: analysisError
+      };
+    }
+  }
+
+  /**
+   * Build MVP-focused prompt using simplified context
+   */
+  private buildMVPPrompt(email: EmailMessage, project: Project): {
+    systemPrompt: string;
+    userPrompt: string;
+  } {
+    const mvpContext = MVPContextBuilder.buildMVPContext(project);
+    const contextPrompt = MVPContextBuilder.contextToPrompt(mvpContext);
+    
+    return {
+      systemPrompt: PromptBuilder.getSystemPrompt(),
+      userPrompt: `${contextPrompt}\n\n${PromptBuilder.buildEmailAnalysisPrompt(email)}`
+    };
+  }
+
+  /**
+   * Build enhanced prompt (kept for testing/comparison)
+   */
+  private async buildEnhancedPrompt(email: EmailMessage, project: Project): Promise<{
+    systemPrompt: string;
+    userPrompt: string;
+  }> {
+    // Dynamic import for enhanced context builder
+    const { EnhancedContextBuilder } = await import('./enhanced-context-builder');
+    const enhancedContext = EnhancedContextBuilder.buildEnhancedContext(project, project.teamMembers || []);
+    const contextPrompt = EnhancedContextBuilder.contextToPrompt(enhancedContext);
+    
+    return {
+      systemPrompt: PromptBuilder.getSystemPrompt(),
+      userPrompt: `${contextPrompt}\n\n${PromptBuilder.buildEmailAnalysisPrompt(email)}`
+    };
+  }
+
+  private parseAnalysisResponse(content: string): EmailAnalysis {
+    try {
+      const parsed = JSON.parse(content);
+
+      // Validate required fields
+      if (!parsed.classification || !parsed.summary || !parsed.entities) {
+        throw new Error('Missing required fields in analysis response');
+      }
+
+      // Ensure confidence is a number between 0 and 1
+      if (typeof parsed.classification.confidence !== 'number') {
+        parsed.classification.confidence = 0.5; // Default fallback
+      }
+      
+      // Normalize confidence to 0-1 range if it's 0-100
+      if (parsed.classification.confidence > 1) {
+        parsed.classification.confidence = parsed.classification.confidence / 100;
+      }
+
+      return {
+        id: '', // Will be set when stored in database
+        classification: {
+          primary_type: parsed.classification.primary_type || 'communication',
+          confidence: parsed.classification.confidence,
+          sub_categories: parsed.classification.sub_categories || []
+        },
+        summary: {
+          key_points: parsed.summary.key_points || [],
+          action_items: parsed.summary.action_items || [],
+          timeline_mentions: parsed.summary.timeline_mentions || []
+        },
+        entities: {
+          contractors: parsed.entities.contractors || [],
+          materials: parsed.entities.materials || [],
+          locations: parsed.entities.locations || [],
+          amounts: parsed.entities.amounts || [],
+          dates: parsed.entities.dates || []
+        },
+        priority: parsed.priority || 'medium',
+        requires_response: parsed.requires_response || false,
+        attachments_mentioned: parsed.attachments_mentioned || false,
+        confidence_score: parsed.classification.confidence,
+        processing_metadata: {
+          analyzed_at: new Date().toISOString(),
+          model_used: this.options.model!,
+          processing_time_ms: 0 // Will be set by caller
+        },
+        // Database fields (will be set when storing)
+        projectId: '',
+        emailMessageId: '',
+        createdAt: '',
+        updatedAt: ''
+      };
+
+    } catch (error) {
+      console.error('Failed to parse analysis response:', error);
+      console.error('Response content:', content);
+      throw new SyntaxError(`Failed to parse OpenAI response: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
+  /**
+   * Test the analyzer with a simple email
+   */
+  async testConnection(): Promise<boolean> {
+    try {
+      const testEmail: EmailMessage = {
+        id: 'test-1',
+        messageId: 'test-msg-1',
+        provider: 'gmail',
+        sender: 'test@example.com',
+        recipients: ['project@example.com'],
+        ccRecipients: [],
+        bccRecipients: [],
+        subject: 'Test Email',
+        bodyText: 'This is a test email to verify the OpenAI connection.',
+        sentAt: new Date().toISOString(),
+        receivedAt: new Date().toISOString(),
+        s3AttachmentPaths: [],
+        ingestionStatus: 'completed',
+        analysisStatus: 'pending',
+        assignmentStatus: 'pending',
+        containsChanges: false,
+        retryCount: 0,
+        userId: 'test-user',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      const testProject: Project = {
+        id: 'test-project',
+        name: 'Test Project',
+        description: 'Test description',
+        status: 'ACTIVE',
+        startDate: '2024-01-01',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        budget: 100000,
+        address: '123 Test St',
+        userId: 'test-user'
+      };
+
+      const result = await this.analyzeEmail(testEmail, testProject);
+      return result.success;
+    } catch (error) {
+      console.error('Connection test failed:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Toggle between enhanced and basic context
+   */
+  setEnhancedContext(enabled: boolean): void {
+    this.options.useEnhancedContext = enabled;
+  }
+
+  /**
+   * Get current context mode
+   */
+  isUsingEnhancedContext(): boolean {
+    return this.options.useEnhancedContext ?? false;
+  }
+} 

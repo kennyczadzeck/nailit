@@ -9,15 +9,32 @@ import { WebhookTester } from './webhook-tester';
 import { HistoricalEmailIngester } from './historical-ingestion';
 
 /**
- * Master Email Testing Script
+ * Email Testing Foundation - Master Test Script
  * 
- * Runs complete email ingestion testing workflow including:
- * 1. Reset test data
- * 2. Set up OAuth (if needed)
- * 3. Generate test emails for historical scenarios
- * 4. Test historical bulk ingestion (CRITICAL FOR EXISTING PROJECTS)
- * 5. Test real-time webhook ingestion
- * 6. Validate unified timeline and storage
+ * This script validates the EMAIL TESTING FOUNDATION LAYER only.
+ * 
+ * EMAIL TESTING SCOPE (Foundation Layer):
+ * - Database foundation setup (users, projects, team members)
+ * - OAuth credentials verification
+ * - Email generation and sending
+ * - Gmail API ingestion
+ * - Email storage validation
+ * - Infrastructure integrity checks
+ * 
+ * DOES NOT INCLUDE:
+ * - AI processing or analysis
+ * - EmailAnalysis table operations
+ * - Flagged items creation
+ * - Timeline integration
+ * - Frontend visualization
+ * 
+ * E2E TESTING: Use scripts/email-testing/e2e-test-runner.ts for AI processing
+ * and visualization features that extend this email foundation.
+ * 
+ * USAGE:
+ * - npm run test:email:master (complete email workflow)
+ * - npm run test:email:foundation (foundation validation)
+ * - npm run test:email:smoke (quick validation)
  */
 
 class MasterEmailTester {

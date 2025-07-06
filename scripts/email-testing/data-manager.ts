@@ -298,16 +298,11 @@ class EmailTestDataManager {
     console.log(`🏠 Setting up test project for email testing...`);
 
     try {
-      // Create homeowner user aligned with email testing
-      const homeowner = await prisma.user.upsert({
-        where: { email: 'nailit.test.homeowner@gmail.com' },
-        update: {},
-        create: {
-          email: 'nailit.test.homeowner@gmail.com',
-          name: 'Sarah Homeowner',
-          emailVerified: new Date(),
-        },
-      });
+      // Create homeowner user through OAuth flow (simulating NextAuth)
+      const homeowner = await this.createUserWithOAuth(
+        'nailit.test.homeowner@gmail.com',
+        'Sarah Homeowner'
+      );
 
       console.log(`👤 Created/verified homeowner user: ${homeowner.email}`);
 
@@ -419,6 +414,74 @@ class EmailTestDataManager {
   }
 
   /**
+   * Create user with OAuth account linkage (simulating NextAuth flow)
+   * This creates AUTHENTICATION OAuth, not Gmail API OAuth
+   */
+  private async createUserWithOAuth(email: string, name: string): Promise<any> {
+    // Check if user already exists
+    let user = await prisma.user.findUnique({
+      where: { email },
+      include: { accounts: true }
+    });
+
+    if (user) {
+      console.log(`   ✅ User exists: ${email}`);
+      
+      // Ensure Authentication OAuth account exists (not Gmail API)
+      const authAccount = user.accounts.find(acc => 
+        acc.provider === 'google' && acc.scope?.includes('openid')
+      );
+      
+      if (!authAccount) {
+        await this.createAuthOAuthAccount(user.id, email);
+        console.log(`   ✅ Created Authentication OAuth account for existing user`);
+      } else {
+        console.log(`   ✅ Authentication OAuth account already exists`);
+      }
+      
+      return user;
+    }
+
+    // Create new user with Authentication OAuth account
+    user = await prisma.user.create({
+      data: {
+        email,
+        name,
+        emailVerified: new Date(),
+      },
+      include: { accounts: true }
+    });
+
+    await this.createAuthOAuthAccount(user.id, email);
+    
+    console.log(`   ✅ Created user with Authentication OAuth: ${email}`);
+    return user;
+  }
+
+  /**
+   * Create Authentication OAuth account for user (for NextAuth)
+   * This is separate from Gmail API OAuth
+   */
+  private async createAuthOAuthAccount(userId: string, email: string): Promise<void> {
+    // Generate a realistic provider account ID based on email
+    const providerAccountId = Buffer.from(email).toString('base64').slice(0, 21);
+    
+    await prisma.account.create({
+      data: {
+        userId,
+        type: 'oauth',
+        provider: 'google',
+        providerAccountId,
+        access_token: `mock_auth_token_${Date.now()}`,
+        expires_at: Math.floor(Date.now() / 1000) + 3600, // 1 hour from now
+        token_type: 'Bearer',
+        scope: 'openid email profile', // Authentication scopes, NOT Gmail API
+        id_token: `mock_id_token_${Date.now()}`
+      }
+    });
+  }
+
+  /**
    * Set up test project with ONLY the contractor as team member
    * This aligns with the updated testing requirements:
    * - Only one team member (test contractor)
@@ -428,22 +491,13 @@ class EmailTestDataManager {
     console.log('🏗️  Setting up test project with single contractor...');
 
     try {
-      // Find or create test homeowner user
-      let homeowner = await prisma.user.findUnique({
-        where: { email: 'nailit.test.homeowner@gmail.com' }
-      });
+      // Create homeowner user through OAuth flow (simulating NextAuth)
+      const homeowner = await this.createUserWithOAuth(
+        'nailit.test.homeowner@gmail.com',
+        'Sarah Test Homeowner'
+      );
 
-      if (!homeowner) {
-        homeowner = await prisma.user.create({
-          data: {
-            email: 'nailit.test.homeowner@gmail.com',
-            name: 'Sarah Test Homeowner',
-          }
-        });
-        console.log('👤 Created homeowner user');
-      } else {
-        console.log('👤 Found existing homeowner user');
-      }
+      console.log('👤 Created/verified homeowner user with OAuth');
 
       // Find or create test project
       let project = await prisma.project.findFirst({
@@ -651,6 +705,45 @@ class EmailTestDataManager {
 
     } catch (error: any) {
       console.error('❌ Failed to cleanup test emails:', error.message);
+      throw error;
+    }
+  }
+
+  /**
+   * Count total emails in database
+   */
+  async countEmails(): Promise<number> {
+    try {
+      const count = await prisma.emailMessage.count();
+      return count;
+    } catch (error: any) {
+      console.error('❌ Failed to count emails:', error.message);
+      throw error;
+    }
+  }
+
+  /**
+   * Count AI analyses in database
+   */
+  async countAnalyses(): Promise<number> {
+    try {
+      const count = await prisma.emailAnalysis.count();
+      return count;
+    } catch (error: any) {
+      console.error('❌ Failed to count analyses:', error.message);
+      throw error;
+    }
+  }
+
+  /**
+   * Count flagged items in database
+   */
+  async countFlaggedItems(): Promise<number> {
+    try {
+      const count = await prisma.flaggedItem.count();
+      return count;
+    } catch (error: any) {
+      console.error('❌ Failed to count flagged items:', error.message);
       throw error;
     }
   }

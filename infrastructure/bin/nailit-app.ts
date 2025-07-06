@@ -98,6 +98,7 @@ new AppRunnerStack(app, `AppRunner-${envConfig.resourceSuffix}`, {
     googleClientIdArn: secretsStack.googleClientIdArn,
     googleClientSecretArn: secretsStack.googleClientSecretArn,
     apiKeysSecretArn: secretsStack.apiKeysSecretArn,
+    openaiApiKeyArn: secretsStack.openaiApiKeyArn,
   },
 });
 
