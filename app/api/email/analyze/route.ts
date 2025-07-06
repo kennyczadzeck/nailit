@@ -58,7 +58,11 @@ export async function POST(request: NextRequest) {
         gmailTokenExpiry: project.emailSettings.gmailTokenExpiry?.toISOString() || null,
         oauthGrantedAt: project.emailSettings.oauthGrantedAt?.toISOString() || null,
         oauthLastRefreshedAt: project.emailSettings.oauthLastRefreshedAt?.toISOString() || null,
-        oauthRevokedAt: project.emailSettings.oauthRevokedAt?.toISOString() || null
+        oauthRevokedAt: project.emailSettings.oauthRevokedAt?.toISOString() || null,
+        // Convert JsonValue to proper types
+        emailFilters: project.emailSettings.emailFilters as Record<string, unknown> | null,
+        oauthComplianceData: project.emailSettings.oauthComplianceData as Record<string, unknown> | null,
+        oauthScopes: project.emailSettings.oauthScopes as Record<string, unknown> | null
       } : undefined
     });
 

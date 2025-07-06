@@ -84,13 +84,13 @@ export interface EmailSettings {
   gmailAccessToken?: string | null;
   gmailTokenExpiry?: string | null;
   monitoringEnabled: boolean;
-  emailFilters?: Record<string, unknown>;
+  emailFilters?: Record<string, unknown> | null;
   notificationsEnabled: boolean;
   weeklyReports: boolean;
   highPriorityAlerts: boolean;
   createdAt: string;
   updatedAt: string;
-  oauthComplianceData?: Record<string, unknown>;
+  oauthComplianceData?: Record<string, unknown> | null;
   oauthGrantedAt?: string | null;
   oauthGrantedBy?: string | null;
   oauthLastRefreshedAt?: string | null;
@@ -98,7 +98,7 @@ export interface EmailSettings {
   oauthRevokeReason?: string | null;
   oauthRevokedAt?: string | null;
   oauthRevokedBy?: string | null;
-  oauthScopes?: Record<string, unknown>;
+  oauthScopes?: Record<string, unknown> | null;
   oauthSessionId?: string | null;
 }
 
